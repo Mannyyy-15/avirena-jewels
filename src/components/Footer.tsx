@@ -6,7 +6,6 @@ interface FooterProps {
   setCurrentPage: (page: PageView) => void;
   openStoryModal: () => void;
   openCareModal: () => void;
-  openTrackOrderModal?: () => void;
   setSelectedCategory?: (cat: Category) => void;
 }
 
@@ -14,7 +13,6 @@ export const Footer: React.FC<FooterProps> = ({
   setCurrentPage,
   openStoryModal,
   openCareModal,
-  openTrackOrderModal,
   setSelectedCategory,
 }) => {
   const handleNavigate = (page: PageView, category?: Category) => {
@@ -128,20 +126,6 @@ export const Footer: React.FC<FooterProps> = ({
             className="hover:text-white hover:underline transition-all cursor-pointer"
           >
             Shipping & Returns
-          </button>
-          <button
-            onClick={() => handleNavigate('policies')}
-            className="hover:text-white hover:underline transition-all cursor-pointer"
-          >
-            2-Year Warranty
-          </button>
-          <button
-            onClick={() => {
-              if (openTrackOrderModal) openTrackOrderModal();
-            }}
-            className="hover:text-white hover:underline transition-all cursor-pointer text-[#E7E4D5] font-semibold"
-          >
-            Track Order
           </button>
           <button
             onClick={() => handleNavigate('faq')}

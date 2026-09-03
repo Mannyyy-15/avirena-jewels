@@ -505,11 +505,11 @@ export const HomePage: React.FC<HomePageProps> = ({
 
           <div className="flex items-center justify-center md:justify-start gap-3.5 text-xs font-medium text-[#413C23]">
             <div className="w-10 h-10 rounded-full bg-[#F4EFE6] border border-[#D8D2C2] flex items-center justify-center text-[#413C23] shrink-0">
-              <ShieldCheck className="w-4 h-4" />
+              <Package className="w-4 h-4" />
             </div>
             <div>
-              <span className="block font-semibold">2-Year Atelier Warranty</span>
-              <span className="text-[10px] text-[#8F896D]">Guaranteed craftsmanship</span>
+              <span className="block font-semibold">Signature Packaging</span>
+              <span className="text-[10px] text-[#8F896D]">Velvet keepsake pouch</span>
             </div>
           </div>
 

@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import {
   Truck,
   RotateCcw,
-  ShieldCheck,
   Gem,
   Lock,
   CheckCircle2,
@@ -17,7 +16,7 @@ import {
 interface PoliciesPageProps {
   onNavigateToContact: () => void;
   onNavigateToShop: () => void;
-  initialTab?: 'shipping' | 'returns' | 'warranty' | 'authenticity' | 'privacy';
+  initialTab?: 'shipping' | 'returns' | 'authenticity' | 'privacy';
 }
 
 export const PoliciesPage: React.FC<PoliciesPageProps> = ({
@@ -25,7 +24,7 @@ export const PoliciesPage: React.FC<PoliciesPageProps> = ({
   onNavigateToShop,
   initialTab = 'shipping',
 }) => {
-  const [activeTab, setActiveTab] = useState<'shipping' | 'returns' | 'warranty' | 'authenticity' | 'privacy'>(initialTab);
+  const [activeTab, setActiveTab] = useState<'shipping' | 'returns' | 'authenticity' | 'privacy'>(initialTab);
 
   // Return request form state
   const [returnForm, setReturnForm] = useState({
@@ -47,13 +46,13 @@ export const PoliciesPage: React.FC<PoliciesPageProps> = ({
       <section className="relative w-full px-4 sm:px-8 lg:px-12 xl:px-16 2xl:px-20 pt-4 pb-8 sm:pb-12">
         <div className="relative rounded-xs overflow-hidden border border-[#D8D2C2] bg-[#413C23] text-[#E7E4D5] py-14 sm:py-20 px-6 sm:px-12 text-center space-y-3 shadow-sm">
           <span className="text-[10px] sm:text-xs font-semibold tracking-[0.25em] text-[#8F896D] uppercase block">
-            (01) / Maison Legal & Service Standards
+            (01) / Maison Service Standards
           </span>
           <h1 className="font-serif-display text-4xl sm:text-6xl lg:text-7xl font-light text-[#E7E4D5] tracking-tight">
             Policies & <span className="italic font-normal text-[#FAF8F5]">Client Assurance</span>
           </h1>
           <p className="text-xs sm:text-sm text-[#E7E4D5]/80 max-w-xl mx-auto font-normal leading-relaxed">
-            Transparent guidelines covering worldwide insured shipping, 14-day hassle-free exchanges, 2-year craftsmanship warranty, and hallmarked precious metal standards.
+            Transparent guidelines covering worldwide insured shipping, 14-day hassle-free exchanges, and hallmarked precious metal standards.
           </p>
         </div>
       </section>
@@ -63,9 +62,8 @@ export const PoliciesPage: React.FC<PoliciesPageProps> = ({
         <div className="flex items-center justify-center gap-2 sm:gap-3 overflow-x-auto pb-2 border-b border-[#D8D2C2] scrollbar-none">
           {[
             { id: 'shipping', label: 'Shipping & Delivery', icon: Truck },
-            { id: 'returns', label: '14-Day Returns & Exchange', icon: RotateCcw },
-            { id: 'warranty', label: '2-Year Atelier Warranty', icon: ShieldCheck },
-            { id: 'authenticity', label: 'Hallmarking & Purity', icon: Gem },
+            { id: 'returns', label: '14-Day Returns & Exchanges', icon: RotateCcw },
+            { id: 'authenticity', label: 'Materials & Hallmarking', icon: Gem },
             { id: 'privacy', label: 'Privacy & Terms', icon: Lock },
           ].map((tab) => {
             const Icon = tab.icon;
@@ -219,7 +217,7 @@ export const PoliciesPage: React.FC<PoliciesPageProps> = ({
                         <option value="size_exchange">Exchange Ring / Chain Size</option>
                         <option value="different_piece">Exchange for Another Design</option>
                         <option value="full_refund">Return for Full Refund to Original Card</option>
-                        <option value="store_credit">Return for Store Credit (+5% bonus)</option>
+                        <option value="store_credit">Return for Store Credit</option>
                       </select>
 
                       <textarea
@@ -243,46 +241,7 @@ export const PoliciesPage: React.FC<PoliciesPageProps> = ({
             </div>
           )}
 
-          {/* TAB 3: 2-YEAR ATELIER WARRANTY */}
-          {activeTab === 'warranty' && (
-            <div className="space-y-6 animate-in fade-in duration-200">
-              <div className="border-b border-[#D8D2C2] pb-4">
-                <span className="text-[10px] text-[#8F896D] uppercase tracking-widest font-semibold block">
-                  Artisan Commitment
-                </span>
-                <h2 className="font-serif-display text-3xl sm:text-4xl text-[#413C23]">
-                  2-Year Atelier Craftsmanship Warranty
-                </h2>
-              </div>
-
-              <div className="space-y-4 text-xs sm:text-sm text-[#413C23]/80 leading-relaxed">
-                <p>
-                  Fine jewellery should endure. Every Avirena creation is automatically protected under our <strong>2-Year Comprehensive Warranty</strong> from the date of purchase.
-                </p>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
-                  <div className="bg-[#FAF8F5] p-5 rounded-xs border border-[#D8D2C2] space-y-2">
-                    <span className="font-serif-display text-lg text-[#413C23] block">✨ What Is Covered:</span>
-                    <ul className="list-disc list-inside space-y-1 text-xs text-[#413C23]/80">
-                      <li>Complimentary 1-time re-vermeil electrolytic gold bath restoration</li>
-                      <li>Clasp, hook, and hinge tension adjustments</li>
-                      <li>Prong tightening and gemstone re-seating</li>
-                      <li>Manufacturing structural defects</li>
-                    </ul>
-                  </div>
-
-                  <div className="bg-[#FAF8F5] p-5 rounded-xs border border-[#D8D2C2] space-y-2">
-                    <span className="font-serif-display text-lg text-[#413C23] block">🛡️ How to Claim:</span>
-                    <p className="text-xs text-[#413C23]/80">
-                      Simply message our WhatsApp Concierge with your Order ID and photo of the piece. We will arrange insured courier pickup for atelier servicing.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* TAB 4: AUTHENTICITY & HALLMARKING */}
+          {/* TAB 3: AUTHENTICITY & HALLMARKING */}
           {activeTab === 'authenticity' && (
             <div className="space-y-6 animate-in fade-in duration-200">
               <div className="border-b border-[#D8D2C2] pb-4">
@@ -318,7 +277,7 @@ export const PoliciesPage: React.FC<PoliciesPageProps> = ({
             </div>
           )}
 
-          {/* TAB 5: PRIVACY & TERMS */}
+          {/* TAB 4: PRIVACY & TERMS */}
           {activeTab === 'privacy' && (
             <div className="space-y-6 animate-in fade-in duration-200">
               <div className="border-b border-[#D8D2C2] pb-4">

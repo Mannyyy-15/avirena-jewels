@@ -341,8 +341,8 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                 </button>
               </div>
 
-              {/* Scarcity & Shipping Assurance */}
-              <div className="p-3.5 bg-[#FAF8F5] border border-[#D8D2C2] rounded-xs space-y-2 text-xs">
+              {/* Shipping & Atelier Assurance */}
+              <div className="p-3.5 bg-[#FAF8F5] border border-[#D8D2C2] rounded-xs space-y-1.5 text-xs">
                 <div className="flex items-center justify-between text-[#413C23]">
                   <span className="flex items-center gap-1.5 font-medium">
                     <Clock className="w-3.5 h-3.5 text-[#8F896D]" />
@@ -350,37 +350,9 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                   </span>
                   <span className="text-[10px] text-[#8F896D] uppercase font-bold">Small Batch #04</span>
                 </div>
-
-                {/* Pincode / Postal Delivery Checker */}
-                <div className="pt-1.5 border-t border-[#D8D2C2]/60">
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="text"
-                      placeholder="Enter Delivery Pincode / Postal Code"
-                      maxLength={8}
-                      className="w-full px-3 py-1.5 bg-[#F4EFE6] border border-[#D8D2C2] rounded-xs text-[11px] text-[#413C23] placeholder-[#8F896D]/70 focus:outline-none focus:border-[#8F896D]"
-                      defaultValue="400050"
-                    />
-                    <button
-                      type="button"
-                      className="px-3 py-1.5 bg-[#413C23] hover:bg-[#8F896D] text-[#E7E4D5] text-[10px] uppercase tracking-wider font-semibold rounded-xs transition-colors shrink-0 cursor-pointer"
-                    >
-                      Check
-                    </button>
-                  </div>
-                  <p className="text-[10px] text-[#413C23] font-medium pt-1.5 flex items-center gap-1">
-                    <CheckCircle2 className="w-3 h-3 text-[#8F896D]" />
-                    <span>Express Air Delivery in 2–3 Days • Cash on Delivery & Prepaid Available</span>
-                  </p>
-                </div>
-
-                {/* 10% First Order Coupon Banner */}
-                <div className="p-2 bg-[#E7E4D5]/70 rounded-xs border border-[#D8D2C2] flex items-center justify-between text-[11px]">
-                  <span className="font-semibold text-[#413C23]">🏷️ First Atelier Order?</span>
-                  <span className="text-[10px] text-[#8F896D] font-mono font-bold bg-[#FAF8F5] px-2 py-0.5 rounded-xs border border-[#D8D2C2]">
-                    CODE: LUXE10
-                  </span>
-                </div>
+                <p className="text-[11px] text-[#8F896D] leading-snug">
+                  Complimentary insured express delivery. Includes signature velvet travel pouch & certificate of authenticity.
+                </p>
               </div>
             </div>
 

@@ -14,7 +14,6 @@ interface NavbarProps {
   openWishlistModal: () => void;
   openStoryModal: () => void;
   openCareModal: () => void;
-  openTrackOrderModal?: () => void;
   setSelectedCategory?: (cat: Category) => void;
   currency: Currency;
   setCurrency: (c: Currency) => void;
@@ -23,7 +22,7 @@ interface NavbarProps {
 const ANNOUNCEMENTS = [
   '✨ COMPLIMENTARY INSURED EXPRESS SHIPPING OVER $150',
   '💎 100% RECYCLED 925 SOLID SILVER & NATURAL BAROQUE PEARLS',
-  '🌿 2-YEAR ATELIER WARRANTY & 14-DAY EASY EXCHANGES',
+  '🌿 HANDCRAFTED HEIRLOOM DEMI-FINE JEWELRY',
   '🎁 LUXURY VELVET TRAVEL POUCH WITH EVERY ORDER',
 ];
 
@@ -37,7 +36,6 @@ export const Navbar: React.FC<NavbarProps> = ({
   openWishlistModal,
   openStoryModal,
   openCareModal,
-  openTrackOrderModal,
   setSelectedCategory,
   currency,
   setCurrency,
@@ -83,22 +81,11 @@ export const Navbar: React.FC<NavbarProps> = ({
   return (
     <header className="sticky top-0 z-40 bg-[#E7E4D5]/98 backdrop-blur-md border-b border-[#D8D2C2] transition-all duration-200 w-full">
       {/* 1. TOP ANNOUNCEMENT TICKER */}
-      <div className="w-full bg-[#413C23] text-[#E7E4D5] py-2 px-4 sm:px-8 flex items-center justify-between text-[10px] sm:text-[11px] font-medium tracking-[0.2em] uppercase">
-        <div className="hidden md:block w-24" />
-        <div className="flex-1 text-center">
+      <div className="w-full bg-[#413C23] text-[#E7E4D5] py-2 px-4 text-center">
+        <div className="flex items-center justify-center gap-2 text-[10px] sm:text-[11px] font-medium tracking-[0.2em] uppercase">
           <span className="transition-opacity duration-500 ease-in-out">
             {ANNOUNCEMENTS[announcementIndex]}
           </span>
-        </div>
-        <div className="hidden md:flex items-center gap-4 text-[10px] lowercase tracking-normal">
-          <button
-            onClick={() => {
-              if (openTrackOrderModal) openTrackOrderModal();
-            }}
-            className="text-[#E7E4D5]/90 hover:text-white underline underline-offset-2 cursor-pointer transition-colors"
-          >
-            track order
-          </button>
         </div>
       </div>
 
@@ -385,16 +372,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   onClick={() => navigateTo('policies')}
                   className="text-left py-1 hover:text-[#D4AF37] transition-colors cursor-pointer"
                 >
-                  Policies & Warranty
-                </button>
-                <button
-                  onClick={() => {
-                    setMobileMenuOpen(false);
-                    if (openTrackOrderModal) openTrackOrderModal();
-                  }}
-                  className="text-left py-1 hover:text-[#D4AF37] transition-colors cursor-pointer text-[#413C23] font-semibold"
-                >
-                  Track Order Package
+                  Policies & Assurance
                 </button>
                 <button
                   onClick={() => navigateTo('contact')}
