@@ -19,7 +19,10 @@ import {
   Truck,
   Flame,
   Layers,
-  Award
+  Award,
+  Info,
+  CheckSquare,
+  Square
 } from 'lucide-react';
 import { Product, Currency, Category } from '../types';
 import { PRODUCTS, formatPrice } from '../data/products';
@@ -57,8 +60,15 @@ export const HomePage: React.FC<HomePageProps> = ({
   // Gifting filter tab state
   const [activeGiftTier, setActiveGiftTier] = useState<'all' | 'under150' | 'heirloom' | 'pearls'>('all');
 
-  // Hotspot State for "Shop The Look"
-  const [activeHotspot, setActiveHotspot] = useState<number>(0);
+  // Lookbook Stacking Studio State
+  const [selectedLookIdx, setSelectedLookIdx] = useState<number>(0);
+  const [activeHotspotId, setActiveHotspotId] = useState<string>('lucid-studs');
+  const [selectedItemsInStack, setSelectedItemsInStack] = useState<string[]>([
+    'lucid-studs',
+    'square-form-necklace',
+    'row-edge-ring',
+  ]);
+  const [stackAddedFeedback, setStackAddedFeedback] = useState(false);
 
   // 5-Category Hover Image Reveal dataset
   const categoryRevealItems = {
@@ -138,39 +148,118 @@ export const HomePage: React.FC<HomePageProps> = ({
     catalogProducts.find((p) => p.id === 'asta-brooch') || catalogProducts[14] || catalogProducts[3],
   ];
 
-  // Shop The Look Hotspots Dataset
-  const stackLookProducts = [
+  // Multi-Lookbook Stacking Studio Datasets
+  const CURATED_LOOKS = [
     {
-      id: 0,
-      title: 'Lucea Molten Studs',
-      price: 110,
-      category: 'Earrings',
-      pinX: '46%',
-      pinY: '28%',
-      product: catalogProducts.find((p) => p.id === 'lucid-studs') || catalogProducts[1],
+      id: 'look-1',
+      lookNumber: '01',
+      title: 'The Molten Gold Symphony',
+      subtitle: 'Architectural Geometric Choker & Sculptural Studs',
+      editorialImage: 'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?auto=format&fit=crop&w=1600&q=90',
+      stylingTip: 'Wear the structured geometric choker resting closely at the collarbone. Balance with organic molten studs and a ridged statement band on the index finger.',
+      items: [
+        {
+          id: 'lucid-studs',
+          title: 'Lucea Molten Studs',
+          category: 'Earrings',
+          price: 110,
+          metal: '18k Gold Vermeil',
+          pinX: '46%',
+          pinY: '26%',
+          product: catalogProducts.find((p) => p.id === 'lucid-studs') || catalogProducts[1],
+        },
+        {
+          id: 'square-form-necklace',
+          title: 'Nadir Geometric Choker',
+          category: 'Necklaces',
+          price: 195,
+          metal: '18k Gold Vermeil',
+          pinX: '52%',
+          pinY: '52%',
+          product: catalogProducts.find((p) => p.id === 'square-form-necklace') || catalogProducts[0],
+        },
+        {
+          id: 'row-edge-ring',
+          title: 'Aurelia Sculptural Band',
+          category: 'Rings',
+          price: 145,
+          metal: '18k Gold Vermeil',
+          pinX: '68%',
+          pinY: '76%',
+          product: catalogProducts.find((p) => p.id === 'row-edge-ring') || catalogProducts[5],
+        },
+      ],
     },
     {
-      id: 1,
-      title: 'Nadir Geometric Choker',
-      price: 195,
-      category: 'Necklaces',
-      pinX: '52%',
-      pinY: '52%',
-      product: catalogProducts.find((p) => p.id === 'square-form-necklace') || catalogProducts[0],
-    },
-    {
-      id: 2,
-      title: 'Aurelia Sculptural Band',
-      price: 145,
-      category: 'Rings',
-      pinX: '68%',
-      pinY: '74%',
-      product: catalogProducts.find((p) => p.id === 'row-edge-ring') || catalogProducts[5],
+      id: 'look-2',
+      lookNumber: '02',
+      title: 'The Baroque Pearl Cascade',
+      subtitle: 'Organic Natural Pearls & Molten Fluidity',
+      editorialImage: 'https://images.unsplash.com/photo-1611591475168-98967b5eb488?auto=format&fit=crop&w=1600&q=90',
+      stylingTip: 'Contrast the fluid molten collar with asymmetric baroque pearls. The open-wire cuff creates an elongated wrist silhouette.',
+      items: [
+        {
+          id: 'gold-curve-necklace',
+          title: 'Fluid Molten Collar',
+          category: 'Necklaces',
+          price: 220,
+          metal: '18k Gold Vermeil',
+          pinX: '53%',
+          pinY: '38%',
+          product: catalogProducts.find((p) => p.id === 'gold-curve-necklace') || catalogProducts[8],
+        },
+        {
+          id: 'two-pearl-cuff',
+          title: 'Baroque Twin Pearl Cuff',
+          category: 'Bracelets',
+          price: 175,
+          metal: '18k Gold Vermeil',
+          pinX: '42%',
+          pinY: '62%',
+          product: catalogProducts.find((p) => p.id === 'two-pearl-cuff') || catalogProducts[4],
+        },
+        {
+          id: 'wave-prism-ring',
+          title: 'Wave Prism Solitaire',
+          category: 'Rings',
+          price: 135,
+          metal: '18k Gold Vermeil',
+          pinX: '65%',
+          pinY: '80%',
+          product: catalogProducts.find((p) => p.id === 'wave-prism-ring') || catalogProducts[6],
+        },
+      ],
     },
   ];
 
-  const totalStackPrice = stackLookProducts.reduce((sum, item) => sum + item.price, 0);
-  const discountedBundlePrice = Math.round(totalStackPrice * 0.9); // 10% bundle saving
+  const currentLook = CURATED_LOOKS[selectedLookIdx];
+
+  // Calculate pricing for active look based on checked items
+  const activeLookItems = currentLook.items;
+  const checkedItems = activeLookItems.filter((it) => selectedItemsInStack.includes(it.id));
+  const rawStackTotal = checkedItems.reduce((sum, it) => sum + it.price, 0);
+  const isBundleEligible = checkedItems.length >= 2;
+  const finalStackTotal = isBundleEligible ? Math.round(rawStackTotal * 0.9) : rawStackTotal;
+  const bundleSavings = rawStackTotal - finalStackTotal;
+
+  // Toggle item in custom stack
+  const toggleItemInStack = (id: string) => {
+    if (selectedItemsInStack.includes(id)) {
+      if (selectedItemsInStack.length > 1) {
+        setSelectedItemsInStack(selectedItemsInStack.filter((x) => x !== id));
+      }
+    } else {
+      setSelectedItemsInStack([...selectedItemsInStack, id]);
+    }
+  };
+
+  // Switch lookbook
+  const handleSelectLook = (idx: number) => {
+    setSelectedLookIdx(idx);
+    const newLook = CURATED_LOOKS[idx];
+    setSelectedItemsInStack(newLook.items.map((i) => i.id));
+    setActiveHotspotId(newLook.items[0].id);
+  };
 
   // Filtered Gifting items
   const giftingProducts = catalogProducts.filter((p) => {
@@ -204,12 +293,14 @@ export const HomePage: React.FC<HomePageProps> = ({
     return () => ctx.revert();
   }, []);
 
-  const handleAddEntireStack = () => {
-    stackLookProducts.forEach((item) => {
+  const handleAddSelectedStack = () => {
+    checkedItems.forEach((item) => {
       if (item.product) {
         onQuickAdd(item.product);
       }
     });
+    setStackAddedFeedback(true);
+    setTimeout(() => setStackAddedFeedback(false), 2000);
   };
 
   return (
@@ -368,151 +459,289 @@ export const HomePage: React.FC<HomePageProps> = ({
         </div>
       </section>
 
-      {/* 4. NEW HIGH-CONVERTING SECTION: INTERACTIVE "SHOP THE LOOK" / STACKING STUDIO */}
+      {/* 4. REDESIGNED VISUAL MASTERPIECE: "SHOP THE LAYERED LOOK" / STACKING ATELIER */}
       <section className="w-full bg-[#E7E4D5] py-16 sm:py-24 border-b border-[#D8D2C2] px-4 sm:px-8 lg:px-12 xl:px-16 2xl:px-20">
-        <div className="w-full space-y-10 sm:space-y-14">
+        <div className="w-full space-y-10 sm:space-y-12">
           
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between border-b border-[#D8D2C2] pb-4 text-left gap-3">
-            <div>
-              <span className="text-[10px] text-[#8F896D] uppercase tracking-widest font-semibold block mb-1">
+          {/* Section Header with Lookbook Switcher */}
+          <div className="flex flex-col lg:flex-row lg:items-end justify-between border-b border-[#D8D2C2] pb-6 text-left gap-6">
+            <div className="space-y-2">
+              <span className="text-[10px] text-[#8F896D] uppercase tracking-[0.25em] font-semibold block">
                 (03) / Editorial Stacking Studio
               </span>
-              <h2 className="font-serif-display text-4xl sm:text-6xl text-[#413C23] font-light">
+              <h2 className="font-serif-display text-4xl sm:text-6xl lg:text-7xl text-[#413C23] font-light leading-tight">
                 Shop The <span className="italic font-normal">Layered Look</span>
               </h2>
             </div>
-            <p className="text-xs sm:text-sm text-[#413C23]/70 font-normal max-w-md">
-              Explore our signature molten stack. Hover or tap the glowing pins to inspect individual pieces, or acquire the complete stack with 10% savings.
-            </p>
-          </div>
 
-          {/* 2-Column Split: Interactive Photo Hotspots + Dynamic Stack Cart Box */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-            
-            {/* Left: Editorial Photo with Interactive Hotspots */}
-            <div className="lg:col-span-7 relative aspect-[4/5] sm:aspect-[16/11] lg:aspect-[4/3] rounded-xs overflow-hidden border border-[#D8D2C2] bg-[#F4EFE6] shadow-md">
-              <img
-                src="https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?auto=format&fit=crop&w=1600&q=90"
-                alt="Avirena Layered Jewelry Stack"
-                referrerPolicy="no-referrer"
-                className="w-full h-full object-cover object-[center_30%]"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#413C23]/40 via-transparent to-transparent pointer-events-none" />
-
-              {/* Hotspot Pins */}
-              {stackLookProducts.map((spot) => {
-                const isActive = activeHotspot === spot.id;
+            {/* Look Selector Pills */}
+            <div className="flex items-center gap-2 overflow-x-auto pb-1 lg:pb-0 scrollbar-none">
+              {CURATED_LOOKS.map((look, idx) => {
+                const isCurrent = selectedLookIdx === idx;
                 return (
                   <button
-                    key={spot.id}
-                    onClick={() => setActiveHotspot(spot.id)}
-                    style={{ left: spot.pinX, top: spot.pinY }}
-                    className="absolute -translate-x-1/2 -translate-y-1/2 group cursor-pointer z-20 focus:outline-none"
-                    aria-label={spot.title}
+                    key={look.id}
+                    onClick={() => handleSelectLook(idx)}
+                    className={`px-4 py-2.5 rounded-xs text-xs font-semibold uppercase tracking-wider transition-all cursor-pointer flex items-center gap-2 shrink-0 ${
+                      isCurrent
+                        ? 'bg-[#413C23] text-[#E7E4D5] shadow-sm border border-[#413C23]'
+                        : 'bg-[#F4EFE6] text-[#413C23] border border-[#D8D2C2] hover:border-[#8F896D]'
+                    }`}
                   >
-                    {/* Pulsing ring animation */}
-                    <span className="absolute -inset-2 rounded-full bg-[#FAF8F5]/50 animate-ping duration-1000" />
-                    <div className={`relative w-7 h-7 rounded-full border-2 flex items-center justify-center transition-all duration-300 ${
-                      isActive
-                        ? 'bg-[#413C23] border-[#FAF8F5] text-[#FAF8F5] scale-110 shadow-lg'
-                        : 'bg-[#FAF8F5] border-[#413C23] text-[#413C23] hover:scale-110'
-                    }`}>
-                      <Sparkles className="w-3.5 h-3.5" />
-                    </div>
+                    <span className="text-[10px] text-[#8F896D]">({look.lookNumber})</span>
+                    <span>{look.title}</span>
                   </button>
                 );
               })}
             </div>
+          </div>
 
-            {/* Right: Curated Stack Breakdown & 1-Click Multi-Item Add Box */}
-            <div className="lg:col-span-5 bg-[#F4EFE6] border border-[#D8D2C2] p-6 sm:p-8 rounded-xs text-left space-y-6 shadow-sm">
-              <div className="space-y-1 border-b border-[#D8D2C2] pb-4">
-                <span className="text-[10px] uppercase tracking-[0.25em] font-semibold text-[#8F896D] block">
-                  Curated 3-Piece Suite
+          {/* 2-Column High-Impact Visual Grid */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+            
+            {/* LEFT: Lookbook Image with Interactive Glowing Pins & Floating Glass Tooltips */}
+            <div className="lg:col-span-7 relative aspect-[4/5] sm:aspect-[16/11] lg:aspect-[4/3] rounded-xs overflow-hidden border border-[#D8D2C2] bg-[#F4EFE6] shadow-md group">
+              <img
+                src={currentLook.editorialImage}
+                alt={currentLook.title}
+                referrerPolicy="no-referrer"
+                className="w-full h-full object-cover object-[center_30%] transition-transform duration-700 ease-out group-hover:scale-[1.02]"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#413C23]/50 via-transparent to-black/10 pointer-events-none" />
+
+              {/* Bottom Image Tag */}
+              <div className="absolute bottom-4 left-4 z-10 bg-[#FAF8F5]/90 backdrop-blur-md px-3.5 py-1.5 rounded-xs border border-[#D8D2C2] pointer-events-none">
+                <span className="text-[10px] uppercase tracking-[0.2em] font-semibold text-[#413C23]">
+                  Look {currentLook.lookNumber} • {currentLook.title}
                 </span>
-                <h3 className="font-serif-display text-2xl sm:text-3xl text-[#413C23] font-light">
-                  The Molten Signature Trio
-                </h3>
               </div>
 
-              {/* Items List in this Stack */}
-              <div className="space-y-3">
-                {stackLookProducts.map((spot) => {
-                  const isSelected = activeHotspot === spot.id;
-                  return (
-                    <div
-                      key={spot.id}
-                      onClick={() => setActiveHotspot(spot.id)}
-                      className={`p-3 rounded-xs border transition-all cursor-pointer flex items-center justify-between ${
-                        isSelected
-                          ? 'bg-[#FAF8F5] border-[#8F896D] shadow-xs'
-                          : 'bg-[#E7E4D5]/60 border-[#D8D2C2] hover:bg-[#FAF8F5]'
-                      }`}
+              {/* Hotspot Pins on Editorial Image */}
+              {activeLookItems.map((spot) => {
+                const isActive = activeHotspotId === spot.id;
+                const isChecked = selectedItemsInStack.includes(spot.id);
+
+                return (
+                  <div
+                    key={spot.id}
+                    style={{ left: spot.pinX, top: spot.pinY }}
+                    className="absolute -translate-x-1/2 -translate-y-1/2 z-20"
+                  >
+                    {/* Pulsing Pin Button */}
+                    <button
+                      onClick={() => setActiveHotspotId(spot.id)}
+                      onMouseEnter={() => setActiveHotspotId(spot.id)}
+                      className="relative group cursor-pointer focus:outline-none block"
+                      aria-label={spot.title}
                     >
-                      <div className="flex items-center gap-3">
-                        <div className="w-12 h-12 bg-[#FAF8F5] border border-[#D8D2C2] rounded-xs flex items-center justify-center p-1 shrink-0">
-                          <img
-                            src={spot.product?.images[0]}
-                            alt={spot.title}
-                            referrerPolicy="no-referrer"
-                            className="w-full h-full object-contain mix-blend-multiply"
-                          />
-                        </div>
-                        <div>
-                          <span className="text-[10px] uppercase text-[#8F896D] font-medium block">
-                            {spot.category}
-                          </span>
-                          <span className="font-serif-display text-sm font-medium text-[#413C23] block">
-                            {spot.title}
-                          </span>
-                        </div>
+                      {/* Outer pulse */}
+                      <span className="absolute -inset-2.5 rounded-full bg-[#D4AF37]/50 animate-ping duration-1000" />
+                      
+                      <div className={`relative w-8 h-8 rounded-full border-2 flex items-center justify-center transition-all duration-300 shadow-lg ${
+                        isActive
+                          ? 'bg-[#413C23] border-[#FAF8F5] text-[#FAF8F5] scale-115 ring-4 ring-[#D4AF37]/40'
+                          : 'bg-[#FAF8F5] border-[#413C23] text-[#413C23] hover:scale-110'
+                      }`}>
+                        <Sparkles className={`w-3.5 h-3.5 ${isActive ? 'text-[#D4AF37]' : ''}`} />
                       </div>
+                    </button>
 
-                      <div className="text-right">
-                        <span className="text-xs font-semibold text-[#413C23] block">
-                          {formatPrice(spot.price, currency)}
-                        </span>
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            if (spot.product) onQuickAdd(spot.product);
-                          }}
-                          className="text-[10px] uppercase font-semibold text-[#8F896D] hover:text-[#413C23] underline cursor-pointer"
-                        >
-                          + Add Single
-                        </button>
+                    {/* Floating Luxury Tooltip Card when Active/Hovered */}
+                    {isActive && (
+                      <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-3 w-56 sm:w-64 bg-[#FAF8F5]/95 backdrop-blur-md border border-[#D8D2C2] p-3 rounded-xs shadow-2xl animate-in fade-in zoom-in-95 duration-200 text-left z-30 pointer-events-auto">
+                        <div className="flex items-center gap-3">
+                          <div className="w-12 h-12 bg-[#F4EFE6] border border-[#D8D2C2] rounded-xs p-1 shrink-0 flex items-center justify-center">
+                            <img
+                              src={spot.product?.images[0]}
+                              alt={spot.title}
+                              referrerPolicy="no-referrer"
+                              className="w-full h-full object-contain mix-blend-multiply"
+                            />
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <span className="text-[9px] uppercase tracking-wider text-[#8F896D] font-bold block">
+                              {spot.category}
+                            </span>
+                            <h5 className="font-serif-display text-xs font-semibold text-[#413C23] truncate">
+                              {spot.title}
+                            </h5>
+                            <span className="text-xs font-bold text-[#413C23]">
+                              {formatPrice(spot.price, currency)}
+                            </span>
+                          </div>
+                        </div>
+
+                        <div className="mt-2.5 pt-2 border-t border-[#D8D2C2]/60 flex items-center justify-between">
+                          <button
+                            onClick={() => {
+                              if (spot.product) onSelectProduct(spot.product);
+                            }}
+                            className="text-[10px] uppercase font-semibold text-[#8F896D] hover:text-[#413C23] underline"
+                          >
+                            Details
+                          </button>
+                          <button
+                            onClick={() => {
+                              if (spot.product) onQuickAdd(spot.product);
+                            }}
+                            className="px-2.5 py-1 bg-[#413C23] hover:bg-[#8F896D] text-[#E7E4D5] text-[10px] uppercase tracking-wider font-semibold rounded-xs transition-colors cursor-pointer"
+                          >
+                            + Quick Add
+                          </button>
+                        </div>
+
+                        {/* Tooltip Arrow */}
+                        <div className="absolute left-1/2 -translate-x-1/2 top-full w-0 h-0 border-x-4 border-x-transparent border-t-4 border-t-[#FAF8F5]" />
                       </div>
-                    </div>
-                  );
-                })}
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* RIGHT: Curated Stack Breakdown & Interactive Customizer Panel */}
+            <div className="lg:col-span-5 bg-[#F4EFE6] border border-[#D8D2C2] p-6 sm:p-8 rounded-xs text-left space-y-6 shadow-sm flex flex-col justify-between">
+              
+              <div className="space-y-4">
+                {/* Look Title & Styling Guidance */}
+                <div className="space-y-1.5 border-b border-[#D8D2C2] pb-4">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] uppercase tracking-[0.25em] font-semibold text-[#8F896D]">
+                      Maison Lookbook {currentLook.lookNumber}
+                    </span>
+                    <span className="text-[10px] bg-[#E7E4D5] text-[#413C23] font-bold px-2 py-0.5 rounded-xs border border-[#D8D2C2] uppercase tracking-wider">
+                      {checkedItems.length} of {activeLookItems.length} Selected
+                    </span>
+                  </div>
+                  <h3 className="font-serif-display text-2xl sm:text-3xl text-[#413C23] font-light">
+                    {currentLook.title}
+                  </h3>
+                  <p className="text-xs text-[#413C23]/75 leading-relaxed pt-1">
+                    {currentLook.subtitle}
+                  </p>
+                </div>
+
+                {/* Styling Guide Tip Box */}
+                <div className="p-3 bg-[#FAF8F5] border border-[#D8D2C2] rounded-xs text-xs text-[#413C23]/80 leading-relaxed flex items-start gap-2">
+                  <Info className="w-4 h-4 text-[#8F896D] shrink-0 mt-0.5" />
+                  <span>{currentLook.stylingTip}</span>
+                </div>
+
+                {/* Interactive Checkbox Items List */}
+                <div className="space-y-2.5 pt-1">
+                  <span className="text-[10px] uppercase tracking-[0.2em] font-semibold text-[#8F896D] block">
+                    Customize Pieces in Your Stack:
+                  </span>
+
+                  {activeLookItems.map((spot) => {
+                    const isChecked = selectedItemsInStack.includes(spot.id);
+                    const isHighlighted = activeHotspotId === spot.id;
+
+                    return (
+                      <div
+                        key={spot.id}
+                        onClick={() => {
+                          setActiveHotspotId(spot.id);
+                          toggleItemInStack(spot.id);
+                        }}
+                        className={`p-3 rounded-xs border transition-all cursor-pointer flex items-center justify-between gap-3 ${
+                          isHighlighted
+                            ? 'bg-[#FAF8F5] border-[#413C23] ring-1 ring-[#413C23]/20 shadow-xs'
+                            : isChecked
+                            ? 'bg-[#FAF8F5]/80 border-[#D8D2C2]'
+                            : 'bg-[#E7E4D5]/40 border-[#D8D2C2]/60 opacity-60'
+                        }`}
+                      >
+                        <div className="flex items-center gap-3 min-w-0">
+                          {/* Checkbox */}
+                          <div className="text-[#413C23] shrink-0">
+                            {isChecked ? (
+                              <CheckSquare className="w-4 h-4 fill-[#413C23] text-[#FAF8F5]" />
+                            ) : (
+                              <Square className="w-4 h-4 text-[#8F896D]" />
+                            )}
+                          </div>
+
+                          {/* Thumbnail */}
+                          <div className="w-11 h-11 bg-[#FAF8F5] border border-[#D8D2C2] rounded-xs flex items-center justify-center p-1 shrink-0">
+                            <img
+                              src={spot.product?.images[0]}
+                              alt={spot.title}
+                              referrerPolicy="no-referrer"
+                              className="w-full h-full object-contain mix-blend-multiply"
+                            />
+                          </div>
+
+                          {/* Details */}
+                          <div className="truncate">
+                            <span className="text-[9px] uppercase tracking-wider text-[#8F896D] font-medium block">
+                              {spot.category} • {spot.metal}
+                            </span>
+                            <span className="font-serif-display text-sm font-medium text-[#413C23] block truncate">
+                              {spot.title}
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* Price */}
+                        <div className="text-right shrink-0">
+                          <span className="text-xs font-semibold text-[#413C23] block">
+                            {formatPrice(spot.price, currency)}
+                          </span>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
 
-              {/* Multi-Item 1-Click Bundle Add */}
+              {/* Dynamic Price Calculation & 1-Click Multi-Item Add */}
               <div className="pt-4 border-t border-[#D8D2C2] space-y-3">
                 <div className="flex items-baseline justify-between">
                   <div className="space-y-0.5">
-                    <span className="text-xs text-[#413C23] font-medium block">Complete 3-Piece Stack</span>
-                    <span className="text-[11px] text-[#8F896D]">Includes 10% Maison Bundle Savings</span>
-                  </div>
-                  <div className="text-right">
-                    <span className="text-xs text-[#8F896D] line-through mr-2">
-                      {formatPrice(totalStackPrice, currency)}
+                    <span className="text-xs font-semibold text-[#413C23] block">
+                      Curated Stack ({checkedItems.length} {checkedItems.length === 1 ? 'Piece' : 'Pieces'})
                     </span>
-                    <span className="font-serif-display text-xl text-[#413C23] font-bold">
-                      {formatPrice(discountedBundlePrice, currency)}
+                    {isBundleEligible ? (
+                      <span className="text-[11px] text-[#413C23] font-semibold bg-[#E7E4D5] px-2 py-0.5 rounded-xs inline-block">
+                        ✨ 10% Maison Bundle Saving Included ({formatPrice(bundleSavings, currency)} off)
+                      </span>
+                    ) : (
+                      <span className="text-[11px] text-[#8F896D]">Select 2+ pieces to unlock 10% bundle savings</span>
+                    )}
+                  </div>
+
+                  <div className="text-right">
+                    {isBundleEligible && (
+                      <span className="text-xs text-[#8F896D] line-through mr-2">
+                        {formatPrice(rawStackTotal, currency)}
+                      </span>
+                    )}
+                    <span className="font-serif-display text-2xl text-[#413C23] font-bold">
+                      {formatPrice(finalStackTotal, currency)}
                     </span>
                   </div>
                 </div>
 
                 <button
-                  id="add-entire-stack-btn"
-                  onClick={handleAddEntireStack}
+                  id="add-curated-stack-btn"
+                  onClick={handleAddSelectedStack}
                   className="w-full py-3.5 bg-[#413C23] hover:bg-[#8F896D] text-[#E7E4D5] text-xs uppercase tracking-[0.2em] font-semibold rounded-xs transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer active:scale-98"
                 >
-                  <Layers className="w-3.5 h-3.5" />
-                  <span>Add Entire Stack to Bag</span>
+                  {stackAddedFeedback ? (
+                    <>
+                      <Check className="w-4 h-4 text-[#D4AF37]" />
+                      <span>{checkedItems.length} Pieces Added to Bag!</span>
+                    </>
+                  ) : (
+                    <>
+                      <Layers className="w-3.5 h-3.5" />
+                      <span>Add Selected Stack ({checkedItems.length}) to Shopping Bag</span>
+                    </>
+                  )}
                 </button>
               </div>
+
             </div>
 
           </div>
@@ -599,7 +828,7 @@ export const HomePage: React.FC<HomePageProps> = ({
         </div>
       </section>
 
-      {/* 6. NEW E-COMMERCE SECTION: CURATED GIFTING & PRICE-TIER HUB */}
+      {/* 6. E-COMMERCE SECTION: CURATED GIFTING & PRICE-TIER HUB */}
       <section className="w-full bg-[#E7E4D5] py-16 sm:py-24 border-b border-[#D8D2C2] px-4 sm:px-8 lg:px-12 xl:px-16 2xl:px-20">
         <div className="w-full space-y-10 sm:space-y-12">
           
