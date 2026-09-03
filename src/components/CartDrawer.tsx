@@ -36,7 +36,7 @@ const LUXURY_ADDONS: Product[] = [
   {
     id: 'addon-polish-cloth',
     name: 'Atelier Gold Microfiber Cloth',
-    tagline: 'Preserves 18k vermeil satiny mirror luster',
+    subtitle: 'Preserves 18k vermeil satiny mirror luster',
     price: 12,
     rating: 5.0,
     reviewsCount: 142,
@@ -46,17 +46,14 @@ const LUXURY_ADDONS: Product[] = [
     category: 'brooches',
     metal: '18k Gold Vermeil',
     description: 'Ultra-plush anti-tarnish polishing cloth specifically formulated for 3.0µ vermeil and natural pearls.',
-    features: ['Micro-abrasion safe', 'Reusable 200+ times', 'Anti-tarnish barrier'],
-    details: {
-      material: '100% Micro-suede',
-      dimensions: '15cm x 15cm',
-      origin: 'Jaipur Atelier',
-    },
+    details: ['Micro-abrasion safe', 'Reusable 200+ times', 'Anti-tarnish barrier'],
+    materials: '100% Micro-suede',
+    inStock: true,
   },
   {
     id: 'addon-travel-case',
     name: 'Velvet Atelier Travel Vault',
-    tagline: 'Forest green velvet with champagne brass zipper',
+    subtitle: 'Forest green velvet with champagne brass zipper',
     price: 28,
     rating: 4.9,
     reviewsCount: 98,
@@ -66,12 +63,9 @@ const LUXURY_ADDONS: Product[] = [
     category: 'brooches',
     metal: '18k Gold Vermeil',
     description: 'Compact protective velvet travel jewelry organizer with dedicated ring slots and anti-tangle necklace hooks.',
-    features: ['Anti-tarnish lining', 'Ergonomic ring rolls', 'Champagne metal zip'],
-    details: {
-      material: 'Forest Green Silk Velvet',
-      dimensions: '10cm x 10cm x 5cm',
-      origin: 'Vicenza, Italy',
-    },
+    details: ['Anti-tarnish lining', 'Ergonomic ring rolls', 'Champagne metal zip'],
+    materials: 'Forest Green Silk Velvet',
+    inStock: true,
   },
 ];
 

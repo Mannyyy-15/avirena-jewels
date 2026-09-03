@@ -347,7 +347,6 @@ function AppContent() {
         openWishlistModal={() => setIsWishlistModalOpen(true)}
         openStoryModal={() => handlePageChange('about')}
         openCareModal={() => handlePageChange('faq')}
-        openTrackOrderModal={() => setIsTrackOrderOpen(true)}
         setSelectedCategory={setSelectedCategory}
         currency={currency}
         setCurrency={setCurrency}
