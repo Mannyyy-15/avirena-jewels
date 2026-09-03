@@ -33,7 +33,7 @@ export const AvirenaLogo: React.FC<AvirenaLogoProps> = ({
   return (
     <div className={`inline-flex items-center justify-center select-none ${heightClass} ${className}`}>
       <img
-        src="/logo-main.jpeg"
+        src="/logo.png"
         alt="AVIRENA"
         className={`h-full w-auto max-w-full object-contain ${themeFilterClass}`}
         loading="eager"

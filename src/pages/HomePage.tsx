@@ -238,7 +238,7 @@ export const HomePage: React.FC<HomePageProps> = ({
           {/* Official Brand Logo */}
           <div className="gsap-hero-title w-full flex items-center justify-center select-none pointer-events-none z-0">
             <img
-              src="/logo-main.jpeg"
+              src="/logo.png"
               alt="AVIRENA"
               className="w-[98vw] sm:w-[96vw] md:w-[94vw] lg:w-[92vw] xl:w-[90vw] 2xl:w-[88vw] max-w-[1550px] scale-105 sm:scale-110 md:scale-115 lg:scale-120 h-auto object-contain mix-blend-multiply select-none"
               loading="eager"
