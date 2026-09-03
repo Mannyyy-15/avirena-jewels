@@ -20,7 +20,6 @@ import { ContactPage } from './pages/ContactPage';
 import { JournalPage } from './pages/JournalPage';
 import { FaqPage } from './pages/FaqPage';
 import { PoliciesPage } from './pages/PoliciesPage';
-import { FloatingWhatsAppConcierge } from './components/FloatingWhatsAppConcierge';
 import { SeoMeta } from './components/SeoMeta';
 import { ShopifyProvider, useShopify } from './context/ShopifyContext';
 
@@ -470,9 +469,6 @@ function AppContent() {
         openCareModal={() => handlePageChange('faq')}
         setSelectedCategory={setSelectedCategory}
       />
-
-      {/* Floating 1-Click WhatsApp Concierge */}
-      <FloatingWhatsAppConcierge />
 
       {/* Slide-out Cart Drawer */}
       <CartDrawer
