@@ -21,6 +21,7 @@ import { JournalPage } from './pages/JournalPage';
 import { FaqPage } from './pages/FaqPage';
 import { PoliciesPage } from './pages/PoliciesPage';
 import { FloatingWhatsAppConcierge } from './components/FloatingWhatsAppConcierge';
+import { SeoMeta } from './components/SeoMeta';
 import { ShopifyProvider, useShopify } from './context/ShopifyContext';
 
 function AppContent() {
@@ -328,6 +329,14 @@ function AppContent() {
 
   return (
     <div className="min-h-screen flex flex-col bg-[#FAF8F5] text-[#1A1918] w-full font-sans-body">
+      {/* Dynamic SEO, AEO & GEO Schema.org Engine */}
+      <SeoMeta
+        currentPage={currentPage}
+        selectedProduct={selectedProduct}
+        selectedCategory={selectedCategory}
+        currency={currency}
+      />
+
       {/* Universal Navigation Bar */}
       <Navbar
         currentPage={currentPage}

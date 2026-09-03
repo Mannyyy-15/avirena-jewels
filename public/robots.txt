@@ -1,0 +1,28 @@
+# Robots.txt for Avirena Jewels (avirena.com)
+User-agent: *
+Allow: /
+Disallow: /checkout
+Disallow: /cart
+Disallow: /api/
+
+# AI Search & Answer Engine Agents (AEO Optimization)
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+# Sitemaps & LLM Manifest
+Sitemap: https://avirena.com/sitemap.xml
