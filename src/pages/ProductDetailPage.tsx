@@ -106,17 +106,17 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
   ];
 
   return (
-    <div className="space-y-12 sm:space-y-16 pb-24 text-left font-sans-body w-full text-[#111111] bg-[#FAF8F5]">
+    <div className="space-y-12 sm:space-y-16 pb-24 text-left font-sans-body w-full text-[#413C23] bg-[#E7E4D5]">
       {/* 1. BREADCRUMBS */}
       <div className="w-full px-4 sm:px-8 lg:px-12 xl:px-16 2xl:px-20 pt-4">
-        <nav className="flex items-center space-x-2 text-xs uppercase tracking-wider text-[#5C5850]">
-          <button onClick={onNavigateBack} className="hover:text-[#111111] transition-colors cursor-pointer font-medium">
+        <nav className="flex items-center space-x-2 text-xs uppercase tracking-wider text-[#8F896D]">
+          <button onClick={onNavigateBack} className="hover:text-[#413C23] transition-colors cursor-pointer font-medium">
             Atelier Catalog
           </button>
           <span>/</span>
           <span className="capitalize">{product.category}</span>
           <span>/</span>
-          <span className="text-[#111111] font-semibold truncate max-w-[240px]">{product.name}</span>
+          <span className="text-[#413C23] font-semibold truncate max-w-[240px]">{product.name}</span>
         </nav>
       </div>
 
@@ -126,7 +126,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
           
           {/* LEFT: Full Gallery with Large Canvas & Thumbnails */}
           <div className="lg:col-span-7 space-y-4">
-            <div className="aspect-square sm:aspect-[4/3] lg:aspect-square bg-white border border-[#E8E2D6] rounded-xs overflow-hidden flex items-center justify-center p-6 sm:p-10 relative shadow-xs">
+            <div className="aspect-square sm:aspect-[4/3] lg:aspect-square bg-[#F4EFE6] border border-[#D8D2C2] rounded-xs overflow-hidden flex items-center justify-center p-6 sm:p-10 relative shadow-xs">
               <img
                 src={imagesList[activeImageIndex] || imagesList[0]}
                 alt={product.name}
@@ -135,14 +135,14 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
               />
 
               {product.isBestseller && (
-                <span className="absolute top-4 left-4 bg-[#111111] text-white text-[10px] tracking-widest uppercase font-bold px-3 py-1 rounded-xs shadow-xs">
+                <span className="absolute top-4 left-4 bg-[#413C23] text-[#E7E4D5] text-[10px] tracking-widest uppercase font-bold px-3 py-1 rounded-xs shadow-xs">
                   Bestseller
                 </span>
               )}
 
               <button
                 onClick={() => onToggleWishlist(product)}
-                className="absolute top-4 right-4 p-2 rounded-full bg-white/95 hover:bg-white text-[#5C5850] hover:text-[#7A0F1A] transition-all shadow-sm cursor-pointer"
+                className="absolute top-4 right-4 p-2 rounded-full bg-[#FAF8F5]/95 hover:bg-white text-[#8F896D] hover:text-[#7A0F1A] transition-all shadow-sm cursor-pointer border border-[#D8D2C2]/50"
                 title={isWishlisted ? 'Saved to Wishlist' : 'Save to Wishlist'}
               >
                 <Heart className={`w-4 h-4 ${isWishlisted ? 'fill-[#7A0F1A] text-[#7A0F1A]' : 'stroke-[1.5]'}`} />
@@ -156,10 +156,10 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                   <button
                     key={idx}
                     onClick={() => setActiveImageIndex(idx)}
-                    className={`aspect-square bg-white rounded-xs border p-2 flex items-center justify-center overflow-hidden transition-all cursor-pointer ${
+                    className={`aspect-square bg-[#F4EFE6] rounded-xs border p-2 flex items-center justify-center overflow-hidden transition-all cursor-pointer ${
                       activeImageIndex === idx
-                        ? 'border-[#D4AF37] ring-2 ring-[#D4AF37]/30 shadow-xs'
-                        : 'border-[#E8E2D6] hover:border-[#5C5850] opacity-80 hover:opacity-100'
+                        ? 'border-[#413C23] ring-2 ring-[#413C23]/20 shadow-xs'
+                        : 'border-[#D8D2C2] hover:border-[#8F896D] opacity-80 hover:opacity-100'
                     }`}
                   >
                     <img
@@ -175,38 +175,38 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
           </div>
 
           {/* RIGHT: Product Buy Box & Accordions */}
-          <div className="lg:col-span-5 space-y-6 bg-white p-6 sm:p-8 rounded-xs border border-[#E8E2D6] shadow-xs">
+          <div className="lg:col-span-5 space-y-6 bg-[#F4EFE6] p-6 sm:p-8 rounded-xs border border-[#D8D2C2] shadow-xs">
             {/* Header: Title, Subtitle, Price, Rating */}
-            <div className="space-y-2 border-b border-[#E8E2D6] pb-5">
+            <div className="space-y-2 border-b border-[#D8D2C2] pb-5">
               <div className="flex items-center justify-between">
-                <span className="text-xs uppercase tracking-[0.2em] font-semibold text-[#D4AF37]">
+                <span className="text-xs uppercase tracking-[0.2em] font-semibold text-[#8F896D]">
                   {selectedMetal}
                 </span>
-                <div className="flex items-center gap-1 text-[#D4AF37]">
-                  <Star className="w-3.5 h-3.5 fill-[#D4AF37]" />
-                  <span className="font-bold text-xs text-[#111111]">{product.rating || 4.9}</span>
-                  <span className="text-xs text-[#5C5850]">({product.reviewsCount || 42} reviews)</span>
+                <div className="flex items-center gap-1 text-[#8F896D]">
+                  <Star className="w-3.5 h-3.5 fill-[#8F896D]" />
+                  <span className="font-bold text-xs text-[#413C23]">{product.rating || 4.9}</span>
+                  <span className="text-xs text-[#8F896D]">({product.reviewsCount || 42} reviews)</span>
                 </div>
               </div>
 
-              <h1 className="font-serif-display text-2xl sm:text-4xl text-[#111111] leading-tight font-normal">
+              <h1 className="font-serif-display text-2xl sm:text-4xl text-[#413C23] leading-tight font-normal">
                 {product.name}
               </h1>
 
               {product.subtitle && (
-                <p className="text-xs sm:text-sm text-[#5C5850] font-normal">{product.subtitle}</p>
+                <p className="text-xs sm:text-sm text-[#8F896D] font-normal">{product.subtitle}</p>
               )}
 
               <div className="flex items-baseline gap-3 pt-1">
-                <span className="font-serif-display text-2xl sm:text-3xl text-[#111111] font-semibold">
+                <span className="font-serif-display text-2xl sm:text-3xl text-[#413C23] font-semibold">
                   {formatPrice(product.price, currency)}
                 </span>
                 {product.originalPrice && (
-                  <span className="text-sm text-[#5C5850] line-through">
+                  <span className="text-sm text-[#8F896D] line-through">
                     {formatPrice(product.originalPrice, currency)}
                   </span>
                 )}
-                <span className="text-[11px] text-[#2E7D32] bg-[#E8F5E9] px-2 py-0.5 rounded-xs font-semibold">
+                <span className="text-[11px] text-[#413C23] bg-[#E7E4D5] px-2.5 py-0.5 rounded-xs font-semibold border border-[#D8D2C2]">
                   In Stock & Ready to Ship
                 </span>
               </div>
@@ -214,8 +214,8 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
 
             {/* Material / Metal Switcher */}
             <div className="space-y-2.5">
-              <span className="text-xs font-semibold uppercase tracking-wider text-[#111111] block">
-                Precious Metal: <span className="font-normal text-[#5C5850]">{selectedMetal}</span>
+              <span className="text-xs font-semibold uppercase tracking-wider text-[#413C23] block">
+                Precious Metal: <span className="font-normal text-[#8F896D]">{selectedMetal}</span>
               </span>
               <div className="flex gap-2.5">
                 {(['18k Gold Vermeil', '925 Sterling Silver'] as Metal[]).map((metal) => (
@@ -224,8 +224,8 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                     onClick={() => setSelectedMetal(metal)}
                     className={`flex-1 py-2.5 px-3 rounded-xs border text-xs font-semibold transition-all cursor-pointer flex items-center justify-center gap-2 ${
                       selectedMetal === metal
-                        ? 'bg-[#111111] text-white border-[#111111] shadow-xs'
-                        : 'bg-[#FAF8F5] text-[#111111] border-[#E8E2D6] hover:border-[#111111]'
+                        ? 'bg-[#413C23] text-[#E7E4D5] border-[#413C23] shadow-xs'
+                        : 'bg-[#E7E4D5] text-[#413C23] border-[#D8D2C2] hover:border-[#413C23]'
                     }`}
                   >
                     <span
@@ -243,12 +243,12 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
             {product.sizes && product.sizes.length > 0 && (
               <div className="space-y-2.5">
                 <div className="flex items-center justify-between text-xs">
-                  <span className="font-semibold uppercase tracking-wider text-[#111111]">
-                    Size / Length: <span className="font-normal text-[#5C5850]">{selectedSize}</span>
+                  <span className="font-semibold uppercase tracking-wider text-[#413C23]">
+                    Size / Length: <span className="font-normal text-[#8F896D]">{selectedSize}</span>
                   </span>
                   <button
                     onClick={() => setIsSizingModalOpen(true)}
-                    className="text-[#D4AF37] hover:text-[#BF9B2D] font-semibold underline underline-offset-4 flex items-center gap-1 cursor-pointer"
+                    className="text-[#8F896D] hover:text-[#413C23] font-semibold underline underline-offset-4 flex items-center gap-1 cursor-pointer"
                   >
                     <Ruler className="w-3.5 h-3.5" />
                     <span>Sizing Guide</span>
@@ -262,8 +262,8 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                       onClick={() => setSelectedSize(size)}
                       className={`px-4 py-2 rounded-xs border text-xs font-semibold transition-all cursor-pointer ${
                         selectedSize === size
-                          ? 'bg-[#111111] text-white border-[#111111]'
-                          : 'bg-[#FAF8F5] text-[#111111] border-[#E8E2D6] hover:border-[#111111]'
+                          ? 'bg-[#413C23] text-[#E7E4D5] border-[#413C23]'
+                          : 'bg-[#E7E4D5] text-[#413C23] border-[#D8D2C2] hover:border-[#413C23]'
                       }`}
                     >
                       {size}
@@ -277,18 +277,18 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
             <div className="space-y-3 pt-2">
               <div className="flex gap-3">
                 {/* Quantity */}
-                <div className="flex items-center border border-[#E8E2D6] rounded-xs bg-[#FAF8F5] px-3 py-2">
+                <div className="flex items-center border border-[#D8D2C2] rounded-xs bg-[#E7E4D5] px-3 py-2">
                   <button
                     onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                    className="text-[#5C5850] hover:text-[#111111] p-1 cursor-pointer"
+                    className="text-[#8F896D] hover:text-[#413C23] p-1 cursor-pointer"
                     aria-label="Decrease quantity"
                   >
                     <Minus className="w-3.5 h-3.5" />
                   </button>
-                  <span className="w-8 text-center text-xs font-bold text-[#111111]">{quantity}</span>
+                  <span className="w-8 text-center text-xs font-bold text-[#413C23]">{quantity}</span>
                   <button
                     onClick={() => setQuantity(quantity + 1)}
-                    className="text-[#5C5850] hover:text-[#111111] p-1 cursor-pointer"
+                    className="text-[#8F896D] hover:text-[#413C23] p-1 cursor-pointer"
                     aria-label="Increase quantity"
                   >
                     <Plus className="w-3.5 h-3.5" />
@@ -301,8 +301,8 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                   onClick={handleAddToCart}
                   className={`flex-1 py-3.5 px-6 uppercase tracking-[0.2em] font-semibold text-xs rounded-xs flex items-center justify-center gap-2 transition-all shadow-md cursor-pointer ${
                     addedAnimation
-                      ? 'bg-[#D4AF37] text-white'
-                      : 'bg-[#111111] hover:bg-[#D4AF37] text-white active:scale-98'
+                      ? 'bg-[#8F896D] text-white'
+                      : 'bg-[#413C23] hover:bg-[#8F896D] text-[#E7E4D5] active:scale-98'
                   }`}
                 >
                   {addedAnimation ? (
@@ -319,7 +319,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
               </div>
 
               {/* Share and Wishlist Action Bar */}
-              <div className="flex items-center justify-between text-xs text-[#5C5850] pt-1">
+              <div className="flex items-center justify-between text-xs text-[#8F896D] pt-1">
                 <button
                   onClick={() => onToggleWishlist(product)}
                   className="flex items-center gap-1.5 hover:text-[#7A0F1A] transition-colors cursor-pointer"
@@ -330,7 +330,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
 
                 <button
                   onClick={handleShare}
-                  className="flex items-center gap-1.5 hover:text-[#111111] transition-colors cursor-pointer"
+                  className="flex items-center gap-1.5 hover:text-[#413C23] transition-colors cursor-pointer"
                 >
                   <Share2 className="w-3.5 h-3.5" />
                   <span>{copiedLink ? 'Link Copied!' : 'Share Piece'}</span>

@@ -1,21 +1,23 @@
 @import "tailwindcss";
 
 @theme {
-  --font-serif: 'Playfair Display', Georgia, serif;
-  --font-display: 'Playfair Display', Georgia, serif;
-  --font-sans: 'Montserrat', -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-body: 'Montserrat', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-serif: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
+  --font-display: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
+  --font-sans: 'Plus Jakarta Sans', 'Montserrat', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-body: 'Plus Jakarta Sans', 'Montserrat', -apple-system, BlinkMacSystemFont, sans-serif;
 
-  /* Official Brand Colors */
-  --color-onyx: #111111;
+  /* Official Brand Palette */
+  --color-ivory-sand: #E7E4D5;
+  --color-olive-moss: #413C23;
+  --color-stone-taupe: #8F896D;
+  --color-warm-linen: #F4EFE6;
+  --color-soft-silver: #FAF8F5;
+
+  /* Accent Tones */
   --color-luxe-gold: #D4AF37;
   --color-luxe-gold-hover: #BF9B2D;
-  --color-luxe-gold-light: #F7F1E5;
   --color-garnet-red: #7A0F1A;
-  --color-pearl-beige: #F6F1E8;
-  --color-ivory-white: #FFFFFF;
-  --color-taupe-neutral: #5C5850;
-  --color-border-subtle: #E8E2D6;
+  --color-border-subtle: #D8D2C2;
 }
 
 @layer base {
@@ -26,29 +28,29 @@
   }
   
   body {
-    font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, sans-serif;
-    background-color: #FAF8F5;
-    color: #111111;
+    font-family: 'Plus Jakarta Sans', 'Montserrat', -apple-system, BlinkMacSystemFont, sans-serif;
+    background-color: #E7E4D5;
+    color: #413C23;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    font-weight: 300;
+    font-weight: 400;
     overflow-x: hidden;
     width: 100%;
   }
 
   ::selection {
-    background-color: rgba(212, 175, 55, 0.25);
-    color: #111111;
+    background-color: rgba(143, 137, 109, 0.35);
+    color: #413C23;
   }
 }
 
 .font-serif-display {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
   letter-spacing: -0.01em;
 }
 
 .font-sans-body {
-  font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: 'Plus Jakarta Sans', 'Montserrat', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 /* Full Width Fluid Padding Utilities */
@@ -92,14 +94,14 @@
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #FAF8F5;
+  background: #E7E4D5;
 }
 ::-webkit-scrollbar-thumb {
-  background: #E2DDD4;
+  background: #8F896D;
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #D4AF37;
+  background: #413C23;
 }
 
 /* Luxury Card Transitions */
@@ -117,7 +119,7 @@
 }
 
 .shimmer-gold {
-  background: linear-gradient(90deg, #D4AF37 0%, #FFF5D0 50%, #D4AF37 100%);
+  background: linear-gradient(90deg, #8F896D 0%, #E7E4D5 50%, #8F896D 100%);
   background-size: 200% 100%;
   animation: goldShimmer 4s infinite linear;
 }

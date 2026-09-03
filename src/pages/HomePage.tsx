@@ -155,21 +155,21 @@ export const HomePage: React.FC<HomePageProps> = ({
   }, []);
 
   return (
-    <div ref={containerRef} className="pb-20 overflow-hidden font-sans-body w-full text-[#111111] bg-[#FAF8F5]">
+    <div ref={containerRef} className="pb-20 overflow-hidden font-sans-body w-full text-[#413C23] bg-[#E7E4D5]">
       
       {/* 1. EXACT 100VH HERO SECTION */}
       <section
         ref={heroRef}
-        className="relative w-full bg-[#F6F1E8] border-b border-[#E8E2D6] min-h-[calc(100vh-6rem)] sm:min-h-[calc(100vh-5rem)] h-[calc(100vh-5rem)] max-h-[1080px] flex flex-col justify-between p-6 sm:p-10 md:p-12 lg:px-16 lg:py-10 select-none overflow-hidden"
+        className="relative w-full bg-[#E7E4D5] border-b border-[#D8D2C2] min-h-[calc(100vh-6rem)] sm:min-h-[calc(100vh-5rem)] h-[calc(100vh-5rem)] max-h-[1080px] flex flex-col justify-between p-6 sm:p-10 md:p-12 lg:px-16 lg:py-10 select-none overflow-hidden"
       >
         {/* Top Micro-Header */}
         <div className="gsap-hero-sub w-full flex items-center justify-between z-10 text-xs">
-          <span className="text-[10px] sm:text-xs font-medium tracking-[0.25em] text-[#5C5850] uppercase">
+          <span className="text-[10px] sm:text-xs font-medium tracking-[0.25em] text-[#8F896D] uppercase">
             Timeless Beauty • Uniquely Yours
           </span>
           <button
             onClick={() => onNavigateToCollection('all')}
-            className="text-[11px] sm:text-xs font-medium text-[#5C5850] hover:text-[#D4AF37] transition-colors cursor-pointer uppercase tracking-wider"
+            className="text-[11px] sm:text-xs font-medium text-[#8F896D] hover:text-[#413C23] transition-colors cursor-pointer uppercase tracking-wider"
           >
             (all pieces — {catalogProducts.length})
           </button>
@@ -194,15 +194,15 @@ export const HomePage: React.FC<HomePageProps> = ({
         </div>
 
         {/* Bottom Hero Bar */}
-        <div className="gsap-hero-sub w-full flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4 sm:gap-6 z-10 pt-4 border-t border-[#E8E2D6]">
-          <p className="text-xs sm:text-[13px] text-[#5C5850] font-normal max-w-md leading-relaxed">
+        <div className="gsap-hero-sub w-full flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4 sm:gap-6 z-10 pt-4 border-t border-[#D8D2C2]">
+          <p className="text-xs sm:text-[13px] text-[#413C23]/80 font-normal max-w-md leading-relaxed">
             Handcrafted demi-fine jewelry in thick 18k gold vermeil, recycled 925 sterling silver & natural pearls. Sculpted with soul.
           </p>
 
           <button
             id="hero-shop-all-btn"
             onClick={() => onNavigateToCollection('all')}
-            className="px-7 py-3.5 bg-[#111111] hover:bg-[#D4AF37] text-white text-xs uppercase tracking-[0.2em] font-semibold rounded-xs transition-all shadow-md flex items-center gap-2.5 cursor-pointer active:scale-98"
+            className="px-7 py-3.5 bg-[#413C23] hover:bg-[#8F896D] text-[#E7E4D5] text-xs uppercase tracking-[0.2em] font-semibold rounded-xs transition-all shadow-md flex items-center gap-2.5 cursor-pointer active:scale-98"
           >
             <span>Explore Collection</span>
             <ArrowRight className="w-4 h-4" />
@@ -211,7 +211,7 @@ export const HomePage: React.FC<HomePageProps> = ({
       </section>
 
       {/* 2. SECTION 2: EDITORIAL CATEGORY SHOWCASE WITH ORIGINKIT HOVER-IMAGE-REVEAL */}
-      <section className="w-full bg-[#FAF8F5] py-16 sm:py-24 border-b border-[#E8E2D6] px-4 sm:px-8 lg:px-12 xl:px-16 2xl:px-20">
+      <section className="w-full bg-[#E7E4D5] py-16 sm:py-24 border-b border-[#D8D2C2] px-4 sm:px-8 lg:px-12 xl:px-16 2xl:px-20">
         <div className="w-full space-y-8">
           
           {/* Pure Originkit Hover Image Reveal List */}
@@ -219,14 +219,14 @@ export const HomePage: React.FC<HomePageProps> = ({
             <HoverImageReveal
               items={categoryRevealItems}
               font={{
-                fontFamily: "'Playfair Display', Georgia, serif",
+                fontFamily: "'Cormorant Garamond', 'Playfair Display', Georgia, serif",
                 fontSize: 'clamp(3.75rem, 10vw, 8.5rem)',
                 fontWeight: 300,
                 lineHeight: '0.96em',
                 letterSpacing: '-0.03em',
               }}
-              textColor="#111111"
-              dimColor="#B8B2A6"
+              textColor="#413C23"
+              dimColor="#8F896D"
               backgroundColor="transparent"
               align="center"
               rowGap={16}
@@ -243,22 +243,22 @@ export const HomePage: React.FC<HomePageProps> = ({
       </section>
 
       {/* 3. SECTION 3: "COLLECTION" (5 Identical Standard Cards) */}
-      <section className="w-full bg-[#EAE6DC] py-16 sm:py-24 border-b border-[#D8D2C5] px-4 sm:px-8 lg:px-12 xl:px-16 2xl:px-20">
+      <section className="w-full bg-[#F4EFE6] py-16 sm:py-24 border-b border-[#D8D2C2] px-4 sm:px-8 lg:px-12 xl:px-16 2xl:px-20">
         <div className="w-full space-y-8 sm:space-y-12">
           
           {/* Section Header */}
-          <div className="flex items-end justify-between border-b border-[#D8D2C5] pb-4">
+          <div className="flex items-end justify-between border-b border-[#D8D2C2] pb-4">
             <div>
-              <span className="text-[11px] text-[#7A7468] uppercase tracking-widest font-normal block mb-1">
+              <span className="text-[11px] text-[#8F896D] uppercase tracking-widest font-normal block mb-1">
                 (02)
               </span>
-              <h2 className="font-serif-display text-5xl sm:text-6xl md:text-7xl lg:text-8xl text-[#111111] font-light italic tracking-tight leading-none">
+              <h2 className="font-serif-display text-5xl sm:text-6xl md:text-7xl lg:text-8xl text-[#413C23] font-light italic tracking-tight leading-none">
                 Collection
               </h2>
             </div>
             <button
               onClick={() => onNavigateToCollection('all')}
-              className="text-xs text-[#5C5850] hover:text-[#111111] transition-colors cursor-pointer font-normal underline underline-offset-4 lowercase"
+              className="text-xs text-[#8F896D] hover:text-[#413C23] transition-colors cursor-pointer font-normal underline underline-offset-4 lowercase"
             >
               see all
             </button>
@@ -273,7 +273,7 @@ export const HomePage: React.FC<HomePageProps> = ({
                 className="group cursor-pointer flex flex-col space-y-3 text-left w-full"
               >
                 {/* Fixed Uniform Square Box Container */}
-                <div className="relative aspect-square w-full bg-[#F5F2EA] border border-[#DDD7CA] rounded-xs flex items-center justify-center p-6 transition-all duration-300 group-hover:bg-[#FAF9F5] group-hover:border-[#CFC7B7] overflow-hidden">
+                <div className="relative aspect-square w-full bg-[#E7E4D5] border border-[#D8D2C2] rounded-xs flex items-center justify-center p-6 transition-all duration-300 group-hover:bg-[#FAF8F5] group-hover:border-[#8F896D] overflow-hidden">
                   <div className="w-full h-full flex items-center justify-center">
                     <img
                       src={product.images[0]}
@@ -287,7 +287,7 @@ export const HomePage: React.FC<HomePageProps> = ({
                       e.stopPropagation();
                       onQuickAdd(product);
                     }}
-                    className="absolute bottom-2.5 right-2.5 p-2 bg-[#111111] hover:bg-[#D4AF37] text-white rounded-xs opacity-0 group-hover:opacity-100 transition-opacity shadow-sm cursor-pointer z-10"
+                    className="absolute bottom-2.5 right-2.5 p-2 bg-[#413C23] hover:bg-[#8F896D] text-[#E7E4D5] rounded-xs opacity-0 group-hover:opacity-100 transition-opacity shadow-sm cursor-pointer z-10"
                     title="Quick Add"
                   >
                     <ShoppingBag className="w-3.5 h-3.5" />
@@ -296,10 +296,10 @@ export const HomePage: React.FC<HomePageProps> = ({
 
                 {/* Fixed Meta Box directly on linen canvas */}
                 <div className="h-10 flex flex-col justify-between pt-0.5">
-                  <h4 className="font-serif-display text-xs sm:text-[13px] text-[#111111] group-hover:text-[#D4AF37] transition-colors font-medium truncate block">
+                  <h4 className="font-serif-display text-xs sm:text-[13px] text-[#413C23] group-hover:text-[#8F896D] transition-colors font-medium truncate block">
                     {displayTitle}
                   </h4>
-                  <p className="text-xs text-[#5C5850] font-normal block">
+                  <p className="text-xs text-[#8F896D] font-normal block">
                     {formatPrice(product.price, currency)}
                   </p>
                 </div>
@@ -311,36 +311,36 @@ export const HomePage: React.FC<HomePageProps> = ({
       </section>
 
       {/* 4. SECTION 4: "POPULAR" (Exact Identical 5-Column Grid, Width & Box Dimensions) */}
-      <section className="w-full bg-[#EAE6DC] py-16 sm:py-24 border-b border-[#D8D2C5] px-4 sm:px-8 lg:px-12 xl:px-16 2xl:px-20">
+      <section className="w-full bg-[#E7E4D5] py-16 sm:py-24 border-b border-[#D8D2C2] px-4 sm:px-8 lg:px-12 xl:px-16 2xl:px-20">
         <div className="w-full space-y-8 sm:space-y-12">
           
           {/* Section Header */}
-          <div className="flex items-end justify-between border-b border-[#D8D2C5] pb-4">
+          <div className="flex items-end justify-between border-b border-[#D8D2C2] pb-4">
             <div>
-              <span className="text-[11px] text-[#7A7468] uppercase tracking-widest font-normal block mb-1">
+              <span className="text-[11px] text-[#8F896D] uppercase tracking-widest font-normal block mb-1">
                 (03)
               </span>
-              <h2 className="font-serif-display text-5xl sm:text-6xl md:text-7xl lg:text-8xl text-[#111111] font-light italic tracking-tight leading-none">
+              <h2 className="font-serif-display text-5xl sm:text-6xl md:text-7xl lg:text-8xl text-[#413C23] font-light italic tracking-tight leading-none">
                 Popular
               </h2>
             </div>
             <button
               onClick={() => onNavigateToCollection('all')}
-              className="text-xs text-[#5C5850] hover:text-[#111111] transition-colors cursor-pointer font-normal underline underline-offset-4 lowercase"
+              className="text-xs text-[#8F896D] hover:text-[#413C23] transition-colors cursor-pointer font-normal underline underline-offset-4 lowercase"
             >
               see all
             </button>
           </div>
 
-          {/* Wide Dramatic Monochrome Model Banner */}
-          <div className="w-full h-56 sm:h-72 md:h-80 lg:h-96 rounded-xs overflow-hidden border border-[#D8D2C5] relative bg-[#111111]">
+          {/* Wide Dramatic Model Banner */}
+          <div className="w-full h-56 sm:h-72 md:h-80 lg:h-96 rounded-xs overflow-hidden border border-[#D8D2C2] relative bg-[#413C23]">
             <img
               src="https://images.unsplash.com/photo-1630019852942-f89202989a59?auto=format&fit=crop&w=2000&q=90"
               alt="Sculptural Molten Earring Campaign"
               referrerPolicy="no-referrer"
-              className="w-full h-full object-cover object-[center_35%] filter grayscale contrast-125"
+              className="w-full h-full object-cover object-[center_35%] filter contrast-110 opacity-90"
             />
-            <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-transparent to-black/20 pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-r from-[#413C23]/60 via-transparent to-[#413C23]/40 pointer-events-none" />
           </div>
 
           {/* 5-Column Uniform Product Grid (Identical sizing to Collection above) */}
@@ -352,7 +352,7 @@ export const HomePage: React.FC<HomePageProps> = ({
                 className="group cursor-pointer flex flex-col space-y-3 text-left w-full"
               >
                 {/* Fixed Uniform Square Box Container */}
-                <div className="relative aspect-square w-full bg-[#F5F2EA] border border-[#DDD7CA] rounded-xs flex items-center justify-center p-6 transition-all duration-300 group-hover:bg-[#FAF9F5] group-hover:border-[#CFC7B7] overflow-hidden">
+                <div className="relative aspect-square w-full bg-[#F4EFE6] border border-[#D8D2C2] rounded-xs flex items-center justify-center p-6 transition-all duration-300 group-hover:bg-[#FAF8F5] group-hover:border-[#8F896D] overflow-hidden">
                   <div className="w-full h-full flex items-center justify-center">
                     <img
                       src={product.images[0]}
@@ -366,7 +366,7 @@ export const HomePage: React.FC<HomePageProps> = ({
                       e.stopPropagation();
                       onQuickAdd(product);
                     }}
-                    className="absolute bottom-2.5 right-2.5 p-2 bg-[#111111] hover:bg-[#D4AF37] text-white rounded-xs opacity-0 group-hover:opacity-100 transition-opacity shadow-sm cursor-pointer z-10"
+                    className="absolute bottom-2.5 right-2.5 p-2 bg-[#413C23] hover:bg-[#8F896D] text-[#E7E4D5] rounded-xs opacity-0 group-hover:opacity-100 transition-opacity shadow-sm cursor-pointer z-10"
                     title="Quick Add"
                   >
                     <ShoppingBag className="w-3.5 h-3.5" />
@@ -375,10 +375,10 @@ export const HomePage: React.FC<HomePageProps> = ({
 
                 {/* Fixed Meta Box directly on linen canvas */}
                 <div className="h-10 flex flex-col justify-between pt-0.5">
-                  <h4 className="font-serif-display text-xs sm:text-[13px] text-[#111111] group-hover:text-[#D4AF37] transition-colors font-medium truncate block">
+                  <h4 className="font-serif-display text-xs sm:text-[13px] text-[#413C23] group-hover:text-[#8F896D] transition-colors font-medium truncate block">
                     {product.name}
                   </h4>
-                  <p className="text-xs text-[#5C5850] font-normal block">
+                  <p className="text-xs text-[#8F896D] font-normal block">
                     {formatPrice(product.price, currency)}
                   </p>
                 </div>
@@ -390,45 +390,45 @@ export const HomePage: React.FC<HomePageProps> = ({
       </section>
 
       {/* 5. VALUE PROPOSITION STRIP */}
-      <section className="border-b border-[#E8E2D6] bg-white py-6 px-4 sm:px-8 lg:px-12 xl:px-16 2xl:px-20">
-        <div className="w-full grid grid-cols-2 md:grid-cols-4 gap-4 text-center md:text-left">
-          <div className="flex items-center justify-center md:justify-start gap-3 text-xs font-medium text-[#111111]">
-            <div className="w-9 h-9 rounded-full bg-[#FAF8F5] border border-[#E8E2D6] flex items-center justify-center text-[#D4AF37] shrink-0">
+      <section className="border-b border-[#D8D2C2] bg-[#F4EFE6] py-8 px-4 sm:px-8 lg:px-12 xl:px-16 2xl:px-20">
+        <div className="w-full grid grid-cols-2 md:grid-cols-4 gap-6 text-center md:text-left">
+          <div className="flex items-center justify-center md:justify-start gap-3.5 text-xs font-medium text-[#413C23]">
+            <div className="w-10 h-10 rounded-full bg-[#E7E4D5] border border-[#D8D2C2] flex items-center justify-center text-[#413C23] shrink-0">
               <Truck className="w-4 h-4" />
             </div>
             <div>
               <span className="block font-semibold">Complimentary Shipping</span>
-              <span className="text-[10px] text-[#5C5850]">On orders over $150</span>
+              <span className="text-[10px] text-[#8F896D]">On orders over $150</span>
             </div>
           </div>
 
-          <div className="flex items-center justify-center md:justify-start gap-3 text-xs font-medium text-[#111111]">
-            <div className="w-9 h-9 rounded-full bg-[#FAF8F5] border border-[#E8E2D6] flex items-center justify-center text-[#D4AF37] shrink-0">
+          <div className="flex items-center justify-center md:justify-start gap-3.5 text-xs font-medium text-[#413C23]">
+            <div className="w-10 h-10 rounded-full bg-[#E7E4D5] border border-[#D8D2C2] flex items-center justify-center text-[#413C23] shrink-0">
               <ShieldCheck className="w-4 h-4" />
             </div>
             <div>
               <span className="block font-semibold">2-Year Atelier Warranty</span>
-              <span className="text-[10px] text-[#5C5850]">Guaranteed craftsmanship</span>
+              <span className="text-[10px] text-[#8F896D]">Guaranteed craftsmanship</span>
             </div>
           </div>
 
-          <div className="flex items-center justify-center md:justify-start gap-3 text-xs font-medium text-[#111111]">
-            <div className="w-9 h-9 rounded-full bg-[#FAF8F5] border border-[#E8E2D6] flex items-center justify-center text-[#D4AF37] shrink-0">
+          <div className="flex items-center justify-center md:justify-start gap-3.5 text-xs font-medium text-[#413C23]">
+            <div className="w-10 h-10 rounded-full bg-[#E7E4D5] border border-[#D8D2C2] flex items-center justify-center text-[#413C23] shrink-0">
               <Gem className="w-4 h-4" />
             </div>
             <div>
               <span className="block font-semibold">18k Thick Gold Vermeil</span>
-              <span className="text-[10px] text-[#5C5850]">Recycled 925 solid silver</span>
+              <span className="text-[10px] text-[#8F896D]">Recycled 925 solid silver</span>
             </div>
           </div>
 
-          <div className="flex items-center justify-center md:justify-start gap-3 text-xs font-medium text-[#111111]">
-            <div className="w-9 h-9 rounded-full bg-[#FAF8F5] border border-[#E8E2D6] flex items-center justify-center text-[#D4AF37] shrink-0">
+          <div className="flex items-center justify-center md:justify-start gap-3.5 text-xs font-medium text-[#413C23]">
+            <div className="w-10 h-10 rounded-full bg-[#E7E4D5] border border-[#D8D2C2] flex items-center justify-center text-[#413C23] shrink-0">
               <RotateCcw className="w-4 h-4" />
             </div>
             <div>
               <span className="block font-semibold">30-Day Easy Returns</span>
-              <span className="text-[10px] text-[#5C5850]">Complimentary return labels</span>
+              <span className="text-[10px] text-[#8F896D]">Complimentary return labels</span>
             </div>
           </div>
         </div>

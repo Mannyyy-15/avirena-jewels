@@ -79,9 +79,9 @@ export const Navbar: React.FC<NavbarProps> = ({
   };
 
   return (
-    <header className="sticky top-0 z-40 bg-[#FAF8F5]/98 backdrop-blur-md border-b border-[#E8E2D6] transition-all duration-200 w-full">
+    <header className="sticky top-0 z-40 bg-[#E7E4D5]/98 backdrop-blur-md border-b border-[#D8D2C2] transition-all duration-200 w-full">
       {/* 1. TOP ANNOUNCEMENT TICKER */}
-      <div className="w-full bg-[#111111] text-[#FAF8F5] py-2 px-4 text-center">
+      <div className="w-full bg-[#413C23] text-[#E7E4D5] py-2 px-4 text-center">
         <div className="flex items-center justify-center gap-2 text-[10px] sm:text-[11px] font-medium tracking-[0.2em] uppercase">
           <span className="transition-opacity duration-500 ease-in-out">
             {ANNOUNCEMENTS[announcementIndex]}
@@ -98,21 +98,21 @@ export const Navbar: React.FC<NavbarProps> = ({
           <button
             id="mobile-menu-toggle-btn"
             onClick={() => setMobileMenuOpen(true)}
-            className="p-1 -ml-1 text-[#111111] hover:text-[#D4AF37] lg:hidden transition-colors cursor-pointer"
+            className="p-1 -ml-1 text-[#413C23] hover:text-[#8F896D] lg:hidden transition-colors cursor-pointer"
             aria-label="Open menu"
           >
             <Menu className="w-6 h-6 stroke-[1.25]" />
           </button>
 
           {/* Desktop Nav Links */}
-          <nav className="hidden lg:flex items-center space-x-6 xl:space-x-8 text-[11px] xl:text-xs uppercase tracking-[0.18em] font-medium text-[#111111]">
+          <nav className="hidden lg:flex items-center space-x-6 xl:space-x-8 text-[11px] xl:text-xs uppercase tracking-[0.18em] font-medium text-[#413C23]">
             <button
               id="nav-home-btn"
               onClick={() => navigateTo('home')}
-              className={`transition-colors hover:text-[#D4AF37] py-1 cursor-pointer relative ${
+              className={`transition-colors hover:text-[#8F896D] py-1 cursor-pointer relative ${
                 currentPage === 'home'
-                  ? 'text-[#111111] font-bold after:absolute after:bottom-0 after:left-0 after:w-full after:h-[1.5px] after:bg-[#D4AF37]'
-                  : 'text-[#111111]/85'
+                  ? 'text-[#413C23] font-bold after:absolute after:bottom-0 after:left-0 after:w-full after:h-[1.5px] after:bg-[#8F896D]'
+                  : 'text-[#413C23]/85'
               }`}
             >
               Home
@@ -121,10 +121,10 @@ export const Navbar: React.FC<NavbarProps> = ({
             <button
               id="nav-shop-btn"
               onClick={() => navigateTo('shop', 'all')}
-              className={`transition-colors hover:text-[#D4AF37] py-1 cursor-pointer relative ${
+              className={`transition-colors hover:text-[#8F896D] py-1 cursor-pointer relative ${
                 currentPage === 'collection' || currentPage === 'shop'
-                  ? 'text-[#111111] font-bold after:absolute after:bottom-0 after:left-0 after:w-full after:h-[1.5px] after:bg-[#D4AF37]'
-                  : 'text-[#111111]/85'
+                  ? 'text-[#413C23] font-bold after:absolute after:bottom-0 after:left-0 after:w-full after:h-[1.5px] after:bg-[#8F896D]'
+                  : 'text-[#413C23]/85'
               }`}
             >
               Shop
@@ -133,10 +133,10 @@ export const Navbar: React.FC<NavbarProps> = ({
             <button
               id="nav-collections-btn"
               onClick={() => navigateTo('collections')}
-              className={`transition-colors hover:text-[#D4AF37] py-1 cursor-pointer relative ${
+              className={`transition-colors hover:text-[#8F896D] py-1 cursor-pointer relative ${
                 currentPage === 'collections'
-                  ? 'text-[#111111] font-bold after:absolute after:bottom-0 after:left-0 after:w-full after:h-[1.5px] after:bg-[#D4AF37]'
-                  : 'text-[#111111]/85'
+                  ? 'text-[#413C23] font-bold after:absolute after:bottom-0 after:left-0 after:w-full after:h-[1.5px] after:bg-[#8F896D]'
+                  : 'text-[#413C23]/85'
               }`}
             >
               Collections
@@ -145,10 +145,10 @@ export const Navbar: React.FC<NavbarProps> = ({
             <button
               id="nav-about-btn"
               onClick={() => navigateTo('about')}
-              className={`transition-colors hover:text-[#D4AF37] py-1 cursor-pointer relative ${
+              className={`transition-colors hover:text-[#8F896D] py-1 cursor-pointer relative ${
                 currentPage === 'about'
-                  ? 'text-[#111111] font-bold after:absolute after:bottom-0 after:left-0 after:w-full after:h-[1.5px] after:bg-[#D4AF37]'
-                  : 'text-[#111111]/85'
+                  ? 'text-[#413C23] font-bold after:absolute after:bottom-0 after:left-0 after:w-full after:h-[1.5px] after:bg-[#8F896D]'
+                  : 'text-[#413C23]/85'
               }`}
             >
               About
@@ -157,10 +157,10 @@ export const Navbar: React.FC<NavbarProps> = ({
             <button
               id="nav-contact-btn"
               onClick={() => navigateTo('contact')}
-              className={`transition-colors hover:text-[#D4AF37] py-1 cursor-pointer relative ${
+              className={`transition-colors hover:text-[#8F896D] py-1 cursor-pointer relative ${
                 currentPage === 'contact'
-                  ? 'text-[#111111] font-bold after:absolute after:bottom-0 after:left-0 after:w-full after:h-[1.5px] after:bg-[#D4AF37]'
-                  : 'text-[#111111]/85'
+                  ? 'text-[#413C23] font-bold after:absolute after:bottom-0 after:left-0 after:w-full after:h-[1.5px] after:bg-[#8F896D]'
+                  : 'text-[#413C23]/85'
               }`}
             >
               Contact
@@ -181,21 +181,21 @@ export const Navbar: React.FC<NavbarProps> = ({
         </div>
 
         {/* RIGHT COLUMN (Currency, Search, Wishlist, Account, Bag) */}
-        <div className="col-span-4 flex items-center justify-end space-x-3 sm:space-x-5 text-[#111111]">
+        <div className="col-span-4 flex items-center justify-end space-x-3 sm:space-x-5 text-[#413C23]">
           {/* Currency Selector */}
           <div className="relative hidden sm:block">
             <button
               onClick={() => setCurrencyDropdownOpen(!currencyDropdownOpen)}
-              className="flex items-center gap-1.5 text-[11px] uppercase tracking-wider text-[#5C5850] hover:text-[#111111] px-2 py-1 rounded-xs border border-[#E8E2D6] hover:border-[#D4AF37] transition-colors cursor-pointer bg-white"
+              className="flex items-center gap-1.5 text-[11px] uppercase tracking-wider text-[#413C23] hover:text-[#8F896D] px-2.5 py-1 rounded-xs border border-[#D8D2C2] hover:border-[#8F896D] transition-colors cursor-pointer bg-[#F4EFE6]"
               title="Select currency"
             >
-              <Globe className="w-3 h-3 text-[#D4AF37]" />
+              <Globe className="w-3 h-3 text-[#8F896D]" />
               <span className="font-semibold">{currency}</span>
-              <span className="text-[10px] text-[#5C5850]">({CURRENCIES[currency].symbol})</span>
+              <span className="text-[10px] text-[#8F896D]">({CURRENCIES[currency].symbol})</span>
             </button>
 
             {currencyDropdownOpen && (
-              <div className="absolute right-0 mt-2 w-36 bg-[#FAF8F5] border border-[#E8E2D6] rounded-xs shadow-xl py-1 z-50 animate-in fade-in zoom-in-95 duration-150">
+              <div className="absolute right-0 mt-2 w-36 bg-[#E7E4D5] border border-[#D8D2C2] rounded-xs shadow-xl py-1 z-50 animate-in fade-in zoom-in-95 duration-150">
                 {(Object.keys(CURRENCIES) as Currency[]).map((c) => (
                   <button
                     key={c}
@@ -203,12 +203,12 @@ export const Navbar: React.FC<NavbarProps> = ({
                       setCurrency(c);
                       setCurrencyDropdownOpen(false);
                     }}
-                    className={`w-full text-left px-3 py-2 text-xs flex items-center justify-between hover:bg-[#F3EFE6] cursor-pointer ${
-                      currency === c ? 'font-semibold text-[#111111] bg-[#F3EFE6]' : 'text-[#5C5850]'
+                    className={`w-full text-left px-3 py-2 text-xs flex items-center justify-between hover:bg-[#F4EFE6] cursor-pointer ${
+                      currency === c ? 'font-semibold text-[#413C23] bg-[#F4EFE6]' : 'text-[#413C23]/80'
                     }`}
                   >
                     <span>{c}</span>
-                    <span className="text-[#D4AF37] font-medium">{CURRENCIES[c].symbol}</span>
+                    <span className="text-[#8F896D] font-medium">{CURRENCIES[c].symbol}</span>
                   </button>
                 ))}
               </div>
@@ -219,7 +219,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           <button
             id="nav-search-btn"
             onClick={openSearchModal}
-            className="p-1.5 text-[#111111] hover:text-[#D4AF37] transition-colors focus:outline-none cursor-pointer flex items-center gap-1"
+            className="p-1.5 text-[#413C23] hover:text-[#8F896D] transition-colors focus:outline-none cursor-pointer flex items-center gap-1"
             aria-label="Search"
             title="Search the Atelier"
           >
@@ -231,7 +231,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           <button
             id="nav-wishlist-btn"
             onClick={openWishlistModal}
-            className="relative p-1.5 text-[#111111] hover:text-[#D4AF37] transition-colors focus:outline-none cursor-pointer"
+            className="relative p-1.5 text-[#413C23] hover:text-[#8F896D] transition-colors focus:outline-none cursor-pointer"
             aria-label="Wishlist"
             title="Saved Pieces"
           >
@@ -243,73 +243,63 @@ export const Navbar: React.FC<NavbarProps> = ({
             )}
           </button>
 
-          {/* Account Trigger */}
+          {/* User Sign In Trigger */}
           <div className="relative">
             <button
-              id="nav-user-btn"
+              id="nav-user-account-btn"
               onClick={() => setUserDropdownOpen(!userDropdownOpen)}
-              className="p-1.5 text-[#111111] hover:text-[#D4AF37] transition-colors focus:outline-none cursor-pointer"
-              aria-label="Account"
+              className="p-1.5 text-[#413C23] hover:text-[#8F896D] transition-colors focus:outline-none cursor-pointer"
+              aria-label="Client VIP Account"
               title="Atelier Account"
             >
               <User className="w-4 h-4 sm:w-4.5 sm:h-4.5 stroke-[1.4]" />
             </button>
 
             {userDropdownOpen && (
-              <div className="absolute right-0 mt-3 w-72 sm:w-80 bg-[#FAF8F5] border border-[#E8E2D6] rounded-xs shadow-2xl p-5 z-50 animate-in fade-in zoom-in-95 duration-150 text-left">
-                <div className="flex items-center justify-between pb-3 border-b border-[#E8E2D6]">
-                  <div className="flex items-center gap-2">
-                    <Sparkles className="w-4 h-4 text-[#D4AF37]" />
-                    <h4 className="font-serif-display text-base text-[#111111]">Atelier Account</h4>
-                  </div>
-                  <button
-                    onClick={() => setUserDropdownOpen(false)}
-                    className="text-[#5C5850] hover:text-[#111111] text-xs cursor-pointer"
-                  >
-                    <X className="w-4 h-4 stroke-[1.5]" />
-                  </button>
-                </div>
-
-                <div className="py-3 space-y-3">
-                  <p className="text-xs text-[#5C5850] leading-relaxed">
-                    Access private pre-releases, insured parcel tracking, and bespoke sizing consultations.
-                  </p>
+              <div className="absolute right-0 mt-2 w-72 bg-[#E7E4D5] border border-[#D8D2C2] rounded-xs shadow-xl p-4 z-50 animate-in fade-in zoom-in-95 duration-150">
+                <div className="space-y-3 text-left">
+                  <span className="text-[10px] uppercase tracking-widest font-bold text-[#8F896D] block">
+                    Atelier VIP Salon
+                  </span>
+                  <h4 className="font-serif-display text-sm text-[#413C23] leading-snug">
+                    Access private previews & order tracking.
+                  </h4>
 
                   {subscribed ? (
-                    <div className="p-3 bg-white border border-[#D4AF37] rounded-xs flex items-center gap-2 text-xs text-[#111111]">
-                      <Check className="w-4 h-4 text-[#D4AF37] shrink-0" />
-                      <span>Welcome to Avirena Atelier VIP.</span>
+                    <div className="flex items-center gap-2 text-xs text-[#413C23] bg-[#F4EFE6] p-2.5 rounded-xs border border-[#8F896D]">
+                      <Check className="w-3.5 h-3.5 text-[#8F896D]" />
+                      <span>Access link sent to your inbox.</span>
                     </div>
                   ) : (
-                    <form onSubmit={handleQuickSignIn} className="space-y-2.5">
+                    <form onSubmit={handleQuickSignIn} className="space-y-2">
                       <input
                         type="email"
                         required
                         value={emailInput}
                         onChange={(e) => setEmailInput(e.target.value)}
-                        placeholder="Enter your email"
-                        className="w-full text-xs px-3 py-2 bg-white border border-[#E8E2D6] rounded-xs text-[#111111] placeholder-[#5C5850]/70 focus:outline-none focus:border-[#D4AF37]"
+                        placeholder="Enter your VIP email"
+                        className="w-full px-3 py-2 bg-[#F4EFE6] border border-[#D8D2C2] rounded-xs text-xs text-[#413C23] focus:outline-none focus:border-[#8F896D] placeholder-[#413C23]/40"
                       />
                       <button
                         type="submit"
-                        className="w-full py-2 bg-[#111111] hover:bg-[#D4AF37] text-white text-xs uppercase tracking-wider font-semibold rounded-xs transition-colors cursor-pointer"
+                        className="w-full py-2 bg-[#413C23] hover:bg-[#8F896D] text-[#E7E4D5] text-[11px] uppercase tracking-wider font-bold rounded-xs transition-colors cursor-pointer"
                       >
-                        Sign In / Join VIP
+                        Sign In / Join
                       </button>
                     </form>
                   )}
 
-                  <div className="pt-2 border-t border-[#E8E2D6] flex flex-col space-y-1.5 text-xs text-[#5C5850]">
+                  <div className="pt-2 border-t border-[#D8D2C2] flex flex-col space-y-1 text-xs text-[#413C23]">
                     <button
                       onClick={() => navigateTo('faq')}
-                      className="text-left hover:text-[#D4AF37] transition-colors py-1 cursor-pointer flex items-center justify-between"
+                      className="text-left hover:text-[#8F896D] transition-colors py-1 cursor-pointer flex items-center justify-between"
                     >
                       <span>Shipping & Order Tracking</span>
                       <ChevronRight className="w-3.5 h-3.5" />
                     </button>
                     <button
                       onClick={() => navigateTo('contact')}
-                      className="text-left hover:text-[#D4AF37] transition-colors py-1 cursor-pointer flex items-center justify-between"
+                      className="text-left hover:text-[#8F896D] transition-colors py-1 cursor-pointer flex items-center justify-between"
                     >
                       <span>Bespoke Concierge</span>
                       <ChevronRight className="w-3.5 h-3.5" />
@@ -324,7 +314,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           <button
             id="nav-cart-drawer-btn"
             onClick={openCartDrawer}
-            className="relative py-1.5 px-2.5 bg-[#111111] hover:bg-[#D4AF37] text-white rounded-xs transition-all duration-200 cursor-pointer flex items-center gap-2 shadow-xs active:scale-98"
+            className="relative py-1.5 px-3 bg-[#413C23] hover:bg-[#8F896D] text-[#E7E4D5] rounded-xs transition-all duration-200 cursor-pointer flex items-center gap-2 shadow-xs active:scale-98"
             aria-label="Shopping Bag"
             title="View Shopping Bag"
           >

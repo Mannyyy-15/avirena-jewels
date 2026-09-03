@@ -24,7 +24,7 @@ export const Footer: React.FC<FooterProps> = ({
   };
 
   return (
-    <footer className="w-full bg-[#CFC6BA] text-[#FFFFFF] font-sans-body select-none overflow-hidden pt-12 sm:pt-16 pb-8 sm:pb-12 px-4 sm:px-8 lg:px-12 xl:px-16 2xl:px-20">
+    <footer className="w-full bg-[#8F896D] text-[#FFFFFF] font-sans-body select-none overflow-hidden pt-12 sm:pt-16 pb-8 sm:pb-12 px-4 sm:px-8 lg:px-12 xl:px-16 2xl:px-20">
       
       {/* 1. TOP ROW: Category Links & Social Icons */}
       <div className="w-full flex flex-col sm:flex-row items-center justify-between gap-6 pb-6 sm:pb-8">
