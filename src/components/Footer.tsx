@@ -89,16 +89,16 @@ export const Footer: React.FC<FooterProps> = ({
         </div>
       </div>
 
-      {/* 2. GIANT CENTER STATEMENT: AVIRENA LOGO WHITE BANNER WITH HAIRLINE BORDERS */}
-      <div className="w-full border-t border-b border-white/35 py-6 sm:py-10 md:py-12 my-2 flex items-center justify-center overflow-hidden">
+      {/* 2. CENTER STATEMENT: AVIRENA LOGO WHITE BANNER WITH HAIRLINE BORDERS */}
+      <div className="w-full border-t border-b border-white/35 py-6 sm:py-8 my-2 flex items-center justify-center overflow-hidden">
         <button
           onClick={() => handleNavigate('home')}
-          className="w-full flex items-center justify-center group cursor-pointer focus:outline-none transition-transform duration-500 hover:scale-[1.01]"
+          className="flex items-center justify-center group cursor-pointer focus:outline-none transition-transform duration-300 hover:scale-[1.02]"
         >
           <img
             src="/logo-white.png"
             alt="AVIRENA"
-            className="w-[96vw] sm:w-[94vw] md:w-[92vw] lg:w-[90vw] max-w-[1550px] h-auto object-contain select-none"
+            className="h-10 sm:h-14 md:h-16 lg:h-20 w-auto max-w-[70vw] object-contain select-none opacity-95 group-hover:opacity-100 transition-opacity"
             loading="lazy"
           />
         </button>
