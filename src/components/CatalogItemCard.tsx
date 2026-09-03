@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Product, Currency } from '../types';
 import { formatPrice } from '../data/products';
-import { Heart, ShoppingBag, Eye, Star, Check, Sparkles } from 'lucide-react';
+import { Heart, ShoppingBag, Eye, Star, Check } from 'lucide-react';
 
 interface CatalogItemCardProps {
   product: Product;
@@ -52,19 +52,19 @@ export const CatalogItemCard: React.FC<CatalogItemCardProps> = ({
       onClick={() => onSelect(product)}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      className="group cursor-pointer flex flex-col transition-all duration-300 relative text-left font-sans-body luxury-card w-full"
+      className="group cursor-pointer flex flex-col transition-all duration-300 relative text-left font-sans-body w-full"
     >
       {/* Product Image Canvas */}
-      <div className="relative aspect-square w-full bg-[#FAF8F5] border border-[#E8E2D6] rounded-xs overflow-hidden flex items-center justify-center p-4 sm:p-6 transition-all duration-300 group-hover:border-[#D4AF37] group-hover:shadow-[0_10px_25px_rgba(0,0,0,0.06)]">
+      <div className="relative aspect-square w-full bg-[#E7E4D5] border border-[#D8D2C2] rounded-xs overflow-hidden flex items-center justify-center p-4 sm:p-6 transition-all duration-300 group-hover:border-[#8F896D] group-hover:shadow-[0_8px_20px_rgba(65,60,35,0.08)]">
         {/* Badges */}
         <div className="absolute top-2.5 left-2.5 flex flex-col gap-1 z-10">
           {product.isBestseller && (
-            <span className="bg-[#111111] text-white text-[9px] tracking-[0.16em] uppercase font-bold px-2 py-0.5 rounded-xs shadow-xs">
+            <span className="bg-[#413C23] text-[#E7E4D5] text-[9px] tracking-[0.16em] uppercase font-bold px-2 py-0.5 rounded-xs shadow-xs">
               Bestseller
             </span>
           )}
           {product.isSculptural && !product.isBestseller && (
-            <span className="bg-white/95 text-[#111111] text-[9px] tracking-[0.16em] uppercase font-semibold px-2 py-0.5 border border-[#E8E2D6] rounded-xs shadow-xs">
+            <span className="bg-[#E7E4D5]/95 text-[#413C23] text-[9px] tracking-[0.16em] uppercase font-semibold px-2 py-0.5 border border-[#D8D2C2] rounded-xs shadow-xs">
               Sculptural
             </span>
           )}
@@ -75,7 +75,7 @@ export const CatalogItemCard: React.FC<CatalogItemCardProps> = ({
           {onQuickView && (
             <button
               onClick={handleQuickView}
-              className="p-1.5 rounded-full bg-white/95 hover:bg-[#111111] hover:text-white text-[#111111] transition-all shadow-xs cursor-pointer"
+              className="p-1.5 rounded-full bg-[#E7E4D5]/95 hover:bg-[#413C23] hover:text-[#E7E4D5] text-[#413C23] transition-all shadow-xs cursor-pointer border border-[#D8D2C2]"
               title="Quick View"
               aria-label="Quick View"
             >
@@ -85,7 +85,7 @@ export const CatalogItemCard: React.FC<CatalogItemCardProps> = ({
           {onToggleWishlist && (
             <button
               onClick={handleToggleWishlist}
-              className="p-1.5 rounded-full bg-white/95 hover:bg-white text-[#5C5850] hover:text-[#7A0F1A] transition-all shadow-xs cursor-pointer focus:outline-none"
+              className="p-1.5 rounded-full bg-[#E7E4D5]/95 hover:bg-[#FAF8F5] text-[#8F896D] hover:text-[#413C23] transition-all shadow-xs cursor-pointer focus:outline-none border border-[#D8D2C2]"
               title={isWishlisted ? 'Remove from saved' : 'Save to wishlist'}
               aria-label={isWishlisted ? 'Remove from saved' : 'Save to wishlist'}
             >
@@ -114,8 +114,8 @@ export const CatalogItemCard: React.FC<CatalogItemCardProps> = ({
               onClick={handleQuickAdd}
               className={`w-full py-2.5 px-3 text-[10px] sm:text-[11px] uppercase tracking-widest font-semibold rounded-xs flex items-center justify-center gap-2 transition-all duration-200 shadow-md cursor-pointer ${
                 isAdded
-                  ? 'bg-[#D4AF37] text-white'
-                  : 'bg-[#111111] hover:bg-[#D4AF37] text-white active:scale-98'
+                  ? 'bg-[#8F896D] text-[#FAF8F5]'
+                  : 'bg-[#413C23] hover:bg-[#8F896D] text-[#E7E4D5] active:scale-98'
               }`}
             >
               {isAdded ? (
@@ -134,31 +134,32 @@ export const CatalogItemCard: React.FC<CatalogItemCardProps> = ({
         )}
       </div>
 
-      {/* Meta details */}
+      {/* Meta details with prominent price */}
       <div className="mt-3 flex flex-col space-y-1">
         <div className="flex items-center justify-between text-[11px]">
-          <span className="text-[#5C5850] uppercase tracking-widest font-medium text-[10px]">
-            {product.metal === '18k Gold Vermeil' ? '18k Vermeil' : '925 Silver'}
+          <span className="text-[#8F896D] uppercase tracking-[0.18em] font-semibold text-[10px]">
+            {product.metal}
           </span>
-          <div className="flex items-center gap-1 text-[#D4AF37]">
-            <Star className="w-3 h-3 fill-[#D4AF37]" />
-            <span className="font-semibold text-[#111111] text-[11px]">{product.rating || 4.9}</span>
+          <div className="flex items-center gap-1 text-[#8F896D]">
+            <Star className="w-3 h-3 fill-[#8F896D] text-[#8F896D]" />
+            <span className="font-semibold text-[#413C23] text-[11px]">{product.rating || 4.9}</span>
             {product.reviewsCount && (
-              <span className="text-[#5C5850] text-[10px]">({product.reviewsCount})</span>
+              <span className="text-[#8F896D] text-[10px]">({product.reviewsCount})</span>
             )}
           </div>
         </div>
 
-        <h3 className="font-serif-display text-sm sm:text-base font-normal text-[#111111] group-hover:text-[#D4AF37] transition-colors leading-snug truncate">
+        <h3 className="font-serif-display text-base sm:text-lg font-normal text-[#413C23] group-hover:text-[#8F896D] transition-colors leading-snug truncate">
           {product.name}
         </h3>
 
+        {/* Prominent High-Visibility Price */}
         <div className="flex items-baseline gap-2 pt-0.5">
-          <span className="text-xs sm:text-sm font-semibold text-[#111111]">
+          <span className="text-base sm:text-lg font-bold text-[#413C23] tracking-tight">
             {formatPrice(product.price, currency)}
           </span>
-          {product.originalPrice && (
-            <span className="text-xs text-[#5C5850] line-through">
+          {product.originalPrice && product.originalPrice > product.price && (
+            <span className="text-xs sm:text-sm text-[#8F896D]/80 line-through font-normal">
               {formatPrice(product.originalPrice, currency)}
             </span>
           )}

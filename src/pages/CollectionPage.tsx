@@ -1,417 +1,491 @@
-import React, { useState, useMemo, useRef } from 'react';
-import {
-  ChevronDown,
-  ShoppingBag,
-  SlidersHorizontal,
-  Check,
-  Sparkles
-} from 'lucide-react';
+import React, { useState, useMemo, useRef, useEffect } from 'react';
+import gsap from 'gsap';
 import { Product, Currency, Category, Metal } from '../types';
 import { PRODUCTS, formatPrice } from '../data/products';
+import { ChevronDown, Heart, Check } from 'lucide-react';
 
 interface CollectionPageProps {
+  products: Product[];
   selectedCategory: Category;
   setSelectedCategory: (cat: Category) => void;
   onSelectProduct: (product: Product) => void;
   onQuickAdd: (product: Product) => void;
-  onQuickView?: (product: Product) => void;
   currency: Currency;
-  isWishlisted: (id: string) => boolean;
+  isWishlisted: (productId: string) => boolean;
   onToggleWishlist: (product: Product) => void;
-  catalogProducts?: Product[];
+  onNavigateHome: () => void;
 }
 
 export const CollectionPage: React.FC<CollectionPageProps> = ({
+  products,
   selectedCategory,
   setSelectedCategory,
   onSelectProduct,
   onQuickAdd,
-  onQuickView,
   currency,
   isWishlisted,
   onToggleWishlist,
-  catalogProducts = PRODUCTS,
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
-
-  // Fallback safety to ensure catalog is always populated and never throws undefined
-  const activeProducts = useMemo(() => {
-    if (catalogProducts && catalogProducts.length > 0) {
-      return catalogProducts;
-    }
-    return PRODUCTS;
-  }, [catalogProducts]);
-
-  // Filtering & Sorting state
-  const [sortBy, setSortBy] = useState<'bestselling' | 'price-asc' | 'price-desc' | 'rating' | 'newest'>('bestselling');
+  const [selectedMetal, setSelectedMetal] = useState<string>('all');
+  const [sortBy, setSortBy] = useState<'featured' | 'price-asc' | 'price-desc' | 'rating'>('featured');
+  
+  // Dropdown states for filter pills
+  const [categoryDropdownOpen, setCategoryDropdownOpen] = useState(false);
+  const [metalDropdownOpen, setMetalDropdownOpen] = useState(false);
   const [sortDropdownOpen, setSortDropdownOpen] = useState(false);
 
-  // Category navigation tabs matching reference
-  const categories: { id: Category; label: string; count: number }[] = [
-    { id: 'all', label: 'All Jewelry', count: activeProducts.length },
-    { id: 'necklaces', label: 'Necklaces', count: activeProducts.filter((p) => p.category === 'necklaces').length },
-    { id: 'bracelets', label: 'Bracelets', count: activeProducts.filter((p) => p.category === 'bracelets').length },
-    { id: 'rings', label: 'Rings', count: activeProducts.filter((p) => p.category === 'rings').length },
-    { id: 'earrings', label: 'Earrings', count: activeProducts.filter((p) => p.category === 'earrings').length },
-    { id: 'brooches', label: 'Brooches', count: activeProducts.filter((p) => p.category === 'brooches').length },
-  ];
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [selectedCategory, selectedMetal]);
 
-  // Filter and sort catalog
+  // Filter & Sort Logic
   const filteredProducts = useMemo(() => {
-    return activeProducts
-      .filter((p) => {
-        return selectedCategory === 'all' || p.category === selectedCategory;
-      })
-      .sort((a, b) => {
-        if (sortBy === 'price-asc') return a.price - b.price;
-        if (sortBy === 'price-desc') return b.price - a.price;
-        if (sortBy === 'rating') return (b.rating || 0) - (a.rating || 0);
-        if (sortBy === 'newest') return (b.isNew ? 1 : 0) - (a.isNew ? 1 : 0);
-        return (b.isBestseller ? 1 : 0) - (a.isBestseller ? 1 : 0);
-      });
-  }, [activeProducts, selectedCategory, sortBy]);
+    let list = [...products];
 
-  const sortLabels = {
-    bestselling: 'Best selling',
-    newest: 'New arrivals',
-    'price-asc': 'Price: Low to high',
-    'price-desc': 'Price: High to low',
-    rating: 'Highest rated',
-  };
+    if (selectedCategory && selectedCategory !== 'all') {
+      list = list.filter((p) => p.category === selectedCategory);
+    }
+
+    if (selectedMetal && selectedMetal !== 'all') {
+      list = list.filter((p) => {
+        if (selectedMetal === 'brass') return p.metal.toLowerCase().includes('brass') || p.metal.toLowerCase().includes('gold');
+        if (selectedMetal === 'alloy') return p.metal.toLowerCase().includes('alloy') || p.metal.toLowerCase().includes('silver');
+        if (selectedMetal === 'anti-tarnish') return p.metal.toLowerCase().includes('anti-tarnish');
+        return true;
+      });
+    }
+
+    if (sortBy === 'price-asc') {
+      list.sort((a, b) => a.price - b.price);
+    } else if (sortBy === 'price-desc') {
+      list.sort((a, b) => b.price - a.price);
+    } else if (sortBy === 'rating') {
+      list.sort((a, b) => (b.rating || 5) - (a.rating || 5));
+    }
+
+    return list;
+  }, [products, selectedCategory, selectedMetal, sortBy]);
 
   const getMastheadTitle = () => {
-    switch (selectedCategory) {
-      case 'necklaces':
-        return 'NECKLACES';
-      case 'bracelets':
-        return 'BRACELETS';
-      case 'rings':
-        return 'RINGS';
-      case 'earrings':
-        return 'EARRINGS';
-      case 'brooches':
-        return 'BROOCHES';
-      default:
-        return 'ALL JEWELRY';
-    }
+    if (selectedCategory === 'all') return 'ALL JEWELRY';
+    return selectedCategory.toUpperCase();
   };
 
-  // Find specific key pieces for the editorial layout blocks
-  const squareFormPiece = activeProducts.find((p) => p.id === 'square-form-necklace') || activeProducts[0];
-  const domeStudsPiece = activeProducts.find((p) => p.id === 'dome-studs') || activeProducts[13] || activeProducts[2];
-  const pearlDropPiece = activeProducts.find((p) => p.id === 'two-pearl-cuff' || p.id === 'gold-curve-necklace') || activeProducts[4];
+  const sortLabels = {
+    featured: 'Featured',
+    'price-asc': 'Price: Low to High',
+    'price-desc': 'Price: High to Low',
+    rating: 'Top Rated',
+  };
 
-  // Separate non-feature pieces for uniform grid
-  const standardGridPieces = filteredProducts.filter(
-    (p) => selectedCategory !== 'all' || (p.id !== squareFormPiece?.id && p.id !== domeStudsPiece?.id && p.id !== pearlDropPiece?.id)
-  );
+  // Curated products for exact Italian Editorial Grid
+  const layeredNecklace = products.find((p) => p.id === 'layered-chain-necklace') || products[0] || PRODUCTS[0];
+  const lucidStuds = products.find((p) => p.id === 'lucid-studs') || products[1] || PRODUCTS[1];
+  const solidBrooch = products.find((p) => p.id === 'solid-brooch') || products[2] || PRODUCTS[2];
+  const ornatePendant = products.find((p) => p.id === 'ornate-pendant') || products[3] || PRODUCTS[3];
+  const twoPearlCuff = products.find((p) => p.id === 'two-pearl-cuff') || products[4] || PRODUCTS[4];
+  const tideHoop = products.find((p) => p.id === 'tide-hoop') || products[5] || PRODUCTS[5];
+  const starEdgeRing = products.find((p) => p.id === 'star-edge-ring') || products[6] || PRODUCTS[6];
+  const waveMiracleRing = products.find((p) => p.id === 'wave-miracle-ring') || products[7] || PRODUCTS[7];
+  const shellStuds = products.find((p) => p.id === 'shell-studs') || products[8] || PRODUCTS[8];
+  const goldCurveNecklace = products.find((p) => p.id === 'gold-curve-necklace') || products[9] || PRODUCTS[9];
+  const aureusEarrings = products.find((p) => p.id === 'aureus-earrings') || products[10] || PRODUCTS[10];
+  const linkedHeartBracelet = products.find((p) => p.id === 'linked-heart-bracelet') || products[11] || PRODUCTS[11];
+  const sculpBracelet = products.find((p) => p.id === 'sculp-bracelet') || products[12] || PRODUCTS[12];
+  const domeStuds = products.find((p) => p.id === 'dome-studs') || products[13] || PRODUCTS[13];
+  const pearlDropNecklace = products.find((p) => p.id === 'pearl-drop-necklace') || products[14] || PRODUCTS[14];
+
+  const editorialUsedIds = new Set([
+    layeredNecklace.id,
+    lucidStuds.id,
+    solidBrooch.id,
+    ornatePendant.id,
+    twoPearlCuff.id,
+    tideHoop.id,
+    starEdgeRing.id,
+    waveMiracleRing.id,
+    shellStuds.id,
+    goldCurveNecklace.id,
+    aureusEarrings.id,
+    linkedHeartBracelet.id,
+    sculpBracelet.id,
+    domeStuds.id,
+    pearlDropNecklace.id,
+  ]);
+
+  const remainingProducts = filteredProducts.filter((p) => !editorialUsedIds.has(p.id));
+
+  // Render a single standard card
+  const renderProductCard = (product: Product, customTitle?: string, customPrice?: number) => {
+    const wishlisted = isWishlisted(product.id);
+    const displayPrice = customPrice !== undefined ? customPrice : product.price;
+
+    return (
+      <div
+        key={product.id}
+        onClick={() => onSelectProduct(product)}
+        className="group relative flex flex-col bg-[#E7E4D5] border border-[#D8D2C2] rounded-xs hover:border-[#8F896D] hover:shadow-[0_8px_20px_rgba(65,60,35,0.08)] transition-all duration-300 cursor-pointer p-4 sm:p-5 select-none text-left"
+      >
+        {/* Wishlist Button */}
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            onToggleWishlist(product);
+          }}
+          className={`absolute top-4 right-4 z-10 w-7 h-7 rounded-full flex items-center justify-center transition-all duration-200 ${
+            wishlisted
+              ? 'bg-[#413C23] text-white opacity-100 shadow-xs'
+              : 'bg-[#E7E4D5]/90 text-[#413C23] opacity-0 group-hover:opacity-100 hover:bg-[#FAF8F5] border border-[#D8D2C2] shadow-xs'
+          }`}
+          aria-label="Wishlist"
+        >
+          <Heart className={`w-3.5 h-3.5 ${wishlisted ? 'fill-[#7A0F1A] text-[#7A0F1A]' : ''}`} />
+        </button>
+
+        {/* Product Image */}
+        <div className="relative aspect-square w-full flex items-center justify-center overflow-hidden mb-3">
+          <img
+            src={product.images[0]}
+            alt={product.name}
+            referrerPolicy="no-referrer"
+            loading="lazy"
+            className="w-full h-full object-contain mix-blend-multiply group-hover:scale-106 transition-transform duration-500 ease-out"
+          />
+        </div>
+
+        {/* Text Details with Prominent Bold Price */}
+        <div className="flex flex-col text-left space-y-1">
+          <span className="text-[10px] uppercase tracking-[0.18em] font-semibold text-[#8F896D]">
+            {product.metal}
+          </span>
+          <h3 className="font-serif-display text-base sm:text-lg font-normal text-[#413C23] group-hover:text-[#8F896D] transition-colors leading-snug truncate">
+            {customTitle || product.name}
+          </h3>
+          <p className="text-base sm:text-lg font-bold text-[#413C23] tracking-tight mt-0.5">
+            {formatPrice(displayPrice, currency)}
+          </p>
+        </div>
+      </div>
+    );
+  };
 
   return (
-    <div ref={containerRef} className="pb-24 font-sans-body w-full text-[#413C23] bg-[#E7E4D5] select-none">
+    <div ref={containerRef} className="pb-10 font-sans-body w-full text-[#413C23] bg-[#E7E4D5] select-none">
       
-      {/* 1. EXACT REFERENCE EDITORIAL MASTHEAD BANNER */}
-      <section className="relative w-full bg-[#8F896D] text-[#E7E4D5] min-h-[360px] sm:min-h-[460px] md:min-h-[520px] flex flex-col justify-between p-6 sm:p-10 md:p-12 lg:px-16 2xl:px-20 select-none overflow-hidden border-b border-[#D8D2C2]">
+      {/* 1. HERO MASTHEAD BANNER */}
+      <section className="relative w-full bg-[#8A8568] text-[#FAF8F5] min-h-[360px] sm:min-h-[420px] md:min-h-[480px] flex flex-col justify-between pt-8 sm:pt-10 px-4 sm:px-8 lg:px-12 select-none overflow-hidden border-b border-[#7B765B]">
         
-        {/* Background Panoramic High-Fashion Model Portrait */}
-        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        {/* Centered Editorial High-Fashion Model Portrait */}
+        <div className="absolute inset-x-0 top-0 bottom-12 flex justify-center items-start pointer-events-none overflow-hidden">
           <img
-            src="https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=2000&q=90"
+            src="https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=1200&q=95"
             alt="Avirena Jewelry Editorial Model"
             referrerPolicy="no-referrer"
-            className="w-full h-full object-cover object-[center_35%] filter contrast-105 opacity-85"
+            className="h-[115%] w-auto max-w-none object-cover object-top filter contrast-[1.03] opacity-95 translate-y-[-5%]"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#413C23]/80 via-[#413C23]/30 to-black/25" />
+          <div className="absolute inset-0 bg-gradient-to-b from-[#8A8568]/40 via-transparent to-[#8A8568] pointer-events-none" />
         </div>
 
-        {/* Top Micro Header */}
-        <div className="w-full flex items-center justify-between text-[11px] sm:text-xs font-normal uppercase tracking-[0.2em] text-[#FAF8F5]/90 z-20">
-          <span className="font-light">
-            Modern jewelry designed in-house
+        {/* Sub-Header Text Elements (Mid Left & Mid Right) */}
+        <div className="relative z-10 w-full flex items-center justify-between text-[11px] sm:text-xs font-serif text-[#FAF8F5]/90 pt-1">
+          <span className="italic tracking-wider font-light">
+            Homegrown dailywear jewels
           </span>
-          <span className="text-[10px] sm:text-[11px] tracking-[0.25em] text-[#FAF8F5]/80">
-            HOME PAGE / SHOP ALL
+          <span className="uppercase tracking-[0.2em] font-sans-body text-[10px] sm:text-[11px] font-medium text-[#FAF8F5]/85">
+            HOME / SHOP / {getMastheadTitle()} ({filteredProducts.length})
           </span>
         </div>
 
-        {/* Center / Bottom Grand Headline Touching Lower Edge */}
-        <div className="w-full z-20 pt-16 sm:pt-28 text-center">
-          <h1 className="font-serif-display text-6xl sm:text-8xl md:text-9xl lg:text-[11vw] font-light text-[#FAF8F5] tracking-tight leading-none uppercase drop-shadow-sm select-none">
+        {/* Massive Luxury Serif Masthead Typography */}
+        <div className="relative z-10 w-full text-center pb-2 sm:pb-3">
+          <h1 className="font-serif-display text-5xl sm:text-7xl md:text-8xl lg:text-9xl tracking-tight text-[#FAF8F5] font-light italic leading-none drop-shadow-[0_4px_12px_rgba(0,0,0,0.15)]">
             {getMastheadTitle()}
           </h1>
         </div>
+
+        {/* Bottom Hairline Anchor Strip */}
+        <div className="relative z-10 w-full flex items-center justify-between text-[10px] sm:text-[11px] font-mono tracking-widest text-[#FAF8F5]/70 pb-3 border-t border-[#FAF8F5]/20 pt-2">
+          <span>CURATED DAILYWEAR BRASS</span>
+          <span>AVIRENA JEWELS</span>
+        </div>
       </section>
 
-      {/* 2. STICKY CATEGORY PILLS & SORT BAR (Matching Reference) */}
-      <section className="sticky top-0 z-30 w-full px-4 sm:px-8 lg:px-12 xl:px-16 2xl:px-20 py-3 bg-[#E7E4D5]/98 backdrop-blur-md border-b border-[#D8D2C2] shadow-2xs">
-        <div className="w-full flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          
-          {/* Left: Category Filter Pills with Counts */}
-          <div className="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0 scrollbar-none">
-            {categories.map((cat) => {
-              const isActive = selectedCategory === cat.id;
-              return (
-                <button
-                  key={cat.id}
-                  onClick={() => setSelectedCategory(cat.id)}
-                  className={`text-xs px-3.5 py-1.5 rounded-xs transition-all cursor-pointer font-medium uppercase tracking-wider shrink-0 flex items-center gap-1.5 ${
-                    isActive
-                      ? 'bg-[#8F896D] text-[#FAF8F5] shadow-xs border border-[#8F896D]'
-                      : 'bg-[#FAF8F5] text-[#413C23] border border-[#D8D2C2] hover:border-[#8F896D]'
-                  }`}
-                >
-                  <span>{cat.label}</span>
-                  <span className="text-[11px] opacity-80">
-                    ({cat.count})
-                  </span>
-                </button>
-              );
-            })}
-          </div>
-
-          {/* Right: Sort by Dropdown */}
-          <div className="relative shrink-0 text-right">
+      {/* 2. SLICK FILTER & SORT TOOLBAR */}
+      <div className="sticky top-16 sm:top-20 z-30 w-full bg-[#E7E4D5]/98 backdrop-blur-md border-b border-[#D8D2C2] px-4 sm:px-8 lg:px-12 py-3 flex items-center justify-between select-none">
+        
+        {/* Left: Filter Buttons */}
+        <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
+          {/* Category Dropdown Pill */}
+          <div className="relative">
             <button
-              onClick={() => setSortDropdownOpen(!sortDropdownOpen)}
-              className="inline-flex items-center gap-1.5 text-xs text-[#413C23] hover:text-[#8F896D] transition-colors cursor-pointer py-1 font-medium tracking-wide"
+              onClick={() => {
+                setCategoryDropdownOpen(!categoryDropdownOpen);
+                setMetalDropdownOpen(false);
+                setSortDropdownOpen(false);
+              }}
+              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-sm bg-[#7E795F] hover:bg-[#6C674E] text-[#FAF8F5] text-[11px] font-medium tracking-wider uppercase transition-colors cursor-pointer"
             >
-              <span className="text-[#8F896D]">Sort by:</span>
-              <span className="underline underline-offset-2">{sortLabels[sortBy]}</span>
-              <ChevronDown className={`w-3.5 h-3.5 text-[#8F896D] transition-transform duration-200 ${sortDropdownOpen ? 'rotate-180' : ''}`} />
+              <span>{selectedCategory === 'all' ? 'Category' : selectedCategory}</span>
+              <ChevronDown className="w-3.5 h-3.5" />
             </button>
 
-            {sortDropdownOpen && (
-              <div className="absolute right-0 mt-2 w-48 bg-[#FAF8F5] border border-[#D8D2C2] rounded-xs shadow-xl py-1 z-40 animate-in fade-in zoom-in-95 duration-150 text-left">
-                {(Object.keys(sortLabels) as (keyof typeof sortLabels)[]).map((key) => (
+            {categoryDropdownOpen && (
+              <div className="absolute left-0 mt-2 w-48 bg-[#E7E4D5] border border-[#D8D2C2] rounded-xs shadow-lg py-1 z-30 animate-in fade-in duration-150">
+                {(['all', 'earrings', 'necklaces', 'rings', 'bracelets', 'brooches'] as Category[]).map((cat) => (
                   <button
-                    key={key}
+                    key={cat}
                     onClick={() => {
-                      setSortBy(key);
-                      setSortDropdownOpen(false);
+                      setSelectedCategory(cat);
+                      setCategoryDropdownOpen(false);
                     }}
-                    className={`w-full text-left px-4 py-2 text-xs flex items-center justify-between hover:bg-[#F4EFE6] cursor-pointer transition-colors ${
-                      sortBy === key ? 'font-bold text-[#413C23] bg-[#F4EFE6]' : 'text-[#413C23]/80'
+                    className={`w-full text-left px-4 py-2 text-xs uppercase tracking-wider transition-colors cursor-pointer flex items-center justify-between ${
+                      selectedCategory === cat ? 'bg-[#D8D2C2] text-[#413C23] font-bold' : 'text-[#413C23]/80 hover:bg-[#EDE8DC]'
                     }`}
                   >
-                    <span>{sortLabels[key]}</span>
-                    {sortBy === key && <Check className="w-3.5 h-3.5 text-[#8F896D]" />}
+                    <span>{cat === 'all' ? 'All Jewelry' : cat}</span>
+                    {selectedCategory === cat && <Check className="w-3.5 h-3.5 text-[#413C23]" />}
                   </button>
                 ))}
               </div>
             )}
           </div>
 
-        </div>
-      </section>
+          {/* Metal / Finish Filter Pill */}
+          <div className="relative">
+            <button
+              onClick={() => {
+                setMetalDropdownOpen(!metalDropdownOpen);
+                setCategoryDropdownOpen(false);
+                setSortDropdownOpen(false);
+              }}
+              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-sm bg-[#7E795F] hover:bg-[#6C674E] text-[#FAF8F5] text-[11px] font-medium tracking-wider uppercase transition-colors cursor-pointer"
+            >
+              <span>{selectedMetal === 'all' ? 'Finish ▾' : selectedMetal}</span>
+            </button>
 
-      {/* 3. EDITORIAL ASYMMETRICAL CATALOG GRID (Matching Reference) */}
-      <section className="w-full px-4 sm:px-8 lg:px-12 xl:px-16 2xl:px-20 pt-8 sm:pt-12">
-        <div className="w-full space-y-6 sm:space-y-8">
-          
-          {/* SECTION A: 4-Column Grid with Big 2x2 Feature Hero on Left */}
-          {selectedCategory === 'all' && squareFormPiece && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 items-start">
-              
-              {/* BIG 2x2 Feature Hero Card: Square Form Necklace Model */}
-              <div
-                onClick={() => onSelectProduct(squareFormPiece)}
-                className="sm:col-span-2 sm:row-span-2 group cursor-pointer flex flex-col justify-between text-left h-full space-y-3"
-              >
-                <div className="relative aspect-[4/5] sm:aspect-square w-full bg-[#FAF8F5] border border-[#D8D2C2] rounded-xs overflow-hidden transition-all duration-300 group-hover:border-[#8F896D]">
-                  <img
-                    src="https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=1200&q=90"
-                    alt={squareFormPiece.name}
-                    referrerPolicy="no-referrer"
-                    className="w-full h-full object-cover object-[center_35%] group-hover:scale-103 transition-transform duration-700 ease-out"
-                  />
+            {metalDropdownOpen && (
+              <div className="absolute left-0 mt-2 w-48 bg-[#E7E4D5] border border-[#D8D2C2] rounded-xs shadow-lg py-1 z-30 animate-in fade-in duration-150">
+                {[
+                  { label: 'All Finishes', val: 'all' },
+                  { label: 'Gold-Tone Brass', val: 'brass' },
+                  { label: 'Silver-Tone Alloy', val: 'alloy' },
+                  { label: 'Anti-Tarnish Finishes', val: 'anti-tarnish' },
+                ].map((item) => (
                   <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onQuickAdd(squareFormPiece);
+                    key={item.val}
+                    onClick={() => {
+                      setSelectedMetal(item.val);
+                      setMetalDropdownOpen(false);
                     }}
-                    className="absolute bottom-3 right-3 p-3 bg-[#413C23] hover:bg-[#8F896D] text-[#FAF8F5] rounded-xs opacity-0 group-hover:opacity-100 transition-opacity shadow-md cursor-pointer z-10"
-                    title="Quick Add to Bag"
+                    className={`w-full text-left px-4 py-2 text-xs uppercase tracking-wider transition-colors cursor-pointer flex items-center justify-between ${
+                      selectedMetal === item.val ? 'bg-[#D8D2C2] text-[#413C23] font-bold' : 'text-[#413C23]/80 hover:bg-[#EDE8DC]'
+                    }`}
                   >
-                    <ShoppingBag className="w-4 h-4" />
+                    <span>{item.label}</span>
+                    {selectedMetal === item.val && <Check className="w-3.5 h-3.5 text-[#413C23]" />}
                   </button>
-                </div>
-
-                <div className="space-y-0.5 pt-1">
-                  <h3 className="font-serif-display text-sm sm:text-base font-medium text-[#413C23] group-hover:text-[#8F896D] transition-colors">
-                    {squareFormPiece.name}
-                  </h3>
-                  <p className="text-xs text-[#8F896D] font-normal">
-                    {formatPrice(squareFormPiece.price, currency)}
-                  </p>
-                </div>
-              </div>
-
-              {/* Top Right 4 Pieces (Cols 3 & 4) */}
-              {activeProducts
-                .filter((p) => p.id !== squareFormPiece.id)
-                .slice(0, 4)
-                .map((product) => (
-                  <div
-                    key={product.id}
-                    onClick={() => onSelectProduct(product)}
-                    className="group cursor-pointer flex flex-col space-y-3 text-left w-full"
-                  >
-                    <div className="relative aspect-square w-full bg-[#FAF8F5] border border-[#D8D2C2] rounded-xs flex items-center justify-center p-6 transition-all duration-300 group-hover:bg-white group-hover:border-[#8F896D] overflow-hidden">
-                      <div className="w-full h-full flex items-center justify-center">
-                        <img
-                          src={product.images[0]}
-                          alt={product.name}
-                          referrerPolicy="no-referrer"
-                          className="max-w-full max-h-full w-auto h-auto object-contain mix-blend-multiply group-hover:scale-108 transition-transform duration-500 ease-out"
-                        />
-                      </div>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          onQuickAdd(product);
-                        }}
-                        className="absolute bottom-2.5 right-2.5 p-2 bg-[#413C23] hover:bg-[#8F896D] text-[#FAF8F5] rounded-xs opacity-0 group-hover:opacity-100 transition-opacity shadow-sm cursor-pointer z-10"
-                        title="Quick Add"
-                      >
-                        <ShoppingBag className="w-3.5 h-3.5" />
-                      </button>
-                    </div>
-
-                    <div className="h-10 flex flex-col justify-between pt-0.5">
-                      <h4 className="font-serif-display text-xs sm:text-[13px] text-[#413C23] group-hover:text-[#8F896D] transition-colors font-medium truncate block">
-                        {product.name}
-                      </h4>
-                      <p className="text-xs text-[#8F896D] font-normal block">
-                        {formatPrice(product.price, currency)}
-                      </p>
-                    </div>
-                  </div>
                 ))}
-            </div>
-          )}
-
-          {/* SECTION B: UNIFORM 4-COLUMN PRODUCT GRID */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
-            {(selectedCategory === 'all' ? standardGridPieces.slice(4) : filteredProducts).map((product) => (
-              <div
-                key={product.id}
-                onClick={() => onSelectProduct(product)}
-                className="group cursor-pointer flex flex-col space-y-3 text-left w-full"
-              >
-                <div className="relative aspect-square w-full bg-[#FAF8F5] border border-[#D8D2C2] rounded-xs flex items-center justify-center p-6 transition-all duration-300 group-hover:bg-white group-hover:border-[#8F896D] overflow-hidden">
-                  <div className="w-full h-full flex items-center justify-center">
-                    <img
-                      src={product.images[0]}
-                      alt={product.name}
-                      referrerPolicy="no-referrer"
-                      className="max-w-full max-h-full w-auto h-auto object-contain mix-blend-multiply group-hover:scale-108 transition-transform duration-500 ease-out"
-                    />
-                  </div>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onQuickAdd(product);
-                    }}
-                    className="absolute bottom-2.5 right-2.5 p-2 bg-[#413C23] hover:bg-[#8F896D] text-[#FAF8F5] rounded-xs opacity-0 group-hover:opacity-100 transition-opacity shadow-sm cursor-pointer z-10"
-                    title="Quick Add"
-                  >
-                    <ShoppingBag className="w-3.5 h-3.5" />
-                  </button>
-                </div>
-
-                <div className="h-10 flex flex-col justify-between pt-0.5">
-                  <h4 className="font-serif-display text-xs sm:text-[13px] text-[#413C23] group-hover:text-[#8F896D] transition-colors font-medium truncate block">
-                    {product.name}
-                  </h4>
-                  <p className="text-xs text-[#8F896D] font-normal block">
-                    {formatPrice(product.price, currency)}
-                  </p>
-                </div>
               </div>
-            ))}
+            )}
           </div>
+        </div>
 
-          {/* SECTION C: BOTTOM DUAL CAMPAIGN HERO CARDS (Matching Reference) */}
-          {selectedCategory === 'all' && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 pt-4">
-              
-              {/* Left Dual Feature: Dome Studs Model */}
-              <div
-                onClick={() => {
-                  if (domeStudsPiece) onSelectProduct(domeStudsPiece);
-                }}
-                className="group cursor-pointer flex flex-col space-y-3 text-left w-full"
-              >
-                <div className="relative aspect-[4/5] sm:aspect-square w-full bg-[#FAF8F5] border border-[#D8D2C2] rounded-xs overflow-hidden transition-all duration-300 group-hover:border-[#8F896D]">
-                  <img
-                    src="https://images.unsplash.com/photo-1630019852942-f89202989a59?auto=format&fit=crop&w=1200&q=90"
-                    alt="Dome Studs Campaign Model"
-                    referrerPolicy="no-referrer"
-                    className="w-full h-full object-cover object-[center_35%] group-hover:scale-103 transition-transform duration-700 ease-out"
-                  />
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      if (domeStudsPiece) onQuickAdd(domeStudsPiece);
-                    }}
-                    className="absolute bottom-3 right-3 p-3 bg-[#413C23] hover:bg-[#8F896D] text-[#FAF8F5] rounded-xs opacity-0 group-hover:opacity-100 transition-opacity shadow-md cursor-pointer z-10"
-                    title="Quick Add to Bag"
-                  >
-                    <ShoppingBag className="w-4 h-4" />
-                  </button>
-                </div>
+        {/* Right: Sort Dropdown */}
+        <div className="relative">
+          <button
+            onClick={() => {
+              setSortDropdownOpen(!sortDropdownOpen);
+              setCategoryDropdownOpen(false);
+              setMetalDropdownOpen(false);
+            }}
+            className="inline-flex items-center gap-1.5 text-xs text-[#413C23] font-normal hover:text-[#8F896D] transition-colors cursor-pointer"
+          >
+            <span>Sort by: <strong className="font-semibold">{sortLabels[sortBy]}</strong></span>
+            <ChevronDown className="w-3.5 h-3.5 stroke-[1.5]" />
+          </button>
 
-                <div className="space-y-0.5 pt-1">
-                  <h3 className="font-serif-display text-sm sm:text-base font-medium text-[#413C23] group-hover:text-[#8F896D] transition-colors">
-                    {domeStudsPiece?.name || 'Dome Studs'}
-                  </h3>
-                  <p className="text-xs text-[#8F896D] font-normal">
-                    {formatPrice(domeStudsPiece?.price || 155, currency)}
-                  </p>
-                </div>
-              </div>
-
-              {/* Right Dual Feature: Baroque Pearl Pendant Model */}
-              <div
-                onClick={() => {
-                  if (pearlDropPiece) onSelectProduct(pearlDropPiece);
-                }}
-                className="group cursor-pointer flex flex-col space-y-3 text-left w-full"
-              >
-                <div className="relative aspect-[4/5] sm:aspect-square w-full bg-[#FAF8F5] border border-[#D8D2C2] rounded-xs overflow-hidden transition-all duration-300 group-hover:border-[#8F896D]">
-                  <img
-                    src="https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?auto=format&fit=crop&w=1200&q=90"
-                    alt="Pearl Drop Pendant Campaign Model"
-                    referrerPolicy="no-referrer"
-                    className="w-full h-full object-cover object-[center_30%] group-hover:scale-103 transition-transform duration-700 ease-out"
-                  />
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      if (pearlDropPiece) onQuickAdd(pearlDropPiece);
-                    }}
-                    className="absolute bottom-3 right-3 p-3 bg-[#413C23] hover:bg-[#8F896D] text-[#FAF8F5] rounded-xs opacity-0 group-hover:opacity-100 transition-opacity shadow-md cursor-pointer z-10"
-                    title="Quick Add to Bag"
-                  >
-                    <ShoppingBag className="w-4 h-4" />
-                  </button>
-                </div>
-
-                <div className="space-y-0.5 pt-1">
-                  <h3 className="font-serif-display text-sm sm:text-base font-medium text-[#413C23] group-hover:text-[#8F896D] transition-colors">
-                    {pearlDropPiece?.name || 'Baroque Pearl Drop'}
-                  </h3>
-                  <p className="text-xs text-[#8F896D] font-normal">
-                    {formatPrice(pearlDropPiece?.price || 195, currency)}
-                  </p>
-                </div>
-              </div>
-
+          {sortDropdownOpen && (
+            <div className="absolute right-0 mt-2 w-48 bg-[#E7E4D5] border border-[#D8D2C2] rounded-xs shadow-lg py-1 z-30 animate-in fade-in duration-150">
+              {(Object.keys(sortLabels) as (keyof typeof sortLabels)[]).map((key) => (
+                <button
+                  key={key}
+                  onClick={() => {
+                    setSortBy(key);
+                    setSortDropdownOpen(false);
+                  }}
+                  className={`w-full text-left px-4 py-2 text-xs transition-colors cursor-pointer flex items-center justify-between ${
+                    sortBy === key ? 'bg-[#D8D2C2] text-[#413C23] font-bold' : 'text-[#413C23]/80 hover:bg-[#EDE8DC]'
+                  }`}
+                >
+                  <span>{sortLabels[key]}</span>
+                  {sortBy === key && <Check className="w-3.5 h-3.5 text-[#413C23]" />}
+                </button>
+              ))}
             </div>
           )}
-
         </div>
-      </section>
+      </div>
 
+      {/* 3. EDITORIAL ASYMMETRIC GRID */}
+      <main className="w-full px-4 sm:px-8 lg:px-12 py-6 sm:py-8">
+        
+        {/* If filtered by specific category or metal, show clean responsive grid */}
+        {selectedCategory !== 'all' || selectedMetal !== 'all' ? (
+          <div>
+            {filteredProducts.length === 0 ? (
+              <div className="py-20 text-center flex flex-col items-center justify-center">
+                <p className="text-lg font-serif italic text-[#413C23]/70 mb-4">
+                  No jewelry pieces found in this category.
+                </p>
+                <button
+                  onClick={() => {
+                    setSelectedCategory('all');
+                    setSelectedMetal('all');
+                  }}
+                  className="px-6 py-2.5 bg-[#413C23] text-white text-xs uppercase tracking-widest hover:bg-[#8F896D] transition-colors"
+                >
+                  Explore All Jewelry
+                </button>
+              </div>
+            ) : (
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+                {filteredProducts.map((prod) => renderProductCard(prod))}
+              </div>
+            )}
+          </div>
+        ) : (
+          <div className="space-y-4 sm:space-y-6">
+            
+            {/* ROW 1: Large Left Editorial Lifestyle + 4 Right Product Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+              
+              {/* Left Tall Lifestyle Feature Card */}
+              <div
+                onClick={() => onSelectProduct(layeredNecklace)}
+                className="group relative flex flex-col bg-[#E7E4D5] border border-[#D8D2C2] rounded-xs hover:border-[#8F896D] hover:shadow-[0_8px_20px_rgba(65,60,35,0.08)] transition-all duration-300 cursor-pointer md:col-span-2 md:row-span-2 p-4 sm:p-6 select-none text-left"
+              >
+                <div className="relative aspect-[4/5] md:aspect-auto md:flex-1 w-full overflow-hidden mb-3 bg-[#D8D2C2] rounded-xs">
+                  <img
+                    src="https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=1200&q=95"
+                    alt="Layered Chain Necklace"
+                    referrerPolicy="no-referrer"
+                    className="w-full h-full object-cover object-center group-hover:scale-104 transition-transform duration-700 ease-out"
+                  />
+                </div>
+                <div className="flex flex-col text-left space-y-1">
+                  <span className="text-[10px] uppercase tracking-[0.18em] font-semibold text-[#8F896D]">
+                    Gold-Tone Brass
+                  </span>
+                  <h3 className="font-serif-display text-lg sm:text-xl font-normal text-[#413C23] group-hover:text-[#8F896D] transition-colors leading-snug truncate">
+                    Layered Chain Necklace
+                  </h3>
+                  <p className="text-base sm:text-lg font-bold text-[#413C23] tracking-tight mt-0.5">
+                    {formatPrice(180, currency)}
+                  </p>
+                </div>
+              </div>
+
+              {/* Right Col 3, Row 1 Top */}
+              {renderProductCard(lucidStuds, 'Lucid Studs', 150)}
+
+              {/* Right Col 4, Row 1 Top */}
+              {renderProductCard(solidBrooch, 'Solid Wave Brooch', 225)}
+
+              {/* Right Col 3, Row 1 Bottom */}
+              {renderProductCard(ornatePendant, 'Ornate Scroll Pendant', 250)}
+
+              {/* Right Col 4, Row 1 Bottom */}
+              {renderProductCard(twoPearlCuff, 'Two-Pearl Cuff', 215)}
+            </div>
+
+            {/* ROW 2: 4 Standard Product Cards */}
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+              {renderProductCard(tideHoop, 'Tide Hoop Earrings', 175)}
+              {renderProductCard(starEdgeRing, 'Star Edge Ring', 160)}
+              {renderProductCard(waveMiracleRing, 'Wave Miracle Ring', 195)}
+              {renderProductCard(shellStuds, 'Shell Radiance Studs', 150)}
+            </div>
+
+            {/* ROW 3: 4 Standard Product Cards */}
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+              {renderProductCard(goldCurveNecklace, 'Gold Curve Necklace', 210)}
+              {renderProductCard(aureusEarrings, 'Aureus Earrings', 210)}
+              {renderProductCard(linkedHeartBracelet, 'Linked Heart Bracelet', 195)}
+              {renderProductCard(sculpBracelet, 'Sculp Bracelet', 230)}
+            </div>
+
+            {/* ROW 4: 2 Large Editorial Lifestyle Feature Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+              
+              {/* Editorial Duo Left: Dome Studs */}
+              <div
+                onClick={() => onSelectProduct(domeStuds)}
+                className="group relative flex flex-col bg-[#E7E4D5] border border-[#D8D2C2] rounded-xs hover:border-[#8F896D] hover:shadow-[0_8px_20px_rgba(65,60,35,0.08)] transition-all duration-300 cursor-pointer p-4 sm:p-6 select-none text-left"
+              >
+                <div className="relative aspect-[4/3] w-full overflow-hidden mb-3 bg-[#D8D2C2] rounded-xs">
+                  <img
+                    src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=1200&q=95"
+                    alt="Dome Studs"
+                    referrerPolicy="no-referrer"
+                    className="w-full h-full object-cover object-[center_35%] group-hover:scale-104 transition-transform duration-700 ease-out"
+                  />
+                </div>
+                <div className="flex flex-col text-left space-y-1">
+                  <span className="text-[10px] uppercase tracking-[0.18em] font-semibold text-[#8F896D]">
+                    Gold-Tone Brass
+                  </span>
+                  <h3 className="font-serif-display text-lg sm:text-xl font-normal text-[#413C23] group-hover:text-[#8F896D] transition-colors leading-snug truncate">
+                    Dome Studs
+                  </h3>
+                  <p className="text-base sm:text-lg font-bold text-[#413C23] tracking-tight mt-0.5">
+                    {formatPrice(160, currency)}
+                  </p>
+                </div>
+              </div>
+
+              {/* Editorial Duo Right: Pearl Drop Necklace */}
+              <div
+                onClick={() => onSelectProduct(pearlDropNecklace)}
+                className="group relative flex flex-col bg-[#E7E4D5] border border-[#D8D2C2] rounded-xs hover:border-[#8F896D] hover:shadow-[0_8px_20px_rgba(65,60,35,0.08)] transition-all duration-300 cursor-pointer p-4 sm:p-6 select-none text-left"
+              >
+                <div className="relative aspect-[4/3] w-full overflow-hidden mb-3 bg-[#D8D2C2] rounded-xs">
+                  <img
+                    src="https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?auto=format&fit=crop&w=1200&q=95"
+                    alt="Pearl Drop Necklace"
+                    referrerPolicy="no-referrer"
+                    className="w-full h-full object-cover object-[center_35%] group-hover:scale-104 transition-transform duration-700 ease-out"
+                  />
+                </div>
+                <div className="flex flex-col text-left space-y-1">
+                  <span className="text-[10px] uppercase tracking-[0.18em] font-semibold text-[#8F896D]">
+                    Gold-Tone Brass
+                  </span>
+                  <h3 className="font-serif-display text-lg sm:text-xl font-normal text-[#413C23] group-hover:text-[#8F896D] transition-colors leading-snug truncate">
+                    Pearl Drop Necklace
+                  </h3>
+                  <p className="text-base sm:text-lg font-bold text-[#413C23] tracking-tight mt-0.5">
+                    {formatPrice(190, currency)}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Additional Live Catalog Items */}
+            {remainingProducts.length > 0 && (
+              <div className="pt-8 border-t border-[#D8D2C2]">
+                <h3 className="text-xs uppercase tracking-[0.2em] font-medium text-[#413C23]/80 mb-6 text-left">
+                  More Atelier Creations ({remainingProducts.length})
+                </h3>
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+                  {remainingProducts.map((prod) => renderProductCard(prod))}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+      </main>
     </div>
   );
 };

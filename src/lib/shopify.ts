@@ -416,39 +416,113 @@ export const GET_CART_QUERY = `
 
 export function transformShopifyProduct(node: any): Product {
   const images = (node.images?.edges || []).map((edge: any) => edge.node.url);
-  const minPrice = parseFloat(node.priceRange?.minVariantPrice?.amount || '0');
-  const comparePrice = node.compareAtPriceRange?.minVariantPrice?.amount
+  const rawAmount = parseFloat(node.priceRange?.minVariantPrice?.amount || '0');
+  const currencyCode = (node.priceRange?.minVariantPrice?.currencyCode || 'INR').toUpperCase();
+  
+  // Normalize price to base EUR so currency switcher works seamlessly
+  let basePriceEur = rawAmount;
+  if (currencyCode === 'INR') {
+    basePriceEur = rawAmount / 90.0;
+  } else if (currencyCode === 'USD') {
+    basePriceEur = rawAmount / 1.08;
+  } else if (currencyCode === 'GBP') {
+    basePriceEur = rawAmount / 0.85;
+  }
+
+  const rawCompareAmount = node.compareAtPriceRange?.minVariantPrice?.amount
     ? parseFloat(node.compareAtPriceRange.minVariantPrice.amount)
     : undefined;
+  
+  let baseComparePriceEur: number | undefined = undefined;
+  if (rawCompareAmount && rawCompareAmount > rawAmount) {
+    if (currencyCode === 'INR') {
+      baseComparePriceEur = rawCompareAmount / 90.0;
+    } else if (currencyCode === 'USD') {
+      baseComparePriceEur = rawCompareAmount / 1.08;
+    } else if (currencyCode === 'GBP') {
+      baseComparePriceEur = rawCompareAmount / 0.85;
+    } else {
+      baseComparePriceEur = rawCompareAmount;
+    }
+  }
 
-  // Derive Category
+  // Derive Category from title, productType, tags, description
+  const titleLower = (node.title || '').toLowerCase();
   const typeLower = (node.productType || '').toLowerCase();
-  const tagsLower = (node.tags || []).map((t: string) => t.toLowerCase());
-  let category: Category = 'rings';
-  if (typeLower.includes('necklace') || tagsLower.includes('necklaces')) category = 'necklaces';
-  else if (typeLower.includes('ring') || tagsLower.includes('rings')) category = 'rings';
-  else if (typeLower.includes('earring') || tagsLower.includes('earrings')) category = 'earrings';
-  else if (typeLower.includes('bracelet') || tagsLower.includes('bracelets')) category = 'bracelets';
-  else if (typeLower.includes('brooch') || tagsLower.includes('brooches')) category = 'brooches';
-  else if (typeLower.includes('set') || tagsLower.includes('sets')) category = 'sets';
+  const tagsLower = (node.tags || []).map((t: string) => t.toLowerCase()).join(' ');
+  const descLower = (node.description || '').toLowerCase();
+  const fullText = `${titleLower} ${typeLower} ${tagsLower} ${descLower}`;
+
+  let category: Category = 'earrings';
+  if (/\b(earrings?|studs?|dangles?|hoops?|huggie)\b/i.test(titleLower) || /\b(earrings?|studs?|dangles?|hoops?|huggie)\b/i.test(typeLower) || /\b(earrings?)\b/i.test(tagsLower)) {
+    category = 'earrings';
+  } else if (/\b(necklaces?|pendants?|chokers?|collars?)\b/i.test(titleLower) || /\b(necklaces?|pendants?|chokers?|collars?)\b/i.test(typeLower) || /\b(necklaces?)\b/i.test(tagsLower)) {
+    category = 'necklaces';
+  } else if (/\b(bracelets?|bangles?|cuffs?)\b/i.test(titleLower) || /\b(bracelets?|bangles?|cuffs?)\b/i.test(typeLower) || /\b(bracelets?)\b/i.test(tagsLower)) {
+    category = 'bracelets';
+  } else if (/\b(brooches?|pins?)\b/i.test(titleLower) || /\b(brooches?|pins?)\b/i.test(typeLower) || /\b(brooches?)\b/i.test(tagsLower)) {
+    category = 'brooches';
+  } else if (/\b(rings?|bands?)\b/i.test(titleLower) || /\b(rings?|bands?)\b/i.test(typeLower) || /\b(rings?)\b/i.test(tagsLower)) {
+    category = 'rings';
+  } else if (/\b(sets?|suites?)\b/i.test(titleLower) || /\b(sets?|suites?)\b/i.test(typeLower) || /\b(sets?)\b/i.test(tagsLower)) {
+    category = 'sets';
+  } else if (/\b(earrings?|studs?|dangles?|hoops?)\b/i.test(fullText)) {
+    category = 'earrings';
+  } else if (/\b(necklaces?|pendants?|chokers?)\b/i.test(fullText)) {
+    category = 'necklaces';
+  } else if (/\b(bracelets?|bangles?|cuffs?)\b/i.test(fullText)) {
+    category = 'bracelets';
+  } else if (/\b(brooches?|pins?)\b/i.test(fullText)) {
+    category = 'brooches';
+  } else if (/\b(rings?|bands?)\b/i.test(fullText)) {
+    category = 'rings';
+  }
 
   // Derive Metal
-  let metal: Metal = '18k Gold Vermeil';
-  if (tagsLower.includes('silver') || tagsLower.includes('sterling silver')) {
-    metal = '925 Sterling Silver';
-  } else if (tagsLower.includes('rose gold')) {
-    metal = 'Rose Gold';
-  } else if (tagsLower.includes('solid gold')) {
-    metal = 'Solid Gold';
+  let metal: Metal = 'Gold-Tone Brass';
+  if (fullText.includes('silver') || fullText.includes('silver-tone') || fullText.includes('steel')) {
+    metal = 'Silver-Tone Alloy';
+  } else if (fullText.includes('rose gold')) {
+    metal = 'Rose Gold-Tone';
+  } else if (fullText.includes('anti-tarnish') || fullText.includes('brass')) {
+    metal = 'Anti-Tarnish Brass';
+  } else {
+    metal = 'Gold-Tone Brass';
+  }
+
+  // Extract description bullets if present
+  let details: string[] = [];
+  if (node.description && (node.description.includes('✨') || node.description.includes('•') || node.description.includes('- '))) {
+    const lines = node.description
+      .split(/[\n•✨\r]/)
+      .map((l: string) => l.trim().replace(/^[-*]\s*/, ''))
+      .filter((l: string) => l.length > 5 && !l.toLowerCase().startsWith('why you') && !l.toLowerCase().startsWith('perfect for'));
+    if (lines.length > 0) {
+      details = lines.slice(0, 5);
+    }
+  }
+  if (details.length === 0) {
+    details = [
+      'Premium dailywear finish in high-grade brass with anti-tarnish protective coating',
+      'Comfort-fit engineered ergonomic silhouette for everyday styling',
+      'Hypoallergenic, lead & nickel free for sensitive skin',
+      'Homegrown Indian design crafted for lasting shine',
+    ];
   }
 
   // Variants
   const variants: ProductVariant[] = (node.variants?.edges || []).map((vEdge: any) => {
     const vNode = vEdge.node;
+    const vAmount = parseFloat(vNode.price?.amount || rawAmount.toString());
+    let vPriceEur = vAmount;
+    if (currencyCode === 'INR') vPriceEur = vAmount / 90.0;
+    else if (currencyCode === 'USD') vPriceEur = vAmount / 1.08;
+    else if (currencyCode === 'GBP') vPriceEur = vAmount / 0.85;
+
     return {
       id: vNode.id,
       title: vNode.title,
-      price: parseFloat(vNode.price?.amount || minPrice.toString()),
+      price: vPriceEur,
       availableForSale: vNode.availableForSale,
       selectedOptions: vNode.selectedOptions,
       sku: vNode.sku,
@@ -460,25 +534,20 @@ export function transformShopifyProduct(node: any): Product {
     shopifyId: node.id,
     handle: node.handle,
     name: node.title,
-    subtitle: '',
+    subtitle: node.productType || '',
     category,
     metal,
-    price: minPrice,
-    originalPrice: comparePrice && comparePrice > minPrice ? comparePrice : undefined,
+    price: basePriceEur,
+    originalPrice: baseComparePriceEur,
     rating: 4.9,
     reviewsCount: 24,
     images: images.length > 0 ? images : ['https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=1200&q=90'],
     description: node.description || 'Handcrafted fine jewellery sculpted for daily wear.',
-    details: [
-      'Demi-fine craftsmanship in thick 18k gold vermeil & recycled silver',
-      'Comfort-fit engineered ergonomic silhouette',
-      'Anti-tarnish protective micro-coating',
-      'Crafted by master goldsmiths',
-    ],
-    materials: metal === '18k Gold Vermeil' ? '3.0 Micron 18k Gold Vermeil over 925 Sterling Silver' : 'Solid 925 Sterling Silver',
-    sizes: ['Small (48-50)', 'Medium (52-54)', 'Large (56-58)'],
+    details,
+    materials: metal === '18k Gold Vermeil' ? 'Heavy 18k Gold Vermeil over 925 Sterling Silver' : 'Solid 925 Sterling Silver',
+    sizes: category === 'rings' ? ['US 6 (52mm)', 'US 7 (54mm)', 'US 8 (57mm)'] : undefined,
     inStock: node.availableForSale ?? true,
-    isBestseller: tagsLower.includes('bestseller') || tagsLower.includes('featured'),
+    isBestseller: tagsLower.includes('bestseller') || tagsLower.includes('featured') || true,
     isNew: tagsLower.includes('new'),
     isSculptural: true,
     variants,

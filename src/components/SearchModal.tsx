@@ -9,6 +9,7 @@ interface SearchModalProps {
   onSelectProduct: (product: Product) => void;
   onQuickAdd: (product: Product) => void;
   currency: Currency;
+  catalogProducts?: Product[];
 }
 
 export const SearchModal: React.FC<SearchModalProps> = ({
@@ -17,41 +18,49 @@ export const SearchModal: React.FC<SearchModalProps> = ({
   onSelectProduct,
   onQuickAdd,
   currency,
+  catalogProducts = PRODUCTS,
 }) => {
   if (!isOpen) return null;
 
   const [query, setQuery] = useState<string>('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
 
+  const activeProducts = useMemo(() => {
+    if (catalogProducts && Array.isArray(catalogProducts) && catalogProducts.length > 0) {
+      return catalogProducts;
+    }
+    return PRODUCTS;
+  }, [catalogProducts]);
+
   const popularSearches = [
-    'Baroque Pearl',
-    '18k Gold Vermeil',
-    'Sculptural Cuff',
-    'Molten Rings',
-    'Dome Studs',
-    'Wave Brooch',
-    'Choker',
+    'Earring',
+    'Gold',
+    'Drop',
+    'Minimalist',
+    'Statement',
+    'Square',
+    'Vermeil',
   ];
 
   const searchResults = useMemo(() => {
     if (!query.trim() && selectedCategory === 'all') {
-      return PRODUCTS.slice(0, 6); // Show top trending by default
+      return activeProducts.slice(0, 8); // Show top items by default
     }
 
     const q = query.toLowerCase().trim();
-    return PRODUCTS.filter((p) => {
+    return activeProducts.filter((p) => {
       const matchCat = selectedCategory === 'all' || p.category === selectedCategory;
       const matchQuery =
         !q ||
         p.name.toLowerCase().includes(q) ||
-        p.subtitle.toLowerCase().includes(q) ||
-        p.description.toLowerCase().includes(q) ||
-        p.metal.toLowerCase().includes(q) ||
-        p.materials.toLowerCase().includes(q) ||
-        p.category.toLowerCase().includes(q);
+        (p.subtitle && p.subtitle.toLowerCase().includes(q)) ||
+        (p.description && p.description.toLowerCase().includes(q)) ||
+        (p.metal && p.metal.toLowerCase().includes(q)) ||
+        (p.materials && p.materials.toLowerCase().includes(q)) ||
+        (p.category && p.category.toLowerCase().includes(q));
       return matchCat && matchQuery;
     });
-  }, [query, selectedCategory]);
+  }, [activeProducts, query, selectedCategory]);
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto font-sans-body flex items-start justify-center pt-16 sm:pt-24 px-4 pb-12">

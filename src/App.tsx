@@ -3,6 +3,7 @@ import { PageView, Product, CartItem, Currency, Category } from './types';
 import { PRODUCTS } from './data/products';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
+import { InstagramFeedSection } from './components/InstagramFeedSection';
 import { CartDrawer } from './components/CartDrawer';
 import { SearchModal } from './components/SearchModal';
 import { QuickViewModal } from './components/QuickViewModal';
@@ -22,15 +23,22 @@ import { FaqPage } from './pages/FaqPage';
 import { PoliciesPage } from './pages/PoliciesPage';
 import { SeoMeta } from './components/SeoMeta';
 import { ShopifyProvider, useShopify } from './context/ShopifyContext';
+import { initSmoothScroll, scrollToTop } from './lib/smoothScroll';
 
 function AppContent() {
   const { products: storeProducts, isConfigured } = useShopify();
+
+  // Initialize Lenis Smooth Scroll with GSAP
+  useEffect(() => {
+    const cleanup = initSmoothScroll();
+    return cleanup;
+  }, []);
 
   // Page Routing State
   const [currentPage, setCurrentPage] = useState<PageView>('home');
   const [selectedProduct, setSelectedProduct] = useState<Product>(storeProducts[0] || PRODUCTS[0]);
   const [selectedCategory, setSelectedCategory] = useState<Category>('all');
-  const [currency, setCurrency] = useState<Currency>('EUR');
+  const [currency, setCurrency] = useState<Currency>('INR');
 
   // Sync selectedProduct if storeProducts change
   useEffect(() => {
@@ -65,28 +73,43 @@ function AppContent() {
     setToasts((prev) => prev.filter((t) => t.id !== id));
   };
 
-  // Wishlist State
-  const [wishlist, setWishlist] = useState<Product[]>([
-    storeProducts[0] || PRODUCTS[0],
-    storeProducts[1] || PRODUCTS[1],
-  ]);
+  // Wishlist State (persisted cleanly in localStorage)
+  const [wishlist, setWishlist] = useState<Product[]>(() => {
+    try {
+      const saved = localStorage.getItem('avirena_wishlist');
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
 
-  // Initial Cart
-  const [cart, setCart] = useState<CartItem[]>([
-    {
-      id: 'cart-1',
-      product: storeProducts[0] || PRODUCTS[0],
-      quantity: 1,
-      metal: '18k Gold Vermeil',
-      size: '38 cm',
-    },
-    {
-      id: 'cart-2',
-      product: storeProducts[1] || PRODUCTS[1],
-      quantity: 1,
-      metal: '18k Gold Vermeil',
-    },
-  ]);
+  // Save wishlist to localStorage
+  useEffect(() => {
+    try {
+      localStorage.setItem('avirena_wishlist', JSON.stringify(wishlist));
+    } catch (e) {
+      console.warn('Failed to save wishlist:', e);
+    }
+  }, [wishlist]);
+
+  // Cart State (persisted cleanly in localStorage)
+  const [cart, setCart] = useState<CartItem[]>(() => {
+    try {
+      const saved = localStorage.getItem('avirena_cart');
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  // Save cart to localStorage
+  useEffect(() => {
+    try {
+      localStorage.setItem('avirena_cart', JSON.stringify(cart));
+    } catch (e) {
+      console.warn('Failed to save cart:', e);
+    }
+  }, [cart]);
 
   // 1. Parse URL Path on Load & Popstate (Clean HTML5 Routing, no hash)
   useEffect(() => {
@@ -213,18 +236,18 @@ function AppContent() {
   const handleSelectProduct = (product: Product) => {
     setSelectedProduct(product);
     setCurrentPage('pdp');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    scrollToTop();
   };
 
   const handleNavigateToCollection = (category: Category = 'all') => {
     setSelectedCategory(category);
     setCurrentPage('collection');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    scrollToTop();
   };
 
   const handlePageChange = (page: PageView) => {
     setCurrentPage(page);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    scrollToTop();
   };
 
   const handleOpenQuickView = (product: Product) => {
@@ -367,7 +390,7 @@ function AppContent() {
           />
         )}
 
-        {currentPage === 'collection' && (
+        {(currentPage === 'collection' || currentPage === 'shop') && (
           <CollectionPage
             selectedCategory={selectedCategory}
             setSelectedCategory={setSelectedCategory}
@@ -434,6 +457,7 @@ function AppContent() {
             onNavigateBack={() => handlePageChange('collection')}
             isWishlisted={isProductWishlisted(selectedProduct.id)}
             onToggleWishlist={handleToggleWishlist}
+            catalogProducts={storeProducts}
           />
         )}
 
@@ -460,6 +484,9 @@ function AppContent() {
           />
         )}
       </main>
+
+      {/* Instagram Feed Gallery Section */}
+      <InstagramFeedSection />
 
       {/* Footer */}
       <Footer
@@ -506,6 +533,7 @@ function AppContent() {
         onSelectProduct={handleSelectProduct}
         onQuickAdd={handleQuickAdd}
         currency={currency}
+        catalogProducts={storeProducts}
       />
 
       {/* Wishlist Modal */}

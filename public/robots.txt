@@ -5,7 +5,7 @@ Disallow: /checkout
 Disallow: /cart
 Disallow: /api/
 
-# AI Search & Answer Engine Agents (AEO Optimization)
+# AI Search & Answer Engine Crawlers (AEO / LLM indexing)
 User-agent: GPTBot
 Allow: /
 

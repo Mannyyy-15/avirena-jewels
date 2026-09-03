@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Search, ShoppingBag, User, Menu, X, Heart, Sparkles, Check, ArrowRight, Globe, ChevronRight } from 'lucide-react';
+import { Search, ShoppingBag, User, Menu, X, Heart, Sparkles, Check, ArrowRight, ChevronRight } from 'lucide-react';
 import { PageView, Currency, Category } from '../types';
-import { CURRENCIES } from '../data/products';
 import { AvirenaLogo } from './AvirenaLogo';
 
 interface NavbarProps {
@@ -15,15 +14,15 @@ interface NavbarProps {
   openStoryModal: () => void;
   openCareModal: () => void;
   setSelectedCategory?: (cat: Category) => void;
-  currency: Currency;
-  setCurrency: (c: Currency) => void;
+  currency?: Currency;
+  setCurrency?: (c: Currency) => void;
 }
 
 const ANNOUNCEMENTS = [
-  '✨ COMPLIMENTARY INSURED EXPRESS SHIPPING OVER $150',
-  '💎 100% RECYCLED 925 SOLID SILVER & NATURAL BAROQUE PEARLS',
-  '🌿 HANDCRAFTED HEIRLOOM DEMI-FINE JEWELRY',
-  '🎁 LUXURY VELVET TRAVEL POUCH WITH EVERY ORDER',
+  '✨ COMPLIMENTARY EXPRESS SHIPPING ON ORDERS OVER ₹1,999',
+  '💎 PREMIUM ANTI-TARNISH BRASS & ORGANIC FRESHWATER PEARLS',
+  '🌿 HOMEGROWN HANDCRAFTED DAILYWEAR LUXURY',
+  '🎁 COMPLIMENTARY KEEPSAKE TRAVEL POUCH WITH EVERY ORDER',
 ];
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -37,22 +36,19 @@ export const Navbar: React.FC<NavbarProps> = ({
   openStoryModal,
   openCareModal,
   setSelectedCategory,
-  currency,
-  setCurrency,
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
-  const [currencyDropdownOpen, setCurrencyDropdownOpen] = useState(false);
   const [emailInput, setEmailInput] = useState('');
   const [subscribed, setSubscribed] = useState(false);
   const [announcementIndex, setAnnouncementIndex] = useState(0);
 
   // Auto-rotate announcement messages
   useEffect(() => {
-    const timer = setInterval(() => {
+    const interval = setInterval(() => {
       setAnnouncementIndex((prev) => (prev + 1) % ANNOUNCEMENTS.length);
     }, 4500);
-    return () => clearInterval(timer);
+    return () => clearInterval(interval);
   }, []);
 
   const navigateTo = (page: PageView, category?: Category) => {
@@ -62,7 +58,6 @@ export const Navbar: React.FC<NavbarProps> = ({
     }
     setMobileMenuOpen(false);
     setUserDropdownOpen(false);
-    setCurrencyDropdownOpen(false);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -153,18 +148,6 @@ export const Navbar: React.FC<NavbarProps> = ({
             >
               About
             </button>
-
-            <button
-              id="nav-contact-btn"
-              onClick={() => navigateTo('contact')}
-              className={`transition-colors hover:text-[#8F896D] py-1 cursor-pointer relative ${
-                currentPage === 'contact'
-                  ? 'text-[#413C23] font-bold after:absolute after:bottom-0 after:left-0 after:w-full after:h-[1.5px] after:bg-[#8F896D]'
-                  : 'text-[#413C23]/85'
-              }`}
-            >
-              Contact
-            </button>
           </nav>
         </div>
 
@@ -180,48 +163,15 @@ export const Navbar: React.FC<NavbarProps> = ({
           </button>
         </div>
 
-        {/* RIGHT COLUMN (Currency, Search, Wishlist, Account, Bag) */}
+        {/* RIGHT COLUMN (Search, Wishlist, Account, Bag) */}
         <div className="col-span-4 flex items-center justify-end space-x-3 sm:space-x-5 text-[#413C23]">
-          {/* Currency Selector */}
-          <div className="relative hidden sm:block">
-            <button
-              onClick={() => setCurrencyDropdownOpen(!currencyDropdownOpen)}
-              className="flex items-center gap-1.5 text-[11px] uppercase tracking-wider text-[#413C23] hover:text-[#8F896D] px-2.5 py-1 rounded-xs border border-[#D8D2C2] hover:border-[#8F896D] transition-colors cursor-pointer bg-[#F4EFE6]"
-              title="Select currency"
-            >
-              <Globe className="w-3 h-3 text-[#8F896D]" />
-              <span className="font-semibold">{currency}</span>
-              <span className="text-[10px] text-[#8F896D]">({CURRENCIES[currency].symbol})</span>
-            </button>
-
-            {currencyDropdownOpen && (
-              <div className="absolute right-0 mt-2 w-36 bg-[#E7E4D5] border border-[#D8D2C2] rounded-xs shadow-xl py-1 z-50 animate-in fade-in zoom-in-95 duration-150">
-                {(Object.keys(CURRENCIES) as Currency[]).map((c) => (
-                  <button
-                    key={c}
-                    onClick={() => {
-                      setCurrency(c);
-                      setCurrencyDropdownOpen(false);
-                    }}
-                    className={`w-full text-left px-3 py-2 text-xs flex items-center justify-between hover:bg-[#F4EFE6] cursor-pointer ${
-                      currency === c ? 'font-semibold text-[#413C23] bg-[#F4EFE6]' : 'text-[#413C23]/80'
-                    }`}
-                  >
-                    <span>{c}</span>
-                    <span className="text-[#8F896D] font-medium">{CURRENCIES[c].symbol}</span>
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-
           {/* Search Trigger */}
           <button
             id="nav-search-btn"
             onClick={openSearchModal}
             className="p-1.5 text-[#413C23] hover:text-[#8F896D] transition-colors focus:outline-none cursor-pointer flex items-center gap-1"
             aria-label="Search"
-            title="Search the Atelier"
+            title="Search the Collection"
           >
             <Search className="w-4 h-4 sm:w-4.5 sm:h-4.5 stroke-[1.4]" />
             <span className="hidden xl:inline text-[11px] uppercase tracking-widest font-medium">Search</span>
@@ -249,8 +199,8 @@ export const Navbar: React.FC<NavbarProps> = ({
               id="nav-user-account-btn"
               onClick={() => setUserDropdownOpen(!userDropdownOpen)}
               className="p-1.5 text-[#413C23] hover:text-[#8F896D] transition-colors focus:outline-none cursor-pointer"
-              aria-label="Client VIP Account"
-              title="Atelier Account"
+              aria-label="Account"
+              title="Account"
             >
               <User className="w-4 h-4 sm:w-4.5 sm:h-4.5 stroke-[1.4]" />
             </button>
@@ -258,17 +208,20 @@ export const Navbar: React.FC<NavbarProps> = ({
             {userDropdownOpen && (
               <div className="absolute right-0 mt-2 w-72 bg-[#E7E4D5] border border-[#D8D2C2] rounded-xs shadow-xl p-4 z-50 animate-in fade-in zoom-in-95 duration-150">
                 <div className="space-y-3 text-left">
-                  <span className="text-[10px] uppercase tracking-widest font-bold text-[#8F896D] block">
-                    Atelier VIP Salon
-                  </span>
-                  <h4 className="font-serif-display text-sm text-[#413C23] leading-snug">
-                    Access private previews & order tracking.
-                  </h4>
+                  <div className="border-b border-[#D8D2C2] pb-2">
+                    <span className="text-[10px] uppercase tracking-widest font-bold text-[#8F896D] block">
+                      Welcome to Avirena
+                    </span>
+                    <p className="text-xs text-[#413C23] font-medium mt-0.5">
+                      Join for order tracking &amp; exclusive access
+                    </p>
+                  </div>
 
                   {subscribed ? (
-                    <div className="flex items-center gap-2 text-xs text-[#413C23] bg-[#F4EFE6] p-2.5 rounded-xs border border-[#8F896D]">
-                      <Check className="w-3.5 h-3.5 text-[#8F896D]" />
-                      <span>Access link sent to your inbox.</span>
+                    <div className="py-3 text-center space-y-1 bg-[#F4EFE6] border border-[#D8D2C2] rounded-xs">
+                      <Check className="w-4 h-4 text-[#413C23] mx-auto" />
+                      <p className="text-xs font-semibold text-[#413C23]">Welcome to Avirena</p>
+                      <p className="text-[10px] text-[#8F896D]">Check your inbox for updates</p>
                     </div>
                   ) : (
                     <form onSubmit={handleQuickSignIn} className="space-y-2">
@@ -277,133 +230,104 @@ export const Navbar: React.FC<NavbarProps> = ({
                         required
                         value={emailInput}
                         onChange={(e) => setEmailInput(e.target.value)}
-                        placeholder="Enter your VIP email"
-                        className="w-full px-3 py-2 bg-[#F4EFE6] border border-[#D8D2C2] rounded-xs text-xs text-[#413C23] focus:outline-none focus:border-[#8F896D] placeholder-[#413C23]/40"
+                        placeholder="Enter your email address"
+                        className="w-full px-3 py-2 text-xs bg-[#FAF8F5] border border-[#D8D2C2] rounded-xs focus:outline-none focus:border-[#413C23] text-[#413C23]"
                       />
                       <button
                         type="submit"
-                        className="w-full py-2 bg-[#413C23] hover:bg-[#8F896D] text-[#E7E4D5] text-[11px] uppercase tracking-wider font-bold rounded-xs transition-colors cursor-pointer"
+                        className="w-full py-2 bg-[#413C23] hover:bg-[#8F896D] text-[#E7E4D5] text-xs uppercase tracking-wider font-semibold rounded-xs transition-colors cursor-pointer"
                       >
-                        Sign In / Join
+                        Continue
                       </button>
                     </form>
                   )}
-
-                  <div className="pt-2 border-t border-[#D8D2C2] flex flex-col space-y-1 text-xs text-[#413C23]">
-                    <button
-                      onClick={() => navigateTo('faq')}
-                      className="text-left hover:text-[#8F896D] transition-colors py-1 cursor-pointer flex items-center justify-between"
-                    >
-                      <span>Shipping & Order Tracking</span>
-                      <ChevronRight className="w-3.5 h-3.5" />
-                    </button>
-                    <button
-                      onClick={() => navigateTo('contact')}
-                      className="text-left hover:text-[#8F896D] transition-colors py-1 cursor-pointer flex items-center justify-between"
-                    >
-                      <span>Bespoke Concierge</span>
-                      <ChevronRight className="w-3.5 h-3.5" />
-                    </button>
-                  </div>
                 </div>
               </div>
             )}
           </div>
 
-          {/* Bag / Cart Trigger */}
+          {/* Cart Bag Trigger */}
           <button
-            id="nav-cart-drawer-btn"
+            id="nav-cart-bag-btn"
             onClick={openCartDrawer}
-            className="relative py-1.5 px-3 bg-[#413C23] hover:bg-[#8F896D] text-[#E7E4D5] rounded-xs transition-all duration-200 cursor-pointer flex items-center gap-2 shadow-xs active:scale-98"
+            className="relative p-2 bg-[#413C23] text-[#E7E4D5] rounded-xs hover:bg-[#8F896D] transition-colors focus:outline-none flex items-center gap-2 cursor-pointer shadow-xs"
             aria-label="Shopping Bag"
             title="View Shopping Bag"
           >
-            <ShoppingBag className="w-3.5 h-3.5 stroke-[1.8]" />
-            <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-widest">
-              Bag ({cartCount})
-            </span>
+            <ShoppingBag className="w-4 h-4 stroke-[1.5]" />
+            <span className="text-xs font-bold font-mono tracking-tight">{cartCount}</span>
           </button>
         </div>
       </div>
 
-      {/* 3. MOBILE MENU DRAWER */}
+      {/* 3. MOBILE SLIDE-OUT MENU OVERLAY */}
       {mobileMenuOpen && (
-        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex lg:hidden">
-          <div className="w-4/5 max-w-sm bg-[#FAF8F5] h-full shadow-2xl flex flex-col justify-between p-6 animate-in slide-in-from-left duration-300">
-            <div className="space-y-6">
-              <div className="flex items-center justify-between border-b border-[#E8E2D6] pb-4">
-                <AvirenaLogo size="sm" className="h-7" />
+        <div className="fixed inset-0 z-50 flex lg:hidden animate-in fade-in duration-200">
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-xs" onClick={() => setMobileMenuOpen(false)} />
+          <div className="relative w-4/5 max-w-sm bg-[#FAF8F5] h-full shadow-2xl p-6 flex flex-col justify-between overflow-y-auto border-r border-[#E8E2D6] z-10 text-left font-sans-body">
+            <div className="space-y-8">
+              {/* Header */}
+              <div className="flex items-center justify-between pb-4 border-b border-[#E8E2D6]">
+                <AvirenaLogo size="sm" className="h-6" />
                 <button
+                  id="mobile-menu-close-btn"
                   onClick={() => setMobileMenuOpen(false)}
                   className="p-1 text-[#5C5850] hover:text-[#111111] cursor-pointer"
                   aria-label="Close menu"
                 >
-                  <X className="w-6 h-6 stroke-[1.25]" />
+                  <X className="w-5 h-5 stroke-[1.5]" />
                 </button>
               </div>
 
               {/* Navigation Links */}
-              <nav className="flex flex-col space-y-4 text-sm font-medium text-[#111111]">
+              <nav className="flex flex-col space-y-4 text-sm font-semibold uppercase tracking-wider text-[#111111]">
                 <button
                   onClick={() => navigateTo('home')}
-                  className="text-left py-1 hover:text-[#D4AF37] transition-colors cursor-pointer"
+                  className="text-left py-1 hover:text-[#8F896D] transition-colors cursor-pointer"
                 >
                   Home
                 </button>
                 <button
                   onClick={() => navigateTo('shop', 'all')}
-                  className="text-left py-1 hover:text-[#D4AF37] transition-colors cursor-pointer font-semibold"
+                  className="text-left py-1 hover:text-[#8F896D] transition-colors cursor-pointer"
                 >
-                  Shop All
+                  All Jewelry
                 </button>
+                <div className="pl-4 space-y-2 text-xs font-normal text-[#5C5850]">
+                  <button onClick={() => navigateTo('shop', 'rings')} className="block text-left hover:text-[#111111]">Rings</button>
+                  <button onClick={() => navigateTo('shop', 'earrings')} className="block text-left hover:text-[#111111]">Earrings</button>
+                  <button onClick={() => navigateTo('shop', 'necklaces')} className="block text-left hover:text-[#111111]">Necklaces</button>
+                  <button onClick={() => navigateTo('shop', 'bracelets')} className="block text-left hover:text-[#111111]">Bracelets</button>
+                </div>
                 <button
                   onClick={() => navigateTo('collections')}
-                  className="text-left py-1 hover:text-[#D4AF37] transition-colors cursor-pointer"
+                  className="text-left py-1 hover:text-[#8F896D] transition-colors cursor-pointer"
                 >
                   Collections
                 </button>
                 <button
                   onClick={() => navigateTo('about')}
-                  className="text-left py-1 hover:text-[#D4AF37] transition-colors cursor-pointer"
+                  className="text-left py-1 hover:text-[#8F896D] transition-colors cursor-pointer"
                 >
-                  About Our Atelier
+                  About Our Brand
                 </button>
                 <button
                   onClick={() => navigateTo('policies')}
-                  className="text-left py-1 hover:text-[#D4AF37] transition-colors cursor-pointer"
+                  className="text-left py-1 hover:text-[#8F896D] transition-colors cursor-pointer"
                 >
-                  Policies & Assurance
+                  Policies &amp; Care
                 </button>
                 <button
                   onClick={() => navigateTo('contact')}
-                  className="text-left py-1 hover:text-[#D4AF37] transition-colors cursor-pointer"
+                  className="text-left py-1 hover:text-[#8F896D] transition-colors cursor-pointer"
                 >
-                  Contact & Concierge
+                  Contact &amp; Support
                 </button>
               </nav>
             </div>
 
-            {/* Mobile Currency & Sign In */}
+            {/* Mobile Saved Pieces */}
             <div className="pt-6 border-t border-[#E8E2D6] space-y-4">
-              <div className="flex items-center justify-between text-xs text-[#5C5850]">
-                <span>Currency</span>
-                <div className="flex gap-1.5">
-                  {(Object.keys(CURRENCIES) as Currency[]).map((c) => (
-                    <button
-                      key={c}
-                      onClick={() => setCurrency(c)}
-                      className={`px-2 py-1 rounded-xs border text-xs cursor-pointer ${
-                        currency === c
-                          ? 'bg-[#111111] text-white border-[#111111] font-bold'
-                          : 'bg-white border-[#E8E2D6] text-[#5C5850]'
-                      }`}
-                    >
-                      {c}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
               <button
                 onClick={() => {
                   setMobileMenuOpen(false);
@@ -411,7 +335,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 }}
                 className="w-full py-2.5 bg-white border border-[#E8E2D6] text-[#111111] text-xs font-semibold uppercase tracking-wider rounded-xs flex items-center justify-center gap-2 cursor-pointer"
               >
-                <Heart className="w-4 h-4 text-[#D4AF37]" />
+                <Heart className="w-4 h-4 text-[#8F896D]" />
                 <span>Saved Pieces ({wishlistCount})</span>
               </button>
             </div>

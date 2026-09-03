@@ -9,7 +9,8 @@ import {
   Package,
   ShoppingBag,
   Truck,
-  RotateCcw
+  RotateCcw,
+  Heart
 } from 'lucide-react';
 import { Product, Currency, Category } from '../types';
 import { PRODUCTS, formatPrice } from '../data/products';
@@ -63,13 +64,36 @@ export const HomePage: React.FC<HomePageProps> = ({
     return 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=800&q=85';
   };
 
+  // Featured Spotlight Product from live catalog (or fallback)
+  const spotlightProduct = useMemo(() => {
+    // Select first live product or piece with multiple images
+    const multiImg = safeProducts.find((p) => p.images && p.images.length > 1);
+    return multiImg || safeProducts[0] || PRODUCTS[0];
+  }, [safeProducts]);
+
+  // Left side image: Last image of the product assigned in Shopify
+  const leftLifestyleImage = useMemo(() => {
+    if (spotlightProduct && spotlightProduct.images && spotlightProduct.images.length > 0) {
+      return spotlightProduct.images[spotlightProduct.images.length - 1];
+    }
+    return 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=1200&q=95';
+  }, [spotlightProduct]);
+
+  // Right side image: First image of the product assigned in Shopify
+  const rightProductImage = useMemo(() => {
+    if (spotlightProduct && spotlightProduct.images && spotlightProduct.images.length > 0) {
+      return spotlightProduct.images[0];
+    }
+    return 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?auto=format&fit=crop&w=800&q=90';
+  }, [spotlightProduct]);
+
   // 5-Category Hover Image Reveal dataset
   const categoryRevealItems = {
     itemCount: 5,
     item1: {
       text: 'Bracelets',
       image: {
-        src: 'https://images.unsplash.com/photo-1611591475168-98967b5eb488?auto=format&fit=crop&w=1000&q=85',
+        src: 'https://images.unsplash.com/photo-1602751584552-8ba73aad10e1?auto=format&fit=crop&w=1000&q=85',
         alt: 'Handcrafted Demi-Fine Bracelets & Cuffs',
       },
       onClick: () => onNavigateToCollection('bracelets'),
@@ -108,52 +132,34 @@ export const HomePage: React.FC<HomePageProps> = ({
     },
   };
 
-  // Curated 5 pieces for "Collection" section matching reference layout
+  // Curated pieces for "Collection" section dynamically from live catalog
   const collectionFive = useMemo(() => {
-    return [
-      {
-        product: safeProducts.find((p) => p.id === 'row-edge-ring') || safeProducts[5] || PRODUCTS[5] || PRODUCTS[0],
-        displayTitle: 'Aurelia Ring',
-      },
-      {
-        product: safeProducts.find((p) => p.id === 'square-form-necklace') || safeProducts[0] || PRODUCTS[0],
-        displayTitle: 'Nadir Necklace',
-      },
-      {
-        product: safeProducts.find((p) => p.id === 'lucid-studs') || safeProducts[1] || PRODUCTS[1],
-        displayTitle: 'Lucea Studs',
-      },
-      {
-        product: safeProducts.find((p) => p.id === 'scalo-bracelet') || safeProducts[11] || safeProducts[3] || PRODUCTS[3],
-        displayTitle: 'Forma Bracelet',
-      },
-      {
-        product: safeProducts.find((p) => p.id === 'solid-wave-brooch') || safeProducts[2] || PRODUCTS[2],
-        displayTitle: 'Aura Brooch',
-      },
-    ].filter((item): item is { product: Product; displayTitle: string } => Boolean(item && item.product && item.product.id));
+    if (!safeProducts || safeProducts.length === 0) return [];
+    return safeProducts.slice(0, 5).map((p) => ({
+      product: p,
+      displayTitle: p.name,
+    }));
   }, [safeProducts]);
 
-  // Curated 5 pieces for "Popular" section (identical 5-column grid & sizing as Collection)
+  // Curated pieces for "Popular" section dynamically from live catalog
   const popularFive = useMemo(() => {
-    return [
-      safeProducts.find((p) => p.id === 'wave-prism-ring') || safeProducts[6] || PRODUCTS[6] || PRODUCTS[0],
-      safeProducts.find((p) => p.id === 'gold-curve-necklace') || safeProducts[8] || PRODUCTS[8] || PRODUCTS[1],
-      safeProducts.find((p) => p.id === 'dome-studs') || safeProducts[13] || safeProducts[2] || PRODUCTS[2],
-      safeProducts.find((p) => p.id === 'two-pearl-cuff') || safeProducts[4] || PRODUCTS[4] || PRODUCTS[0],
-      safeProducts.find((p) => p.id === 'asta-brooch') || safeProducts[14] || safeProducts[3] || PRODUCTS[3],
-    ].filter((p): p is Product => Boolean(p && p.id));
+    if (!safeProducts || safeProducts.length === 0) return [];
+    // Prioritize bestsellers or reverse order for curated variation
+    const sorted = [...safeProducts].sort((a, b) => (b.isBestseller ? 1 : 0) - (a.isBestseller ? 1 : 0));
+    return sorted.slice(0, 5);
   }, [safeProducts]);
 
-  // Filtered Gifting items
+  // Filtered Gifting items dynamically from live catalog
   const giftingProducts = useMemo(() => {
-    return safeProducts.filter((p) => {
+    if (!safeProducts || safeProducts.length === 0) return [];
+    const filtered = safeProducts.filter((p) => {
       if (!p || !p.id) return false;
       if (activeGiftTier === 'under150') return p.price <= 150;
       if (activeGiftTier === 'heirloom') return p.price >= 180;
       if (activeGiftTier === 'pearls') return p.description?.toLowerCase().includes('pearl') || p.name?.toLowerCase().includes('pearl');
       return true;
-    }).slice(0, 4);
+    });
+    return filtered.length > 0 ? filtered.slice(0, 4) : safeProducts.slice(0, 4);
   }, [safeProducts, activeGiftTier]);
 
   useEffect(() => {
@@ -201,7 +207,7 @@ export const HomePage: React.FC<HomePageProps> = ({
           </button>
         </div>
 
-        {/* Center Stage: Large Official Logo with Floating Golden Baroque Pearl Ring Touching Text */}
+        {/* Center Stage: Large Official Logo with Floating Golden Baroque Pearl Ring Centered */}
         <div className="relative my-auto py-10 sm:py-16 flex items-center justify-center w-full z-10 overflow-visible">
           {/* Official Brand Logo */}
           <div className="gsap-hero-title w-full flex items-center justify-center select-none pointer-events-none z-0">
@@ -213,8 +219,8 @@ export const HomePage: React.FC<HomePageProps> = ({
             />
           </div>
 
-          {/* Floating Photorealistic Golden Baroque Pearl Ring Touching Logo */}
-          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-[42%] z-20 pointer-events-auto">
+          {/* Floating Baroque Pearl Ring (Centered & Positioned Slightly Below) */}
+          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-[28%] sm:-translate-y-[25%] md:-translate-y-[22%] z-20 pointer-events-auto">
             <HeroBaroquePearlRing onClick={() => onNavigateToCollection('rings')} />
           </div>
         </div>
@@ -222,7 +228,7 @@ export const HomePage: React.FC<HomePageProps> = ({
         {/* Bottom Hero Bar */}
         <div className="gsap-hero-sub w-full flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4 sm:gap-6 z-10 pt-4 border-t border-[#D8D2C2]">
           <p className="text-xs sm:text-[13px] text-[#413C23]/80 font-normal max-w-md leading-relaxed">
-            Handcrafted demi-fine jewelry in thick 18k gold vermeil, recycled 925 sterling silver & natural pearls. Sculpted with soul.
+            Homegrown premium dailywear jewels crafted in high-grade brass with durable anti-tarnish protective coating. Designed for effortless everyday elegance.
           </p>
 
           <button
@@ -236,11 +242,9 @@ export const HomePage: React.FC<HomePageProps> = ({
         </div>
       </section>
 
-      {/* 2. SECTION 2: EDITORIAL CATEGORY SHOWCASE WITH ORIGINKIT HOVER-IMAGE-REVEAL */}
+      {/* 2. SECTION 2: EDITORIAL CATEGORY SHOWCASE (COMMENTED OUT)
       <section className="w-full bg-[#E7E4D5] py-16 sm:py-24 border-b border-[#D8D2C2] px-4 sm:px-8 lg:px-12 xl:px-16 2xl:px-20">
         <div className="w-full space-y-8">
-          
-          {/* Pure Originkit Hover Image Reveal List */}
           <div className="py-6 sm:py-12">
             <HoverImageReveal
               items={categoryRevealItems}
@@ -264,12 +268,12 @@ export const HomePage: React.FC<HomePageProps> = ({
               offsetY={0}
             />
           </div>
-
         </div>
       </section>
+      */}
 
       {/* 3. SECTION 3: "COLLECTION" (5 Identical Standard Cards) */}
-      <section className="w-full bg-[#F4EFE6] py-16 sm:py-24 border-b border-[#D8D2C2] px-4 sm:px-8 lg:px-12 xl:px-16 2xl:px-20">
+      <section className="w-full bg-[#E7E4D5] py-16 sm:py-24 border-b border-[#D8D2C2] px-4 sm:px-8 lg:px-12 xl:px-16 2xl:px-20">
         <div className="w-full space-y-8 sm:space-y-12">
           
           {/* Section Header */}
@@ -300,10 +304,10 @@ export const HomePage: React.FC<HomePageProps> = ({
                 <div
                   key={product.id}
                   onClick={() => onSelectProduct(product)}
-                  className="group cursor-pointer flex flex-col space-y-3 text-left w-full"
+                  className="group cursor-pointer flex flex-col space-y-2 text-left w-full"
                 >
                   {/* Fixed Uniform Square Box Container */}
-                  <div className="relative aspect-square w-full bg-[#E7E4D5] border border-[#D8D2C2] rounded-xs flex items-center justify-center p-6 transition-all duration-300 group-hover:bg-[#FAF8F5] group-hover:border-[#8F896D] overflow-hidden">
+                  <div className="relative aspect-square w-full bg-[#E7E4D5] border border-[#D8D2C2] rounded-xs flex items-center justify-center p-6 transition-all duration-300 group-hover:border-[#8F896D] group-hover:shadow-[0_8px_20px_rgba(65,60,35,0.08)] overflow-hidden">
                     <div className="w-full h-full flex items-center justify-center">
                       <img
                         src={imageSrc}
@@ -324,12 +328,12 @@ export const HomePage: React.FC<HomePageProps> = ({
                     </button>
                   </div>
 
-                  {/* Fixed Meta Box directly on linen canvas */}
-                  <div className="h-10 flex flex-col justify-between pt-0.5">
-                    <h4 className="font-serif-display text-xs sm:text-[13px] text-[#413C23] group-hover:text-[#8F896D] transition-colors font-medium truncate block">
+                  {/* Meta Box with Prominent Bold Price */}
+                  <div className="flex flex-col justify-between pt-1">
+                    <h4 className="font-serif-display text-sm sm:text-base text-[#413C23] group-hover:text-[#8F896D] transition-colors font-normal leading-snug truncate block">
                       {displayTitle}
                     </h4>
-                    <p className="text-xs text-[#8F896D] font-normal block">
+                    <p className="text-sm sm:text-base font-bold text-[#413C23] tracking-tight mt-0.5 block">
                       {formatPrice(product.price || 0, currency)}
                     </p>
                   </div>
@@ -384,10 +388,10 @@ export const HomePage: React.FC<HomePageProps> = ({
                 <div
                   key={product.id}
                   onClick={() => onSelectProduct(product)}
-                  className="group cursor-pointer flex flex-col space-y-3 text-left w-full"
+                  className="group cursor-pointer flex flex-col space-y-2 text-left w-full"
                 >
                   {/* Fixed Uniform Square Box Container */}
-                  <div className="relative aspect-square w-full bg-[#F4EFE6] border border-[#D8D2C2] rounded-xs flex items-center justify-center p-6 transition-all duration-300 group-hover:bg-[#FAF8F5] group-hover:border-[#8F896D] overflow-hidden">
+                  <div className="relative aspect-square w-full bg-[#E7E4D5] border border-[#D8D2C2] rounded-xs flex items-center justify-center p-6 transition-all duration-300 group-hover:border-[#8F896D] group-hover:shadow-[0_8px_20px_rgba(65,60,35,0.08)] overflow-hidden">
                     <div className="w-full h-full flex items-center justify-center">
                       <img
                         src={imageSrc}
@@ -408,12 +412,12 @@ export const HomePage: React.FC<HomePageProps> = ({
                     </button>
                   </div>
 
-                  {/* Fixed Meta Box directly on linen canvas */}
-                  <div className="h-10 flex flex-col justify-between pt-0.5">
-                    <h4 className="font-serif-display text-xs sm:text-[13px] text-[#413C23] group-hover:text-[#8F896D] transition-colors font-medium truncate block">
+                  {/* Meta Box with Prominent Bold Price */}
+                  <div className="flex flex-col justify-between pt-1">
+                    <h4 className="font-serif-display text-sm sm:text-base text-[#413C23] group-hover:text-[#8F896D] transition-colors font-normal leading-snug truncate block">
                       {product.name}
                     </h4>
-                    <p className="text-xs text-[#8F896D] font-normal block">
+                    <p className="text-sm sm:text-base font-bold text-[#413C23] tracking-tight mt-0.5 block">
                       {formatPrice(product.price || 0, currency)}
                     </p>
                   </div>
@@ -425,8 +429,76 @@ export const HomePage: React.FC<HomePageProps> = ({
         </div>
       </section>
 
+      {/* FEATURED PIECE SECTION (Full-Width Italian Editorial Showcase) */}
+      <section className="w-full bg-[#E7E4D5] border-t border-b border-[#D8D2C2] select-none overflow-hidden">
+        <div className="w-full grid grid-cols-1 md:grid-cols-2 items-stretch">
+          
+          {/* Left Column: Last Product Image (Full-Width Half at 85vh) */}
+          <div
+            onClick={() => onSelectProduct(spotlightProduct)}
+            className="relative w-full h-[500px] sm:h-[600px] md:h-[85vh] min-h-[560px] bg-[#D8D1C0] overflow-hidden group cursor-pointer"
+          >
+            <img
+              src={leftLifestyleImage}
+              alt={spotlightProduct.name}
+              referrerPolicy="no-referrer"
+              loading="lazy"
+              className="w-full h-full object-cover object-[center_30%] group-hover:scale-104 transition-transform duration-700 ease-out"
+            />
+            <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors duration-300 pointer-events-none" />
+          </div>
+
+          {/* Right Column: First Product Image & Italian Editorial Canvas (Full-Width Half at 85vh) */}
+          <div className="w-full h-[500px] sm:h-[600px] md:h-[85vh] min-h-[560px] bg-[#878266] text-[#FAF8F5] p-8 sm:p-12 md:p-14 lg:p-16 flex flex-col justify-between items-center text-center relative overflow-hidden">
+            
+            {/* Top Text: Category & Headline */}
+            <div className="space-y-2 z-10 pt-2 sm:pt-4">
+              <span className="text-[11px] sm:text-xs text-[#FAF8F5]/75 uppercase tracking-[0.28em] font-medium block">
+                01 / CATEGORY
+              </span>
+              <h3 className="font-serif-display text-3xl sm:text-5xl md:text-6xl lg:text-[62px] text-[#FAF8F5] font-light tracking-wide">
+                Italian editorial
+              </h3>
+            </div>
+
+            {/* Center Stage: First Product Image (Enlarged) */}
+            <div
+              onClick={() => onSelectProduct(spotlightProduct)}
+              className="relative my-auto flex items-center justify-center cursor-pointer group z-10 w-full"
+            >
+              <div className="w-64 h-64 sm:w-80 sm:h-80 md:w-96 md:h-96 lg:w-[420px] lg:h-[420px] max-h-[46vh] flex items-center justify-center p-2">
+                <img
+                  src={rightProductImage}
+                  alt={spotlightProduct.name}
+                  referrerPolicy="no-referrer"
+                  loading="lazy"
+                  className="w-full h-full object-contain filter drop-shadow-[0_20px_40px_rgba(0,0,0,0.45)] group-hover:scale-106 transition-transform duration-500 ease-out"
+                />
+              </div>
+            </div>
+
+            {/* Bottom Text & Button */}
+            <div className="space-y-4 sm:space-y-5 z-10 max-w-md pb-2 sm:pb-4">
+              <p className="font-serif italic text-sm sm:text-base text-[#FAF8F5]/90 leading-relaxed font-light">
+                {spotlightProduct.subtitle || 'A collection where timelessness meets emotion, and simplicity acquires character.'}
+              </p>
+
+              <button
+                type="button"
+                onClick={() => onSelectProduct(spotlightProduct)}
+                className="px-9 py-3 bg-[#FAF8F5] hover:bg-white text-[#413C23] text-xs uppercase tracking-[0.25em] font-semibold transition-all duration-200 rounded-xs shadow-md cursor-pointer active:scale-98"
+              >
+                SEE MORE
+              </button>
+            </div>
+
+          </div>
+
+        </div>
+      </section>
+
       {/* 5. SECTION 5: CURATED GIFTING & OCCASION HUB */}
-      <section className="w-full bg-[#F4EFE6] py-16 sm:py-24 border-b border-[#D8D2C2] px-4 sm:px-8 lg:px-12 xl:px-16 2xl:px-20">
+      <section className="w-full bg-[#E7E4D5] py-16 sm:py-24 border-b border-[#D8D2C2] px-4 sm:px-8 lg:px-12 xl:px-16 2xl:px-20">
         <div className="w-full space-y-10 sm:space-y-12">
           
           <div className="flex flex-col sm:flex-row sm:items-end justify-between border-b border-[#D8D2C2] pb-4 text-left gap-3">
@@ -443,8 +515,8 @@ export const HomePage: React.FC<HomePageProps> = ({
             <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0 scrollbar-none">
               {[
                 { id: 'all', label: 'All Curated Gifts' },
-                { id: 'under150', label: 'Under $150 Staples' },
-                { id: 'heirloom', label: 'Heirloom ($200+)' },
+                { id: 'under150', label: 'Daily Staples' },
+                { id: 'heirloom', label: 'Statement Pieces' },
                 { id: 'pearls', label: 'Baroque Pearls' },
               ].map((tier) => {
                 const isActive = activeGiftTier === tier.id;
@@ -475,9 +547,9 @@ export const HomePage: React.FC<HomePageProps> = ({
                 <div
                   key={product.id}
                   onClick={() => onSelectProduct(product)}
-                  className="group cursor-pointer flex flex-col justify-between bg-[#FAF8F5] border border-[#D8D2C2] rounded-xs overflow-hidden transition-all duration-300 hover:shadow-md hover:border-[#8F896D] text-left"
+                  className="group cursor-pointer flex flex-col justify-between bg-[#E7E4D5] border border-[#D8D2C2] rounded-xs overflow-hidden transition-all duration-300 hover:shadow-md hover:border-[#8F896D] text-left"
                 >
-                  <div className="relative aspect-square w-full bg-[#F4EFE6] p-6 flex items-center justify-center overflow-hidden">
+                  <div className="relative aspect-square w-full bg-[#E7E4D5] p-6 flex items-center justify-center overflow-hidden">
                     <img
                       src={imageSrc}
                       alt={product.name}
@@ -503,8 +575,8 @@ export const HomePage: React.FC<HomePageProps> = ({
                     <h4 className="font-serif-display text-base text-[#413C23] group-hover:text-[#8F896D] transition-colors font-medium truncate">
                       {product.name}
                     </h4>
-                    <div className="flex items-center justify-between text-xs">
-                      <span className="text-[#8F896D] font-normal">{formatPrice(product.price || 0, currency)}</span>
+                    <div className="flex items-center justify-between text-xs pt-0.5">
+                      <span className="text-base font-bold text-[#413C23] tracking-tight">{formatPrice(product.price || 0, currency)}</span>
                       <span className="text-[10px] text-[#413C23] uppercase tracking-wider font-semibold group-hover:underline">
                         View Details →
                       </span>
@@ -527,7 +599,7 @@ export const HomePage: React.FC<HomePageProps> = ({
             </div>
             <div>
               <span className="block font-semibold">Complimentary Shipping</span>
-              <span className="text-[10px] text-[#8F896D]">On orders over $150</span>
+              <span className="text-[10px] text-[#8F896D]">On orders over ₹1,999</span>
             </div>
           </div>
 
@@ -546,8 +618,8 @@ export const HomePage: React.FC<HomePageProps> = ({
               <Gem className="w-4 h-4" />
             </div>
             <div>
-              <span className="block font-semibold">18k Heavy Gold Vermeil</span>
-              <span className="text-[10px] text-[#8F896D]">Recycled 925 solid silver</span>
+              <span className="block font-semibold">Anti-Tarnish Protective Seal</span>
+              <span className="text-[10px] text-[#8F896D]">Premium brass dailywear</span>
             </div>
           </div>
 

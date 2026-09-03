@@ -24,73 +24,73 @@ export const Footer: React.FC<FooterProps> = ({
   };
 
   return (
-    <footer className="w-full bg-[#8F896D] text-[#FFFFFF] font-sans-body select-none overflow-hidden pt-12 sm:pt-16 pb-8 sm:pb-12 px-4 sm:px-8 lg:px-12 xl:px-16 2xl:px-20">
+    <footer className="w-full bg-[#8F896D] text-[#FFFFFF] font-sans-body select-none overflow-hidden pt-8 sm:pt-10 pb-4 sm:pb-6 px-4 sm:px-8 lg:px-12 xl:px-16 2xl:px-20">
       
       {/* 1. TOP ROW: Category Links & Social Icons */}
-      <div className="w-full flex flex-col sm:flex-row items-center justify-between gap-6 pb-6 sm:pb-8">
+      <div className="w-full flex flex-col sm:flex-row items-center justify-between gap-4 pb-4 sm:pb-5">
         
         {/* Left: Category Navigation */}
-        <div className="flex flex-wrap items-center justify-center sm:justify-start gap-6 sm:gap-10 text-xs sm:text-sm tracking-[0.22em] font-medium uppercase">
+        <div className="flex flex-wrap items-center justify-center sm:justify-start gap-5 sm:gap-8 text-xs tracking-[0.2em] font-medium uppercase">
           <button
             onClick={() => handleNavigate('collection', 'rings')}
-            className="text-white/90 hover:text-white transition-all cursor-pointer hover:tracking-[0.26em]"
+            className="text-white/90 hover:text-white transition-all cursor-pointer hover:tracking-[0.24em]"
           >
             Rings
           </button>
           <button
             onClick={() => handleNavigate('collection', 'earrings')}
-            className="text-white/90 hover:text-white transition-all cursor-pointer hover:tracking-[0.26em]"
+            className="text-white/90 hover:text-white transition-all cursor-pointer hover:tracking-[0.24em]"
           >
             Earrings
           </button>
           <button
             onClick={() => handleNavigate('collection', 'necklaces')}
-            className="text-white/90 hover:text-white transition-all cursor-pointer hover:tracking-[0.26em]"
+            className="text-white/90 hover:text-white transition-all cursor-pointer hover:tracking-[0.24em]"
           >
             Necklaces
           </button>
           <button
             onClick={() => handleNavigate('collection', 'bracelets')}
-            className="text-white/90 hover:text-white transition-all cursor-pointer hover:tracking-[0.26em]"
+            className="text-white/90 hover:text-white transition-all cursor-pointer hover:tracking-[0.24em]"
           >
             Bracelets
           </button>
         </div>
 
         {/* Right: Social Circle Icons */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
           <a
             href="https://facebook.com"
             target="_blank"
             rel="noreferrer"
             aria-label="Facebook"
-            className="w-8 h-8 rounded-full border border-white/60 flex items-center justify-center text-white hover:bg-white hover:text-[#CFC6BA] transition-all duration-300"
+            className="w-7 h-7 rounded-full border border-white/60 flex items-center justify-center text-white hover:bg-white hover:text-[#8F896D] transition-all duration-300"
           >
-            <Facebook className="w-4 h-4 fill-current" />
+            <Facebook className="w-3.5 h-3.5 fill-current" />
           </a>
           <a
             href="https://instagram.com"
             target="_blank"
             rel="noreferrer"
             aria-label="Instagram"
-            className="w-8 h-8 rounded-full border border-white/60 flex items-center justify-center text-white hover:bg-white hover:text-[#CFC6BA] transition-all duration-300"
+            className="w-7 h-7 rounded-full border border-white/60 flex items-center justify-center text-white hover:bg-white hover:text-[#8F896D] transition-all duration-300"
           >
-            <Instagram className="w-4 h-4" />
+            <Instagram className="w-3.5 h-3.5" />
           </a>
           <a
             href="https://pinterest.com"
             target="_blank"
             rel="noreferrer"
             aria-label="Pinterest"
-            className="w-8 h-8 rounded-full border border-white/60 flex items-center justify-center text-white hover:bg-white hover:text-[#CFC6BA] transition-all duration-300"
+            className="w-7 h-7 rounded-full border border-white/60 flex items-center justify-center text-white hover:bg-white hover:text-[#8F896D] transition-all duration-300"
           >
-            <Compass className="w-4 h-4" />
+            <Compass className="w-3.5 h-3.5" />
           </a>
         </div>
       </div>
 
-      {/* 2. CENTER STATEMENT: AVIRENA LOGO WHITE BANNER WITH HAIRLINE BORDERS */}
-      <div className="w-full border-t border-b border-white/35 py-8 sm:py-12 md:py-14 my-2 flex items-center justify-center overflow-hidden">
+      {/* 2. CENTER STATEMENT: AVIRENA LOGO WHITE BANNER */}
+      <div className="w-full border-t border-b border-white/30 py-5 sm:py-7 my-1 flex items-center justify-center overflow-hidden">
         <button
           onClick={() => handleNavigate('home')}
           className="w-full flex items-center justify-center group cursor-pointer focus:outline-none transition-transform duration-500 hover:scale-[1.015]"
@@ -98,17 +98,17 @@ export const Footer: React.FC<FooterProps> = ({
           <img
             src="/logo-white.png"
             alt="AVIRENA"
-            className="w-[84vw] sm:w-[76vw] md:w-[68vw] lg:w-[58vw] max-w-[820px] h-auto object-contain select-none opacity-95 group-hover:opacity-100 transition-all duration-300"
+            className="w-[80vw] sm:w-[70vw] md:w-[60vw] lg:w-[50vw] max-w-[720px] h-auto object-contain select-none opacity-95 group-hover:opacity-100 transition-all duration-300"
             loading="lazy"
           />
         </button>
       </div>
 
       {/* 3. BOTTOM ROW: Information & Legal Links */}
-      <div className="w-full flex flex-col md:flex-row items-center justify-between gap-6 pt-6 sm:pt-8 text-xs sm:text-sm font-normal text-white/90">
+      <div className="w-full flex flex-col md:flex-row items-center justify-between gap-3 pt-4 sm:pt-5 text-xs font-normal text-white/90">
         
         {/* Left / Center Info Links */}
-        <div className="flex flex-wrap items-center justify-center md:justify-start gap-x-6 sm:gap-x-8 gap-y-3">
+        <div className="flex flex-wrap items-center justify-center md:justify-start gap-x-5 sm:gap-x-6 gap-y-2">
           <button
             onClick={() => handleNavigate('about')}
             className="hover:text-white hover:underline transition-all cursor-pointer"
@@ -119,13 +119,13 @@ export const Footer: React.FC<FooterProps> = ({
             onClick={() => handleNavigate('policies')}
             className="hover:text-white hover:underline transition-all cursor-pointer"
           >
-            Materials & Purity
+            Materials &amp; Care
           </button>
           <button
             onClick={() => handleNavigate('policies')}
             className="hover:text-white hover:underline transition-all cursor-pointer"
           >
-            Shipping & Returns
+            Shipping &amp; Returns
           </button>
           <button
             onClick={() => handleNavigate('faq')}
@@ -137,12 +137,12 @@ export const Footer: React.FC<FooterProps> = ({
             onClick={() => handleNavigate('contact')}
             className="hover:text-white hover:underline transition-all cursor-pointer"
           >
-            Contact Concierge
+            Contact
           </button>
         </div>
 
         {/* Right: Legal Links */}
-        <div className="flex items-center gap-6 sm:gap-8 shrink-0">
+        <div className="flex items-center gap-5 shrink-0">
           <button
             onClick={() => handleNavigate('policies')}
             className="hover:text-white hover:underline transition-all cursor-pointer"
@@ -159,8 +159,8 @@ export const Footer: React.FC<FooterProps> = ({
       </div>
 
       {/* 4. COPYRIGHT NOTICE */}
-      <div className="w-full pt-10 sm:pt-14 pb-2 text-center">
-        <p className="text-[11px] sm:text-xs text-white/80 font-light tracking-wider">
+      <div className="w-full pt-4 pb-1 text-center">
+        <p className="text-[11px] text-white/75 font-light tracking-wider">
           © {new Date().getFullYear()} Avirena Jewels. All rights reserved.
         </p>
       </div>

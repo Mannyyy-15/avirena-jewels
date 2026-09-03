@@ -159,27 +159,27 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
                 <div className="grid grid-cols-2 gap-2">
                   <button
                     type="button"
-                    onClick={() => setSelectedMetal('18k Gold Vermeil')}
+                    onClick={() => setSelectedMetal('Gold-Tone Brass')}
                     className={`py-2 px-3 text-xs rounded-xs border flex items-center justify-center gap-2 cursor-pointer transition-all ${
-                      selectedMetal === '18k Gold Vermeil'
+                      selectedMetal === 'Gold-Tone Brass'
                         ? 'border-[#C5A059] bg-[#F3EFE6] font-medium text-[#2C2C2A]'
                         : 'border-[#E6DFD3] text-[#5C5850] hover:border-[#9A9886]'
                     }`}
                   >
                     <span className="w-3 h-3 rounded-full bg-[#E5C158] border border-[#B89B38]" />
-                    <span>18k Gold Vermeil</span>
+                    <span>Gold-Tone Brass</span>
                   </button>
                   <button
                     type="button"
-                    onClick={() => setSelectedMetal('925 Sterling Silver')}
+                    onClick={() => setSelectedMetal('Silver-Tone Alloy')}
                     className={`py-2 px-3 text-xs rounded-xs border flex items-center justify-center gap-2 cursor-pointer transition-all ${
-                      selectedMetal === '925 Sterling Silver'
+                      selectedMetal === 'Silver-Tone Alloy'
                         ? 'border-[#C5A059] bg-[#F3EFE6] font-medium text-[#2C2C2A]'
                         : 'border-[#E6DFD3] text-[#5C5850] hover:border-[#9A9886]'
                     }`}
                   >
-                    <span className="w-3 h-3 rounded-full bg-[#E0E0E0] border border-[#B0B0B0]" />
-                    <span>925 Sterling Silver</span>
+                    <span className="w-3 h-3 rounded-full bg-[#E0E0E0] border border-[#BDBDBD]" />
+                    <span>Silver-Tone Alloy</span>
                   </button>
                 </div>
               </div>

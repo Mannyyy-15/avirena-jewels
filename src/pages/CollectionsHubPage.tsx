@@ -58,7 +58,7 @@ const SUITES: CollectionSuite[] = [
     subtitle: 'Fluid Ergonomic Wristwear',
     category: 'bracelets',
     description: 'Hand-shaped malleable gold wire cuffs tipped with natural freshwater pearls and architectural bar bangles.',
-    coverImage: 'https://images.unsplash.com/photo-1611591475168-98967b5eb488?auto=format&fit=crop&w=1200&q=85',
+    coverImage: 'https://images.unsplash.com/photo-1602751584552-8ba73aad10e1?auto=format&fit=crop&w=1200&q=85',
     pieceCount: '5 Unique Styles',
     featuredProductId: 'two-pearl-cuff',
   },

@@ -58,7 +58,7 @@ const LUXURY_ADDONS: Product[] = [
     rating: 4.9,
     reviewsCount: 98,
     images: [
-      'https://images.unsplash.com/photo-1611591475168-98967b5eb488?auto=format&fit=crop&w=400&q=80',
+      'https://images.unsplash.com/photo-1602751584552-8ba73aad10e1?auto=format&fit=crop&w=400&q=80',
     ],
     category: 'brooches',
     metal: '18k Gold Vermeil',

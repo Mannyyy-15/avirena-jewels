@@ -142,14 +142,13 @@ Every Avirena creation is carefully packaged in our signature velvet travel pouc
 • Made-to-order custom sizes or bespoke commissions require 7–10 business days for master artisan casting.
 
 2. Domestic Delivery (India):
-• Timeline: 2 to 4 business days via Bluedart Luxury Air / Express Courier.
-• Shipping Cost: Complimentary Express Insured Delivery on all orders above ₹3,000 / $150. A flat fee of ₹150 applies to orders below the threshold.
+• Timeline: 2 to 4 business days via Express Courier.
+• Shipping Cost: Complimentary Express Insured Delivery on all orders above ₹1,999. A flat fee of ₹99 applies to orders below the threshold.
 • Cash on Delivery (COD) and Prepaid options are supported nationwide.
 
-3. International Delivery (US, UK, Europe & Worldwide):
-• Europe & UK: 3 to 5 business days via DHL Express / FedEx Priority.
-• North America & Rest of World: 4 to 7 business days via DHL International Priority.
-• Shipping Cost: Calculated at checkout or complimentary on orders over $150 / €150 / £130.
+3. International Delivery:
+• Timeline: 4 to 7 business days via International Express.
+• Shipping Cost: Calculated at checkout or complimentary on eligible orders.
 • Duties & Taxes: International orders are shipped DDP (Delivery Duty Paid) where possible, ensuring zero surprise customs fees upon arrival.
 
 4. 100% Transit Insurance Guarantee:

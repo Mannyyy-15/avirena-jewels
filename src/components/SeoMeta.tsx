@@ -18,21 +18,21 @@ export const SeoMeta: React.FC<SeoMetaProps> = ({
     // Dynamic Title & Description Map
     let title = 'AVIRENA | Handcrafted Demi-Fine Jewelry • 18k Gold Vermeil & Baroque Pearls';
     let description =
-      'Explore Avirena Jewels. Artisanal sculptural jewelry handcrafted in 3.0µ thick 18k gold vermeil, recycled 925 sterling silver, and natural freshwater baroque pearls.';
+      'Explore Avirena Jewels. Homegrown premium dailywear jewelry handcrafted in durable brass, anti-tarnish protective coatings, and natural cultured pearls.';
     let canonical = 'https://avirena.com';
 
     if (currentPage === 'collection' || currentPage === 'shop') {
       const catLabel = selectedCategory && selectedCategory !== 'all' ? `${selectedCategory.toUpperCase()} | ` : '';
-      title = `${catLabel}Shop Demi-Fine Jewelry | AVIRENA`;
-      description = `Discover our curated collection of ${selectedCategory || 'demi-fine'} jewelry in 18k heavy gold vermeil and recycled silver. Complimentary insured shipping over $150.`;
+      title = `${catLabel}Shop Dailywear Jewelry | AVIRENA`;
+      description = `Discover our curated collection of ${selectedCategory || 'dailywear'} jewelry in premium anti-tarnish brass. Complimentary express shipping over ₹1,999.`;
       canonical = `https://avirena.com/shop${selectedCategory && selectedCategory !== 'all' ? `/${selectedCategory}` : ''}`;
     } else if (currentPage === 'collections') {
-      title = 'Signature Jewelry Design Suites | AVIRENA Atelier';
-      description = 'Explore the signature design suites of Avirena: Molten Sculptures, Baroque Pearl Editions, and Architectural Chains.';
+      title = 'Signature Jewelry Design Suites | AVIRENA';
+      description = 'Explore the signature design suites of Avirena: Sculptural Brass, Baroque Pearl Editions, and Architectural Chains.';
       canonical = 'https://avirena.com/collections';
     } else if (currentPage === 'pdp' && selectedProduct) {
       title = `${selectedProduct.name} — ${selectedProduct.metal} | AVIRENA`;
-      description = `${selectedProduct.description} Handcrafted in ${selectedProduct.metal} with recycled 925 silver. 14-day returns & express delivery.`;
+      description = `${selectedProduct.description} Handcrafted in ${selectedProduct.metal} with anti-tarnish protective coating. 14-day exchanges & express delivery.`;
       canonical = `https://avirena.com/products/${selectedProduct.id}`;
     } else if (currentPage === 'about') {
       title = 'Our Heritage & Lost-Wax Craftsmanship | AVIRENA';
@@ -258,7 +258,7 @@ export const SeoMeta: React.FC<SeoMetaProps> = ({
             name: 'What is Avirena’s shipping and returns policy?',
             acceptedAnswer: {
               '@type': 'Answer',
-              text: 'We offer complimentary express insured shipping on all orders worldwide over $150. We also provide a 14-day doorstep return and size exchange window.',
+              text: 'We offer complimentary express shipping on all orders over ₹1,999. We also provide a 14-day return and size exchange window.',
             },
           },
         ],

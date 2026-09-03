@@ -34,6 +34,7 @@ interface ProductDetailPageProps {
   onNavigateBack: () => void;
   isWishlisted: boolean;
   onToggleWishlist: (product: Product) => void;
+  catalogProducts?: Product[];
 }
 
 export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
@@ -44,6 +45,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
   onNavigateBack,
   isWishlisted,
   onToggleWishlist,
+  catalogProducts = PRODUCTS,
 }) => {
   const { isConfigured, addToShopifyCart } = useShopify();
   const [selectedMetal, setSelectedMetal] = useState<Metal>(product.metal);
@@ -58,6 +60,8 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
   const [showStickyBar, setShowStickyBar] = useState(false);
 
   const buyBoxRef = useRef<HTMLDivElement>(null);
+
+  const activeProducts = catalogProducts && catalogProducts.length > 0 ? catalogProducts : PRODUCTS;
 
   // Sync state if product changes
   useEffect(() => {
@@ -112,11 +116,14 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
   };
 
   const styledWithProducts = (product.styledWithIds || [])
-    .map((id) => PRODUCTS.find((p) => p.id === id))
+    .map((id) => activeProducts.find((p) => p.id === id))
     .filter(Boolean) as Product[];
 
-  const relatedProducts = PRODUCTS.filter(
-    (p) => p.id !== product.id && p.category === product.category
+  const relatedCandidates = activeProducts.filter((p) => p.id !== product.id);
+  const relatedProducts = (
+    relatedCandidates.filter((p) => p.category === product.category).length > 0
+      ? relatedCandidates.filter((p) => p.category === product.category)
+      : relatedCandidates
   ).slice(0, 4);
 
   const imagesList = product.images && product.images.length > 0 ? product.images : [
@@ -126,7 +133,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
   const installmentPrice = Math.round(product.price / 4);
 
   return (
-    <div className="space-y-12 sm:space-y-16 pb-24 text-left font-sans-body w-full text-[#413C23] bg-[#E7E4D5] select-none">
+    <div className="space-y-12 sm:space-y-16 pb-12 text-left font-sans-body w-full text-[#413C23] bg-[#E7E4D5] select-none">
       
       {/* 1. BREADCRUMBS */}
       <div className="w-full px-4 sm:px-8 lg:px-12 xl:px-16 2xl:px-20 pt-4">
@@ -147,7 +154,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
           
           {/* LEFT: Full Gallery with Large Canvas & Thumbnails */}
           <div className="lg:col-span-7 space-y-4">
-            <div className="aspect-square sm:aspect-[4/3] lg:aspect-square bg-[#F4EFE6] border border-[#D8D2C2] rounded-xs overflow-hidden flex items-center justify-center p-6 sm:p-10 relative shadow-xs">
+            <div className="aspect-square sm:aspect-[4/3] lg:aspect-square bg-[#E7E4D5] border border-[#D8D2C2] rounded-xs overflow-hidden flex items-center justify-center p-6 sm:p-10 relative shadow-xs">
               <img
                 src={imagesList[activeImageIndex] || imagesList[0]}
                 alt={product.name}
@@ -163,7 +170,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
 
               <button
                 onClick={() => onToggleWishlist(product)}
-                className="absolute top-4 right-4 p-2 rounded-full bg-[#FAF8F5]/95 hover:bg-white text-[#8F896D] hover:text-[#7A0F1A] transition-all shadow-sm cursor-pointer border border-[#D8D2C2]/50"
+                className="absolute top-4 right-4 p-2 rounded-full bg-[#E7E4D5]/95 hover:bg-[#FAF8F5] text-[#8F896D] hover:text-[#7A0F1A] transition-all shadow-sm cursor-pointer border border-[#D8D2C2]"
                 title={isWishlisted ? 'Saved to Wishlist' : 'Save to Wishlist'}
               >
                 <Heart className={`w-4 h-4 ${isWishlisted ? 'fill-[#7A0F1A] text-[#7A0F1A]' : 'stroke-[1.5]'}`} />
@@ -177,7 +184,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                   <button
                     key={idx}
                     onClick={() => setActiveImageIndex(idx)}
-                    className={`aspect-square bg-[#F4EFE6] rounded-xs border p-2 flex items-center justify-center overflow-hidden transition-all cursor-pointer ${
+                    className={`aspect-square bg-[#E7E4D5] rounded-xs border p-2 flex items-center justify-center overflow-hidden transition-all cursor-pointer ${
                       activeImageIndex === idx
                         ? 'border-[#413C23] ring-2 ring-[#413C23]/20 shadow-xs'
                         : 'border-[#D8D2C2] hover:border-[#8F896D] opacity-80 hover:opacity-100'
@@ -195,21 +202,26 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
             )}
           </div>
 
-          {/* RIGHT: Product Buy Box & Accordions */}
-          <div ref={buyBoxRef} className="lg:col-span-5 space-y-6 bg-[#F4EFE6] p-6 sm:p-8 rounded-xs border border-[#D8D2C2] shadow-xs">
-            {/* Header: Title, Subtitle, Price, Rating */}
-            <div className="space-y-2 border-b border-[#D8D2C2] pb-5">
+          {/* RIGHT: Buy Box & Specifications */}
+          <div ref={buyBoxRef} className="lg:col-span-5 space-y-6">
+            <div className="space-y-3 border-b border-[#D8D2C2] pb-6 text-left">
+              {/* Reviews and Category */}
               <div className="flex items-center justify-between">
-                <span className="text-xs uppercase tracking-[0.2em] font-semibold text-[#8F896D]">
-                  {selectedMetal}
+                <span className="text-[11px] uppercase tracking-[0.2em] font-semibold text-[#8F896D]">
+                  {product.category}
                 </span>
-                <div className="flex items-center gap-1 text-[#8F896D]">
-                  <Star className="w-3.5 h-3.5 fill-[#8F896D]" />
-                  <span className="font-bold text-xs text-[#413C23]">{product.rating || 4.9}</span>
-                  <span className="text-xs text-[#8F896D]">({product.reviewsCount || 42} reviews)</span>
+                <div className="flex items-center gap-1.5 text-xs text-[#8F896D]">
+                  <div className="flex items-center">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} className="w-3.5 h-3.5 fill-[#8F896D] text-[#8F896D]" />
+                    ))}
+                  </div>
+                  <span className="font-semibold text-[#413C23]">{product.rating}</span>
+                  <span>({product.reviewsCount} reviews)</span>
                 </div>
               </div>
 
+              {/* Title */}
               <h1 className="font-serif-display text-2xl sm:text-4xl text-[#413C23] leading-tight font-normal">
                 {product.name}
               </h1>
@@ -219,7 +231,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
               )}
 
               <div className="flex items-baseline gap-3 pt-1">
-                <span className="font-serif-display text-2xl sm:text-3xl text-[#413C23] font-semibold">
+                <span className="text-2xl sm:text-3xl text-[#413C23] font-bold tracking-tight">
                   {formatPrice(product.price, currency)}
                 </span>
                 {product.originalPrice && (
@@ -241,10 +253,10 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
             {/* Material / Metal Switcher */}
             <div className="space-y-2.5">
               <span className="text-xs font-semibold uppercase tracking-wider text-[#413C23] block">
-                Precious Metal: <span className="font-normal text-[#8F896D]">{selectedMetal}</span>
+                Finish: <span className="font-normal text-[#8F896D]">{selectedMetal}</span>
               </span>
               <div className="flex gap-2.5">
-                {(['18k Gold Vermeil', '925 Sterling Silver'] as Metal[]).map((metal) => (
+                {(['Gold-Tone Brass', 'Silver-Tone Alloy'] as Metal[]).map((metal) => (
                   <button
                     key={metal}
                     onClick={() => setSelectedMetal(metal)}
@@ -259,7 +271,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                         metal.includes('Gold') ? 'bg-[#D4AF37] border-[#BF9B2D]' : 'bg-[#E0E0E0] border-[#BDBDBD]'
                       }`}
                     />
-                    <span>{metal === '18k Gold Vermeil' ? '18k Vermeil' : '925 Silver'}</span>
+                    <span>{metal}</span>
                   </button>
                 ))}
               </div>

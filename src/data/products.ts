@@ -1,25 +1,15 @@
 import { Product, CurrencyConfig, Currency } from '../types';
 
 export const CURRENCIES: Record<Currency, CurrencyConfig> = {
-  EUR: { code: 'EUR', symbol: '€', rate: 1.0, label: 'EUR (€)' },
   INR: { code: 'INR', symbol: '₹', rate: 90.0, label: 'INR (₹)' },
-  USD: { code: 'USD', symbol: '$', rate: 1.08, label: 'USD ($)' },
-  GBP: { code: 'GBP', symbol: '£', rate: 0.85, label: 'GBP (£)' },
+  EUR: { code: 'EUR', symbol: '₹', rate: 90.0, label: 'INR (₹)' },
+  USD: { code: 'USD', symbol: '₹', rate: 90.0, label: 'INR (₹)' },
+  GBP: { code: 'GBP', symbol: '₹', rate: 90.0, label: 'INR (₹)' },
 };
 
-export const formatPrice = (priceInEur: number, currency: Currency): string => {
-  const config = CURRENCIES[currency];
-  const converted = priceInEur * config.rate;
-  
-  if (currency === 'INR') {
-    return `₹${Math.round(converted).toLocaleString('en-IN')}`;
-  } else if (currency === 'EUR') {
-    return `€${Math.round(converted)}`;
-  } else if (currency === 'USD') {
-    return `$${Math.round(converted)}`;
-  } else {
-    return `£${Math.round(converted)}`;
-  }
+export const formatPrice = (price: number, currency: Currency = 'INR'): string => {
+  const inrAmount = price < 500 ? Math.round(price * 90) : Math.round(price);
+  return `₹${inrAmount.toLocaleString('en-IN')}`;
 };
 
 export const PRODUCTS: Product[] = [
@@ -28,9 +18,9 @@ export const PRODUCTS: Product[] = [
     name: 'Square Form Necklace',
     subtitle: 'Architectural Geometric Figaro Chain',
     category: 'necklaces',
-    metal: '18k Gold Vermeil',
-    price: 176, // ~$190 in USD
-    originalPrice: 200,
+    metal: 'Gold-Tone Brass',
+    price: 32, // Premium dailywear pricing
+    originalPrice: 40,
     rating: 5.0,
     reviewsCount: 34,
     images: [
@@ -38,15 +28,15 @@ export const PRODUCTS: Product[] = [
       'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?auto=format&fit=crop&w=1200&q=85',
       'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?auto=format&fit=crop&w=1200&q=85',
     ],
-    description: 'An architectural statement featuring interlocking square-cut Figaro links rendered in heavy 18k gold vermeil. Clean geometric silhouette designed for effortless modern elegance.',
+    description: 'An architectural dailywear statement featuring interlocking square-cut Figaro links rendered in premium brass with an advanced anti-tarnish gold-tone finish.',
     details: [
-      'Square profile hand-assembled interlocking links',
+      'Square profile interlocking links in durable premium brass',
       'Custom Avirena ergonomic box clasp with security lock',
-      'Length: 45cm + 5cm extension',
-      'Heavy 18k thick gold vermeil over 925 sterling silver',
-      'Handcrafted by master Italian & Indian goldsmiths'
+      'Length: 45cm + 5cm extension for flexible layering',
+      'Water-resistant & anti-tarnish e-coating for everyday longevity',
+      'Homegrown design handcrafted by skilled Indian artisans'
     ],
-    materials: '18k Solid Gold Vermeil (3.0 microns) over Recycled 925 Sterling Silver',
+    materials: 'Premium High-Grade Brass with Anti-Tarnish Gold-Tone E-Coating (Hypoallergenic & Nickel-Free)',
     sizes: ['42 cm', '45 cm', '50 cm'],
     inStock: true,
     isBestseller: true,
@@ -58,9 +48,9 @@ export const PRODUCTS: Product[] = [
     name: 'Lucid Studs',
     subtitle: 'Sculptural Molten Organic Spiral Studs',
     category: 'earrings',
-    metal: '18k Gold Vermeil',
-    price: 157, // ~$170 USD
-    originalPrice: 180,
+    metal: 'Gold-Tone Brass',
+    price: 26,
+    originalPrice: 32,
     rating: 4.9,
     reviewsCount: 48,
     images: [
@@ -68,14 +58,14 @@ export const PRODUCTS: Product[] = [
       'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?auto=format&fit=crop&w=1200&q=85',
       'https://images.unsplash.com/photo-1600003014755-ba31aa59c4b6?auto=format&fit=crop&w=1200&q=85'
     ],
-    description: 'Textured golden vortices created with organic folds that catch ambient light from every angle. Understated luxury at its finest.',
+    description: 'Textured golden vortices created with organic molten folds that catch ambient light. Featherlight dailywear designed for zero lobe strain.',
     details: [
-      'Hand-wax molded molten texture',
+      'Handcrafted organic molten texture in premium brass',
       'Diameter: 22mm',
-      'Titanium-reinforced post with wide comfort backing',
-      'Featherweight hollow core for zero lobe fatigue'
+      'Surgical steel hypoallergenic posts with comfort secure backings',
+      'Featherweight core for comfortable all-day wear'
     ],
-    materials: '18k Gold Vermeil on 925 Sterling Silver',
+    materials: 'High-Grade Brass with Anti-Tarnish Gold-Tone Finish, Surgical Steel Posts',
     inStock: true,
     isBestseller: true,
     isSculptural: true,
@@ -86,8 +76,8 @@ export const PRODUCTS: Product[] = [
     name: 'Solid Wave Brooch',
     subtitle: 'Fluid Sculptural Kinetic Ribbon Pin',
     category: 'brooches',
-    metal: '925 Sterling Silver',
-    price: 208, // ~$225 USD
+    metal: 'Silver-Tone Alloy',
+    price: 28,
     rating: 4.8,
     reviewsCount: 21,
     images: [
@@ -96,11 +86,11 @@ export const PRODUCTS: Product[] = [
     ],
     description: 'Inspired by modern kinetic art, this fluid ribbon pin secures outerwear, silk scarves, or tailored lapels with effortless grace.',
     details: [
-      'High-polished mirror rhodium-plated sterling silver',
-      'Reinforced safety barrel closure',
+      'High-polished mirror silver-tone protective finish',
+      'Reinforced safety barrel closure pin',
       'Dimensions: 52mm x 26mm'
     ],
-    materials: 'Solid 925 Sterling Silver with anti-tarnish rhodium barrier',
+    materials: 'Durable Alloy & Brass with Anti-Tarnish Silver-Tone Polish',
     inStock: true,
     isSculptural: true,
     styledWithIds: ['twin-hoop-earrings', 'wave-prism-ring']
@@ -108,23 +98,23 @@ export const PRODUCTS: Product[] = [
   {
     id: 'ornate-scroll-pendant',
     name: 'Ornate Scroll Pendant',
-    subtitle: 'Italian Renaissance Relief Medallion',
+    subtitle: 'Sculptural Filigree Relief Medallion',
     category: 'necklaces',
-    metal: '18k Gold Vermeil',
-    price: 231, // ~$250 USD
+    metal: 'Gold-Tone Brass',
+    price: 36,
     rating: 4.9,
     reviewsCount: 56,
     images: [
       'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?auto=format&fit=crop&w=1200&q=85',
       'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=1200&q=85',
     ],
-    description: 'A celebration of Italian Renaissance scrollwork translated into modern, minimal architecture. An ornate openwork medallion suspended on an airy box chain.',
+    description: 'An intricate openwork relief medallion suspended on an airy chain. A statement dailywear jewel designed to elevate any outfit.',
     details: [
-      'Intricate laser-sculpted relief medallion',
-      '50cm adjustable diamond-cut trace chain with 5cm extension',
+      'Intricate laser-detailed openwork scroll medallion',
+      '50cm adjustable trace chain with 5cm extension',
       'Pendant diameter: 28mm'
     ],
-    materials: '18k Gold Vermeil with anti-scratch ceramic micro-coating',
+    materials: 'High-Grade Brass with Dual-Layer Anti-Tarnish Gold-Tone Finish',
     sizes: ['45 cm + 5 cm Extender'],
     inStock: true,
     isBestseller: true,
@@ -133,23 +123,23 @@ export const PRODUCTS: Product[] = [
   {
     id: 'two-pearl-cuff',
     name: 'Two Pearl Cuff',
-    subtitle: 'Open Gold Wire Bangle with Floating Pearls',
+    subtitle: 'Open Wire Bangle with Floating Lustrous Pearls',
     category: 'bracelets',
-    metal: '18k Gold Vermeil',
-    price: 143, // ~$155 USD
+    metal: 'Gold-Tone Brass',
+    price: 29,
     rating: 4.8,
     reviewsCount: 29,
     images: [
-      'https://images.unsplash.com/photo-1611591475168-98967b5eb488?auto=format&fit=crop&w=1200&q=85',
+      'https://images.unsplash.com/photo-1602751584552-8ba73aad10e1?auto=format&fit=crop&w=1200&q=85',
       'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?auto=format&fit=crop&w=1200&q=85'
     ],
-    description: 'A minimal open cuff framed with dual luminous freshwater pearls nestled at each terminal tip. Ergonomic tension band effortlessly adjusts to any wrist.',
+    description: 'A minimal open cuff framed with dual luminous cultured pearls nestled at each terminal tip. Ergonomic tension band effortlessly adjusts to any wrist.',
     details: [
-      'Flexible open contour architecture with spring-back memory',
-      'Naturally formed grade-AAA white freshwater pearls (approx 8mm)',
-      '18k thick yellow gold vermeil'
+      'Flexible open contour architecture with spring-back memory in brass',
+      'Lustrous hand-selected pearls (approx 8mm)',
+      'Anti-tarnish gold-tone protective seal'
     ],
-    materials: '18k Gold Vermeil over Recycled 925 Silver, Grade-AAA Pearls',
+    materials: 'Durable Brass with Gold-Tone Finish & Cultured Lustrous Pearls',
     sizes: ['Small (14-16cm)', 'Medium (16-18cm)', 'Large (18-20cm)'],
     inStock: true,
     isBestseller: true,
@@ -160,44 +150,44 @@ export const PRODUCTS: Product[] = [
     name: 'Twin Hoop Earrings',
     subtitle: 'Two-Tone Ribbed Oval Huggie Hoops',
     category: 'earrings',
-    metal: '925 Sterling Silver',
-    price: 88, // ~$95 USD
+    metal: 'Silver-Tone Alloy',
+    price: 22,
     rating: 4.7,
     reviewsCount: 19,
     images: [
       'https://images.unsplash.com/photo-1630019852942-f89202989a59?auto=format&fit=crop&w=1200&q=85',
       'https://images.unsplash.com/photo-1600003014755-ba31aa59c4b6?auto=format&fit=crop&w=1200&q=85'
     ],
-    description: 'Sculpted with vertical flute ridges that capture light in rhythmic intervals. Subtle luxury suitable for both boardroom and candlelit dinners.',
+    description: 'Sculpted with vertical flute ridges that capture light in rhythmic intervals. Subtle dailywear luxury suitable for daily work and outings.',
     details: [
-      'Click-in snap huggie clasp with audible locking mechanism',
+      'Click-in snap huggie clasp with secure locking mechanism',
       'Diameter: 22mm, width: 8mm',
-      'Solid 925 Silver with rhodium plating'
+      'Hypoallergenic dailywear construction'
     ],
-    materials: 'Rhodium-Plated 925 Sterling Silver',
+    materials: 'Durable Alloy & Brass with Anti-Tarnish Silver-Tone Finish',
     inStock: true,
     styledWithIds: ['solid-wave-brooch', 'linked-heart-bracelet']
   },
   {
     id: 'row-edge-ring',
     name: 'Row Edge Ring',
-    subtitle: 'Etched Sunburst Wide Gold Cigar Band',
+    subtitle: 'Etched Sunburst Wide Gold-Tone Cigar Band',
     category: 'rings',
-    metal: '18k Gold Vermeil',
-    price: 104, // ~$112 USD
+    metal: 'Gold-Tone Brass',
+    price: 24,
     rating: 4.8,
     reviewsCount: 38,
     images: [
       'https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&w=1200&q=85',
       'https://images.unsplash.com/photo-1603561591411-07134e71a2a9?auto=format&fit=crop&w=1200&q=85'
     ],
-    description: 'Etched with fine ray motifs inspired by ancient astronomical instruments. A standout standalone piece or confident ring-stack foundation.',
+    description: 'Etched with fine ray motifs. A standout standalone piece or confident ring-stack foundation for everyday styling.',
     details: [
-      'Comfort-fit polished interior',
+      'Comfort-fit smooth polished interior',
       'Micro-etched relief detailing along edge fluting',
       'Band width: 8mm'
     ],
-    materials: '18k Gold Vermeil over 925 Silver',
+    materials: 'High-Grade Brass with Anti-Tarnish Gold-Tone Finish',
     sizes: ['US 5', 'US 6', 'US 7', 'US 8', 'US 9'],
     inStock: true,
     isBestseller: true,
@@ -206,23 +196,23 @@ export const PRODUCTS: Product[] = [
   {
     id: 'wave-prism-ring',
     name: 'Wave Prism Ring',
-    subtitle: 'Solitary Topaz on Contoured Gold Band',
+    subtitle: 'Faceted Crystal on Contoured Band',
     category: 'rings',
-    metal: '18k Gold Vermeil',
-    price: 97, // ~$105 USD
+    metal: 'Gold-Tone Brass',
+    price: 22,
     rating: 4.9,
     reviewsCount: 41,
     images: [
       'https://images.unsplash.com/photo-1603561591411-07134e71a2a9?auto=format&fit=crop&w=1200&q=85',
       'https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&w=1200&q=85'
     ],
-    description: 'A single bezel-set faceted white topaz nestled atop a contoured, knife-edge minimal band. Stacks seamlessly alongside bold cigar bands.',
+    description: 'A single bezel-set faceted sparkling zirconia crystal nestled atop a contoured, knife-edge minimal band.',
     details: [
-      '4.5mm round brilliant cut natural white topaz',
-      'Low-profile protective bezel setting',
+      '4.5mm round brilliant cut sparkling cubic zirconia',
+      'Low-profile protective bezel setting in brass',
       'Micro knife-edge contour band'
     ],
-    materials: '18k Gold Vermeil, Natural Untreated White Topaz',
+    materials: 'Durable Brass with Gold-Tone Coating, Brilliant Zirconia Crystal',
     sizes: ['US 5', 'US 6', 'US 7', 'US 8'],
     inStock: true,
     styledWithIds: ['row-edge-ring', 'two-pearl-cuff']
@@ -232,21 +222,21 @@ export const PRODUCTS: Product[] = [
     name: 'Shell Radiance Studs',
     subtitle: 'Scalloped Textured Fan Seashell Earrings',
     category: 'earrings',
-    metal: '18k Gold Vermeil',
-    price: 106, // ~$115 USD
+    metal: 'Gold-Tone Brass',
+    price: 23,
     rating: 4.8,
     reviewsCount: 33,
     images: [
       'https://images.unsplash.com/photo-1630019852942-f89202989a59?auto=format&fit=crop&w=1200&q=85',
       'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?auto=format&fit=crop&w=1200&q=85'
     ],
-    description: 'Delicate fluted scallop shells sculpted from cast gold, capturing coastal sunlight with timeless refinement.',
+    description: 'Delicate fluted scallop shells sculpted from molded brass with an anti-tarnish golden luster, capturing coastal aesthetics with everyday refinement.',
     details: [
       'Dimensions: 16mm x 14mm',
       'Hypoallergenic post and silicone-padded backing',
-      'Featherweight 3.8g pair weight'
+      'Featherweight 3.8g pair weight for zero fatigue'
     ],
-    materials: '18k Gold Vermeil',
+    materials: 'High-Grade Brass with Anti-Tarnish Gold-Tone Finish',
     inStock: true,
     isBestseller: true,
     styledWithIds: ['gold-curve-necklace', 'two-pearl-cuff']
@@ -256,8 +246,8 @@ export const PRODUCTS: Product[] = [
     name: 'Gold Curve Necklace',
     subtitle: 'Minimalist Wavy Wire Collar Necklace',
     category: 'necklaces',
-    metal: '18k Gold Vermeil',
-    price: 194, // ~$210 USD
+    metal: 'Gold-Tone Brass',
+    price: 34,
     rating: 4.8,
     reviewsCount: 27,
     images: [
@@ -266,11 +256,11 @@ export const PRODUCTS: Product[] = [
     ],
     description: 'An architectural Y-silhouette featuring a fluid molten wire arch that floats gracefully over the clavicle collarbone.',
     details: [
-      'Fluid hand-cast golden wire centerpiece',
+      'Fluid hand-shaped golden wire centerpiece in brass',
       'Adjustable 42cm + 5cm cable chain',
-      'Comfort tapered profile'
+      'Comfort tapered dailywear profile'
     ],
-    materials: '18k Gold Vermeil on 925 Sterling Silver',
+    materials: 'Premium Brass with Anti-Tarnish Gold-Tone Finish',
     sizes: ['42 cm + 5 cm Extender'],
     inStock: true,
     isSculptural: true,
@@ -279,23 +269,23 @@ export const PRODUCTS: Product[] = [
   {
     id: 'accent-earrings',
     name: 'Accent Huggies',
-    subtitle: 'Diamond Pavé Micro Huggie Hoops',
+    subtitle: 'Micro Crystal Huggie Hoops',
     category: 'earrings',
-    metal: '18k Gold Vermeil',
-    price: 231, // ~$250 USD
+    metal: 'Gold-Tone Brass',
+    price: 25,
     rating: 5.0,
     reviewsCount: 52,
     images: [
       'https://images.unsplash.com/photo-1630019852942-f89202989a59?auto=format&fit=crop&w=1200&q=85',
       'https://images.unsplash.com/photo-1600003014755-ba31aa59c4b6?auto=format&fit=crop&w=1200&q=85'
     ],
-    description: 'Refined miniature hoops encrusted with hand-set brilliant lab crystals. Designed to hug the lobe with seamless brilliance.',
+    description: 'Refined miniature hoops encrusted with hand-set brilliant micro crystals. Designed to hug the lobe seamlessly for daily styling.',
     details: [
-      'Precision flush-set lab zircons',
+      'Precision flush-set sparkling micro crystals',
       'Audible locking snap closure',
       'Inner diameter: 10mm, outer 14mm'
     ],
-    materials: '18k Gold Vermeil, Lab-grown Flawless Zircons',
+    materials: 'Durable Brass with Gold-Tone Finish, High-Brilliance Zirconia Crystals',
     inStock: true,
     isBestseller: true,
     styledWithIds: ['square-form-necklace', 'scalo-bracelet']
@@ -305,21 +295,21 @@ export const PRODUCTS: Product[] = [
     name: 'Linked Heart Bracelet',
     subtitle: 'Liquid Snake Chain with Sculpted Heart Toggle',
     category: 'bracelets',
-    metal: '925 Sterling Silver',
-    price: 125, // ~$135 USD
+    metal: 'Silver-Tone Alloy',
+    price: 26,
     rating: 4.9,
     reviewsCount: 36,
     images: [
-      'https://images.unsplash.com/photo-1611591475168-98967b5eb488?auto=format&fit=crop&w=1200&q=85',
+      'https://images.unsplash.com/photo-1602751584552-8ba73aad10e1?auto=format&fit=crop&w=1200&q=85',
       'https://images.unsplash.com/photo-1598560917505-59a3ad559071?auto=format&fit=crop&w=1200&q=85'
     ],
-    description: 'A liquid-finish snake chain completed by an organic, non-symmetrical sculpted heart charm and ergonomic T-bar toggle.',
+    description: 'A liquid-finish snake chain completed by an organic, sculpted heart charm and ergonomic T-bar toggle.',
     details: [
-      'High-grade solid 925 sterling silver',
+      'High-grade brass and alloy core',
       'Total chain length: 18cm',
-      'Rhodium plated for maximum shine retention'
+      'Anti-tarnish silver-tone e-coating for shine retention'
     ],
-    materials: '925 Sterling Silver',
+    materials: 'Premium Brass & Alloy with Anti-Tarnish Silver-Tone Finish',
     sizes: ['17 cm', '19 cm'],
     inStock: true,
     styledWithIds: ['twin-hoop-earrings', 'solid-wave-brooch']
@@ -329,22 +319,22 @@ export const PRODUCTS: Product[] = [
     name: 'Scalo Bracelet',
     subtitle: 'Undulating Molten Wave Wrist Cuff',
     category: 'bracelets',
-    metal: '18k Gold Vermeil',
-    price: 213, // ~$230 USD
-    originalPrice: 250,
+    metal: 'Gold-Tone Brass',
+    price: 35,
+    originalPrice: 42,
     rating: 4.9,
     reviewsCount: 44,
     images: [
-      'https://images.unsplash.com/photo-1611591475168-98967b5eb488?auto=format&fit=crop&w=1200&q=85',
+      'https://images.unsplash.com/photo-1602751584552-8ba73aad10e1?auto=format&fit=crop&w=1200&q=85',
       'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?auto=format&fit=crop&w=1200&q=85'
     ],
-    description: 'A continuous fluid wave of 18k gold that wraps organically around the wrist. Sculpted with an architectural opening for effortless wear.',
+    description: 'A continuous fluid wave of gold-tone brass that wraps organically around the wrist. Sculpted with an architectural opening for effortless wear.',
     details: [
-      'Adjustable tension fit cuff',
+      'Adjustable tension fit cuff in durable brass',
       'Width: 16mm at undulating peak',
-      'Weight: 24.5 grams solid core'
+      'Comfortable lightweight dailywear build'
     ],
-    materials: '18k Gold Vermeil over hypoallergenic 925 Silver',
+    materials: 'High-Grade Brass with Anti-Tarnish Gold-Tone Protective Coating',
     sizes: ['Small (14-16cm)', 'Medium (16-18cm)', 'Large (18-20cm)'],
     inStock: true,
     isBestseller: true,
@@ -356,23 +346,23 @@ export const PRODUCTS: Product[] = [
     name: 'Dome Studs',
     subtitle: 'Sculptural Molten Spherical Stud Earrings',
     category: 'earrings',
-    metal: '18k Gold Vermeil',
-    price: 167, // ~$180 USD
-    originalPrice: 200,
+    metal: 'Gold-Tone Brass',
+    price: 28,
+    originalPrice: 35,
     rating: 5.0,
     reviewsCount: 62,
     images: [
       'https://images.unsplash.com/photo-1630019852942-f89202989a59?auto=format&fit=crop&w=1200&q=90',
       'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?auto=format&fit=crop&w=1200&q=85',
     ],
-    description: 'Bold, hollow-cast spherical dome studs echoing modern mid-century architecture. Feather-light for all-day comfort yet visually commanding.',
+    description: 'Bold, hollow-formed spherical dome studs echoing modern architecture. Featherlight for all-day comfort yet visually commanding.',
     details: [
       'Hollow-form construction for zero lobe fatigue',
-      'High-polish mirror 18k gold vermeil finish',
-      'Titanium reinforced post and secure wide backing',
+      'High-polish mirror gold-tone finish',
+      'Surgical steel hypoallergenic posts with secure backing',
       'Diameter: 26mm'
     ],
-    materials: '18k Gold Vermeil over 925 Sterling Silver',
+    materials: 'Premium Brass with Anti-Tarnish Gold-Tone Finish, Surgical Steel Posts',
     inStock: true,
     isBestseller: true,
     isSculptural: true,
@@ -381,24 +371,24 @@ export const PRODUCTS: Product[] = [
   {
     id: 'pearl-drop-meridian',
     name: 'Pearl Drop Meridian',
-    subtitle: 'Chunky Figaro Chain with Floating Baroque Pearl',
+    subtitle: 'Figaro Chain with Floating Baroque Pearl',
     category: 'necklaces',
-    metal: '18k Gold Vermeil',
-    price: 222, // ~$240 USD
-    originalPrice: 260,
+    metal: 'Gold-Tone Brass',
+    price: 36,
+    originalPrice: 45,
     rating: 4.9,
     reviewsCount: 49,
     images: [
       'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=1200&q=90',
       'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?auto=format&fit=crop&w=1200&q=85'
     ],
-    description: 'A classic Italian Figaro link reimagined with a lustrous teardrop freshwater pearl floating asymmetrically at the collarbone.',
+    description: 'A classic Figaro link chain reimagined with a lustrous teardrop baroque pearl floating asymmetrically at the collarbone.',
     details: [
-      'Heavy solid Figaro chain in 4.5mm width',
-      'Grade AAA luminous freshwater teardrop pearl (18mm)',
+      'Durable Figaro chain in 4.5mm width in brass',
+      'Luminous cultured teardrop baroque pearl (18mm)',
       'Length: 42cm + 5cm extension'
     ],
-    materials: '18k Gold Vermeil, Natural Luminous Baroque Pearl',
+    materials: 'High-Grade Brass with Anti-Tarnish Gold-Tone Coating, Cultured Baroque Pearl',
     sizes: ['42 cm', '45 cm'],
     inStock: true,
     isBestseller: true,
@@ -408,26 +398,26 @@ export const PRODUCTS: Product[] = [
   {
     id: 'luna-pearl-choker',
     name: 'Luna Pearl Choker',
-    subtitle: 'Triple-Wire Gold Choker with Baroque Pearl',
+    subtitle: 'Triple-Wire Gold-Tone Choker with Baroque Pearl',
     category: 'necklaces',
-    metal: '18k Gold Vermeil',
-    price: 280,
-    originalPrice: 320,
+    metal: 'Gold-Tone Brass',
+    price: 39,
+    originalPrice: 48,
     rating: 4.9,
     reviewsCount: 42,
     images: [
       'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=1200&q=85',
       'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?auto=format&fit=crop&w=1200&q=85',
-      'https://images.unsplash.com/photo-1611591475168-98967b5eb488?auto=format&fit=crop&w=1200&q=85',
+      'https://images.unsplash.com/photo-1602751584552-8ba73aad10e1?auto=format&fit=crop&w=1200&q=85',
     ],
-    description: 'A sculptural layered collar choker featuring three fine fluid gold bands crowned with an organic irregular cultured baroque freshwater pearl.',
+    description: 'A sculptural layered collar choker featuring three fine fluid gold-tone brass bands crowned with an organic irregular cultured baroque pearl.',
     details: [
-      'Triple layered contour collar in 18k thick gold vermeil over 925 sterling silver',
+      'Triple layered contour collar in high-grade brass with anti-tarnish protective finish',
       'Naturally formed organic baroque pearl (approx 16-18mm)',
-      'Hypoallergenic, nickel-free & anti-tarnish protective finish',
+      'Hypoallergenic, nickel-free & water-resistant dailywear build',
       'Custom Avirena ergonomic box clasp with 2-inch micro-extender'
     ],
-    materials: '18k Solid Gold Vermeil over Recycled 925 Sterling Silver, Grade-A Natural Baroque Pearl',
+    materials: 'Premium Brass with Anti-Tarnish Gold-Tone Finish, Cultured Baroque Pearl',
     sizes: ['38 cm', '40 cm', '42 cm', '45 cm'],
     inStock: true,
     isBestseller: true,
@@ -439,21 +429,21 @@ export const PRODUCTS: Product[] = [
     name: 'Vela Dual Wave Ring',
     subtitle: 'Contoured Sculptural Double Band',
     category: 'rings',
-    metal: '18k Gold Vermeil',
-    price: 175,
+    metal: 'Gold-Tone Brass',
+    price: 24,
     rating: 4.8,
     reviewsCount: 29,
     images: [
       'https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&w=1200&q=85',
       'https://images.unsplash.com/photo-1603561591411-07134e71a2a9?auto=format&fit=crop&w=1200&q=85',
     ],
-    description: 'Two parallel organic ripples of molten gold create an illusion of floating layers on the finger. Sculpted with generous curves and ergonomic tapering.',
+    description: 'Two parallel organic ripples of gold-tone brass create an illusion of floating layers on the finger. Sculpted with generous curves and ergonomic tapering.',
     details: [
-      'Organic double-tier open contour architecture',
-      'Comfort-fit tapered inner profile',
+      'Organic double-tier open contour architecture in durable brass',
+      'Comfort-fit tapered inner profile for everyday wear',
       'Width: 9mm at apex, tapering to 4mm base'
     ],
-    materials: 'Heavy 18k Yellow Gold Vermeil on recycled 925 Silver',
+    materials: 'High-Grade Brass with Anti-Tarnish Gold-Tone Coating',
     sizes: ['US 5', 'US 6', 'US 7', 'US 8'],
     inStock: true,
     isBestseller: true,
@@ -462,23 +452,23 @@ export const PRODUCTS: Product[] = [
   {
     id: 'veda-ring',
     name: 'Veda Woven Ring',
-    subtitle: 'Braided Molten Gold Band',
+    subtitle: 'Braided Molten Gold-Tone Band',
     category: 'rings',
-    metal: '18k Gold Vermeil',
-    price: 145,
+    metal: 'Gold-Tone Brass',
+    price: 22,
     rating: 5.0,
     reviewsCount: 37,
     images: [
       'https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&w=1200&q=85',
       'https://images.unsplash.com/photo-1603561591411-07134e71a2a9?auto=format&fit=crop&w=1200&q=85'
     ],
-    description: 'Three intertwined golden strands woven seamlessly by hand into a continuous infinity loop, signifying eternal poise.',
+    description: 'Three intertwined golden strands woven seamlessly into a continuous infinity loop, signifying eternal poise.',
     details: [
-      'Intricate triple-strand hand braid',
+      'Intricate triple-strand hand braid in brass',
       'Width: 5.5mm',
-      'Solid weight with silky inner profile'
+      'Comfortable lightweight dailywear profile'
     ],
-    materials: '18k Solid Gold Vermeil',
+    materials: 'Durable Brass with Anti-Tarnish Gold-Tone Finish',
     sizes: ['US 5', 'US 6', 'US 7', 'US 8', 'US 9'],
     inStock: true,
     isBestseller: true,
@@ -487,24 +477,24 @@ export const PRODUCTS: Product[] = [
   {
     id: 'papette-gem-ring',
     name: 'Papette Pavé Cigar Ring',
-    subtitle: 'Encrusted Pavé Wide Statement Band',
+    subtitle: 'Encrusted Micro-Crystal Wide Statement Band',
     category: 'rings',
-    metal: '18k Gold Vermeil',
-    price: 215,
-    originalPrice: 250,
+    metal: 'Gold-Tone Brass',
+    price: 26,
+    originalPrice: 32,
     rating: 4.9,
     reviewsCount: 45,
     images: [
       'https://images.unsplash.com/photo-1603561591411-07134e71a2a9?auto=format&fit=crop&w=1200&q=85',
       'https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&w=1200&q=85'
     ],
-    description: 'A substantial domed cigar band encrusted with flush-set laboratory gemstones in an organic celestial constellation.',
+    description: 'A substantial domed cigar band encrusted with flush-set sparkling crystals in an organic celestial constellation.',
     details: [
-      'Flush-set lab zircons across upper arch',
+      'Flush-set brilliant cubic zirconia crystals',
       'Substantial 10mm width tapering to 5mm base',
-      'Weight: 8.4 grams'
+      'Durable dailywear finish'
     ],
-    materials: '18k Gold Vermeil, Lab Brilliance Crystals',
+    materials: 'High-Grade Brass with Anti-Tarnish Gold-Tone Finish, Brilliant Zirconia Crystals',
     sizes: ['US 6', 'US 7', 'US 8'],
     inStock: true,
     styledWithIds: ['veda-ring', 'scalo-bracelet']

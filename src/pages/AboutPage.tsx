@@ -88,13 +88,13 @@ export const AboutPage: React.FC<AboutPageProps> = ({
   return (
     <div ref={containerRef} className="font-sans-body text-[#413C23] bg-[#E7E4D5] pb-24 overflow-hidden w-full select-none">
       
-      {/* 1. HERO SECTION - Editorial Atelier Masthead */}
+      {/* 1. HERO SECTION - Editorial Homegrown Masthead */}
       <section ref={heroRef} className="relative w-full px-4 sm:px-8 lg:px-12 xl:px-16 2xl:px-20 pt-4 pb-12 sm:pb-16">
         <div className="relative rounded-xs overflow-hidden border border-[#D8D2C2] bg-[#413C23] min-h-[520px] sm:min-h-[600px] lg:min-h-[660px] flex items-end">
-          {/* Background Atmospheric Workshop Image with Multiply/Luminosity Blend */}
+          {/* Background Atmospheric Workshop Image */}
           <img
             src="https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?auto=format&fit=crop&w=2400&q=90"
-            alt="Avirena jewelry artisan handcrafting gold casting"
+            alt="Avirena homegrown jewelry handcrafted with care"
             referrerPolicy="no-referrer"
             className="absolute inset-0 w-full h-full object-cover object-[center_35%] mix-blend-luminosity opacity-40 scale-105"
           />
@@ -103,10 +103,10 @@ export const AboutPage: React.FC<AboutPageProps> = ({
           {/* Top Micro-Header */}
           <div className="absolute top-6 sm:top-10 left-6 sm:left-12 right-6 sm:right-12 flex items-center justify-between z-10 border-b border-[#E7E4D5]/20 pb-4">
             <span className="text-[10px] sm:text-xs font-semibold tracking-[0.25em] text-[#8F896D] uppercase">
-              (01) / The Avirena Atelier
+              (01) / The Avirena Story
             </span>
             <span className="text-[10px] sm:text-xs text-[#E7E4D5]/80 font-light hidden sm:inline-block uppercase tracking-widest">
-              Jaipur • Vicenza • Mumbai
+              Homegrown • Everyday Luxury • India
             </span>
           </div>
 
@@ -114,15 +114,15 @@ export const AboutPage: React.FC<AboutPageProps> = ({
           <div className="relative z-10 w-full px-6 sm:px-12 lg:px-16 pb-10 sm:pb-16 max-w-4xl space-y-4 text-left">
             <div className="about-hero-element">
               <span className="text-[11px] uppercase tracking-[0.3em] font-semibold text-[#8F896D] block mb-2">
-                Sculpted With Soul
+                Homegrown &amp; Thoughtfully Crafted
               </span>
               <h1 className="font-serif-display text-4xl sm:text-6xl md:text-7xl lg:text-8xl text-[#E7E4D5] tracking-tight leading-[1.02] font-light">
-                The Poetry of <span className="italic font-normal text-[#FAF8F5]">Molten Metal</span>
+                Everyday Luxury <span className="italic font-normal text-[#FAF8F5]">Made For Living</span>
               </h1>
             </div>
 
             <p className="about-hero-element text-xs sm:text-sm text-[#E7E4D5]/85 max-w-xl font-normal leading-relaxed">
-              Sculpted by hand using lost-wax casting, celebrating the natural ripples of molten 18k gold vermeil and organic baroque freshwater pearls.
+              We are a homegrown Indian jewelry brand crafting premium dailywear pieces in durable high-grade brass, resilient anti-tarnish finishes, and handpicked cultured pearls.
             </p>
 
             <div className="about-hero-element pt-2 flex flex-wrap items-center gap-3.5">
@@ -131,7 +131,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({
                 onClick={onNavigateToShop}
                 className="px-6 py-3.5 bg-[#E7E4D5] hover:bg-[#8F896D] text-[#413C23] hover:text-[#FAF8F5] text-xs uppercase tracking-[0.2em] font-semibold rounded-xs transition-all shadow-md inline-flex items-center gap-2 cursor-pointer active:scale-98"
               >
-                <span>Explore Creations</span>
+                <span>Explore Dailywear</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </button>
               <button
@@ -139,7 +139,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({
                 onClick={onNavigateToContact}
                 className="px-6 py-3.5 border border-[#E7E4D5]/50 hover:border-[#E7E4D5] text-[#E7E4D5] text-xs uppercase tracking-[0.2em] font-semibold rounded-xs transition-colors cursor-pointer"
               >
-                Book Appointment
+                Get In Touch
               </button>
             </div>
           </div>
@@ -154,17 +154,17 @@ export const AboutPage: React.FC<AboutPageProps> = ({
           <div className="lg:col-span-5 relative">
             <div className="aspect-[4/5] rounded-xs overflow-hidden border border-[#D8D2C2] bg-[#F4EFE6] gsap-reveal-img relative shadow-sm">
               <img
-                src="https://images.unsplash.com/photo-1611591475168-98967b5eb488?auto=format&fit=crop&w=1200&q=90"
-                alt="Molten gold cuff sculpted on stone"
+                src="https://images.unsplash.com/photo-1602751584552-8ba73aad10e1?auto=format&fit=crop&w=1200&q=90"
+                alt="Sculpted gold-tone brass jewelry on natural stone"
                 referrerPolicy="no-referrer"
                 className="w-full h-full object-cover object-center"
               />
               <div className="absolute bottom-4 left-4 right-4 bg-[#FAF8F5]/95 backdrop-blur-xs p-4 rounded-xs border border-[#D8D2C2]">
                 <span className="text-[10px] uppercase tracking-widest text-[#8F896D] font-bold block">
-                  Signature Casting
+                  Homegrown Craftsmanship
                 </span>
                 <p className="text-xs text-[#413C23] font-serif-display italic mt-1 leading-snug">
-                  “Metal in its liquid state remembers the touch of the artisan’s flame.”
+                  “Jewelry designed for real life—effortless, resilient, and distinctively yours.”
                 </p>
               </div>
             </div>
@@ -182,26 +182,26 @@ export const AboutPage: React.FC<AboutPageProps> = ({
             </div>
 
             <p className="text-xs sm:text-sm text-[#413C23]/80 font-normal leading-relaxed">
-              Traditional fine jewelry is often locked away in bank vaults, reserved only for weddings and rare galas. Avirena was founded on a simple conviction: luxury should be an everyday sensation.
+              Fine jewelry often sits tucked away in lockers for special occasions. We founded Avirena with a different vision: luxury should be an everyday experience that you wear with confidence to work, brunch, coffee runs, and evening outings.
             </p>
 
             <p className="text-xs sm:text-sm text-[#413C23]/80 font-normal leading-relaxed">
-              We bridge the worlds of ancient Indian metal-smithing traditions from Jaipur and contemporary Italian sculptural minimalism from Vicenza. Each piece is engineered with ergonomic weight distribution, ensuring luxurious day-to-night comfort.
+              We craft contemporary statement pieces from solid high-grade brass and durable alloys, sealed with specialized anti-tarnish protective coatings. Every piece is featherweight, skin-friendly, and designed for effortless all-day comfort.
             </p>
 
             {/* 3 Key Brand Metrics */}
             <div className="grid grid-cols-3 gap-4 pt-6 border-t border-[#D8D2C2]">
               <div className="space-y-1">
-                <span className="font-serif-display text-3xl sm:text-4xl text-[#413C23] block font-light">3.0μ</span>
-                <span className="text-[10px] sm:text-[11px] text-[#8F896D] uppercase tracking-wider block font-medium">Gold Vermeil Layer</span>
+                <span className="font-serif-display text-3xl sm:text-4xl text-[#413C23] block font-light">100%</span>
+                <span className="text-[10px] sm:text-[11px] text-[#8F896D] uppercase tracking-wider block font-medium">Homegrown Brand</span>
               </div>
               <div className="space-y-1">
-                <span className="font-serif-display text-3xl sm:text-4xl text-[#413C23] block font-light">100%</span>
-                <span className="text-[10px] sm:text-[11px] text-[#8F896D] uppercase tracking-wider block font-medium">Recycled 925 Silver</span>
+                <span className="font-serif-display text-3xl sm:text-4xl text-[#413C23] block font-light">Brass</span>
+                <span className="text-[10px] sm:text-[11px] text-[#8F896D] uppercase tracking-wider block font-medium">Anti-Tarnish Core</span>
               </div>
               <div className="space-y-1">
                 <span className="font-serif-display text-3xl sm:text-4xl text-[#413C23] block font-light">0%</span>
-                <span className="text-[10px] sm:text-[11px] text-[#8F896D] uppercase tracking-wider block font-medium">Nickel & Allergen Free</span>
+                <span className="text-[10px] sm:text-[11px] text-[#8F896D] uppercase tracking-wider block font-medium">Nickel &amp; Lead Free</span>
               </div>
             </div>
           </div>
@@ -209,7 +209,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({
       </section>
 
       {/* 3. MATERIAL MASTERY & ARTISANAL PILLARS */}
-      <section ref={craftRef} className="w-full bg-[#F4EFE6] py-16 sm:py-24 border-b border-[#D8D2C2] px-4 sm:px-8 lg:px-12 xl:px-16 2xl:px-20">
+      <section ref={craftRef} className="w-full bg-[#E7E4D5] py-16 sm:py-24 border-b border-[#D8D2C2] px-4 sm:px-8 lg:px-12 xl:px-16 2xl:px-20">
         <div className="w-full space-y-12">
           
           <div className="flex flex-col sm:flex-row sm:items-end justify-between border-b border-[#D8D2C2] pb-4 text-left gap-3">
@@ -218,56 +218,56 @@ export const AboutPage: React.FC<AboutPageProps> = ({
                 (03) / Standards
               </span>
               <h2 className="font-serif-display text-3xl sm:text-5xl text-[#413C23] tracking-tight font-light">
-                Material Integrity
+                Our Materials &amp; Standards
               </h2>
             </div>
             <p className="text-xs sm:text-sm text-[#413C23]/70 font-normal max-w-md">
-              Genuine precious metals, conflict-free gemstones, and thick vermeil layers engineered for lasting daily radiance.
+              High-grade brass, anti-tarnish protective sealing, and skin-safe alloys engineered for lasting everyday radiance.
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6 text-left">
             {/* Pillar 1 */}
-            <div className="craft-pillar-card bg-[#FAF8F5] p-6 sm:p-8 rounded-xs border border-[#D8D2C2] space-y-4 hover:border-[#8F896D] transition-all hover:shadow-sm">
-              <div className="w-11 h-11 rounded-xs bg-[#E7E4D5] border border-[#D8D2C2] flex items-center justify-center text-[#413C23]">
+            <div className="craft-pillar-card bg-[#E7E4D5] p-6 sm:p-8 rounded-xs border border-[#D8D2C2] space-y-4 hover:border-[#8F896D] transition-all hover:shadow-sm">
+              <div className="w-11 h-11 rounded-xs bg-[#D8D2C2]/50 border border-[#D8D2C2] flex items-center justify-center text-[#413C23]">
                 <Flame className="w-5 h-5 stroke-[1.5]" />
               </div>
-              <h3 className="font-serif-display text-xl text-[#413C23] font-medium">18k Heavy Vermeil</h3>
+              <h3 className="font-serif-display text-xl text-[#413C23] font-medium">Anti-Tarnish Seal</h3>
               <p className="text-xs text-[#413C23]/75 leading-relaxed font-normal">
-                Unlike standard 0.5-micron flash plating, our heavy 3.0-micron 18-karat gold layer delivers enduring warmth and rich luster that resists daily wear.
+                Our specialized gold-tone protective e-coating resists sweat, humidity, and daily wear, retaining rich warmth and shine.
               </p>
             </div>
 
             {/* Pillar 2 */}
-            <div className="craft-pillar-card bg-[#FAF8F5] p-6 sm:p-8 rounded-xs border border-[#D8D2C2] space-y-4 hover:border-[#8F896D] transition-all hover:shadow-sm">
-              <div className="w-11 h-11 rounded-xs bg-[#E7E4D5] border border-[#D8D2C2] flex items-center justify-center text-[#413C23]">
+            <div className="craft-pillar-card bg-[#E7E4D5] p-6 sm:p-8 rounded-xs border border-[#D8D2C2] space-y-4 hover:border-[#8F896D] transition-all hover:shadow-sm">
+              <div className="w-11 h-11 rounded-xs bg-[#D8D2C2]/50 border border-[#D8D2C2] flex items-center justify-center text-[#413C23]">
                 <Gem className="w-5 h-5 stroke-[1.5]" />
               </div>
-              <h3 className="font-serif-display text-xl text-[#413C23] font-medium">Baroque Pearls</h3>
+              <h3 className="font-serif-display text-xl text-[#413C23] font-medium">Lustrous Pearls &amp; Gems</h3>
               <p className="text-xs text-[#413C23]/75 leading-relaxed font-normal">
-                Each baroque pearl is individually hand-selected for its iridescent luster, unique irregular contours, and organic asymmetry. No two pearls are ever identical.
+                Hand-selected cultured baroque pearls and brilliant cubic zirconia crystals chosen for organic luster and light reflection.
               </p>
             </div>
 
             {/* Pillar 3 */}
-            <div className="craft-pillar-card bg-[#FAF8F5] p-6 sm:p-8 rounded-xs border border-[#D8D2C2] space-y-4 hover:border-[#8F896D] transition-all hover:shadow-sm">
-              <div className="w-11 h-11 rounded-xs bg-[#E7E4D5] border border-[#D8D2C2] flex items-center justify-center text-[#413C23]">
+            <div className="craft-pillar-card bg-[#E7E4D5] p-6 sm:p-8 rounded-xs border border-[#D8D2C2] space-y-4 hover:border-[#8F896D] transition-all hover:shadow-sm">
+              <div className="w-11 h-11 rounded-xs bg-[#D8D2C2]/50 border border-[#D8D2C2] flex items-center justify-center text-[#413C23]">
                 <Shield className="w-5 h-5 stroke-[1.5]" />
               </div>
-              <h3 className="font-serif-display text-xl text-[#413C23] font-medium">Hypoallergenic Core</h3>
+              <h3 className="font-serif-display text-xl text-[#413C23] font-medium">Skin-Friendly Core</h3>
               <p className="text-xs text-[#413C23]/75 leading-relaxed font-normal">
-                Our base is always certified 100% recycled 925 sterling silver—never cheap brass, base alloy, or nickel that turns skin green or triggers irritations.
+                100% hypoallergenic, nickel-free, and lead-free. Safe for sensitive skin and comfortable for continuous everyday wear.
               </p>
             </div>
 
             {/* Pillar 4 */}
-            <div className="craft-pillar-card bg-[#FAF8F5] p-6 sm:p-8 rounded-xs border border-[#D8D2C2] space-y-4 hover:border-[#8F896D] transition-all hover:shadow-sm">
-              <div className="w-11 h-11 rounded-xs bg-[#E7E4D5] border border-[#D8D2C2] flex items-center justify-center text-[#413C23]">
+            <div className="craft-pillar-card bg-[#E7E4D5] p-6 sm:p-8 rounded-xs border border-[#D8D2C2] space-y-4 hover:border-[#8F896D] transition-all hover:shadow-sm">
+              <div className="w-11 h-11 rounded-xs bg-[#D8D2C2]/50 border border-[#D8D2C2] flex items-center justify-center text-[#413C23]">
                 <Award className="w-5 h-5 stroke-[1.5]" />
               </div>
-              <h3 className="font-serif-display text-xl text-[#413C23] font-medium">Limited Batches</h3>
+              <h3 className="font-serif-display text-xl text-[#413C23] font-medium">Curated Small Batches</h3>
               <p className="text-xs text-[#413C23]/75 leading-relaxed font-normal">
-                Produced in strictly controlled limited runs by hereditary jewelers. We maintain zero deadstock waste and practice full artisan fair-wage transparency.
+                Produced in small, carefully inspected batches by homegrown artisans to guarantee high quality and fair craft practices.
               </p>
             </div>
           </div>
@@ -281,14 +281,14 @@ export const AboutPage: React.FC<AboutPageProps> = ({
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-[#D8D2C2] pb-4 text-left">
             <div>
               <span className="text-[10px] text-[#8F896D] uppercase tracking-widest font-semibold block mb-1">
-                (04) / Atelier Process
+                (04) / How We Create
               </span>
               <h2 className="font-serif-display text-3xl sm:text-5xl text-[#413C23] tracking-tight font-light">
-                The Making of an Artifact
+                The Journey of Every Piece
               </h2>
             </div>
             <p className="text-xs sm:text-sm text-[#413C23]/70 max-w-md font-normal">
-              From hand-carved wax sculpture to molten gold immersion, every creation undergoes over 18 hours of master craftsmanship.
+              From hand-sketched prototypes to anti-tarnish protective sealing, each design is perfected for daily wear.
             </p>
           </div>
 
@@ -296,34 +296,34 @@ export const AboutPage: React.FC<AboutPageProps> = ({
             {[
               {
                 step: '01',
-                title: 'Sculptural Wax Carving',
-                desc: 'Silhouettes are hand-carved in organic jeweler wax to capture molten liquid waves and natural tactile ridges.',
+                title: 'Design & Silhouette',
+                desc: 'Sculptural forms and fluid lines sketched and modeled to ensure lightweight balance and ergonomic fit.',
                 img: 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&w=800&q=80',
               },
               {
                 step: '02',
-                title: 'Lost-Wax Casting',
-                desc: 'Recycled 925 silver is melted at 961°C and poured into gypsum investment molds, displacing the carved wax shell.',
+                title: 'Precision Metal Molding',
+                desc: 'Premium brass and durable alloys are cast with precision molds to capture intricate textures and smooth contours.',
                 img: 'https://images.unsplash.com/photo-1598560917505-59a3ad559071?auto=format&fit=crop&w=800&q=80',
               },
               {
                 step: '03',
                 title: 'Hand-Filing & Satiny Polish',
-                desc: 'Artisans use fine diamond files and buffing wheels to achieve a silky mirror luster without dulling molten contours.',
+                desc: 'Skilled artisans hand-polish every curve to create a smooth, comfortable surface that feels weightless on the skin.',
                 img: 'https://images.unsplash.com/photo-1630019852942-f89202989a59?auto=format&fit=crop&w=800&q=80',
               },
               {
                 step: '04',
-                title: '18k Heavy Gold Bath',
-                desc: 'The jewel is immersed in a multi-stage electrolytic bath, sealing 3.0 microns of warm 18k yellow gold.',
+                title: 'Anti-Tarnish Protective Seal',
+                desc: 'Sealed with a multi-layered protective gold-tone finish to ensure everyday water resistance and long-lasting shine.',
                 img: 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?auto=format&fit=crop&w=800&q=80',
               },
             ].map((stage) => (
               <div
                 key={stage.step}
-                className="group bg-[#F4EFE6] border border-[#D8D2C2] rounded-xs overflow-hidden flex flex-col text-left hover:border-[#8F896D] transition-all hover:shadow-sm"
+                className="group bg-[#E7E4D5] border border-[#D8D2C2] rounded-xs overflow-hidden flex flex-col text-left hover:border-[#8F896D] transition-all hover:shadow-sm"
               >
-                <div className="aspect-[4/3] bg-[#E7E4D5] overflow-hidden relative">
+                <div className="aspect-[4/3] bg-[#D8D2C2] overflow-hidden relative">
                   <img
                     src={stage.img}
                     alt={stage.title}
@@ -353,7 +353,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({
 
       {/* 5. FOUNDER'S LETTER & SIGNATURE */}
       <section className="w-full px-4 sm:px-8 lg:px-12 xl:px-16 2xl:px-20 py-16 max-w-5xl mx-auto">
-        <div className="bg-[#FAF8F5] border border-[#D8D2C2] p-8 sm:p-12 lg:p-16 rounded-xs text-center space-y-6 shadow-xs relative">
+        <div className="bg-[#E7E4D5] border border-[#D8D2C2] p-8 sm:p-12 lg:p-16 rounded-xs text-center space-y-6 shadow-xs relative">
           <BrandLogo variant="submark" size="md" theme="gold" className="mx-auto" />
           
           <div className="space-y-4 max-w-2xl mx-auto">
@@ -361,16 +361,16 @@ export const AboutPage: React.FC<AboutPageProps> = ({
               (05) / Founder’s Note
             </span>
             <h3 className="font-serif-display text-2xl sm:text-4xl text-[#413C23] font-light italic leading-snug">
-              “We build jewels that age with you, taking on the patina of your life’s milestones.”
+              “We create jewelry you reach for every single morning—effortless, beautiful, and lasting.”
             </h3>
             <p className="text-xs sm:text-sm text-[#413C23]/80 font-normal leading-relaxed">
-              When you put on an Avirena ring or necklace, it shouldn’t feel like costume or fragile decoration. It should feel grounding—like a wearable piece of sculpture that honors your individuality.
+              Avirena was created to make modern, statement jewelry accessible for everyday life. You shouldn't have to choose between fragile costume pieces and exorbitantly expensive fine jewelry. Our pieces are crafted to be worn with joy, every single day.
             </p>
           </div>
 
           <div className="pt-4 border-t border-[#D8D2C2] max-w-xs mx-auto">
-            <span className="font-serif-display text-lg text-[#413C23] block font-medium">Avirena Creative Direction</span>
-            <span className="text-[11px] text-[#8F896D] uppercase tracking-[0.2em] font-semibold">Jaipur • Vicenza • Mumbai</span>
+            <span className="font-serif-display text-lg text-[#413C23] block font-medium">Avirena Jewels</span>
+            <span className="text-[11px] text-[#8F896D] uppercase tracking-[0.2em] font-semibold">Homegrown Dailywear Luxury</span>
           </div>
         </div>
       </section>
@@ -380,10 +380,10 @@ export const AboutPage: React.FC<AboutPageProps> = ({
         <div className="bg-[#413C23] text-[#E7E4D5] p-8 sm:p-12 lg:p-16 rounded-xs text-center space-y-6 max-w-7xl mx-auto border border-[#413C23] shadow-md">
           <div className="space-y-2">
             <span className="text-[11px] uppercase tracking-[0.3em] font-semibold text-[#8F896D] block">
-              Maison Avirena
+              Avirena Jewels
             </span>
             <h2 className="font-serif-display text-3xl sm:text-5xl lg:text-6xl text-[#E7E4D5] max-w-2xl mx-auto font-light leading-tight">
-              Find the piece sculpted for your <span className="italic font-normal">daily journey.</span>
+              Discover your next <span className="italic font-normal">everyday favorite.</span>
             </h2>
           </div>
           <div className="flex flex-wrap items-center justify-center gap-4 pt-2">
@@ -397,7 +397,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({
               onClick={onNavigateToContact}
               className="px-8 py-3.5 border border-[#E7E4D5]/40 hover:border-[#E7E4D5] text-[#E7E4D5] text-xs uppercase tracking-[0.2em] font-semibold rounded-xs transition-colors cursor-pointer"
             >
-              Contact Concierge
+              Contact Us
             </button>
           </div>
         </div>
