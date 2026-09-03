@@ -102,44 +102,47 @@ export const HomePage: React.FC<HomePageProps> = ({
     },
   };
 
+  // Fallback safety to ensure catalog is always populated
+  const safeProducts = (catalogProducts && catalogProducts.length > 0) ? catalogProducts : PRODUCTS;
+
   // Curated 5 pieces for "Collection" section matching reference layout
   const collectionFive = [
     {
-      product: catalogProducts.find((p) => p.id === 'row-edge-ring') || catalogProducts[5] || catalogProducts[0],
+      product: safeProducts.find((p) => p.id === 'row-edge-ring') || safeProducts[5] || PRODUCTS[5],
       displayTitle: 'Aurelia Ring',
     },
     {
-      product: catalogProducts.find((p) => p.id === 'square-form-necklace') || catalogProducts[0],
+      product: safeProducts.find((p) => p.id === 'square-form-necklace') || safeProducts[0] || PRODUCTS[0],
       displayTitle: 'Nadir Necklace',
     },
     {
-      product: catalogProducts.find((p) => p.id === 'lucid-studs') || catalogProducts[1],
+      product: safeProducts.find((p) => p.id === 'lucid-studs') || safeProducts[1] || PRODUCTS[1],
       displayTitle: 'Lucea Studs',
     },
     {
-      product: catalogProducts.find((p) => p.id === 'scalo-bracelet') || catalogProducts[11] || catalogProducts[3],
+      product: safeProducts.find((p) => p.id === 'scalo-bracelet') || safeProducts[11] || safeProducts[3] || PRODUCTS[3],
       displayTitle: 'Forma Bracelet',
     },
     {
-      product: catalogProducts.find((p) => p.id === 'solid-wave-brooch') || catalogProducts[2],
+      product: safeProducts.find((p) => p.id === 'solid-wave-brooch') || safeProducts[2] || PRODUCTS[2],
       displayTitle: 'Aura Brooch',
     },
-  ];
+  ].filter((item) => Boolean(item.product && item.product.images && item.product.images.length > 0));
 
   // Curated 5 pieces for "Popular" section (identical 5-column grid & sizing as Collection)
   const popularFive = [
-    catalogProducts.find((p) => p.id === 'wave-prism-ring') || catalogProducts[6] || catalogProducts[0],
-    catalogProducts.find((p) => p.id === 'gold-curve-necklace') || catalogProducts[8] || catalogProducts[1],
-    catalogProducts.find((p) => p.id === 'dome-studs') || catalogProducts[13] || catalogProducts[2],
-    catalogProducts.find((p) => p.id === 'two-pearl-cuff') || catalogProducts[4],
-    catalogProducts.find((p) => p.id === 'asta-brooch') || catalogProducts[14] || catalogProducts[3],
-  ];
+    safeProducts.find((p) => p.id === 'wave-prism-ring') || safeProducts[6] || PRODUCTS[6],
+    safeProducts.find((p) => p.id === 'gold-curve-necklace') || safeProducts[8] || PRODUCTS[8],
+    safeProducts.find((p) => p.id === 'dome-studs') || safeProducts[13] || safeProducts[2] || PRODUCTS[2],
+    safeProducts.find((p) => p.id === 'two-pearl-cuff') || safeProducts[4] || PRODUCTS[4],
+    safeProducts.find((p) => p.id === 'asta-brooch') || safeProducts[14] || safeProducts[3] || PRODUCTS[3],
+  ].filter((p): p is Product => Boolean(p && p.images && p.images.length > 0));
 
   // Filtered Gifting items
-  const giftingProducts = catalogProducts.filter((p) => {
+  const giftingProducts = safeProducts.filter((p) => {
     if (activeGiftTier === 'under150') return p.price <= 150;
     if (activeGiftTier === 'heirloom') return p.price >= 180;
-    if (activeGiftTier === 'pearls') return p.description.toLowerCase().includes('pearl') || p.name.toLowerCase().includes('pearl');
+    if (activeGiftTier === 'pearls') return p.description?.toLowerCase().includes('pearl') || p.name?.toLowerCase().includes('pearl');
     return true;
   }).slice(0, 4);
 
