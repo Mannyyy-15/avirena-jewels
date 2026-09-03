@@ -1,0 +1,8 @@
+{
+  "name": "Avirena Jewels",
+  "description": "Headless luxury jewellery storefront featuring sculptural, everyday demi-fine pieces, editorial aesthetics, and seamless shopping experience.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
