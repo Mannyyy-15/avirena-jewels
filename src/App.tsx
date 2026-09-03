@@ -86,11 +86,20 @@ function AppContent() {
     },
   ]);
 
-  // 1. Parse URL Hash on Load & Popstate/Hashchange
+  // 1. Parse URL Path on Load & Popstate (Clean HTML5 Routing, no hash)
   useEffect(() => {
-    const handleHashChange = () => {
-      const hash = window.location.hash.replace('#/', '').replace('#', '');
-      const parts = hash.split('?')[0].split('/');
+    const handleLocationChange = () => {
+      // If there's an old legacy hash like #/shop or #about, normalize it
+      let path = window.location.pathname;
+      if (window.location.hash) {
+        const legacyHash = window.location.hash.replace(/^#\/?/, '');
+        if (legacyHash) {
+          path = `/${legacyHash}`;
+          window.history.replaceState(null, '', path);
+        }
+      }
+
+      const parts = path.split('?')[0].split('/').filter(Boolean);
       const root = parts[0] || 'home';
 
       if (root === 'product' && parts[1]) {
@@ -138,59 +147,63 @@ function AppContent() {
       }
     };
 
-    handleHashChange();
-    window.addEventListener('hashchange', handleHashChange);
-    return () => window.removeEventListener('hashchange', handleHashChange);
+    handleLocationChange();
+    window.addEventListener('popstate', handleLocationChange);
+    return () => window.removeEventListener('popstate', handleLocationChange);
   }, [storeProducts]);
 
-  // 2. Synchronize Document Title & URL Hash on Page Change
+  // 2. Synchronize Document Title & Clean URL Path on Page Change
   useEffect(() => {
-    let title = 'Studio Avirena | Modern Sculptural Jewelry';
-    let targetHash = '#/';
+    let title = 'AVIRENA | Timeless Demi-Fine Jewellery';
+    let targetPath = '/';
 
     switch (currentPage) {
       case 'home':
-        title = 'Studio Avirena | Modern Sculptural Demi-Fine Jewelry';
-        targetHash = '#/';
+        title = 'AVIRENA | Timeless Beauty. Uniquely Yours.';
+        targetPath = '/';
         break;
       case 'collection':
       case 'shop':
-        title = 'All Jewelry Collection | Studio Avirena';
-        targetHash = '#/shop';
+        title = 'All Jewellery Collection | AVIRENA';
+        targetPath = '/shop';
+        break;
+      case 'collections':
+        title = 'Collections & Curated Suites | AVIRENA';
+        targetPath = '/collections';
         break;
       case 'pdp':
-        title = `${selectedProduct.name} | Studio Avirena`;
-        targetHash = `#/product/${selectedProduct.id}`;
+        title = `${selectedProduct.name} | AVIRENA`;
+        targetPath = `/product/${selectedProduct.id}`;
         break;
       case 'about':
-        title = 'About Our Atelier & Heritage | Studio Avirena';
-        targetHash = '#/about';
+        title = 'About Our Atelier & Heritage | AVIRENA';
+        targetPath = '/about';
         break;
       case 'contact':
-        title = 'Atelier Concierge & Bespoke Commissions | Studio Avirena';
-        targetHash = '#/contact';
+        title = 'Atelier Concierge & Bespoke Inquiries | AVIRENA';
+        targetPath = '/contact';
         break;
       case 'journal':
-        title = 'Journal & Editorial Lookbook | Studio Avirena';
-        targetHash = '#/journal';
+        title = 'Journal & Editorial Lookbook | AVIRENA';
+        targetPath = '/journal';
         break;
       case 'faq':
-        title = 'FAQs, Ring Sizing & Care Standard | Studio Avirena';
-        targetHash = '#/faq';
+        title = 'FAQs, Ring Sizing & Care Guide | AVIRENA';
+        targetPath = '/faq';
         break;
       case 'cart':
-        title = 'Your Shopping Bag | Studio Avirena';
-        targetHash = '#/cart';
+        title = 'Your Shopping Bag | AVIRENA';
+        targetPath = '/cart';
         break;
       case 'checkout':
-        title = 'Secure Atelier Checkout | Studio Avirena';
-        targetHash = '#/checkout';
+        title = 'Secure Atelier Checkout | AVIRENA';
+        targetPath = '/checkout';
         break;
     }
 
     document.title = title;
-    if (window.location.hash !== targetHash) {
-      window.history.replaceState(null, '', targetHash);
+    if (window.location.pathname !== targetPath || window.location.hash) {
+      window.history.pushState(null, '', targetPath);
     }
   }, [currentPage, selectedProduct]);
 
