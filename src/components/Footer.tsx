@@ -6,6 +6,7 @@ interface FooterProps {
   setCurrentPage: (page: PageView) => void;
   openStoryModal: () => void;
   openCareModal: () => void;
+  openTrackOrderModal?: () => void;
   setSelectedCategory?: (cat: Category) => void;
 }
 
@@ -13,6 +14,7 @@ export const Footer: React.FC<FooterProps> = ({
   setCurrentPage,
   openStoryModal,
   openCareModal,
+  openTrackOrderModal,
   setSelectedCategory,
 }) => {
   const handleNavigate = (page: PageView, category?: Category) => {
@@ -116,25 +118,30 @@ export const Footer: React.FC<FooterProps> = ({
             Our Story
           </button>
           <button
-            onClick={() => {
-              handleNavigate('faq');
-              openCareModal();
-            }}
+            onClick={() => handleNavigate('policies')}
             className="hover:text-white hover:underline transition-all cursor-pointer"
           >
-            Materials
+            Materials & Purity
           </button>
           <button
-            onClick={() => handleNavigate('about')}
-            className="hover:text-white hover:underline transition-all cursor-pointer"
-          >
-            Sustainability
-          </button>
-          <button
-            onClick={() => handleNavigate('faq')}
+            onClick={() => handleNavigate('policies')}
             className="hover:text-white hover:underline transition-all cursor-pointer"
           >
             Shipping & Returns
+          </button>
+          <button
+            onClick={() => handleNavigate('policies')}
+            className="hover:text-white hover:underline transition-all cursor-pointer"
+          >
+            2-Year Warranty
+          </button>
+          <button
+            onClick={() => {
+              if (openTrackOrderModal) openTrackOrderModal();
+            }}
+            className="hover:text-white hover:underline transition-all cursor-pointer text-[#E7E4D5] font-semibold"
+          >
+            Track Order
           </button>
           <button
             onClick={() => handleNavigate('faq')}
@@ -146,20 +153,20 @@ export const Footer: React.FC<FooterProps> = ({
             onClick={() => handleNavigate('contact')}
             className="hover:text-white hover:underline transition-all cursor-pointer"
           >
-            Contact Us
+            Contact Concierge
           </button>
         </div>
 
         {/* Right: Legal Links */}
         <div className="flex items-center gap-6 sm:gap-8 shrink-0">
           <button
-            onClick={() => handleNavigate('faq')}
+            onClick={() => handleNavigate('policies')}
             className="hover:text-white hover:underline transition-all cursor-pointer"
           >
             Privacy Policy
           </button>
           <button
-            onClick={() => handleNavigate('faq')}
+            onClick={() => handleNavigate('policies')}
             className="hover:text-white hover:underline transition-all cursor-pointer"
           >
             Terms of Service

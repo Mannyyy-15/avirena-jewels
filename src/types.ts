@@ -64,6 +64,7 @@ export type PageView =
   | 'contact'
   | 'journal'
   | 'faq'
+  | 'policies'
   | 'pdp'
   | 'cart'
   | 'checkout'

@@ -19,6 +19,9 @@ import { AboutPage } from './pages/AboutPage';
 import { ContactPage } from './pages/ContactPage';
 import { JournalPage } from './pages/JournalPage';
 import { FaqPage } from './pages/FaqPage';
+import { PoliciesPage } from './pages/PoliciesPage';
+import { TrackOrderModal } from './components/TrackOrderModal';
+import { FloatingWhatsAppConcierge } from './components/FloatingWhatsAppConcierge';
 import { ShopifyProvider, useShopify } from './context/ShopifyContext';
 
 function AppContent() {
@@ -46,6 +49,7 @@ function AppContent() {
   const [isWishlistModalOpen, setIsWishlistModalOpen] = useState<boolean>(false);
   const [isStoryModalOpen, setIsStoryModalOpen] = useState<boolean>(false);
   const [isCareModalOpen, setIsCareModalOpen] = useState<boolean>(false);
+  const [isTrackOrderOpen, setIsTrackOrderOpen] = useState<boolean>(false);
   
   // Quick View Modal
   const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
@@ -337,6 +341,7 @@ function AppContent() {
         openWishlistModal={() => setIsWishlistModalOpen(true)}
         openStoryModal={() => handlePageChange('about')}
         openCareModal={() => handlePageChange('faq')}
+        openTrackOrderModal={() => setIsTrackOrderOpen(true)}
         setSelectedCategory={setSelectedCategory}
         currency={currency}
         setCurrency={setCurrency}
@@ -408,6 +413,13 @@ function AppContent() {
           />
         )}
 
+        {currentPage === 'policies' && (
+          <PoliciesPage
+            onNavigateToContact={() => handlePageChange('contact')}
+            onNavigateToShop={() => handleNavigateToCollection('all')}
+          />
+        )}
+
         {currentPage === 'pdp' && (
           <ProductDetailPage
             product={selectedProduct}
@@ -449,7 +461,17 @@ function AppContent() {
         setCurrentPage={handlePageChange}
         openStoryModal={() => handlePageChange('about')}
         openCareModal={() => handlePageChange('faq')}
+        openTrackOrderModal={() => setIsTrackOrderOpen(true)}
         setSelectedCategory={setSelectedCategory}
+      />
+
+      {/* Floating 1-Click WhatsApp Concierge */}
+      <FloatingWhatsAppConcierge />
+
+      {/* Track Order Live Package Modal */}
+      <TrackOrderModal
+        isOpen={isTrackOrderOpen}
+        onClose={() => setIsTrackOrderOpen(false)}
       />
 
       {/* Slide-out Cart Drawer */}
