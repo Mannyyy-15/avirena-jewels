@@ -82,50 +82,96 @@ export const CollectionsHubPage: React.FC<CollectionsHubPageProps> = ({
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
 
+  const categories: { id: Category; label: string; count: number }[] = [
+    { id: 'all', label: 'All Pieces', count: catalogProducts.length },
+    { id: 'rings', label: 'Rings', count: catalogProducts.filter((p) => p.category === 'rings').length },
+    { id: 'necklaces', label: 'Necklaces', count: catalogProducts.filter((p) => p.category === 'necklaces').length },
+    { id: 'earrings', label: 'Earrings', count: catalogProducts.filter((p) => p.category === 'earrings').length },
+    { id: 'bracelets', label: 'Bracelets', count: catalogProducts.filter((p) => p.category === 'bracelets').length },
+    { id: 'brooches', label: 'Brooches', count: catalogProducts.filter((p) => p.category === 'brooches').length },
+  ];
+
   return (
-    <div ref={containerRef} className="pb-24 font-sans-body w-full text-[#111111] bg-[#EAE6DC]">
+    <div ref={containerRef} className="pb-24 font-sans-body w-full text-[#413C23] bg-[#E7E4D5] select-none">
       
       {/* 1. EDITORIAL HERO BANNER */}
-      <section className="relative w-full bg-[#86806C] text-white min-h-[360px] sm:min-h-[460px] flex flex-col justify-between p-6 sm:p-10 md:p-12 lg:px-16 lg:py-12 select-none overflow-hidden border-b border-[#D8D2C5]">
-        <div className="w-full flex items-center justify-between text-[11px] uppercase tracking-[0.2em] font-light text-white/80 z-20">
-          <span>curated archives • {SUITES.length} maison collections</span>
-          <span>HOME / COLLECTIONS</span>
+      <section className="relative w-full bg-[#413C23] text-[#E7E4D5] min-h-[380px] sm:min-h-[460px] flex flex-col justify-between p-6 sm:p-10 md:p-14 lg:px-16 2xl:px-20 select-none overflow-hidden border-b border-[#D8D2C2]">
+        <div className="w-full flex items-center justify-between text-[10px] sm:text-xs uppercase tracking-[0.25em] font-medium text-[#8F896D] z-20">
+          <span>(01) / The Maison Archives</span>
+          <span className="text-[#E7E4D5]/75 hidden sm:inline-block">Curated Suites • {SUITES.length} Categories</span>
         </div>
 
+        {/* Background Atmosphere Image Blend */}
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10 overflow-hidden">
           <img
             src="https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?auto=format&fit=crop&w=1800&q=90"
             alt="Avirena Collections Archive"
             referrerPolicy="no-referrer"
-            className="w-full h-full object-cover object-[center_35%] opacity-85 filter contrast-105"
+            className="w-full h-full object-cover object-[center_35%] opacity-35 filter contrast-110 scale-105"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#86806C]/90 via-black/30 to-[#86806C]/60" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#413C23] via-[#413C23]/65 to-[#413C23]/40" />
         </div>
 
-        <div className="w-full z-20 pt-24 sm:pt-36">
-          <h1 className="font-serif-display text-6xl sm:text-8xl md:text-9xl lg:text-[10vw] font-light text-white tracking-tight leading-[0.85] text-left select-none uppercase drop-shadow-sm">
-            COLLECTIONS
+        <div className="w-full z-20 pt-16 sm:pt-24 text-left max-w-4xl space-y-3">
+          <span className="text-[11px] uppercase tracking-[0.3em] font-semibold text-[#8F896D] block">
+            Permanent Suites
+          </span>
+          <h1 className="font-serif-display text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-light text-[#E7E4D5] tracking-tight leading-[0.9] drop-shadow-md">
+            Collections & <span className="italic font-normal text-[#FAF8F5]">Suites</span>
           </h1>
+          <p className="text-xs sm:text-sm text-[#E7E4D5]/80 font-normal max-w-xl leading-relaxed pt-2">
+            Explore our permanent design suites crafted with certified 100% recycled precious metals, natural gemstones, and organic baroque pearls.
+          </p>
         </div>
       </section>
 
-      {/* 2. CURATED SUITES GRID */}
+      {/* 2. CATEGORY JUMP TABS BAR */}
+      <section className="sticky top-0 z-30 w-full px-4 sm:px-8 lg:px-12 xl:px-16 2xl:px-20 py-3.5 bg-[#E7E4D5]/95 backdrop-blur-md border-b border-[#D8D2C2]">
+        <div className="w-full flex items-center justify-between gap-4">
+          <div className="flex items-center gap-2 overflow-x-auto pb-1 md:pb-0 scrollbar-none">
+            {categories.map((cat) => (
+              <button
+                key={cat.id}
+                onClick={() => onNavigateToCategory(cat.id)}
+                className="text-xs px-4 py-2 rounded-xs transition-all cursor-pointer font-medium uppercase tracking-wider shrink-0 flex items-center gap-1.5 bg-[#F4EFE6] hover:bg-[#FAF8F5] text-[#413C23] border border-[#D8D2C2] hover:border-[#8F896D]"
+              >
+                <span>{cat.label}</span>
+                <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-[#E7E4D5] text-[#8F896D]">
+                  {cat.count}
+                </span>
+              </button>
+            ))}
+          </div>
+
+          <button
+            onClick={() => onNavigateToCategory('all')}
+            className="hidden md:inline-flex items-center gap-1 text-xs font-semibold text-[#413C23] hover:text-[#8F896D] transition-colors uppercase tracking-widest shrink-0 cursor-pointer"
+          >
+            <span>View All Pieces</span>
+            <ArrowRight className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      </section>
+
+      {/* 3. CURATED SUITES GRID */}
       <section className="w-full px-4 sm:px-8 lg:px-12 xl:px-16 2xl:px-20 py-12 sm:py-20">
-        <div className="w-full space-y-12 sm:space-y-16">
+        <div className="w-full space-y-10 sm:space-y-14">
           
-          <div className="max-w-2xl text-left space-y-2">
-            <span className="text-[10px] uppercase tracking-[0.25em] text-[#7A7468] font-bold block">
-              The Maison Archives
-            </span>
-            <h2 className="font-serif-display text-3xl sm:text-4xl text-[#111111] font-light italic">
-              Designed in Sets. Worn Forever.
-            </h2>
-            <p className="text-xs sm:text-sm text-[#5C5850] font-normal leading-relaxed">
-              Explore our permanent design suites crafted with recycled precious metals, certified natural gemstones, and lustrous baroque pearls.
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between border-b border-[#D8D2C2] pb-4 text-left gap-3">
+            <div>
+              <span className="text-[10px] text-[#8F896D] uppercase tracking-widest font-semibold block mb-1">
+                (02) / Design Suites
+              </span>
+              <h2 className="font-serif-display text-3xl sm:text-5xl text-[#413C23] font-light">
+                Designed in Sets. <span className="italic font-normal">Worn Forever.</span>
+              </h2>
+            </div>
+            <p className="text-xs sm:text-sm text-[#413C23]/70 font-normal max-w-md">
+              Each suite represents a cohesive sculptural narrative—engineered to complement and stack harmoniously.
             </p>
           </div>
 
-          {/* Collection Suites List */}
+          {/* Collection Suites Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
             {SUITES.map((suite, idx) => {
               const featuredProduct =
@@ -138,23 +184,23 @@ export const CollectionsHubPage: React.FC<CollectionsHubPageProps> = ({
                 <div
                   key={suite.id}
                   onClick={() => onNavigateToCategory(suite.category)}
-                  className="group cursor-pointer flex flex-col justify-between bg-[#F5F2EA] border border-[#DDD7CA] rounded-xs overflow-hidden transition-all duration-300 hover:shadow-md hover:border-[#CFC7B7] text-left"
+                  className="group cursor-pointer flex flex-col justify-between bg-[#F4EFE6] border border-[#D8D2C2] rounded-xs overflow-hidden transition-all duration-300 hover:shadow-md hover:border-[#8F896D] text-left"
                 >
                   {/* Suite Image Header */}
-                  <div className="relative aspect-[4/3] w-full overflow-hidden bg-[#DDD8CD]">
+                  <div className="relative aspect-[4/3] w-full overflow-hidden bg-[#E7E4D5]">
                     <img
                       src={suite.coverImage}
                       alt={suite.title}
                       referrerPolicy="no-referrer"
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+                      className="w-full h-full object-cover group-hover:scale-106 transition-transform duration-700 ease-out"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent pointer-events-none" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-transparent pointer-events-none" />
                     
                     <div className="absolute bottom-3 left-4 right-4 flex items-center justify-between text-white text-xs">
                       <span className="text-[10px] uppercase tracking-widest font-semibold text-[#D4AF37]">
                         (0{idx + 1})
                       </span>
-                      <span className="text-[11px] font-medium bg-black/40 backdrop-blur-xs px-2.5 py-0.5 rounded-xs">
+                      <span className="text-[11px] font-medium bg-[#413C23]/80 backdrop-blur-xs px-2.5 py-0.5 rounded-xs border border-white/20">
                         {suite.pieceCount}
                       </span>
                     </div>
@@ -163,21 +209,21 @@ export const CollectionsHubPage: React.FC<CollectionsHubPageProps> = ({
                   {/* Suite Copy */}
                   <div className="p-6 space-y-4 flex flex-col justify-between flex-1">
                     <div className="space-y-1.5">
-                      <span className="text-[10px] uppercase tracking-widest text-[#7A7468] font-medium block">
+                      <span className="text-[10px] uppercase tracking-widest text-[#8F896D] font-semibold block">
                         {suite.subtitle}
                       </span>
-                      <h3 className="font-serif-display text-xl sm:text-2xl text-[#111111] group-hover:text-[#D4AF37] transition-colors font-medium">
+                      <h3 className="font-serif-display text-xl sm:text-2xl text-[#413C23] group-hover:text-[#8F896D] transition-colors font-medium">
                         {suite.title}
                       </h3>
-                      <p className="text-xs text-[#5C5850] font-normal leading-relaxed pt-1">
+                      <p className="text-xs text-[#413C23]/75 font-normal leading-relaxed pt-1">
                         {suite.description}
                       </p>
                     </div>
 
                     {/* Featured Piece Highlight */}
-                    <div className="pt-3 border-t border-[#DDD7CA] flex items-center justify-between">
+                    <div className="pt-3.5 border-t border-[#D8D2C2] flex items-center justify-between">
                       <div className="flex items-center gap-2.5">
-                        <div className="w-10 h-10 bg-white border border-[#DDD7CA] rounded-xs flex items-center justify-center p-1">
+                        <div className="w-10 h-10 bg-[#FAF8F5] border border-[#D8D2C2] rounded-xs flex items-center justify-center p-1">
                           <img
                             src={featuredProduct.images[0]}
                             alt={featuredProduct.name}
@@ -186,15 +232,15 @@ export const CollectionsHubPage: React.FC<CollectionsHubPageProps> = ({
                           />
                         </div>
                         <div>
-                          <span className="text-[10px] text-[#7A7468] uppercase tracking-wider block">Signature Piece</span>
-                          <span className="text-xs font-serif-display text-[#111111] font-medium truncate block max-w-[140px]">
+                          <span className="text-[10px] text-[#8F896D] uppercase tracking-wider block font-medium">Signature Piece</span>
+                          <span className="text-xs font-serif-display text-[#413C23] font-medium truncate block max-w-[140px]">
                             {featuredProduct.name}
                           </span>
                         </div>
                       </div>
 
                       <div className="text-right">
-                        <span className="inline-flex items-center gap-1 text-xs font-semibold text-[#111111] group-hover:text-[#D4AF37] transition-colors uppercase tracking-wider">
+                        <span className="inline-flex items-center gap-1 text-xs font-semibold text-[#413C23] group-hover:text-[#8F896D] transition-colors uppercase tracking-wider">
                           <span>View Suite</span>
                           <ArrowRight className="w-3.5 h-3.5" />
                         </span>
@@ -206,6 +252,26 @@ export const CollectionsHubPage: React.FC<CollectionsHubPageProps> = ({
             })}
           </div>
 
+        </div>
+      </section>
+
+      {/* 4. BOTTOM PILLARS GUARANTEE STRIP */}
+      <section className="w-full px-4 sm:px-8 lg:px-12 xl:px-16 2xl:px-20 pt-4">
+        <div className="bg-[#FAF8F5] border border-[#D8D2C2] p-8 sm:p-12 rounded-xs text-center space-y-6 max-w-7xl mx-auto shadow-xs">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-center">
+            <div className="space-y-1">
+              <span className="text-xs uppercase tracking-[0.2em] font-semibold text-[#8F896D] block">Artisan Casting</span>
+              <p className="font-serif-display text-lg sm:text-xl text-[#413C23]">3.0μ Heavy 18k Vermeil</p>
+            </div>
+            <div className="space-y-1 border-y sm:border-y-0 sm:border-x border-[#D8D2C2] py-4 sm:py-0">
+              <span className="text-xs uppercase tracking-[0.2em] font-semibold text-[#8F896D] block">Ethical Sourcing</span>
+              <p className="font-serif-display text-lg sm:text-xl text-[#413C23]">100% Recycled 925 Silver</p>
+            </div>
+            <div className="space-y-1">
+              <span className="text-xs uppercase tracking-[0.2em] font-semibold text-[#8F896D] block">Maison Standard</span>
+              <p className="font-serif-display text-lg sm:text-xl text-[#413C23]">Natural Baroque Pearls</p>
+            </div>
+          </div>
         </div>
       </section>
 

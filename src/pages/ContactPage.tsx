@@ -13,6 +13,8 @@ import {
   ArrowRight,
   ShieldCheck,
   Send,
+  Calendar,
+  Gem
 } from 'lucide-react';
 import { BrandLogo } from '../components/BrandLogo';
 
@@ -26,7 +28,6 @@ interface ContactPageProps {
 
 export const ContactPage: React.FC<ContactPageProps> = ({ onNavigateToShop }) => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const formRef = useRef<HTMLDivElement>(null);
 
   // Form State
   const [formData, setFormData] = useState({
@@ -45,8 +46,8 @@ export const ContactPage: React.FC<ContactPageProps> = ({ onNavigateToShop }) =>
   useEffect(() => {
     const ctx = gsap.context(() => {
       // 1. Hero Reveal
-      gsap.from('.contact-hero-text', {
-        y: 40,
+      gsap.from('.contact-hero-element', {
+        y: 35,
         opacity: 0,
         duration: 0.9,
         stagger: 0.12,
@@ -78,64 +79,71 @@ export const ContactPage: React.FC<ContactPageProps> = ({ onNavigateToShop }) =>
     setTimeout(() => {
       setSubmitting(false);
       setSubmitted(true);
-    }, 900);
+    }, 850);
   };
 
   const faqs = [
     {
       q: 'How do I care for 18k gold vermeil jewelry?',
-      a: 'We recommend removing your vermeil pieces before bathing, swimming, or applying perfumes and lotions. Clean gently with our complimentary microfiber polishing cloth. Never use abrasive jewelry dips.',
+      a: 'We recommend removing your vermeil pieces before bathing, swimming, or applying perfumes and lotions. Clean gently with our complimentary microfiber polishing cloth. Never use harsh abrasive chemical jewelry dips.',
     },
     {
-      q: 'Do you offer bespoke or custom sizing?',
-      a: 'Yes! Our atelier crafts custom ring sizes, adjusted necklace chain lengths, and bespoke one-of-a-kind commissions. Select "Bespoke Commission" in the contact form or message our WhatsApp concierge.',
+      q: 'Do you offer bespoke commissions or custom ring sizing?',
+      a: 'Yes! Our atelier crafts custom ring sizes, adjusted necklace chain lengths, and bespoke one-of-a-kind commissions. Select "Bespoke Commission" in the contact form or message our WhatsApp concierge for direct guidance.',
     },
     {
       q: 'What is your shipping and return policy?',
-      a: 'We offer complimentary express insured shipping on all orders. We also offer a 14-day hassle-free exchange and return window with doorstep pickup.',
+      a: 'We provide complimentary express insured delivery across India and worldwide. We also offer a 14-day hassle-free exchange and return policy with insured doorstep courier pickup.',
     },
     {
-      q: 'Are your baroque pearls natural?',
-      a: '100% natural freshwater baroque pearls. Each pearl is organic and irregular, handpicked for exceptional rainbow luster and structural uniqueness.',
+      q: 'Are your baroque pearls 100% natural?',
+      a: 'Yes, every baroque pearl is an authentic natural freshwater pearl. Each pearl is organic and asymmetrical, hand-selected for vibrant rainbow luster and structural uniqueness.',
     },
   ];
 
   return (
-    <div ref={containerRef} className="font-sans-body text-[#2C2C2A] bg-[#FAF8F5] pb-24 overflow-hidden w-full">
+    <div ref={containerRef} className="font-sans-body text-[#413C23] bg-[#E7E4D5] pb-24 overflow-hidden w-full select-none">
+      
       {/* 1. TOP HEADER BANNER */}
-      <section className="relative w-full px-4 sm:px-8 lg:px-12 xl:px-16 pt-4 pb-8 sm:pb-12">
-        <div className="relative rounded-xs overflow-hidden border border-[#E6DFD3] bg-[#EAE6DB] py-14 sm:py-20 px-6 sm:px-12 text-center space-y-4">
-          <div className="contact-hero-text">
-            <span className="text-[11px] sm:text-xs font-semibold tracking-[0.25em] text-[#C5A059] uppercase block mb-2">
-              Atelier Concierge & Care
+      <section className="relative w-full px-4 sm:px-8 lg:px-12 xl:px-16 2xl:px-20 pt-4 pb-8 sm:pb-12">
+        <div className="relative rounded-xs overflow-hidden border border-[#D8D2C2] bg-[#413C23] text-[#E7E4D5] py-16 sm:py-24 px-6 sm:px-12 text-center space-y-4 shadow-sm">
+          {/* Subtle Ambient Background */}
+          <div className="absolute inset-0 bg-gradient-to-t from-[#413C23] via-[#413C23]/80 to-[#413C23]/60 pointer-events-none" />
+          
+          <div className="relative z-10 space-y-3 max-w-3xl mx-auto">
+            <span className="contact-hero-element text-[10px] sm:text-xs font-semibold tracking-[0.25em] text-[#8F896D] uppercase block">
+              (01) / Maison Concierge & Client Care
             </span>
-            <h1 className="font-serif-display text-4xl sm:text-6xl lg:text-7xl text-[#2C2C2A] tracking-tight">
-              We’re Here to Assist You
+            <h1 className="contact-hero-element font-serif-display text-4xl sm:text-6xl lg:text-7xl text-[#E7E4D5] tracking-tight font-light leading-tight">
+              We’re Here to <span className="italic font-normal text-[#FAF8F5]">Assist You</span>
             </h1>
+            <p className="contact-hero-element text-xs sm:text-sm text-[#E7E4D5]/85 max-w-xl mx-auto font-normal leading-relaxed pt-1">
+              From virtual styling consultations and custom bridal commissions to ring sizing and order tracking, our jewelry specialists are dedicated to your experience.
+            </p>
           </div>
-          <p className="contact-hero-text text-xs sm:text-sm text-[#7D7973] max-w-xl mx-auto font-light leading-relaxed">
-            From styling consultations and bespoke bridal commissions to order tracking and ring sizing, our jewelry specialists are dedicated to your experience.
-          </p>
         </div>
       </section>
 
       {/* 2. 3 CONCIERGE CHANNELS */}
-      <section className="w-full px-4 sm:px-8 lg:px-12 xl:px-16 pb-12">
+      <section className="w-full px-4 sm:px-8 lg:px-12 xl:px-16 2xl:px-20 pb-12">
         <div className="contact-card-grid grid grid-cols-1 md:grid-cols-3 gap-6 max-w-7xl mx-auto text-left">
+          
           {/* Card 1: WhatsApp Concierge */}
-          <div className="contact-card bg-white p-6 sm:p-8 rounded-xs border border-[#E6DFD3] space-y-3 hover:border-[#C5A059] transition-all hover:shadow-xs">
-            <div className="w-10 h-10 rounded-xs bg-[#FAF8F5] border border-[#E6DFD3] flex items-center justify-center text-[#2C2C2A]">
-              <MessageSquare className="w-5 h-5" />
+          <div className="contact-card bg-[#F4EFE6] p-6 sm:p-8 rounded-xs border border-[#D8D2C2] space-y-3.5 hover:border-[#8F896D] transition-all hover:shadow-sm flex flex-col justify-between">
+            <div className="space-y-3">
+              <div className="w-10 h-10 rounded-xs bg-[#E7E4D5] border border-[#D8D2C2] flex items-center justify-center text-[#413C23]">
+                <MessageSquare className="w-5 h-5 stroke-[1.5]" />
+              </div>
+              <h3 className="font-serif-display text-xl text-[#413C23] font-medium">WhatsApp Concierge</h3>
+              <p className="text-xs text-[#413C23]/75 leading-relaxed font-normal">
+                Instant styling guidance, high-resolution video consultations, and real-time ring sizing assistance from our specialists.
+              </p>
             </div>
-            <h3 className="font-serif-display text-lg text-[#2C2C2A]">WhatsApp Concierge</h3>
-            <p className="text-xs text-[#7D7973] leading-relaxed">
-              Instant styling guidance, high-resolution video consultations, and real-time ring sizing assistance.
-            </p>
             <a
               href="https://wa.me/919820012345?text=Hello%20Avirena%20Atelier,%20I%20would%20like%20assistance%20with%20a%20jewelry%20piece."
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 text-xs text-[#C5A059] hover:text-[#2C2C2A] font-medium pt-2 transition-colors"
+              className="inline-flex items-center gap-1.5 text-xs text-[#413C23] hover:text-[#8F896D] font-semibold uppercase tracking-wider pt-2 transition-colors"
             >
               <span>Chat on WhatsApp (+91 98200 12345)</span>
               <ArrowRight className="w-3.5 h-3.5" />
@@ -143,17 +151,19 @@ export const ContactPage: React.FC<ContactPageProps> = ({ onNavigateToShop }) =>
           </div>
 
           {/* Card 2: Email & Support */}
-          <div className="contact-card bg-white p-6 sm:p-8 rounded-xs border border-[#E6DFD3] space-y-3 hover:border-[#C5A059] transition-all hover:shadow-xs">
-            <div className="w-10 h-10 rounded-xs bg-[#FAF8F5] border border-[#E6DFD3] flex items-center justify-center text-[#2C2C2A]">
-              <Mail className="w-5 h-5" />
+          <div className="contact-card bg-[#F4EFE6] p-6 sm:p-8 rounded-xs border border-[#D8D2C2] space-y-3.5 hover:border-[#8F896D] transition-all hover:shadow-sm flex flex-col justify-between">
+            <div className="space-y-3">
+              <div className="w-10 h-10 rounded-xs bg-[#E7E4D5] border border-[#D8D2C2] flex items-center justify-center text-[#413C23]">
+                <Mail className="w-5 h-5 stroke-[1.5]" />
+              </div>
+              <h3 className="font-serif-display text-xl text-[#413C23] font-medium">Email Client Relations</h3>
+              <p className="text-xs text-[#413C23]/75 leading-relaxed font-normal">
+                For bespoke bridal inquiries, press requests, and order assistance. We reply within 4 business hours.
+              </p>
             </div>
-            <h3 className="font-serif-display text-lg text-[#2C2C2A]">Email Client Relations</h3>
-            <p className="text-xs text-[#7D7973] leading-relaxed">
-              For bespoke inquiries, press, and order updates. We reply within 4 business hours.
-            </p>
             <a
               href="mailto:concierge@avirena.com"
-              className="inline-flex items-center gap-1.5 text-xs text-[#C5A059] hover:text-[#2C2C2A] font-medium pt-2 transition-colors"
+              className="inline-flex items-center gap-1.5 text-xs text-[#413C23] hover:text-[#8F896D] font-semibold uppercase tracking-wider pt-2 transition-colors"
             >
               <span>concierge@avirena.com</span>
               <ArrowRight className="w-3.5 h-3.5" />
@@ -161,50 +171,53 @@ export const ContactPage: React.FC<ContactPageProps> = ({ onNavigateToShop }) =>
           </div>
 
           {/* Card 3: Flagship Atelier */}
-          <div className="contact-card bg-white p-6 sm:p-8 rounded-xs border border-[#E6DFD3] space-y-3 hover:border-[#C5A059] transition-all hover:shadow-xs">
-            <div className="w-10 h-10 rounded-xs bg-[#FAF8F5] border border-[#E6DFD3] flex items-center justify-center text-[#2C2C2A]">
-              <MapPin className="w-5 h-5" />
+          <div className="contact-card bg-[#F4EFE6] p-6 sm:p-8 rounded-xs border border-[#D8D2C2] space-y-3.5 hover:border-[#8F896D] transition-all hover:shadow-sm flex flex-col justify-between">
+            <div className="space-y-3">
+              <div className="w-10 h-10 rounded-xs bg-[#E7E4D5] border border-[#D8D2C2] flex items-center justify-center text-[#413C23]">
+                <MapPin className="w-5 h-5 stroke-[1.5]" />
+              </div>
+              <h3 className="font-serif-display text-xl text-[#413C23] font-medium">Atelier Appointments</h3>
+              <p className="text-xs text-[#413C23]/75 leading-relaxed font-normal">
+                Private 1-on-1 consultations at our Bandra West, Mumbai salon and Vicenza casting studio.
+              </p>
             </div>
-            <h3 className="font-serif-display text-lg text-[#2C2C2A]">Atelier Appointments</h3>
-            <p className="text-xs text-[#7D7973] leading-relaxed">
-              Private 1-on-1 private appointments at our Bandra West, Mumbai studio and Vicenza casting house.
-            </p>
-            <span className="inline-block text-xs text-[#2C2C2A] font-medium pt-2">
-              Mon – Sat: 11:00 AM – 7:30 PM IST
+            <span className="inline-block text-xs text-[#8F896D] font-medium pt-2">
+              Tue – Sun: 11:00 AM – 7:30 PM (By Appointment)
             </span>
           </div>
         </div>
       </section>
 
       {/* 3. MAIN FORM & ATELIER LOCATIONS */}
-      <section className="w-full px-4 sm:px-8 lg:px-12 xl:px-16 py-10">
+      <section className="w-full px-4 sm:px-8 lg:px-12 xl:px-16 2xl:px-20 py-10">
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14">
+          
           {/* Left: Interactive Form */}
-          <div className="lg:col-span-7 bg-white p-6 sm:p-10 rounded-xs border border-[#E6DFD3] text-left space-y-6">
+          <div className="lg:col-span-7 bg-[#F4EFE6] p-6 sm:p-10 rounded-xs border border-[#D8D2C2] text-left space-y-6 shadow-xs">
             <div>
-              <span className="text-xs font-semibold text-[#C5A059] uppercase tracking-[0.25em] block mb-1">
-                Direct Message
+              <span className="text-[10px] sm:text-xs font-semibold text-[#8F896D] uppercase tracking-[0.25em] block mb-1">
+                (02) / Direct Message
               </span>
-              <h2 className="font-serif-display text-2xl sm:text-4xl text-[#2C2C2A]">
+              <h2 className="font-serif-display text-2xl sm:text-4xl text-[#413C23] font-light">
                 Send an Atelier Inquiry
               </h2>
             </div>
 
             {submitted ? (
-              <div className="py-12 text-center space-y-4 bg-[#FAF8F5] rounded-xs border border-[#E6DFD3] p-6">
-                <CheckCircle2 className="w-12 h-12 text-[#C5A059] mx-auto animate-bounce" />
-                <h3 className="font-serif-display text-2xl text-[#2C2C2A]">
+              <div className="py-12 text-center space-y-4 bg-[#FAF8F5] rounded-xs border border-[#D8D2C2] p-8">
+                <CheckCircle2 className="w-12 h-12 text-[#8F896D] mx-auto animate-bounce" />
+                <h3 className="font-serif-display text-2xl sm:text-3xl text-[#413C23] font-light">
                   Thank you, {formData.name}
                 </h3>
-                <p className="text-xs sm:text-sm text-[#7D7973] max-w-md mx-auto">
-                  Your inquiry has been received by our head concierge. A specialist will contact you via {formData.email} shortly.
+                <p className="text-xs sm:text-sm text-[#413C23]/75 max-w-md mx-auto leading-relaxed font-normal">
+                  Your inquiry has been received by our head concierge. A jewelry specialist will contact you via {formData.email} shortly.
                 </p>
                 <button
                   onClick={() => {
                     setSubmitted(false);
                     setFormData({ name: '', email: '', phone: '', inquiryType: 'bespoke', message: '' });
                   }}
-                  className="px-6 py-2.5 bg-[#2C2C2A] text-white text-xs uppercase tracking-widest font-medium rounded-xs hover:bg-[#444238] transition-colors cursor-pointer"
+                  className="px-6 py-2.5 bg-[#413C23] text-[#E7E4D5] text-xs uppercase tracking-widest font-semibold rounded-xs hover:bg-[#8F896D] transition-colors cursor-pointer"
                 >
                   Send Another Inquiry
                 </button>
@@ -213,7 +226,7 @@ export const ContactPage: React.FC<ContactPageProps> = ({ onNavigateToShop }) =>
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-1.5">
-                    <label className="text-xs text-[#2C2C2A] font-medium block">
+                    <label className="text-xs text-[#413C23] font-medium block">
                       Full Name *
                     </label>
                     <input
@@ -222,12 +235,12 @@ export const ContactPage: React.FC<ContactPageProps> = ({ onNavigateToShop }) =>
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                       placeholder="e.g. Elena Rostova"
-                      className="w-full px-3.5 py-2.5 bg-[#FAF8F5] border border-[#E6DFD3] rounded-xs text-xs text-[#2C2C2A] focus:outline-none focus:border-[#C5A059]"
+                      className="w-full px-3.5 py-2.5 bg-[#FAF8F5] border border-[#D8D2C2] rounded-xs text-xs text-[#413C23] placeholder-[#8F896D]/60 focus:outline-none focus:border-[#8F896D] transition-colors"
                     />
                   </div>
 
                   <div className="space-y-1.5">
-                    <label className="text-xs text-[#2C2C2A] font-medium block">
+                    <label className="text-xs text-[#413C23] font-medium block">
                       Email Address *
                     </label>
                     <input
@@ -236,14 +249,14 @@ export const ContactPage: React.FC<ContactPageProps> = ({ onNavigateToShop }) =>
                       value={formData.email}
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                       placeholder="elena@example.com"
-                      className="w-full px-3.5 py-2.5 bg-[#FAF8F5] border border-[#E6DFD3] rounded-xs text-xs text-[#2C2C2A] focus:outline-none focus:border-[#C5A059]"
+                      className="w-full px-3.5 py-2.5 bg-[#FAF8F5] border border-[#D8D2C2] rounded-xs text-xs text-[#413C23] placeholder-[#8F896D]/60 focus:outline-none focus:border-[#8F896D] transition-colors"
                     />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-1.5">
-                    <label className="text-xs text-[#2C2C2A] font-medium block">
+                    <label className="text-xs text-[#413C23] font-medium block">
                       Phone Number (Optional)
                     </label>
                     <input
@@ -251,18 +264,18 @@ export const ContactPage: React.FC<ContactPageProps> = ({ onNavigateToShop }) =>
                       value={formData.phone}
                       onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                       placeholder="+91 98765 43210"
-                      className="w-full px-3.5 py-2.5 bg-[#FAF8F5] border border-[#E6DFD3] rounded-xs text-xs text-[#2C2C2A] focus:outline-none focus:border-[#C5A059]"
+                      className="w-full px-3.5 py-2.5 bg-[#FAF8F5] border border-[#D8D2C2] rounded-xs text-xs text-[#413C23] placeholder-[#8F896D]/60 focus:outline-none focus:border-[#8F896D] transition-colors"
                     />
                   </div>
 
                   <div className="space-y-1.5">
-                    <label className="text-xs text-[#2C2C2A] font-medium block">
+                    <label className="text-xs text-[#413C23] font-medium block">
                       Inquiry Category
                     </label>
                     <select
                       value={formData.inquiryType}
                       onChange={(e) => setFormData({ ...formData, inquiryType: e.target.value })}
-                      className="w-full px-3.5 py-2.5 bg-[#FAF8F5] border border-[#E6DFD3] rounded-xs text-xs text-[#2C2C2A] focus:outline-none focus:border-[#C5A059]"
+                      className="w-full px-3.5 py-2.5 bg-[#FAF8F5] border border-[#D8D2C2] rounded-xs text-xs text-[#413C23] focus:outline-none focus:border-[#8F896D] transition-colors cursor-pointer"
                     >
                       <option value="bespoke">Bespoke / Custom Piece</option>
                       <option value="appointment">Private Atelier Appointment</option>
@@ -275,7 +288,7 @@ export const ContactPage: React.FC<ContactPageProps> = ({ onNavigateToShop }) =>
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="text-xs text-[#2C2C2A] font-medium block">
+                  <label className="text-xs text-[#413C23] font-medium block">
                     Message Details *
                   </label>
                   <textarea
@@ -284,14 +297,14 @@ export const ContactPage: React.FC<ContactPageProps> = ({ onNavigateToShop }) =>
                     value={formData.message}
                     onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                     placeholder="Tell us about the piece or appointment you have in mind..."
-                    className="w-full px-3.5 py-2.5 bg-[#FAF8F5] border border-[#E6DFD3] rounded-xs text-xs text-[#2C2C2A] focus:outline-none focus:border-[#C5A059]"
+                    className="w-full px-3.5 py-2.5 bg-[#FAF8F5] border border-[#D8D2C2] rounded-xs text-xs text-[#413C23] placeholder-[#8F896D]/60 focus:outline-none focus:border-[#8F896D] transition-colors"
                   />
                 </div>
 
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="w-full py-3.5 bg-[#2C2C2A] hover:bg-[#C5A059] text-white text-xs uppercase tracking-widest font-semibold rounded-xs transition-colors shadow-xs flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                  className="w-full py-3.5 bg-[#413C23] hover:bg-[#8F896D] text-[#E7E4D5] text-xs uppercase tracking-[0.2em] font-semibold rounded-xs transition-all shadow-sm flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 active:scale-98"
                 >
                   {submitting ? (
                     <span>Sending to Concierge...</span>
@@ -308,52 +321,52 @@ export const ContactPage: React.FC<ContactPageProps> = ({ onNavigateToShop }) =>
 
           {/* Right: Atelier Locations & Working Hours */}
           <div className="lg:col-span-5 space-y-6 text-left">
-            <div className="bg-[#FAF8F5] p-6 sm:p-8 rounded-xs border border-[#E6DFD3] space-y-6">
+            <div className="bg-[#F4EFE6] p-6 sm:p-8 rounded-xs border border-[#D8D2C2] space-y-6 shadow-xs">
               <div>
-                <span className="text-xs font-semibold text-[#C5A059] uppercase tracking-[0.25em] block mb-1">
-                  Physical Ateliers
+                <span className="text-[10px] sm:text-xs font-semibold text-[#8F896D] uppercase tracking-[0.25em] block mb-1">
+                  (03) / Physical Ateliers
                 </span>
-                <h3 className="font-serif-display text-2xl text-[#2C2C2A]">
-                  Our Studio Locations
+                <h3 className="font-serif-display text-2xl sm:text-3xl text-[#413C23] font-light">
+                  Studio Locations
                 </h3>
               </div>
 
-              {/* Location 1 */}
-              <div className="space-y-2 border-b border-[#E6DFD3] pb-4">
-                <div className="flex items-center gap-2 text-sm font-serif-display text-[#2C2C2A]">
-                  <MapPin className="w-4 h-4 text-[#C5A059]" />
-                  <span>Avirena Mumbai Atelier & Salon</span>
+              {/* Location 1: Mumbai */}
+              <div className="space-y-2 border-b border-[#D8D2C2] pb-4">
+                <div className="flex items-center gap-2 text-sm font-serif-display text-[#413C23] font-medium">
+                  <MapPin className="w-4 h-4 text-[#8F896D]" />
+                  <span>Avirena Mumbai Salon & Atelier</span>
                 </div>
-                <p className="text-xs text-[#7D7973] leading-relaxed pl-6">
+                <p className="text-xs text-[#413C23]/75 leading-relaxed pl-6 font-normal">
                   Waterfield Road, Bandra West, Mumbai 400050, India
                 </p>
-                <p className="text-[11px] text-[#2C2C2A] font-medium pl-6">
-                  Hours: Tuesday – Sunday | 11:00 AM – 7:30 PM (By Appointment)
+                <p className="text-[11px] text-[#8F896D] font-medium pl-6">
+                  Hours: Tue – Sun | 11:00 AM – 7:30 PM IST (By Appointment)
                 </p>
               </div>
 
-              {/* Location 2 */}
+              {/* Location 2: Vicenza */}
               <div className="space-y-2 pb-2">
-                <div className="flex items-center gap-2 text-sm font-serif-display text-[#2C2C2A]">
-                  <MapPin className="w-4 h-4 text-[#C5A059]" />
+                <div className="flex items-center gap-2 text-sm font-serif-display text-[#413C23] font-medium">
+                  <MapPin className="w-4 h-4 text-[#8F896D]" />
                   <span>Vicenza Casting House & Studio</span>
                 </div>
-                <p className="text-xs text-[#7D7973] leading-relaxed pl-6">
+                <p className="text-xs text-[#413C23]/75 leading-relaxed pl-6 font-normal">
                   Corso Andrea Palladio, 36100 Vicenza VI, Italy
                 </p>
-                <p className="text-[11px] text-[#2C2C2A] font-medium pl-6">
-                  Hours: Monday – Friday | 9:00 AM – 6:00 PM CET
+                <p className="text-[11px] text-[#8F896D] font-medium pl-6">
+                  Hours: Mon – Fri | 9:00 AM – 6:00 PM CET
                 </p>
               </div>
             </div>
 
             {/* Virtual Consultation Box */}
-            <div className="bg-[#9A9886] text-white p-6 sm:p-8 rounded-xs space-y-3">
+            <div className="bg-[#413C23] text-[#E7E4D5] p-6 sm:p-8 rounded-xs space-y-3 shadow-md border border-[#413C23]">
               <div className="flex items-center gap-2">
-                <Sparkles className="w-5 h-5 text-[#FAF8F5]" />
-                <h4 className="font-serif-display text-lg">Complimentary Virtual Sizing</h4>
+                <Sparkles className="w-5 h-5 text-[#8F896D]" />
+                <h4 className="font-serif-display text-lg sm:text-xl font-light">Complimentary Virtual Sizing</h4>
               </div>
-              <p className="text-xs text-[#FAF8F5]/90 font-light leading-relaxed">
+              <p className="text-xs text-[#E7E4D5]/80 font-normal leading-relaxed">
                 Not sure of your ring or collar size? Book a 15-minute 1-on-1 video call with our jewelry consultant.
               </p>
               <button
@@ -363,9 +376,9 @@ export const ContactPage: React.FC<ContactPageProps> = ({ onNavigateToShop }) =>
                     inquiryType: 'sizing',
                     message: 'I would like to schedule a virtual sizing consultation.',
                   });
-                  window.scrollTo({ top: 300, behavior: 'smooth' });
+                  window.scrollTo({ top: 350, behavior: 'smooth' });
                 }}
-                className="text-xs text-white underline underline-offset-4 hover:text-[#2C2C2A] transition-colors font-medium"
+                className="text-xs text-[#FAF8F5] underline underline-offset-4 hover:text-[#8F896D] transition-colors font-semibold uppercase tracking-wider cursor-pointer inline-block pt-1"
               >
                 Schedule Virtual Call →
               </button>
@@ -375,12 +388,12 @@ export const ContactPage: React.FC<ContactPageProps> = ({ onNavigateToShop }) =>
       </section>
 
       {/* 4. FAQ ACCORDION SECTION */}
-      <section className="w-full px-4 sm:px-8 lg:px-12 xl:px-16 py-12 max-w-4xl mx-auto text-left">
+      <section className="w-full px-4 sm:px-8 lg:px-12 xl:px-16 2xl:px-20 py-12 max-w-4xl mx-auto text-left">
         <div className="text-center space-y-2 mb-8">
-          <span className="text-xs font-semibold text-[#C5A059] uppercase tracking-[0.25em] block">
-            Common Inquiries
+          <span className="text-[10px] sm:text-xs font-semibold text-[#8F896D] uppercase tracking-[0.25em] block">
+            (04) / Common Inquiries
           </span>
-          <h2 className="font-serif-display text-3xl sm:text-4xl text-[#2C2C2A]">
+          <h2 className="font-serif-display text-3xl sm:text-4xl text-[#413C23] font-light">
             Frequently Asked Questions
           </h2>
         </div>
@@ -391,21 +404,21 @@ export const ContactPage: React.FC<ContactPageProps> = ({ onNavigateToShop }) =>
             return (
               <div
                 key={idx}
-                className="border border-[#E6DFD3] rounded-xs bg-white overflow-hidden transition-colors"
+                className="border border-[#D8D2C2] rounded-xs bg-[#F4EFE6] overflow-hidden transition-colors"
               >
                 <button
                   onClick={() => setOpenFaq(isOpen ? null : idx)}
-                  className="w-full px-5 py-4 flex items-center justify-between text-left text-xs sm:text-sm font-medium text-[#2C2C2A] hover:text-[#C5A059] transition-colors cursor-pointer"
+                  className="w-full px-5 py-4 flex items-center justify-between text-left text-xs sm:text-sm font-medium text-[#413C23] hover:text-[#8F896D] transition-colors cursor-pointer"
                 >
-                  <span>{faq.q}</span>
+                  <span className="font-serif-display text-base sm:text-lg">{faq.q}</span>
                   <ChevronDown
-                    className={`w-4 h-4 text-[#7D7973] transition-transform duration-300 ${
-                      isOpen ? 'rotate-180 text-[#C5A059]' : ''
+                    className={`w-4 h-4 text-[#8F896D] transition-transform duration-300 shrink-0 ${
+                      isOpen ? 'rotate-180' : ''
                     }`}
                   />
                 </button>
                 {isOpen && (
-                  <div className="px-5 pb-4 text-xs text-[#7D7973] leading-relaxed border-t border-[#E6DFD3]/60 pt-3">
+                  <div className="px-5 pb-4 text-xs text-[#413C23]/80 leading-relaxed border-t border-[#D8D2C2]/60 pt-3 font-normal">
                     {faq.a}
                   </div>
                 )}

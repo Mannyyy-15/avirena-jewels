@@ -5,7 +5,8 @@ import {
   SlidersHorizontal,
   X,
   RefreshCw,
-  Gem
+  Gem,
+  Check
 } from 'lucide-react';
 import { Product, Currency, Category, Metal } from '../types';
 import { PRODUCTS } from '../data/products';
@@ -112,11 +113,11 @@ export const CollectionPage: React.FC<CollectionPageProps> = ({
   const getCategoryHeroDesc = () => {
     switch (selectedCategory) {
       case 'rings':
-        return 'Organic silhouettes and molten contours cast in 3.0-micron 18k gold vermeil and recycled silver.';
+        return 'Organic silhouettes and molten contours cast in 3.0-micron 18k gold vermeil and recycled 925 sterling silver.';
       case 'necklaces':
-        return 'Interlocking geometric figaro links, baroque pearls, and fluid solitaires designed for effortless stacking.';
+        return 'Interlocking geometric figaro links, natural baroque pearls, and fluid solitaires designed for effortless stacking.';
       case 'earrings':
-        return 'Featherweight hollow-core dome studs, spiraling vortices, and bold drop accents crafted for all-day comfort.';
+        return 'Featherweight hollow-core dome studs, spiraling vortices, and bold drop accents crafted for day-to-night elegance.';
       case 'bracelets':
         return 'Ergonomic open-wire cuffs tipped with freshwater pearls and sculpted link wristwear.';
       case 'brooches':
@@ -127,10 +128,10 @@ export const CollectionPage: React.FC<CollectionPageProps> = ({
   };
 
   return (
-    <div ref={containerRef} className="pb-24 font-sans-body w-full text-[#413C23] bg-[#E7E4D5]">
+    <div ref={containerRef} className="pb-24 font-sans-body w-full text-[#413C23] bg-[#E7E4D5] select-none">
       
       {/* 1. TOP EDITORIAL HERO BANNER */}
-      <section className="relative w-full bg-[#413C23] text-white min-h-[300px] sm:min-h-[380px] flex flex-col justify-between p-6 sm:p-10 md:p-14 select-none overflow-hidden border-b border-[#D8D2C2]">
+      <section className="relative w-full bg-[#413C23] text-[#E7E4D5] min-h-[320px] sm:min-h-[400px] flex flex-col justify-between p-6 sm:p-10 md:p-14 lg:px-16 2xl:px-20 select-none overflow-hidden border-b border-[#D8D2C2]">
         {/* Background Atmosphere Glow */}
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
           <img
@@ -139,14 +140,14 @@ export const CollectionPage: React.FC<CollectionPageProps> = ({
             referrerPolicy="no-referrer"
             className="w-full h-full object-cover object-[center_30%] opacity-35 filter contrast-110 scale-105"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#413C23] via-[#413C23]/70 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#413C23] via-[#413C23]/70 to-[#413C23]/40" />
         </div>
 
         {/* Top Micro Navigation / Breadcrumb */}
-        <div className="w-full flex items-center justify-between text-[11px] uppercase tracking-[0.24em] font-light text-[#E7E4D5] z-20">
+        <div className="w-full flex items-center justify-between text-[10px] sm:text-xs uppercase tracking-[0.25em] font-medium text-[#8F896D] z-20">
           <span className="flex items-center gap-1.5">
-            <Sparkles className="w-3 h-3 text-[#8F896D]" />
-            Atelier Curated Edition
+            <Sparkles className="w-3 h-3 text-[#D4AF37]" />
+            (01) / Maison Avirena Edition
           </span>
           <span className="text-[#E7E4D5]/80">
             {filteredProducts.length} {filteredProducts.length === 1 ? 'Piece' : 'Pieces'} Available
@@ -154,22 +155,22 @@ export const CollectionPage: React.FC<CollectionPageProps> = ({
         </div>
 
         {/* Masthead Title & Description */}
-        <div className="w-full z-20 pt-12 sm:pt-16 max-w-3xl">
-          <span className="text-xs uppercase tracking-[0.3em] font-semibold text-[#8F896D] block mb-2">
-            Maison Avirena Collection
+        <div className="w-full z-20 pt-12 sm:pt-16 max-w-3xl text-left space-y-3">
+          <span className="text-[11px] uppercase tracking-[0.3em] font-semibold text-[#8F896D] block">
+            Maison Catalog
           </span>
-          <h1 className="font-serif-display text-4xl sm:text-6xl md:text-7xl font-light text-[#E7E4D5] tracking-tight leading-[1.05] text-left select-none drop-shadow-md">
+          <h1 className="font-serif-display text-4xl sm:text-6xl md:text-7xl font-light text-[#E7E4D5] tracking-tight leading-[1.02] drop-shadow-md">
             {getCategoryHeroTitle()}
           </h1>
-          <p className="text-xs sm:text-sm text-[#E7E4D5]/80 font-light mt-3 max-w-xl leading-relaxed">
+          <p className="text-xs sm:text-sm text-[#E7E4D5]/85 font-normal max-w-xl leading-relaxed">
             {getCategoryHeroDesc()}
           </p>
         </div>
       </section>
 
       {/* 2. FILTER & SORT CONTROLS BAR */}
-      <section className="sticky top-0 z-30 w-full px-4 sm:px-8 lg:px-12 xl:px-16 2xl:px-20 py-4 bg-[#E7E4D5]/95 backdrop-blur-md border-b border-[#D8D2C2] shadow-xs">
-        <div className="w-full flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <section className="sticky top-0 z-30 w-full px-4 sm:px-8 lg:px-12 xl:px-16 2xl:px-20 py-3.5 bg-[#E7E4D5]/95 backdrop-blur-md border-b border-[#D8D2C2] shadow-xs">
+        <div className="w-full flex flex-col md:flex-row md:items-center justify-between gap-3 sm:gap-4">
           
           {/* Left: Category Filter Pills */}
           <div className="flex items-center gap-2 overflow-x-auto pb-1 md:pb-0 scrollbar-none">
@@ -179,14 +180,14 @@ export const CollectionPage: React.FC<CollectionPageProps> = ({
                 <button
                   key={cat.id}
                   onClick={() => setSelectedCategory(cat.id)}
-                  className={`text-xs px-4 py-2 rounded-xs transition-all cursor-pointer font-medium uppercase tracking-wider shrink-0 flex items-center gap-1.5 ${
+                  className={`text-xs px-3.5 py-2 rounded-xs transition-all cursor-pointer font-medium uppercase tracking-wider shrink-0 flex items-center gap-1.5 ${
                     isActive
                       ? 'bg-[#413C23] text-[#E7E4D5] shadow-sm border border-[#413C23]'
-                      : 'bg-[#F4EFE6] hover:bg-[#FAF8F5] text-[#413C23] border border-[#D8D2C2]'
+                      : 'bg-[#F4EFE6] hover:bg-[#FAF8F5] text-[#413C23] border border-[#D8D2C2] hover:border-[#8F896D]'
                   }`}
                 >
                   <span>{cat.label}</span>
-                  <span className={`text-[10px] px-1.5 py-0.2 rounded-full ${isActive ? 'bg-[#8F896D]/30 text-[#E7E4D5]' : 'bg-[#E7E4D5] text-[#8F896D]'}`}>
+                  <span className={`text-[10px] px-1.5 py-0.2 rounded-full ${isActive ? 'bg-[#8F896D]/40 text-[#E7E4D5]' : 'bg-[#E7E4D5] text-[#8F896D]'}`}>
                     {cat.count}
                   </span>
                 </button>
@@ -197,7 +198,7 @@ export const CollectionPage: React.FC<CollectionPageProps> = ({
           {/* Right: Metal Filter & Sort Dropdown */}
           <div className="flex items-center justify-between md:justify-end gap-3 shrink-0">
             {/* Metal Selector */}
-            <div className="flex items-center gap-1 bg-[#F4EFE6] border border-[#D8D2C2] rounded-xs px-2.5 py-1.5 text-xs text-[#413C23]">
+            <div className="flex items-center gap-1.5 bg-[#F4EFE6] border border-[#D8D2C2] hover:border-[#8F896D] rounded-xs px-3 py-1.5 text-xs text-[#413C23] transition-colors">
               <Gem className="w-3.5 h-3.5 text-[#8F896D]" />
               <select
                 value={selectedMetal}
@@ -216,16 +217,16 @@ export const CollectionPage: React.FC<CollectionPageProps> = ({
             <div className="relative">
               <button
                 onClick={() => setSortDropdownOpen(!sortDropdownOpen)}
-                className="flex items-center gap-2 px-3 py-1.5 bg-[#F4EFE6] border border-[#D8D2C2] rounded-xs text-xs text-[#413C23] hover:border-[#8F896D] transition-all cursor-pointer font-medium uppercase tracking-wider"
+                className="flex items-center gap-2 px-3.5 py-1.5 bg-[#F4EFE6] border border-[#D8D2C2] hover:border-[#8F896D] rounded-xs text-xs text-[#413C23] transition-all cursor-pointer font-medium uppercase tracking-wider"
               >
                 <SlidersHorizontal className="w-3.5 h-3.5 text-[#8F896D]" />
                 <span className="hidden sm:inline text-[#8F896D]">Sort:</span>
                 <span>{sortLabels[sortBy]}</span>
-                <ChevronDown className="w-3.5 h-3.5 stroke-[1.5] text-[#8F896D]" />
+                <ChevronDown className={`w-3.5 h-3.5 stroke-[1.5] text-[#8F896D] transition-transform duration-200 ${sortDropdownOpen ? 'rotate-180' : ''}`} />
               </button>
 
               {sortDropdownOpen && (
-                <div className="absolute right-0 mt-2 w-52 bg-[#E7E4D5] border border-[#D8D2C2] rounded-xs shadow-xl py-1 z-40 animate-in fade-in zoom-in-95 duration-150">
+                <div className="absolute right-0 mt-2 w-52 bg-[#FAF8F5] border border-[#D8D2C2] rounded-xs shadow-xl py-1 z-40 animate-in fade-in zoom-in-95 duration-150">
                   {(Object.keys(sortLabels) as (keyof typeof sortLabels)[]).map((key) => (
                     <button
                       key={key}
@@ -233,12 +234,12 @@ export const CollectionPage: React.FC<CollectionPageProps> = ({
                         setSortBy(key);
                         setSortDropdownOpen(false);
                       }}
-                      className={`w-full text-left px-4 py-2.5 text-xs flex items-center justify-between hover:bg-[#F4EFE6] cursor-pointer ${
+                      className={`w-full text-left px-4 py-2.5 text-xs flex items-center justify-between hover:bg-[#F4EFE6] cursor-pointer transition-colors ${
                         sortBy === key ? 'font-bold text-[#413C23] bg-[#F4EFE6]' : 'text-[#413C23]/80'
                       }`}
                     >
                       <span>{sortLabels[key]}</span>
-                      {sortBy === key && <Sparkles className="w-3.5 h-3.5 text-[#8F896D]" />}
+                      {sortBy === key && <Check className="w-3.5 h-3.5 text-[#8F896D]" />}
                     </button>
                   ))}
                 </div>
@@ -256,8 +257,8 @@ export const CollectionPage: React.FC<CollectionPageProps> = ({
             <div className="w-14 h-14 bg-[#F4EFE6] border border-[#D8D2C2] rounded-full mx-auto flex items-center justify-center text-[#8F896D]">
               <RefreshCw className="w-6 h-6 stroke-[1.5]" />
             </div>
-            <h3 className="font-serif-display text-2xl text-[#413C23]">No Jewellery Pieces Found</h3>
-            <p className="text-xs text-[#8F896D] leading-relaxed">
+            <h3 className="font-serif-display text-2xl sm:text-3xl text-[#413C23] font-light">No Jewellery Pieces Found</h3>
+            <p className="text-xs text-[#413C23]/75 leading-relaxed">
               No items match your current filter selection. Try clearing your filters to view all available pieces.
             </p>
             <button
@@ -265,7 +266,7 @@ export const CollectionPage: React.FC<CollectionPageProps> = ({
                 setSelectedCategory('all');
                 setSelectedMetal('all');
               }}
-              className="px-6 py-2.5 bg-[#413C23] text-[#E7E4D5] hover:bg-[#8F896D] text-xs uppercase tracking-widest font-semibold rounded-xs transition-all cursor-pointer"
+              className="px-6 py-2.5 bg-[#413C23] text-[#E7E4D5] hover:bg-[#8F896D] text-xs uppercase tracking-[0.2em] font-semibold rounded-xs transition-all cursor-pointer"
             >
               Reset Filters
             </button>
