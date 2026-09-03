@@ -129,7 +129,10 @@ export const CollectionsHubPage: React.FC<CollectionsHubPageProps> = ({
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
             {SUITES.map((suite, idx) => {
               const featuredProduct =
-                catalogProducts.find((p) => p.id === suite.featuredProductId) || catalogProducts[0];
+                catalogProducts.find((p) => p.id === suite.featuredProductId) || 
+                PRODUCTS.find((p) => p.id === suite.featuredProductId) || 
+                catalogProducts[0] || 
+                PRODUCTS[0];
 
               return (
                 <div
