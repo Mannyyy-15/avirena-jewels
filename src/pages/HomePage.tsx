@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import {
@@ -8,18 +8,8 @@ import {
   Gem,
   Package,
   ShoppingBag,
-  Star,
-  Check,
-  ArrowUpRight,
-  Gift,
-  CheckCircle2,
-  Heart,
-  Crown,
-  RotateCcw,
   Truck,
-  Flame,
-  Layers,
-  Award
+  RotateCcw
 } from 'lucide-react';
 import { Product, Currency, Category } from '../types';
 import { PRODUCTS, formatPrice } from '../data/products';
@@ -56,6 +46,22 @@ export const HomePage: React.FC<HomePageProps> = ({
 
   // Gifting filter tab state
   const [activeGiftTier, setActiveGiftTier] = useState<'all' | 'under150' | 'heirloom' | 'pearls'>('all');
+
+  // Fallback safety to ensure catalog is always populated
+  const safeProducts = useMemo(() => {
+    if (catalogProducts && Array.isArray(catalogProducts) && catalogProducts.length > 0) {
+      return catalogProducts;
+    }
+    return PRODUCTS;
+  }, [catalogProducts]);
+
+  // Safe image getter
+  const getProductImage = (prod?: Product) => {
+    if (prod && Array.isArray(prod.images) && prod.images.length > 0 && prod.images[0]) {
+      return prod.images[0];
+    }
+    return 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=800&q=85';
+  };
 
   // 5-Category Hover Image Reveal dataset
   const categoryRevealItems = {
@@ -102,49 +108,53 @@ export const HomePage: React.FC<HomePageProps> = ({
     },
   };
 
-  // Fallback safety to ensure catalog is always populated
-  const safeProducts = (catalogProducts && catalogProducts.length > 0) ? catalogProducts : PRODUCTS;
-
   // Curated 5 pieces for "Collection" section matching reference layout
-  const collectionFive = [
-    {
-      product: safeProducts.find((p) => p.id === 'row-edge-ring') || safeProducts[5] || PRODUCTS[5],
-      displayTitle: 'Aurelia Ring',
-    },
-    {
-      product: safeProducts.find((p) => p.id === 'square-form-necklace') || safeProducts[0] || PRODUCTS[0],
-      displayTitle: 'Nadir Necklace',
-    },
-    {
-      product: safeProducts.find((p) => p.id === 'lucid-studs') || safeProducts[1] || PRODUCTS[1],
-      displayTitle: 'Lucea Studs',
-    },
-    {
-      product: safeProducts.find((p) => p.id === 'scalo-bracelet') || safeProducts[11] || safeProducts[3] || PRODUCTS[3],
-      displayTitle: 'Forma Bracelet',
-    },
-    {
-      product: safeProducts.find((p) => p.id === 'solid-wave-brooch') || safeProducts[2] || PRODUCTS[2],
-      displayTitle: 'Aura Brooch',
-    },
-  ].filter((item) => Boolean(item.product && item.product.images && item.product.images.length > 0));
+  const collectionFive = useMemo(() => {
+    return [
+      {
+        product: safeProducts.find((p) => p.id === 'row-edge-ring') || safeProducts[5] || PRODUCTS[5] || PRODUCTS[0],
+        displayTitle: 'Aurelia Ring',
+      },
+      {
+        product: safeProducts.find((p) => p.id === 'square-form-necklace') || safeProducts[0] || PRODUCTS[0],
+        displayTitle: 'Nadir Necklace',
+      },
+      {
+        product: safeProducts.find((p) => p.id === 'lucid-studs') || safeProducts[1] || PRODUCTS[1],
+        displayTitle: 'Lucea Studs',
+      },
+      {
+        product: safeProducts.find((p) => p.id === 'scalo-bracelet') || safeProducts[11] || safeProducts[3] || PRODUCTS[3],
+        displayTitle: 'Forma Bracelet',
+      },
+      {
+        product: safeProducts.find((p) => p.id === 'solid-wave-brooch') || safeProducts[2] || PRODUCTS[2],
+        displayTitle: 'Aura Brooch',
+      },
+    ].filter((item): item is { product: Product; displayTitle: string } => Boolean(item && item.product && item.product.id));
+  }, [safeProducts]);
 
   // Curated 5 pieces for "Popular" section (identical 5-column grid & sizing as Collection)
-  const popularFive = [
-    safeProducts.find((p) => p.id === 'wave-prism-ring') || safeProducts[6] || PRODUCTS[6],
-    safeProducts.find((p) => p.id === 'gold-curve-necklace') || safeProducts[8] || PRODUCTS[8],
-    safeProducts.find((p) => p.id === 'dome-studs') || safeProducts[13] || safeProducts[2] || PRODUCTS[2],
-    safeProducts.find((p) => p.id === 'two-pearl-cuff') || safeProducts[4] || PRODUCTS[4],
-    safeProducts.find((p) => p.id === 'asta-brooch') || safeProducts[14] || safeProducts[3] || PRODUCTS[3],
-  ].filter((p): p is Product => Boolean(p && p.images && p.images.length > 0));
+  const popularFive = useMemo(() => {
+    return [
+      safeProducts.find((p) => p.id === 'wave-prism-ring') || safeProducts[6] || PRODUCTS[6] || PRODUCTS[0],
+      safeProducts.find((p) => p.id === 'gold-curve-necklace') || safeProducts[8] || PRODUCTS[8] || PRODUCTS[1],
+      safeProducts.find((p) => p.id === 'dome-studs') || safeProducts[13] || safeProducts[2] || PRODUCTS[2],
+      safeProducts.find((p) => p.id === 'two-pearl-cuff') || safeProducts[4] || PRODUCTS[4] || PRODUCTS[0],
+      safeProducts.find((p) => p.id === 'asta-brooch') || safeProducts[14] || safeProducts[3] || PRODUCTS[3],
+    ].filter((p): p is Product => Boolean(p && p.id));
+  }, [safeProducts]);
 
   // Filtered Gifting items
-  const giftingProducts = safeProducts.filter((p) => {
-    if (activeGiftTier === 'under150') return p.price <= 150;
-    if (activeGiftTier === 'heirloom') return p.price >= 180;
-    if (activeGiftTier === 'pearls') return p.description?.toLowerCase().includes('pearl') || p.name?.toLowerCase().includes('pearl');
-    return true;
-  }).slice(0, 4);
+  const giftingProducts = useMemo(() => {
+    return safeProducts.filter((p) => {
+      if (!p || !p.id) return false;
+      if (activeGiftTier === 'under150') return p.price <= 150;
+      if (activeGiftTier === 'heirloom') return p.price >= 180;
+      if (activeGiftTier === 'pearls') return p.description?.toLowerCase().includes('pearl') || p.name?.toLowerCase().includes('pearl');
+      return true;
+    }).slice(0, 4);
+  }, [safeProducts, activeGiftTier]);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -187,7 +197,7 @@ export const HomePage: React.FC<HomePageProps> = ({
             onClick={() => onNavigateToCollection('all')}
             className="text-[11px] sm:text-xs font-medium text-[#8F896D] hover:text-[#413C23] transition-colors cursor-pointer uppercase tracking-wider"
           >
-            (all pieces — {catalogProducts.length})
+            (all pieces — {safeProducts.length})
           </button>
         </div>
 
@@ -282,45 +292,50 @@ export const HomePage: React.FC<HomePageProps> = ({
 
           {/* 5-Column Uniform Product Grid */}
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-5">
-            {collectionFive.map(({ product, displayTitle }) => (
-              <div
-                key={product.id}
-                onClick={() => onSelectProduct(product)}
-                className="group cursor-pointer flex flex-col space-y-3 text-left w-full"
-              >
-                {/* Fixed Uniform Square Box Container */}
-                <div className="relative aspect-square w-full bg-[#E7E4D5] border border-[#D8D2C2] rounded-xs flex items-center justify-center p-6 transition-all duration-300 group-hover:bg-[#FAF8F5] group-hover:border-[#8F896D] overflow-hidden">
-                  <div className="w-full h-full flex items-center justify-center">
-                    <img
-                      src={product.images[0]}
-                      alt={product.name}
-                      referrerPolicy="no-referrer"
-                      className="max-w-full max-h-full w-auto h-auto object-contain mix-blend-multiply group-hover:scale-108 transition-transform duration-500 ease-out"
-                    />
-                  </div>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onQuickAdd(product);
-                    }}
-                    className="absolute bottom-2.5 right-2.5 p-2 bg-[#413C23] hover:bg-[#8F896D] text-[#E7E4D5] rounded-xs opacity-0 group-hover:opacity-100 transition-opacity shadow-sm cursor-pointer z-10"
-                    title="Quick Add"
-                  >
-                    <ShoppingBag className="w-3.5 h-3.5" />
-                  </button>
-                </div>
+            {collectionFive.map(({ product, displayTitle }) => {
+              if (!product || !product.id) return null;
+              const imageSrc = getProductImage(product);
 
-                {/* Fixed Meta Box directly on linen canvas */}
-                <div className="h-10 flex flex-col justify-between pt-0.5">
-                  <h4 className="font-serif-display text-xs sm:text-[13px] text-[#413C23] group-hover:text-[#8F896D] transition-colors font-medium truncate block">
-                    {displayTitle}
-                  </h4>
-                  <p className="text-xs text-[#8F896D] font-normal block">
-                    {formatPrice(product.price, currency)}
-                  </p>
+              return (
+                <div
+                  key={product.id}
+                  onClick={() => onSelectProduct(product)}
+                  className="group cursor-pointer flex flex-col space-y-3 text-left w-full"
+                >
+                  {/* Fixed Uniform Square Box Container */}
+                  <div className="relative aspect-square w-full bg-[#E7E4D5] border border-[#D8D2C2] rounded-xs flex items-center justify-center p-6 transition-all duration-300 group-hover:bg-[#FAF8F5] group-hover:border-[#8F896D] overflow-hidden">
+                    <div className="w-full h-full flex items-center justify-center">
+                      <img
+                        src={imageSrc}
+                        alt={product.name || displayTitle}
+                        referrerPolicy="no-referrer"
+                        className="max-w-full max-h-full w-auto h-auto object-contain mix-blend-multiply group-hover:scale-108 transition-transform duration-500 ease-out"
+                      />
+                    </div>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onQuickAdd(product);
+                      }}
+                      className="absolute bottom-2.5 right-2.5 p-2 bg-[#413C23] hover:bg-[#8F896D] text-[#E7E4D5] rounded-xs opacity-0 group-hover:opacity-100 transition-opacity shadow-sm cursor-pointer z-10"
+                      title="Quick Add"
+                    >
+                      <ShoppingBag className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+
+                  {/* Fixed Meta Box directly on linen canvas */}
+                  <div className="h-10 flex flex-col justify-between pt-0.5">
+                    <h4 className="font-serif-display text-xs sm:text-[13px] text-[#413C23] group-hover:text-[#8F896D] transition-colors font-medium truncate block">
+                      {displayTitle}
+                    </h4>
+                    <p className="text-xs text-[#8F896D] font-normal block">
+                      {formatPrice(product.price || 0, currency)}
+                    </p>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
 
         </div>
@@ -361,45 +376,50 @@ export const HomePage: React.FC<HomePageProps> = ({
 
           {/* 5-Column Uniform Product Grid */}
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-5">
-            {popularFive.map((product) => (
-              <div
-                key={product.id}
-                onClick={() => onSelectProduct(product)}
-                className="group cursor-pointer flex flex-col space-y-3 text-left w-full"
-              >
-                {/* Fixed Uniform Square Box Container */}
-                <div className="relative aspect-square w-full bg-[#F4EFE6] border border-[#D8D2C2] rounded-xs flex items-center justify-center p-6 transition-all duration-300 group-hover:bg-[#FAF8F5] group-hover:border-[#8F896D] overflow-hidden">
-                  <div className="w-full h-full flex items-center justify-center">
-                    <img
-                      src={product.images[0]}
-                      alt={product.name}
-                      referrerPolicy="no-referrer"
-                      className="max-w-full max-h-full w-auto h-auto object-contain mix-blend-multiply group-hover:scale-108 transition-transform duration-500 ease-out"
-                    />
-                  </div>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onQuickAdd(product);
-                    }}
-                    className="absolute bottom-2.5 right-2.5 p-2 bg-[#413C23] hover:bg-[#8F896D] text-[#E7E4D5] rounded-xs opacity-0 group-hover:opacity-100 transition-opacity shadow-sm cursor-pointer z-10"
-                    title="Quick Add"
-                  >
-                    <ShoppingBag className="w-3.5 h-3.5" />
-                  </button>
-                </div>
+            {popularFive.map((product) => {
+              if (!product || !product.id) return null;
+              const imageSrc = getProductImage(product);
 
-                {/* Fixed Meta Box directly on linen canvas */}
-                <div className="h-10 flex flex-col justify-between pt-0.5">
-                  <h4 className="font-serif-display text-xs sm:text-[13px] text-[#413C23] group-hover:text-[#8F896D] transition-colors font-medium truncate block">
-                    {product.name}
-                  </h4>
-                  <p className="text-xs text-[#8F896D] font-normal block">
-                    {formatPrice(product.price, currency)}
-                  </p>
+              return (
+                <div
+                  key={product.id}
+                  onClick={() => onSelectProduct(product)}
+                  className="group cursor-pointer flex flex-col space-y-3 text-left w-full"
+                >
+                  {/* Fixed Uniform Square Box Container */}
+                  <div className="relative aspect-square w-full bg-[#F4EFE6] border border-[#D8D2C2] rounded-xs flex items-center justify-center p-6 transition-all duration-300 group-hover:bg-[#FAF8F5] group-hover:border-[#8F896D] overflow-hidden">
+                    <div className="w-full h-full flex items-center justify-center">
+                      <img
+                        src={imageSrc}
+                        alt={product.name}
+                        referrerPolicy="no-referrer"
+                        className="max-w-full max-h-full w-auto h-auto object-contain mix-blend-multiply group-hover:scale-108 transition-transform duration-500 ease-out"
+                      />
+                    </div>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onQuickAdd(product);
+                      }}
+                      className="absolute bottom-2.5 right-2.5 p-2 bg-[#413C23] hover:bg-[#8F896D] text-[#E7E4D5] rounded-xs opacity-0 group-hover:opacity-100 transition-opacity shadow-sm cursor-pointer z-10"
+                      title="Quick Add"
+                    >
+                      <ShoppingBag className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+
+                  {/* Fixed Meta Box directly on linen canvas */}
+                  <div className="h-10 flex flex-col justify-between pt-0.5">
+                    <h4 className="font-serif-display text-xs sm:text-[13px] text-[#413C23] group-hover:text-[#8F896D] transition-colors font-medium truncate block">
+                      {product.name}
+                    </h4>
+                    <p className="text-xs text-[#8F896D] font-normal block">
+                      {formatPrice(product.price || 0, currency)}
+                    </p>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
 
         </div>
@@ -447,47 +467,52 @@ export const HomePage: React.FC<HomePageProps> = ({
 
           {/* 4-Item Grid for Gifting */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {giftingProducts.map((product) => (
-              <div
-                key={product.id}
-                onClick={() => onSelectProduct(product)}
-                className="group cursor-pointer flex flex-col justify-between bg-[#FAF8F5] border border-[#D8D2C2] rounded-xs overflow-hidden transition-all duration-300 hover:shadow-md hover:border-[#8F896D] text-left"
-              >
-                <div className="relative aspect-square w-full bg-[#F4EFE6] p-6 flex items-center justify-center overflow-hidden">
-                  <img
-                    src={product.images[0]}
-                    alt={product.name}
-                    referrerPolicy="no-referrer"
-                    className="w-full h-full object-contain mix-blend-multiply group-hover:scale-106 transition-transform duration-500"
-                  />
-                  <div className="absolute top-3 left-3 bg-[#E7E4D5] text-[#413C23] text-[10px] font-semibold px-2 py-0.5 rounded-xs border border-[#D8D2C2] uppercase tracking-wider">
-                    {product.metal}
-                  </div>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onQuickAdd(product);
-                    }}
-                    className="absolute bottom-3 right-3 p-2.5 bg-[#413C23] hover:bg-[#8F896D] text-[#E7E4D5] rounded-xs opacity-0 group-hover:opacity-100 transition-opacity shadow-md cursor-pointer z-10"
-                    title="Quick Add to Bag"
-                  >
-                    <ShoppingBag className="w-4 h-4" />
-                  </button>
-                </div>
+            {giftingProducts.map((product) => {
+              if (!product || !product.id) return null;
+              const imageSrc = getProductImage(product);
 
-                <div className="p-4 space-y-1.5">
-                  <h4 className="font-serif-display text-base text-[#413C23] group-hover:text-[#8F896D] transition-colors font-medium truncate">
-                    {product.name}
-                  </h4>
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="text-[#8F896D] font-normal">{formatPrice(product.price, currency)}</span>
-                    <span className="text-[10px] text-[#413C23] uppercase tracking-wider font-semibold group-hover:underline">
-                      View Details →
-                    </span>
+              return (
+                <div
+                  key={product.id}
+                  onClick={() => onSelectProduct(product)}
+                  className="group cursor-pointer flex flex-col justify-between bg-[#FAF8F5] border border-[#D8D2C2] rounded-xs overflow-hidden transition-all duration-300 hover:shadow-md hover:border-[#8F896D] text-left"
+                >
+                  <div className="relative aspect-square w-full bg-[#F4EFE6] p-6 flex items-center justify-center overflow-hidden">
+                    <img
+                      src={imageSrc}
+                      alt={product.name}
+                      referrerPolicy="no-referrer"
+                      className="w-full h-full object-contain mix-blend-multiply group-hover:scale-106 transition-transform duration-500"
+                    />
+                    <div className="absolute top-3 left-3 bg-[#E7E4D5] text-[#413C23] text-[10px] font-semibold px-2 py-0.5 rounded-xs border border-[#D8D2C2] uppercase tracking-wider">
+                      {product.metal}
+                    </div>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onQuickAdd(product);
+                      }}
+                      className="absolute bottom-3 right-3 p-2.5 bg-[#413C23] hover:bg-[#8F896D] text-[#E7E4D5] rounded-xs opacity-0 group-hover:opacity-100 transition-opacity shadow-md cursor-pointer z-10"
+                      title="Quick Add to Bag"
+                    >
+                      <ShoppingBag className="w-4 h-4" />
+                    </button>
+                  </div>
+
+                  <div className="p-4 space-y-1.5">
+                    <h4 className="font-serif-display text-base text-[#413C23] group-hover:text-[#8F896D] transition-colors font-medium truncate">
+                      {product.name}
+                    </h4>
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="text-[#8F896D] font-normal">{formatPrice(product.price || 0, currency)}</span>
+                      <span className="text-[10px] text-[#413C23] uppercase tracking-wider font-semibold group-hover:underline">
+                        View Details →
+                      </span>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
 
         </div>
