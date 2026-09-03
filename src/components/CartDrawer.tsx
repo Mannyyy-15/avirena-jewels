@@ -11,6 +11,7 @@ import {
   Gift,
   Truck,
   CheckCircle2,
+  Lock,
 } from 'lucide-react';
 import { CartItem, Currency, Product } from '../types';
 import { formatPrice, PRODUCTS } from '../data/products';
@@ -25,9 +26,54 @@ interface CartDrawerProps {
   onRemoveItem: (id: string) => void;
   onProceedToCheckout: () => void;
   onContinueShopping: () => void;
+  onQuickAdd?: (product: Product) => void;
 }
 
 const FREE_SHIPPING_THRESHOLD_EUR = 150;
+
+// Curated luxury add-ons
+const LUXURY_ADDONS: Product[] = [
+  {
+    id: 'addon-polish-cloth',
+    name: 'Atelier Gold Microfiber Cloth',
+    tagline: 'Preserves 18k vermeil satiny mirror luster',
+    price: 12,
+    rating: 5.0,
+    reviewsCount: 142,
+    images: [
+      'https://images.unsplash.com/photo-1598560917505-59a3ad559071?auto=format&fit=crop&w=400&q=80',
+    ],
+    category: 'brooches',
+    metal: '18k Gold Vermeil',
+    description: 'Ultra-plush anti-tarnish polishing cloth specifically formulated for 3.0µ vermeil and natural pearls.',
+    features: ['Micro-abrasion safe', 'Reusable 200+ times', 'Anti-tarnish barrier'],
+    details: {
+      material: '100% Micro-suede',
+      dimensions: '15cm x 15cm',
+      origin: 'Jaipur Atelier',
+    },
+  },
+  {
+    id: 'addon-travel-case',
+    name: 'Velvet Atelier Travel Vault',
+    tagline: 'Forest green velvet with champagne brass zipper',
+    price: 28,
+    rating: 4.9,
+    reviewsCount: 98,
+    images: [
+      'https://images.unsplash.com/photo-1611591475168-98967b5eb488?auto=format&fit=crop&w=400&q=80',
+    ],
+    category: 'brooches',
+    metal: '18k Gold Vermeil',
+    description: 'Compact protective velvet travel jewelry organizer with dedicated ring slots and anti-tangle necklace hooks.',
+    features: ['Anti-tarnish lining', 'Ergonomic ring rolls', 'Champagne metal zip'],
+    details: {
+      material: 'Forest Green Silk Velvet',
+      dimensions: '10cm x 10cm x 5cm',
+      origin: 'Vicenza, Italy',
+    },
+  },
+];
 
 export const CartDrawer: React.FC<CartDrawerProps> = ({
   isOpen,
@@ -38,6 +84,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
   onRemoveItem,
   onProceedToCheckout,
   onContinueShopping,
+  onQuickAdd,
 }) => {
   const { isConfigured, syncLocalCartToShopify } = useShopify();
   const [isRedirectingToShopify, setIsRedirectingToShopify] = useState(false);
@@ -51,10 +98,10 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
   const progressPercent = Math.min(100, (subtotal / FREE_SHIPPING_THRESHOLD_EUR) * 100);
   const remainingForFreeShipping = Math.max(0, FREE_SHIPPING_THRESHOLD_EUR - subtotal);
 
-  // Quick cross sell suggestions (pieces not in cart)
-  const crossSellSuggestions = PRODUCTS.filter(
-    (p) => !items.some((item) => item.product.id === p.id)
-  ).slice(0, 2);
+  // Filter add-ons not already in cart
+  const availableAddons = LUXURY_ADDONS.filter(
+    (addon) => !items.some((item) => item.product.id === addon.id)
+  );
 
   const handleCheckoutClick = async () => {
     if (isConfigured && items.length > 0) {
@@ -79,11 +126,11 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
     <div className="fixed inset-0 z-50 overflow-hidden font-sans-body">
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-black/50 backdrop-blur-xs transition-opacity animate-in fade-in duration-300"
+        className="fixed inset-0 bg-black/60 backdrop-blur-xs transition-opacity animate-in fade-in duration-300"
         onClick={onClose}
       />
 
-      <div className="fixed inset-y-0 right-0 max-w-full flex pl-6 sm:pl-10">
+      <div className="fixed inset-y-0 right-0 max-w-full flex pl-4 sm:pl-10">
         <div className="w-screen max-w-md bg-[#E7E4D5] border-l border-[#D8D2C2] shadow-2xl flex flex-col justify-between animate-in slide-in-from-right duration-300 text-[#413C23]">
           
           {/* Header */}
@@ -106,17 +153,17 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
             </div>
 
             {/* Free Insured Delivery Progress Bar */}
-            <div className="pt-2">
+            <div className="pt-1">
               <div className="flex items-center justify-between text-[11px] text-[#413C23] font-medium pb-1.5">
-                <span className="flex items-center gap-1">
+                <span className="flex items-center gap-1.5">
                   <Truck className="w-3.5 h-3.5 text-[#8F896D]" />
                   {remainingForFreeShipping === 0 ? (
-                    <span className="text-[#413C23] font-semibold">You've unlocked Complimentary Express Shipping!</span>
+                    <span className="text-[#413C23] font-semibold">You've unlocked Free Insured Express Shipping!</span>
                   ) : (
-                    <span>Add {formatPrice(remainingForFreeShipping, currency)} more for free express shipping</span>
+                    <span>Add {formatPrice(remainingForFreeShipping, currency)} for Free Express Shipping</span>
                   )}
                 </span>
-                <span className="font-bold">{Math.round(progressPercent)}%</span>
+                <span className="font-bold text-[#8F896D]">{Math.round(progressPercent)}%</span>
               </div>
               <div className="w-full h-1.5 bg-[#D8D2C2] rounded-full overflow-hidden">
                 <div
@@ -137,7 +184,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                 <div className="space-y-1">
                   <h3 className="font-serif-display text-lg text-[#413C23]">Your bag is empty</h3>
                   <p className="text-xs text-[#8F896D] max-w-xs mx-auto">
-                    Explore our sculptural demi-fine rings, necklaces, and bespoke pieces.
+                    Explore our sculptural demi-fine rings, necklaces, and baroque pearl pieces.
                   </p>
                 </div>
                 <button
@@ -145,75 +192,76 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                     onClose();
                     onContinueShopping();
                   }}
-                  className="px-6 py-2.5 bg-[#413C23] hover:bg-[#8F896D] text-[#E7E4D5] text-xs uppercase tracking-widest font-semibold rounded-xs transition-colors cursor-pointer"
+                  className="px-6 py-2.5 bg-[#413C23] text-[#E7E4D5] hover:bg-[#8F896D] text-xs uppercase tracking-widest font-semibold rounded-xs transition-all shadow-sm cursor-pointer"
                 >
                   Explore Collection
                 </button>
               </div>
             ) : (
-              <>
+              <div className="space-y-3">
                 {items.map((item) => (
                   <div
                     key={item.id}
-                    className="flex gap-4 p-3.5 bg-[#F4EFE6] border border-[#D8D2C2] rounded-xs relative group"
+                    className="flex gap-3.5 p-3.5 bg-[#F4EFE6] border border-[#D8D2C2] rounded-xs relative group transition-colors hover:border-[#8F896D]"
                   >
-                    {/* Item Image */}
-                    <div className="w-20 h-20 bg-[#E7E4D5] border border-[#D8D2C2] rounded-xs flex items-center justify-center p-2 shrink-0">
+                    {/* Item Thumbnail */}
+                    <div className="w-20 h-20 bg-[#FAF8F5] border border-[#D8D2C2] rounded-xs flex items-center justify-center p-2 shrink-0 overflow-hidden">
                       <img
                         src={item.product.images[0]}
                         alt={item.product.name}
+                        referrerPolicy="no-referrer"
                         className="w-full h-full object-contain mix-blend-multiply"
                       />
                     </div>
 
-                    {/* Item Copy & Controls */}
-                    <div className="flex-1 flex flex-col justify-between">
+                    {/* Details */}
+                    <div className="flex-1 flex flex-col justify-between min-w-0">
                       <div className="space-y-0.5">
-                        <div className="flex items-start justify-between">
-                          <h4 className="font-serif-display text-sm font-medium text-[#413C23] leading-snug">
+                        <div className="flex items-start justify-between gap-2">
+                          <h4 className="font-serif-display text-sm sm:text-base text-[#413C23] font-medium truncate">
                             {item.product.name}
                           </h4>
                           <button
                             onClick={() => onRemoveItem(item.id)}
-                            className="text-[#8F896D] hover:text-[#7A0F1A] transition-colors p-1 cursor-pointer"
-                            title="Remove piece"
-                            aria-label="Remove item"
+                            className="text-[#8F896D] hover:text-[#413C23] p-1 transition-colors cursor-pointer"
+                            title="Remove item"
                           >
                             <Trash2 className="w-3.5 h-3.5 stroke-[1.5]" />
                           </button>
                         </div>
-                        <div className="flex items-center gap-2 text-[10px] text-[#8F896D] uppercase tracking-wider">
+                        <div className="flex flex-wrap items-center gap-1.5 text-[10px] text-[#8F896D] uppercase tracking-wider">
                           <span>{item.metal}</span>
                           {item.size && (
                             <>
                               <span>•</span>
-                              <span>Size: {item.size}</span>
+                              <span>{item.size}</span>
                             </>
                           )}
                         </div>
                       </div>
 
-                      {/* Quantity Selector & Price */}
-                      <div className="flex items-center justify-between pt-2">
-                        <div className="flex items-center border border-[#D8D2C2] rounded-xs bg-[#E7E4D5]">
+                      <div className="flex items-center justify-between pt-1">
+                        {/* Qty Switcher */}
+                        <div className="flex items-center border border-[#D8D2C2] rounded-xs bg-[#FAF8F5]">
                           <button
                             onClick={() => onUpdateQuantity(item.id, Math.max(1, item.quantity - 1))}
-                            className="p-1 text-[#8F896D] hover:text-[#413C23] cursor-pointer"
-                            aria-label="Decrease quantity"
+                            className="p-1 text-[#8F896D] hover:text-[#413C23] transition-colors cursor-pointer disabled:opacity-40"
+                            disabled={item.quantity <= 1}
                           >
                             <Minus className="w-3 h-3" />
                           </button>
-                          <span className="w-7 text-center text-xs font-bold text-[#413C23]">{item.quantity}</span>
+                          <span className="px-2 text-xs font-medium text-[#413C23] min-w-[20px] text-center">
+                            {item.quantity}
+                          </span>
                           <button
                             onClick={() => onUpdateQuantity(item.id, item.quantity + 1)}
-                            className="p-1 text-[#8F896D] hover:text-[#413C23] cursor-pointer"
-                            aria-label="Increase quantity"
+                            className="p-1 text-[#8F896D] hover:text-[#413C23] transition-colors cursor-pointer"
                           >
                             <Plus className="w-3 h-3" />
                           </button>
                         </div>
 
-                        <span className="text-xs sm:text-sm font-semibold text-[#413C23]">
+                        <span className="text-xs font-semibold text-[#413C23]">
                           {formatPrice(item.product.price * item.quantity, currency)}
                         </span>
                       </div>
@@ -221,67 +269,115 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                   </div>
                 ))}
 
-                {/* Gift Wrap Toggle Option */}
-                <div className="pt-4 border-t border-[#D8D2C2] space-y-2">
-                  <label className="flex items-center gap-2 text-xs font-medium text-[#413C23] cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={includeGiftWrap}
-                      onChange={(e) => setIncludeGiftWrap(e.target.checked)}
-                      className="rounded-xs text-[#413C23] focus:ring-[#413C23]"
-                    />
-                    <Gift className="w-4 h-4 text-[#8F896D]" />
-                    <span>Complimentary Luxury Gift Box & Handwritten Note</span>
-                  </label>
+                {/* 1-Click Luxury Upsell Add-ons */}
+                {availableAddons.length > 0 && onQuickAdd && (
+                  <div className="pt-2 space-y-2">
+                    <span className="text-[10px] uppercase tracking-[0.2em] font-semibold text-[#8F896D] block">
+                      Recommended Atelier Add-ons
+                    </span>
+                    <div className="space-y-2">
+                      {availableAddons.map((addon) => (
+                        <div
+                          key={addon.id}
+                          className="flex items-center justify-between p-2.5 bg-[#FAF8F5] border border-[#D8D2C2] rounded-xs hover:border-[#8F896D] transition-colors"
+                        >
+                          <div className="flex items-center gap-2.5 min-w-0">
+                            <img
+                              src={addon.images[0]}
+                              alt={addon.name}
+                              referrerPolicy="no-referrer"
+                              className="w-10 h-10 object-cover rounded-xs border border-[#D8D2C2] shrink-0"
+                            />
+                            <div className="truncate">
+                              <span className="font-serif-display text-xs text-[#413C23] font-medium block truncate">
+                                {addon.name}
+                              </span>
+                              <span className="text-[10px] text-[#8F896D] block">
+                                +{formatPrice(addon.price, currency)}
+                              </span>
+                            </div>
+                          </div>
+                          <button
+                            onClick={() => onQuickAdd(addon)}
+                            className="px-3 py-1 bg-[#413C23] hover:bg-[#8F896D] text-[#E7E4D5] text-[10px] uppercase tracking-wider font-semibold rounded-xs transition-colors shrink-0 cursor-pointer"
+                          >
+                            + Add
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Gifting & Personal Message Accordion */}
+                <div className="pt-1">
+                  <button
+                    onClick={() => setIncludeGiftWrap(!includeGiftWrap)}
+                    className="flex items-center justify-between w-full p-2.5 bg-[#FAF8F5] border border-[#D8D2C2] rounded-xs text-xs text-[#413C23] hover:border-[#8F896D] transition-colors cursor-pointer"
+                  >
+                    <span className="flex items-center gap-1.5 font-medium">
+                      <Gift className="w-3.5 h-3.5 text-[#8F896D]" />
+                      <span>Complimentary Gift Packaging & Note</span>
+                    </span>
+                    <span className="text-[10px] text-[#8F896D] uppercase font-semibold">
+                      {includeGiftWrap ? 'Added' : '+ Free'}
+                    </span>
+                  </button>
 
                   {includeGiftWrap && (
-                    <textarea
-                      value={giftNote}
-                      onChange={(e) => setGiftNote(e.target.value)}
-                      placeholder="Write your custom gift message here..."
-                      rows={2}
-                      className="w-full text-xs p-2.5 bg-[#F4EFE6] border border-[#D8D2C2] rounded-xs text-[#413C23] focus:outline-none focus:border-[#8F896D]"
-                    />
+                    <div className="p-3 bg-[#FAF8F5] border-x border-b border-[#D8D2C2] rounded-b-xs space-y-2 animate-in fade-in duration-200">
+                      <textarea
+                        rows={2}
+                        value={giftNote}
+                        onChange={(e) => setGiftNote(e.target.value)}
+                        placeholder="Write your personal handwritten gift note here..."
+                        className="w-full p-2 bg-[#F4EFE6] border border-[#D8D2C2] rounded-xs text-xs text-[#413C23] placeholder-[#8F896D]/60 focus:outline-none focus:border-[#8F896D]"
+                      />
+                    </div>
                   )}
                 </div>
-              </>
+              </div>
             )}
           </div>
 
           {/* Footer Checkout Summary */}
           {items.length > 0 && (
-            <div className="p-5 bg-[#F4EFE6] border-t border-[#D8D2C2] space-y-3.5">
-              <div className="space-y-1.5 text-xs text-[#8F896D]">
-                <div className="flex justify-between">
+            <div className="p-5 border-t border-[#D8D2C2] bg-[#F4EFE6] space-y-3 shadow-inner">
+              <div className="space-y-1 text-xs">
+                <div className="flex justify-between text-[#413C23]">
                   <span>Subtotal</span>
-                  <span className="font-semibold text-[#413C23]">{formatPrice(subtotal, currency)}</span>
+                  <span className="font-semibold">{formatPrice(subtotal, currency)}</span>
                 </div>
-                <div className="flex justify-between">
-                  <span>Shipping</span>
-                  <span>{remainingForFreeShipping === 0 ? 'Complimentary' : formatPrice(12, currency)}</span>
+                <div className="flex justify-between text-[#8F896D]">
+                  <span>Insured Express Delivery</span>
+                  <span>{remainingForFreeShipping === 0 ? 'Complimentary' : 'Calculated at checkout'}</span>
                 </div>
-              </div>
-
-              <div className="flex justify-between items-baseline border-t border-[#D8D2C2] pt-2">
-                <span className="font-serif-display text-sm font-semibold text-[#413C23]">Estimated Total</span>
-                <span className="font-serif-display text-xl text-[#413C23] font-bold">
-                  {formatPrice(subtotal, currency)}
-                </span>
               </div>
 
               <button
-                id="drawer-checkout-btn"
+                id="cart-drawer-checkout-btn"
                 onClick={handleCheckoutClick}
                 disabled={isRedirectingToShopify}
-                className="w-full py-3.5 bg-[#413C23] hover:bg-[#8F896D] text-[#E7E4D5] text-xs uppercase tracking-[0.2em] font-semibold rounded-xs transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer active:scale-98"
+                className="w-full py-3.5 bg-[#413C23] hover:bg-[#8F896D] text-[#E7E4D5] text-xs uppercase tracking-[0.2em] font-semibold rounded-xs transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer active:scale-98 disabled:opacity-60"
               >
-                <span>Proceed to Secure Checkout</span>
-                <ArrowRight className="w-4 h-4" />
+                {isRedirectingToShopify ? (
+                  <span>Redirecting to Shopify Checkout...</span>
+                ) : (
+                  <>
+                    <Lock className="w-3.5 h-3.5" />
+                    <span>Proceed to Secure Checkout • {formatPrice(subtotal, currency)}</span>
+                  </>
+                )}
               </button>
 
-              <p className="text-[10px] text-center text-[#8F896D]">
-                🔒 256-bit SSL Encrypted • 30-Day Easy Returns • 2-Year Warranty
-              </p>
+              <div className="flex items-center justify-center gap-4 text-[10px] text-[#8F896D] uppercase tracking-wider pt-1">
+                <span className="flex items-center gap-1">
+                  <ShieldCheck className="w-3 h-3 text-[#8F896D]" />
+                  256-Bit SSL Encrypted
+                </span>
+                <span>•</span>
+                <span>30-Day Free Returns</span>
+              </div>
             </div>
           )}
         </div>

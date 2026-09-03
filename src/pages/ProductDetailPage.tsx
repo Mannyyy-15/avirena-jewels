@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   ChevronDown,
   ChevronUp,
@@ -17,10 +17,13 @@ import {
   Gem,
   Package,
   X,
+  Lock,
+  Clock
 } from 'lucide-react';
 import { Product, Currency, Metal, CartItem } from '../types';
 import { PRODUCTS, formatPrice } from '../data/products';
 import { ProductCard } from '../components/ProductCard';
+import { RingSizerModal } from '../components/RingSizerModal';
 import { useShopify } from '../context/ShopifyContext';
 
 interface ProductDetailPageProps {
@@ -52,6 +55,9 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
   const [copiedLink, setCopiedLink] = useState(false);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [isSizingModalOpen, setIsSizingModalOpen] = useState(false);
+  const [showStickyBar, setShowStickyBar] = useState(false);
+
+  const buyBoxRef = useRef<HTMLDivElement>(null);
 
   // Sync state if product changes
   useEffect(() => {
@@ -61,6 +67,18 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
     setQuantity(1);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [product.id]);
+
+  // Scroll listener for Sticky Add To Cart bar
+  useEffect(() => {
+    const handleScroll = () => {
+      if (buyBoxRef.current) {
+        const rect = buyBoxRef.current.getBoundingClientRect();
+        setShowStickyBar(rect.bottom < 100);
+      }
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   // Accordion states
   const [openAccordion, setOpenAccordion] = useState<'desc' | 'materials' | 'shipping' | 'care'>('desc');
@@ -105,8 +123,11 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
     'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=1200&q=90'
   ];
 
+  const installmentPrice = Math.round(product.price / 4);
+
   return (
-    <div className="space-y-12 sm:space-y-16 pb-24 text-left font-sans-body w-full text-[#413C23] bg-[#E7E4D5]">
+    <div className="space-y-12 sm:space-y-16 pb-24 text-left font-sans-body w-full text-[#413C23] bg-[#E7E4D5] select-none">
+      
       {/* 1. BREADCRUMBS */}
       <div className="w-full px-4 sm:px-8 lg:px-12 xl:px-16 2xl:px-20 pt-4">
         <nav className="flex items-center space-x-2 text-xs uppercase tracking-wider text-[#8F896D]">
@@ -175,7 +196,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
           </div>
 
           {/* RIGHT: Product Buy Box & Accordions */}
-          <div className="lg:col-span-5 space-y-6 bg-[#F4EFE6] p-6 sm:p-8 rounded-xs border border-[#D8D2C2] shadow-xs">
+          <div ref={buyBoxRef} className="lg:col-span-5 space-y-6 bg-[#F4EFE6] p-6 sm:p-8 rounded-xs border border-[#D8D2C2] shadow-xs">
             {/* Header: Title, Subtitle, Price, Rating */}
             <div className="space-y-2 border-b border-[#D8D2C2] pb-5">
               <div className="flex items-center justify-between">
@@ -210,6 +231,11 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                   In Stock & Ready to Ship
                 </span>
               </div>
+
+              {/* Installments info */}
+              <p className="text-[11px] text-[#8F896D] pt-1">
+                Or 4 interest-free payments of <strong className="text-[#413C23]">{formatPrice(installmentPrice, currency)}</strong> with Klarna or Afterpay
+              </p>
             </div>
 
             {/* Material / Metal Switcher */}
@@ -251,7 +277,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                     className="text-[#8F896D] hover:text-[#413C23] font-semibold underline underline-offset-4 flex items-center gap-1 cursor-pointer"
                   >
                     <Ruler className="w-3.5 h-3.5" />
-                    <span>Sizing Guide</span>
+                    <span>Ring Size Guide</span>
                   </button>
                 </div>
 
@@ -280,82 +306,74 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                 <div className="flex items-center border border-[#D8D2C2] rounded-xs bg-[#E7E4D5] px-3 py-2">
                   <button
                     onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                    className="text-[#8F896D] hover:text-[#413C23] p-1 cursor-pointer"
-                    aria-label="Decrease quantity"
+                    className="p-1 text-[#8F896D] hover:text-[#413C23] transition-colors cursor-pointer"
                   >
                     <Minus className="w-3.5 h-3.5" />
                   </button>
-                  <span className="w-8 text-center text-xs font-bold text-[#413C23]">{quantity}</span>
+                  <span className="px-3 text-xs font-semibold text-[#413C23] min-w-[24px] text-center">
+                    {quantity}
+                  </span>
                   <button
                     onClick={() => setQuantity(quantity + 1)}
-                    className="text-[#8F896D] hover:text-[#413C23] p-1 cursor-pointer"
-                    aria-label="Increase quantity"
+                    className="p-1 text-[#8F896D] hover:text-[#413C23] transition-colors cursor-pointer"
                   >
                     <Plus className="w-3.5 h-3.5" />
                   </button>
                 </div>
 
-                {/* Add to Cart CTA */}
+                {/* Add to Bag CTA */}
                 <button
                   id="pdp-add-to-cart-btn"
                   onClick={handleAddToCart}
-                  className={`flex-1 py-3.5 px-6 uppercase tracking-[0.2em] font-semibold text-xs rounded-xs flex items-center justify-center gap-2 transition-all shadow-md cursor-pointer ${
-                    addedAnimation
-                      ? 'bg-[#8F896D] text-white'
-                      : 'bg-[#413C23] hover:bg-[#8F896D] text-[#E7E4D5] active:scale-98'
-                  }`}
+                  className="flex-1 py-3.5 bg-[#413C23] hover:bg-[#8F896D] text-[#E7E4D5] text-xs uppercase tracking-[0.2em] font-semibold rounded-xs transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer active:scale-98"
                 >
                   {addedAnimation ? (
                     <>
-                      <Check className="w-4 h-4 stroke-[2.5]" />
+                      <Check className="w-4 h-4 text-[#D4AF37]" />
                       <span>Added to Bag</span>
                     </>
                   ) : (
                     <>
-                      <span>Add to Bag • {formatPrice(product.price * quantity, currency)}</span>
+                      <Sparkles className="w-3.5 h-3.5 text-[#D4AF37]" />
+                      <span>Add to Shopping Bag • {formatPrice(product.price * quantity, currency)}</span>
                     </>
                   )}
                 </button>
               </div>
 
-              {/* Share and Wishlist Action Bar */}
-              <div className="flex items-center justify-between text-xs text-[#8F896D] pt-1">
-                <button
-                  onClick={() => onToggleWishlist(product)}
-                  className="flex items-center gap-1.5 hover:text-[#7A0F1A] transition-colors cursor-pointer"
-                >
-                  <Heart className={`w-3.5 h-3.5 ${isWishlisted ? 'fill-[#7A0F1A] text-[#7A0F1A]' : ''}`} />
-                  <span>{isWishlisted ? 'Saved in Wishlist' : 'Save to Wishlist'}</span>
-                </button>
-
-                <button
-                  onClick={handleShare}
-                  className="flex items-center gap-1.5 hover:text-[#413C23] transition-colors cursor-pointer"
-                >
-                  <Share2 className="w-3.5 h-3.5" />
-                  <span>{copiedLink ? 'Link Copied!' : 'Share Piece'}</span>
-                </button>
+              {/* Scarcity & Shipping Assurance */}
+              <div className="p-3 bg-[#FAF8F5] border border-[#D8D2C2] rounded-xs space-y-1.5 text-xs">
+                <div className="flex items-center justify-between text-[#413C23]">
+                  <span className="flex items-center gap-1.5 font-medium">
+                    <Clock className="w-3.5 h-3.5 text-[#8F896D]" />
+                    <span>Dispatch: Within 24 hours</span>
+                  </span>
+                  <span className="text-[10px] text-[#8F896D] uppercase font-bold">Small Batch #04</span>
+                </div>
+                <p className="text-[11px] text-[#8F896D] leading-snug">
+                  Complimentary insured express delivery. Includes velvet travel pouch & certificate of authenticity.
+                </p>
               </div>
             </div>
 
             {/* Accordions */}
-            <div className="divide-y divide-[#E8E2D6] border-t border-[#E8E2D6] pt-2">
-              {/* 1. Description */}
+            <div className="border-t border-[#D8D2C2] divide-y divide-[#D8D2C2] pt-2">
+              {/* Description */}
               <div className="py-3">
                 <button
                   onClick={() => toggleAccordion('desc')}
-                  className="w-full flex items-center justify-between text-left text-xs font-semibold uppercase tracking-wider text-[#111111] cursor-pointer"
+                  className="w-full flex items-center justify-between text-xs font-semibold uppercase tracking-wider text-[#413C23] cursor-pointer"
                 >
-                  <span>Description & Silhouette</span>
+                  <span>Design & Sculpture Story</span>
                   {openAccordion === 'desc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
                 </button>
                 {openAccordion === 'desc' && (
-                  <div className="mt-2 text-xs text-[#5C5850] leading-relaxed space-y-2">
+                  <div className="pt-3 text-xs text-[#413C23]/80 leading-relaxed font-normal space-y-2">
                     <p>{product.description}</p>
-                    {product.details && (
-                      <ul className="list-disc pl-4 space-y-1">
-                        {product.details.map((detail, idx) => (
-                          <li key={idx}>{detail}</li>
+                    {product.features && (
+                      <ul className="list-disc list-inside space-y-1 pt-1 text-[#413C23]/90">
+                        {product.features.map((f, i) => (
+                          <li key={i}>{f}</li>
                         ))}
                       </ul>
                     )}
@@ -363,70 +381,104 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                 )}
               </div>
 
-              {/* 2. Materials & Sustainability */}
+              {/* Material Details */}
               <div className="py-3">
                 <button
                   onClick={() => toggleAccordion('materials')}
-                  className="w-full flex items-center justify-between text-left text-xs font-semibold uppercase tracking-wider text-[#111111] cursor-pointer"
+                  className="w-full flex items-center justify-between text-xs font-semibold uppercase tracking-wider text-[#413C23] cursor-pointer"
                 >
-                  <span>Materials & Sustainability</span>
+                  <span>Material Standards & Dimensions</span>
                   {openAccordion === 'materials' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
                 </button>
                 {openAccordion === 'materials' && (
-                  <div className="mt-2 text-xs text-[#5C5850] leading-relaxed space-y-2">
-                    <p><strong>Composition:</strong> {product.materials}</p>
-                    <p>All Avirena metals are 100% recycled precious silver and ethically mined gold alloys compliant with the Responsible Jewellery Council (RJC).</p>
+                  <div className="pt-3 text-xs text-[#413C23]/80 leading-relaxed space-y-1.5 font-normal">
+                    {product.details?.material && (
+                      <div className="flex justify-between">
+                        <span className="text-[#8F896D]">Metal Composition</span>
+                        <span className="font-semibold text-[#413C23]">{product.details.material}</span>
+                      </div>
+                    )}
+                    {product.details?.dimensions && (
+                      <div className="flex justify-between">
+                        <span className="text-[#8F896D]">Dimensions</span>
+                        <span className="font-semibold text-[#413C23]">{product.details.dimensions}</span>
+                      </div>
+                    )}
+                    {product.details?.origin && (
+                      <div className="flex justify-between">
+                        <span className="text-[#8F896D]">Artisan Provenance</span>
+                        <span className="font-semibold text-[#413C23]">{product.details.origin}</span>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
 
-              {/* 3. Insured Delivery & Returns */}
+              {/* Shipping & Returns */}
               <div className="py-3">
                 <button
                   onClick={() => toggleAccordion('shipping')}
-                  className="w-full flex items-center justify-between text-left text-xs font-semibold uppercase tracking-wider text-[#111111] cursor-pointer"
+                  className="w-full flex items-center justify-between text-xs font-semibold uppercase tracking-wider text-[#413C23] cursor-pointer"
                 >
-                  <span>Insured Delivery & Returns</span>
+                  <span>Complimentary Shipping & Returns</span>
                   {openAccordion === 'shipping' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
                 </button>
                 {openAccordion === 'shipping' && (
-                  <div className="mt-2 text-xs text-[#5C5850] leading-relaxed space-y-1.5">
-                    <p>• Complimentary insured DHL Express on orders over $150.</p>
-                    <p>• Signature required upon receipt for maximum safety.</p>
-                    <p>• 30-day hassle-free return window with pre-paid return labels.</p>
+                  <div className="pt-3 text-xs text-[#413C23]/80 leading-relaxed space-y-2 font-normal">
+                    <p>• Complimentary express courier shipping with real-time tracking.</p>
+                    <p>• 30-day hassle-free returns & doorstep pickup.</p>
+                    <p>• 2-Year Maison Warranty covering all structural craftsmanship.</p>
                   </div>
                 )}
               </div>
             </div>
 
+            {/* Share & Inquire Links */}
+            <div className="pt-2 flex items-center justify-between text-xs border-t border-[#D8D2C2]">
+              <button
+                onClick={handleShare}
+                className="flex items-center gap-1.5 text-[#8F896D] hover:text-[#413C23] transition-colors cursor-pointer"
+              >
+                <Share2 className="w-3.5 h-3.5" />
+                <span>{copiedLink ? 'Link Copied!' : 'Share Creation'}</span>
+              </button>
+              <a
+                href="https://wa.me/919820012345?text=Hello%20Avirena,%20I%20have%20an%20inquiry%20about%20the%20"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[#8F896D] hover:text-[#413C23] underline cursor-pointer"
+              >
+                Ask Concierge on WhatsApp
+              </a>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* 3. STYLED WITH / COMPLETE THE LOOK */}
+      {/* 3. STYLED WITH / COMPLETE THE SET */}
       {styledWithProducts.length > 0 && (
-        <section className="w-full px-4 sm:px-8 lg:px-12 xl:px-16 2xl:px-20 py-10 border-t border-[#E8E2D6] bg-white">
-          <div className="w-full space-y-6">
-            <div className="flex items-end justify-between border-b border-[#E8E2D6] pb-3">
+        <section className="w-full px-4 sm:px-8 lg:px-12 xl:px-16 2xl:px-20 py-12 border-t border-[#D8D2C2]">
+          <div className="space-y-8 text-left">
+            <div className="flex items-end justify-between border-b border-[#D8D2C2] pb-4">
               <div>
-                <span className="text-[10px] uppercase tracking-[0.25em] text-[#D4AF37] font-bold block">
-                  Curated Pairings
+                <span className="text-[10px] text-[#8F896D] uppercase tracking-widest font-semibold block mb-1">
+                  Atelier Stacking
                 </span>
-                <h2 className="font-serif-display text-2xl sm:text-3xl text-[#111111]">
-                  Complete The Look
-                </h2>
+                <h3 className="font-serif-display text-2xl sm:text-4xl text-[#413C23] font-light">
+                  Styled Beautifully With
+                </h3>
               </div>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {styledWithProducts.map((p) => (
                 <ProductCard
                   key={p.id}
                   product={p}
                   currency={currency}
                   onSelect={onSelectProduct}
-                  onQuickAdd={onAddToCart}
-                  isWishlisted={isWishlisted}
+                  onQuickAdd={() => onAddToCart({ product: p, quantity: 1, metal: p.metal })}
+                  isWishlisted={false}
                   onToggleWishlist={onToggleWishlist}
                 />
               ))}
@@ -435,58 +487,81 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
         </section>
       )}
 
-      {/* 4. SIZING GUIDE MODAL HELPER */}
-      {isSizingModalOpen && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-[#FAF8F5] max-w-lg w-full rounded-xs border border-[#E8E2D6] p-6 space-y-4 shadow-2xl relative animate-in fade-in zoom-in-95">
-            <div className="flex items-center justify-between border-b border-[#E8E2D6] pb-3">
-              <div className="flex items-center gap-2">
-                <Ruler className="w-4 h-4 text-[#D4AF37]" />
-                <h3 className="font-serif-display text-lg text-[#111111]">Atelier Sizing Guide</h3>
+      {/* 4. RELATED CREATIONS */}
+      {relatedProducts.length > 0 && (
+        <section className="w-full px-4 sm:px-8 lg:px-12 xl:px-16 2xl:px-20 py-12 border-t border-[#D8D2C2]">
+          <div className="space-y-8 text-left">
+            <div className="flex items-end justify-between border-b border-[#D8D2C2] pb-4">
+              <div>
+                <span className="text-[10px] text-[#8F896D] uppercase tracking-widest font-semibold block mb-1">
+                  More In {product.category}
+                </span>
+                <h3 className="font-serif-display text-2xl sm:text-4xl text-[#413C23] font-light">
+                  Complementary Creations
+                </h3>
               </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {relatedProducts.map((p) => (
+                <ProductCard
+                  key={p.id}
+                  product={p}
+                  currency={currency}
+                  onSelect={onSelectProduct}
+                  onQuickAdd={() => onAddToCart({ product: p, quantity: 1, metal: p.metal })}
+                  isWishlisted={false}
+                  onToggleWishlist={onToggleWishlist}
+                />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* STICKY BOTTOM ADD TO CART BAR (Floats on scroll) */}
+      {showStickyBar && (
+        <div className="fixed bottom-0 left-0 right-0 z-40 bg-[#FAF8F5]/95 backdrop-blur-md border-t border-[#D8D2C2] p-3.5 sm:p-4 shadow-xl animate-in slide-in-from-bottom duration-300">
+          <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
+            <div className="flex items-center gap-3 min-w-0">
+              <img
+                src={imagesList[0]}
+                alt={product.name}
+                referrerPolicy="no-referrer"
+                className="w-11 h-11 object-cover rounded-xs border border-[#D8D2C2] shrink-0"
+              />
+              <div className="truncate hidden sm:block">
+                <h4 className="font-serif-display text-sm font-medium text-[#413C23] truncate">
+                  {product.name}
+                </h4>
+                <span className="text-[10px] text-[#8F896D] uppercase tracking-wider block">
+                  {selectedMetal} {selectedSize && `• ${selectedSize}`}
+                </span>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-3 shrink-0">
+              <span className="font-serif-display text-base sm:text-lg font-semibold text-[#413C23]">
+                {formatPrice(product.price * quantity, currency)}
+              </span>
               <button
-                onClick={() => setIsSizingModalOpen(false)}
-                className="p-1 text-[#5C5850] hover:text-[#111111] cursor-pointer"
+                onClick={handleAddToCart}
+                className="px-6 py-2.5 bg-[#413C23] hover:bg-[#8F896D] text-[#E7E4D5] text-xs uppercase tracking-widest font-semibold rounded-xs transition-all shadow-sm cursor-pointer"
               >
-                <X className="w-5 h-5 stroke-[1.5]" />
+                {addedAnimation ? 'Added!' : 'Add to Bag'}
               </button>
             </div>
-
-            <div className="space-y-3 text-xs text-[#5C5850] leading-relaxed">
-              <p>To ensure a flawless fit, refer to standard measurements below:</p>
-              
-              <div className="border border-[#E8E2D6] rounded-xs overflow-hidden">
-                <table className="w-full text-left">
-                  <thead className="bg-[#EAE4D8] text-[#111111] font-semibold text-[11px]">
-                    <tr>
-                      <th className="p-2 border-b border-[#E8E2D6]">Ring Size</th>
-                      <th className="p-2 border-b border-[#E8E2D6]">Inner Circumference</th>
-                      <th className="p-2 border-b border-[#E8E2D6]">US / UK Equivalent</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-[#E8E2D6] bg-white">
-                    <tr><td className="p-2">Size 5</td><td className="p-2">49.3 mm</td><td className="p-2">US 5 / UK J½</td></tr>
-                    <tr><td className="p-2">Size 6</td><td className="p-2">51.9 mm</td><td className="p-2">US 6 / UK M</td></tr>
-                    <tr><td className="p-2">Size 7</td><td className="p-2">54.4 mm</td><td className="p-2">US 7 / UK O</td></tr>
-                    <tr><td className="p-2">Size 8</td><td className="p-2">57.0 mm</td><td className="p-2">US 8 / UK Q</td></tr>
-                  </tbody>
-                </table>
-              </div>
-
-              <p className="text-[11px] text-[#5C5850] pt-1">
-                Need bespoke resizing or custom sizing assistance? Contact our Atelier Concierge for private styling assistance.
-              </p>
-            </div>
-
-            <button
-              onClick={() => setIsSizingModalOpen(false)}
-              className="w-full py-2.5 bg-[#111111] text-white text-xs uppercase tracking-widest font-semibold rounded-xs cursor-pointer hover:bg-[#D4AF37] transition-colors"
-            >
-              Got It, Continue Shopping
-            </button>
           </div>
         </div>
       )}
+
+      {/* Ring Sizer Modal */}
+      <RingSizerModal
+        isOpen={isSizingModalOpen}
+        onClose={() => setIsSizingModalOpen(false)}
+        onSelectSize={(sz) => setSelectedSize(sz)}
+      />
+
     </div>
   );
 };
