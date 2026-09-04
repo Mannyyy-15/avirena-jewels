@@ -246,8 +246,8 @@ export const HomePage: React.FC<HomePageProps> = ({
             </picture>
           </div>
 
-          {/* Floating Baroque Pearl Ring (Centered & Positioned Gracefully Below Logo Center) */}
-          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 translate-y-[12%] sm:translate-y-[10%] md:translate-y-[8%] z-20 pointer-events-auto">
+          {/* Floating Baroque Pearl Ring (Lowered for mobile, preserved at original placement on desktop) */}
+          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 translate-y-[10%] sm:-translate-y-[10%] md:-translate-y-[22%] lg:-translate-y-[28%] z-20 pointer-events-auto">
             <HeroBaroquePearlRing onClick={() => onNavigateToCollection('rings')} />
           </div>
         </div>
