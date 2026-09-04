@@ -38,15 +38,39 @@ const ShopifyContext = createContext<ShopifyContextType | undefined>(undefined);
 
 const SHOPIFY_CART_ID_STORAGE_KEY = 'avirena_shopify_cart_id';
 
+const SHOPIFY_PRODUCTS_STORAGE_KEY = 'avirena_shopify_products_cache';
+
 export const ShopifyProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const isConfigured = isShopifyConfigured();
-  // Shopify is the single source of truth for inventory. The catalog starts
-  // EMPTY — never seeded with the mock array in src/data/products.ts — so no
-  // frame of any page can ever paint stock-photo placeholders as if they were
-  // real, purchasable products.
-  const [products, setProducts] = useState<Product[]>([]);
+  // Shopify is the single source of truth for inventory.
+  // We initialize with the cached catalog from localStorage (if any) so the user
+  // sees products instantly on first paint (0ms blank delay), and then revalidate
+  // seamlessly in the background.
+  const [products, setProducts] = useState<Product[]>(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const cached = localStorage.getItem(SHOPIFY_PRODUCTS_STORAGE_KEY);
+        if (cached) {
+          const parsed = JSON.parse(cached);
+          if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        }
+      } catch (e) {
+        // ignore parse error
+      }
+    }
+    return [];
+  });
   const [isLoadingProducts, setIsLoadingProducts] = useState<boolean>(isShopifyConfigured());
-  const [hasLoadedProducts, setHasLoadedProducts] = useState<boolean>(!isShopifyConfigured());
+  const [hasLoadedProducts, setHasLoadedProducts] = useState<boolean>(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        return Boolean(localStorage.getItem(SHOPIFY_PRODUCTS_STORAGE_KEY));
+      } catch {
+        return false;
+      }
+    }
+    return !isShopifyConfigured();
+  });
   const [shopifyCart, setShopifyCart] = useState<ShopifyCart | null>(null);
   const [isLoadingCart, setIsLoadingCart] = useState<boolean>(false);
 
@@ -68,12 +92,17 @@ export const ShopifyProvider: React.FC<{ children: ReactNode }> = ({ children })
         });
 
         const fetchedEdges = res.data?.products?.edges || [];
-        setProducts(fetchedEdges.map((e: any) => transformShopifyProduct(e.node)));
+        const transformed = fetchedEdges.map((e: any) => transformShopifyProduct(e.node));
+        setProducts(transformed);
+        if (typeof window !== 'undefined' && transformed.length > 0) {
+          try {
+            localStorage.setItem(SHOPIFY_PRODUCTS_STORAGE_KEY, JSON.stringify(transformed));
+          } catch (e) {
+            // ignore storage quota error
+          }
+        }
       } catch (err) {
-        // A failed fetch means "we don't know the catalog", not "here is a
-        // catalog". Showing mock products here would misrepresent inventory.
         console.warn('Could not fetch the Shopify catalog:', err);
-        setProducts([]);
       } finally {
         setIsLoadingProducts(false);
         setHasLoadedProducts(true);

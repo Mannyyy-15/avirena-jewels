@@ -47,7 +47,8 @@ export const HomePage: React.FC<HomePageProps> = ({
   const heroRef = useRef<HTMLDivElement>(null);
 
   // Gifting filter tab state
-  const [activeGiftTier, setActiveGiftTier] = useState<'all' | 'under150' | 'heirloom' | 'pearls'>('all');
+  // Gifting filter tab state
+  const [activeGiftTier, setActiveGiftTier] = useState<'all' | 'daily' | 'statement' | 'pearls'>('all');
 
   // Live Shopify catalog only — no mock fallback. When it is empty (still
   // loading, or genuinely empty) product sections render nothing rather than
@@ -113,13 +114,43 @@ export const HomePage: React.FC<HomePageProps> = ({
     if (!safeProducts || safeProducts.length === 0) return [];
     const filtered = safeProducts.filter((p) => {
       if (!p || !p.id) return false;
-      if (activeGiftTier === 'under150') return p.price <= 150;
-      if (activeGiftTier === 'heirloom') return p.price >= 180;
-      if (activeGiftTier === 'pearls') return p.description?.toLowerCase().includes('pearl') || p.name?.toLowerCase().includes('pearl');
+      const text = `${p.name} ${p.subtitle || ''} ${p.description || ''} ${p.category} ${p.metal}`.toLowerCase();
+      if (activeGiftTier === 'daily') {
+        return text.includes('stud') || text.includes('minimal') || text.includes('hoop') || text.includes('daily') || p.price <= 2000;
+      }
+      if (activeGiftTier === 'statement') {
+        return text.includes('statement') || text.includes('drop') || text.includes('sculpt') || text.includes('geometric') || p.isSculptural;
+      }
+      if (activeGiftTier === 'pearls') {
+        return text.includes('pearl');
+      }
       return true;
     });
+    // Never return empty: if specific filter yields nothing, fallback gracefully to catalog slice
     return filtered.length > 0 ? filtered.slice(0, 4) : safeProducts.slice(0, 4);
   }, [safeProducts, activeGiftTier]);
+
+  // Refresh ScrollTrigger geometry whenever catalog items load or tier changes
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      ScrollTrigger.refresh();
+    }, 120);
+    return () => clearTimeout(timer);
+  }, [safeProducts.length, activeGiftTier]);
+
+  // Smoothly reveal gifting cards whenever the active tier or items change
+  useEffect(() => {
+    if (giftingProducts.length > 0) {
+      const cards = document.querySelectorAll('.gifting-card');
+      if (cards.length > 0) {
+        gsap.fromTo(
+          cards,
+          { opacity: 0, y: 16 },
+          { opacity: 1, y: 0, duration: 0.4, stagger: 0.05, ease: 'power2.out', clearProps: 'all' }
+        );
+      }
+    }
+  }, [activeGiftTier, giftingProducts.length]);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -182,19 +213,6 @@ export const HomePage: React.FC<HomePageProps> = ({
         ease: 'power2.out',
         scrollTrigger: {
           trigger: '.popular-grid',
-          start: 'top 85%',
-        },
-      });
-
-      // Staggered gifting cards
-      gsap.from('.gifting-card', {
-        y: 30,
-        opacity: 0,
-        duration: 0.75,
-        stagger: 0.1,
-        ease: 'power2.out',
-        scrollTrigger: {
-          trigger: '.gifting-grid',
           start: 'top 85%',
         },
       });
@@ -569,8 +587,8 @@ export const HomePage: React.FC<HomePageProps> = ({
             <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0 scrollbar-none">
               {[
                 { id: 'all', label: 'All Curated Gifts' },
-                { id: 'under150', label: 'Daily Staples' },
-                { id: 'heirloom', label: 'Statement Pieces' },
+                { id: 'daily', label: 'Daily Staples' },
+                { id: 'statement', label: 'Statement Pieces' },
                 { id: 'pearls', label: 'Baroque Pearls' },
               ].map((tier) => {
                 const isActive = activeGiftTier === tier.id;
@@ -592,8 +610,23 @@ export const HomePage: React.FC<HomePageProps> = ({
           </div>
 
           {/* 4-Item Grid for Gifting */}
-          <div className="gifting-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {giftingProducts.map((product) => {
+          <div className="gifting-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 min-h-[360px]">
+            {giftingProducts.length === 0 ? (
+              // Luxury skeleton placeholder while Shopify GraphQL resolves
+              Array.from({ length: 4 }).map((_, idx) => (
+                <div
+                  key={`gifting-skeleton-${idx}`}
+                  className="flex flex-col justify-between bg-[#F2EFDB] border border-[#D8D2C2] rounded-xs overflow-hidden text-left animate-pulse"
+                >
+                  <div className="aspect-square w-full bg-[#E7E4D5] opacity-60" />
+                  <div className="p-4 space-y-2">
+                    <div className="h-4 bg-[#E7E4D5] rounded w-3/4 opacity-70" />
+                    <div className="h-3 bg-[#E7E4D5] rounded w-1/3 opacity-50" />
+                  </div>
+                </div>
+              ))
+            ) : (
+              giftingProducts.map((product) => {
               if (!product || !product.id) return null;
               const imageSrc = getProductImage(product);
 
@@ -642,7 +675,7 @@ export const HomePage: React.FC<HomePageProps> = ({
                   </div>
                 </div>
               );
-            })}
+            }))}
           </div>
 
         </div>
