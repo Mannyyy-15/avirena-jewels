@@ -40,9 +40,8 @@ async function fetchShopifyProducts(): Promise<any[]> {
               title
               handle
               description
-              productType
-              tags
               availableForSale
+              productType
               priceRange {
                 minVariantPrice {
                   amount
@@ -72,11 +71,6 @@ async function fetchShopifyProducts(): Promise<any[]> {
       body: JSON.stringify({ query }),
     });
 
-    if (!res.ok) {
-      console.warn(`[Prerender] Shopify API responded with status ${res.status}`);
-      return [];
-    }
-
     const data = await res.json();
     return (data.data?.products?.edges || []).map((e: any) => e.node);
   } catch (err) {
@@ -96,7 +90,7 @@ function getGlobalSchema() {
       url: SITE_URL,
       logo: `${SITE_URL}/logo.png`,
       description:
-        'Luxury demi-fine jewelry atelier crafting sculptural pieces in thick 18k gold vermeil, recycled 925 sterling silver, and natural freshwater baroque pearls.',
+        'Homegrown dailywear jewelry atelier crafting sculptural pieces in durable brass, anti-tarnish protective coatings, and natural cultured pearls.',
       sameAs: [
         'https://www.instagram.com/avirena.jewels',
         'https://www.facebook.com/avirenajewels',
@@ -118,12 +112,12 @@ function getGlobalSchema() {
       '@id': `${SITE_URL}/#store`,
       url: SITE_URL,
       telephone: '+91-98200-12345',
-      priceRange: '$$',
+      priceRange: '₹₹',
       currenciesAccepted: 'INR, EUR, USD, GBP',
-      paymentAccepted: 'Credit Card, Apple Pay, Google Pay, UPI, Net Banking',
+      paymentAccepted: 'Credit Card, Apple Pay, Google Pay, UPI, Net Banking, Cash on Delivery',
       address: {
         '@type': 'PostalAddress',
-        streetAddress: 'Suite 402, Heritage Craft Enclave, Bandra West',
+        streetAddress: 'Heritage Craft Enclave, Bandra West',
         addressLocality: 'Mumbai',
         addressRegion: 'MH',
         postalCode: '400050',
@@ -235,14 +229,14 @@ async function main() {
   // ---------------- ROUTE 1: Home Page (/) ----------------
   routes.push({
     path: '',
-    title: 'AVIRENA | Handcrafted Demi-Fine Jewelry • 18k Gold Vermeil & Baroque Pearls',
+    title: 'AVIRENA | Homegrown Dailywear Jewelry • Anti-Tarnish Brass & Baroque Pearls',
     description:
-      'Explore AVIRENA Jewels. Artisanal sculptural jewelry handcrafted in 3.0µ thick 18k gold vermeil, recycled 925 sterling silver, and natural freshwater baroque pearls. Timeless beauty, uniquely yours.',
+      'Explore AVIRENA Jewels. Homegrown dailywear jewelry handcrafted in durable brass, anti-tarnish protective coatings, and natural cultured pearls. Timeless beauty, uniquely yours.',
     canonical: `${SITE_URL}/`,
     ogImage: `${SITE_URL}/logo.png`,
     ogType: 'website',
     keywords:
-      'demi fine jewelry, 18k gold vermeil, baroque pearls, recycled 925 silver, sculptural rings, molten earrings, designer choker, luxury jewelry India, aesthetic jewelry',
+      'dailywear jewelry, anti tarnish brass jewelry, baroque pearls, sculptural rings, molten earrings, statement necklace, luxury jewelry India, aesthetic dailywear',
     jsonLd: [
       ...getGlobalSchema(),
       {
@@ -251,18 +245,18 @@ async function main() {
         mainEntity: [
           {
             '@type': 'Question',
-            name: 'What is 18k Gold Vermeil and how is it crafted?',
+            name: 'What materials are used in Avirena dailywear jewelry?',
             acceptedAnswer: {
               '@type': 'Answer',
-              text: 'Gold Vermeil is a premium French plating technique where an ultra-thick layer of 3.0 microns of 18k yellow gold is electroplated over a solid recycled 925 sterling silver core. It is 6 times thicker than standard flash-plated fashion jewelry and will not tarnish or discolor skin.',
+              text: 'Avirena crafts jewelry using high-density brass and durable alloys sealed with protective e-coating to ensure everyday water resistance and long-lasting anti-tarnish durability.',
             },
           },
           {
             '@type': 'Question',
-            name: 'Are Avirena baroque pearls authentic and natural?',
+            name: 'Are Avirena baroque pearls natural?',
             acceptedAnswer: {
               '@type': 'Answer',
-              text: 'Yes, Avirena exclusively uses 100% natural, hand-selected cultured freshwater baroque pearls. We never use simulated resin, plastic, or synthetic pearls.',
+              text: 'Yes, Avirena exclusively uses hand-selected cultured freshwater baroque pearls known for their organic luster and natural unique contours.',
             },
           },
         ],
@@ -273,7 +267,7 @@ async function main() {
         <nav aria-label="Main Navigation">
           <a href="/">AVIRENA</a>
           <a href="/shop">Shop All Jewelry</a>
-          <a href="/collections">Collections & Suites</a>
+          <a href="/collections">Collections</a>
           <a href="/about">About Atelier</a>
           <a href="/contact">Concierge</a>
         </nav>
@@ -281,7 +275,7 @@ async function main() {
       <main>
         <section class="hero-section">
           <h1>Timeless Beauty • Uniquely Yours</h1>
-          <p>Handcrafted demi-fine jewelry in thick 18k gold vermeil, recycled 925 sterling silver & natural pearls. Sculpted with soul.</p>
+          <p>Handcrafted homegrown dailywear jewelry in durable brass, anti-tarnish protective coatings & natural pearls.</p>
           <a href="/shop" class="cta-btn">Explore Collection</a>
         </section>
         <section class="categories-section">
@@ -310,7 +304,7 @@ async function main() {
           <a href="/product/${p.handle}">
             <img src="${img}" alt="${escapeHtml(p.title)}" loading="lazy" />
             <h3>${escapeHtml(p.title)}</h3>
-            <p class="price">${currency} ${price}</p>
+            <p class="price">₹${Math.round(parseFloat(price))}</p>
           </a>
         </article>
       `;
@@ -319,22 +313,22 @@ async function main() {
 
   routes.push({
     path: 'shop',
-    title: 'All Fine Jewelry Collection | AVIRENA Atelier',
+    title: 'Shop All Dailywear Jewelry | AVIRENA',
     description:
-      'Shop handcrafted demi-fine jewelry sculpted in thick 18k gold vermeil, recycled solid 925 sterling silver, and natural freshwater baroque pearls. Complimentary insured express shipping.',
+      'Discover handcrafted dailywear jewelry sculpted in durable anti-tarnish brass and natural cultured baroque pearls. Complimentary express delivery across India over ₹1,999.',
     canonical: `${SITE_URL}/shop`,
     ogImage: shopifyProducts[0]?.images?.edges?.[0]?.node?.url || `${SITE_URL}/logo.png`,
     ogType: 'website',
-    keywords: 'shop demi-fine jewelry, earrings, rings, necklaces, bracelets, gold vermeil jewelry',
+    keywords: 'shop dailywear jewelry, brass earrings, rings, necklaces, bracelets, anti tarnish jewelry',
     jsonLd: [
       ...getGlobalSchema(),
       {
         '@context': 'https://schema.org',
         '@type': 'CollectionPage',
-        name: 'All Fine Jewelry Collection | AVIRENA',
+        name: 'All Dailywear Jewelry Collection | AVIRENA',
         url: `${SITE_URL}/shop`,
         description:
-          'Curated fine demi-fine jewelry collection featuring sculptural earrings, rings, necklaces, and bracelets in 18k gold vermeil.',
+          'Curated dailywear jewelry collection featuring sculptural earrings, rings, necklaces, and bracelets in anti-tarnish brass.',
       },
       {
         '@context': 'https://schema.org',
@@ -359,7 +353,7 @@ async function main() {
       <main class="shop-catalog-page">
         <header>
           <h1>All Jewelry Collection</h1>
-          <p>Modern jewelry designed in-house. Crafted with master goldsmith precision.</p>
+          <p>Modern jewelry designed in-house. Crafted with durable anti-tarnish brass.</p>
         </header>
         <section class="products-grid">
           ${productCardsHtml}
@@ -369,12 +363,49 @@ async function main() {
   });
   addSitemapUrl(`${SITE_URL}/shop`, '0.9', 'daily');
 
+  // ---------------- CATEGORY ROUTES (/shop/:category) ----------------
+  const categories = [
+    { id: 'earrings', title: 'Earrings', desc: 'Sculptural molten studs, organic drop earrings, and huggies in anti-tarnish brass.' },
+    { id: 'necklaces', title: 'Necklaces', desc: 'Layered architectural chains, pearl drop pendants, and statement collars.' },
+    { id: 'rings', title: 'Rings', desc: 'Ergonomic statement bands, wave rings, and baroque pearl solitaire rings.' },
+    { id: 'bracelets', title: 'Bracelets', desc: 'Structured cuffs, open wire bangles, and delicate linked wristwear.' },
+    { id: 'brooches', title: 'Brooches', desc: 'Artisanal sculptural lapel brooches and organic drape pins.' },
+  ];
+
+  for (const cat of categories) {
+    routes.push({
+      path: `shop/${cat.id}`,
+      title: `${cat.title} — Dailywear Jewelry | AVIRENA`,
+      description: `${cat.desc} Handcrafted in premium brass with anti-tarnish protective sealing.`,
+      canonical: `${SITE_URL}/shop/${cat.id}`,
+      ogImage: `${SITE_URL}/logo.png`,
+      ogType: 'website',
+      jsonLd: [
+        ...getGlobalSchema(),
+        {
+          '@context': 'https://schema.org',
+          '@type': 'CollectionPage',
+          name: `${cat.title} Collection | AVIRENA`,
+          url: `${SITE_URL}/shop/${cat.id}`,
+          description: cat.desc,
+        },
+      ],
+      htmlContent: `
+        <main class="category-page">
+          <h1>${cat.title} Collection</h1>
+          <p>${cat.desc}</p>
+        </main>
+      `,
+    });
+    addSitemapUrl(`${SITE_URL}/shop/${cat.id}`, '0.8', 'weekly');
+  }
+
   // ---------------- ROUTE 3: Collections Hub (/collections) ----------------
   routes.push({
     path: 'collections',
-    title: 'Permanent Design Suites & Collections | AVIRENA',
+    title: 'Signature Jewelry Design Suites | AVIRENA',
     description:
-      'Explore the signature design suites of Avirena: Molten Sculptures, Baroque Pearl Editions, and Architectural Chains. Engineered in precious recycled metals.',
+      'Explore the signature design suites of Avirena: Sculptural Brass, Baroque Pearl Editions, and Architectural Chains.',
     canonical: `${SITE_URL}/collections`,
     ogImage: `${SITE_URL}/logo.png`,
     ogType: 'website',
@@ -401,7 +432,7 @@ async function main() {
     ],
     htmlContent: `
       <main class="collections-page">
-        <h1>Permanent Design Suites</h1>
+        <h1>Signature Design Suites</h1>
         <p>Explore cohesive sculptural narratives crafted to stack harmoniously.</p>
       </main>
     `,
@@ -411,9 +442,9 @@ async function main() {
   // ---------------- ROUTE 4: About Page (/about) ----------------
   routes.push({
     path: 'about',
-    title: 'Our Heritage, Atelier & Lost-Wax Craftsmanship | AVIRENA',
+    title: 'About Avirena | Homegrown Dailywear Craftsmanship',
     description:
-      'Learn about Studio Avirena, our heritage lost-wax casting ateliers, master goldsmiths, and our 100% certified recycled precious metals commitment.',
+      'Learn about Avirena Jewels, our homegrown Indian artisans, anti-tarnish metal crafting, and our dailywear jewelry philosophy.',
     canonical: `${SITE_URL}/about`,
     ogImage: `${SITE_URL}/logo.png`,
     ogType: 'website',
@@ -422,15 +453,15 @@ async function main() {
       {
         '@context': 'https://schema.org',
         '@type': 'AboutPage',
-        name: 'About AVIRENA Atelier',
+        name: 'About AVIRENA',
         url: `${SITE_URL}/about`,
-        description: 'Heritage lost-wax casting and recycled demi-fine jewelry craftsmanship.',
+        description: 'Homegrown dailywear jewelry crafted in durable anti-tarnish brass.',
       },
     ],
     htmlContent: `
       <main class="about-page">
-        <h1>Our Atelier Heritage</h1>
-        <p>Handcrafted demi-fine jewelry sculpted for eternity. 100% recycled precious metals & organic baroque pearls.</p>
+        <h1>Our Story & Philosophy</h1>
+        <p>Handcrafted homegrown dailywear jewelry sculpted for everyday confidence.</p>
       </main>
     `,
   });
@@ -439,9 +470,9 @@ async function main() {
   // ---------------- ROUTE 5: Contact Page (/contact) ----------------
   routes.push({
     path: 'contact',
-    title: 'Atelier Concierge & Private Appointments | AVIRENA',
+    title: 'Contact Concierge & Support | AVIRENA',
     description:
-      'Contact Avirena concierge for bespoke jewelry inquiries, custom ring sizing, gift curation, and private appointments. Available via WhatsApp and email.',
+      'Contact Avirena concierge for order tracking, styling advice, ring sizing assistance, and gift curation.',
     canonical: `${SITE_URL}/contact`,
     ogImage: `${SITE_URL}/logo.png`,
     ogType: 'website',
@@ -457,7 +488,7 @@ async function main() {
     htmlContent: `
       <main class="contact-page">
         <h1>Atelier Concierge</h1>
-        <p>Connect with our private jewelry specialists for bespoke styling, sizing, and order assistance.</p>
+        <p>Connect with our jewelry specialists for styling, sizing, and order assistance.</p>
       </main>
     `,
   });
@@ -466,9 +497,9 @@ async function main() {
   // ---------------- ROUTE 6: FAQ Page (/faq) ----------------
   routes.push({
     path: 'faq',
-    title: 'FAQs, Ring Sizing Calipers & Jewelry Care | AVIRENA',
+    title: 'FAQs, Sizing Guide & Jewelry Care | AVIRENA',
     description:
-      'Frequently asked questions regarding 18k gold vermeil care, hypoallergenic solid silver, ring sizing conversions, and natural baroque pearl preservation.',
+      'Frequently asked questions regarding anti-tarnish brass care, hypoallergenic alloys, ring sizing conversions, and natural baroque pearl preservation.',
     canonical: `${SITE_URL}/faq`,
     ogImage: `${SITE_URL}/logo.png`,
     ogType: 'website',
@@ -483,15 +514,15 @@ async function main() {
             name: 'How do I determine my ring size accurately?',
             acceptedAnswer: {
               '@type': 'Answer',
-              text: 'Use our printable ring sizing guide or measure the inner diameter of an existing comfortable ring. We also provide complimentary size exchanges within 14 days.',
+              text: 'Use our ring sizing chart or measure your finger circumference in millimeters. We provide seamless size exchanges within 14 days.',
             },
           },
           {
             '@type': 'Question',
-            name: 'How should I care for 18k Gold Vermeil?',
+            name: 'How should I care for anti-tarnish brass jewelry?',
             acceptedAnswer: {
               '@type': 'Answer',
-              text: 'Store your jewelry in the provided velvet pouch, avoid direct contact with perfumes and chlorinated water, and gently polish with an anti-tarnish microfiber cloth.',
+              text: 'Store your jewelry in the provided pouch, apply lotions and perfumes before wearing, and gently wipe with a dry soft cloth after use.',
             },
           },
         ],
@@ -500,7 +531,7 @@ async function main() {
     htmlContent: `
       <main class="faq-page">
         <h1>Frequently Asked Questions & Care Guide</h1>
-        <p>Answers to common questions about materials, ring sizing, care, and worldwide shipping.</p>
+        <p>Answers to common questions about materials, ring sizing, care, and express delivery.</p>
       </main>
     `,
   });
@@ -509,9 +540,9 @@ async function main() {
   // ---------------- ROUTE 7: Policies Page (/policies) ----------------
   routes.push({
     path: 'policies',
-    title: 'Policies, Shipping & Client Assurance | AVIRENA',
+    title: 'Policies, Shipping & Returns | AVIRENA',
     description:
-      'Official client policies of Avirena Jewels covering worldwide insured express delivery, 14-day doorstep returns, hallmarking certificates, and client privacy.',
+      'Official client policies of Avirena Jewels covering tracked courier delivery, 14-day hassle-free returns, material assurance, and customer privacy.',
     canonical: `${SITE_URL}/policies`,
     ogImage: `${SITE_URL}/logo.png`,
     ogType: 'website',
@@ -519,7 +550,7 @@ async function main() {
     htmlContent: `
       <main class="policies-page">
         <h1>Client Policies & Assurance</h1>
-        <p>14-Day Returns • Complimentary Express Shipping • 100% Certified Recycled Metals</p>
+        <p>14-Day Exchanges • Tracked Express Shipping • Hypoallergenic Materials</p>
       </main>
     `,
   });
@@ -528,17 +559,17 @@ async function main() {
   // ---------------- ROUTE 8: Journal Page (/journal) ----------------
   routes.push({
     path: 'journal',
-    title: 'Journal & Editorial Lookbook | AVIRENA Atelier',
+    title: 'Journal & Styling Lookbook | AVIRENA',
     description:
-      'Explore the Avirena Journal. High-fashion styling editorials, styling guides for layered chains, baroque pearl stories, and goldsmith heritage notes.',
+      'Explore the Avirena Journal. Dailywear jewelry styling notes, layer stacking guides, and craftsmanship chronicles.',
     canonical: `${SITE_URL}/journal`,
     ogImage: `${SITE_URL}/logo.png`,
     ogType: 'website',
     jsonLd: [...getGlobalSchema()],
     htmlContent: `
       <main class="journal-page">
-        <h1>Atelier Journal & Editorial Lookbook</h1>
-        <p>Discover high-fashion styling notes, craftsmanship chronicles, and jewelry guides.</p>
+        <h1>Atelier Journal & Lookbook</h1>
+        <p>Discover dailywear styling notes, craftsmanship chronicles, and jewelry care tips.</p>
       </main>
     `,
   });
@@ -552,7 +583,7 @@ async function main() {
     const priceAmount = parseFloat(product.priceRange?.minVariantPrice?.amount || '0');
     const currency = product.priceRange?.minVariantPrice?.currencyCode || 'INR';
     const prodTitle = product.title;
-    const prodDesc = product.description || `Handcrafted fine jewelry in thick 18k gold vermeil and recycled silver by Avirena Atelier.`;
+    const prodDesc = product.description || `Homegrown dailywear jewelry handcrafted in durable anti-tarnish brass by Avirena Jewels.`;
 
     const productJsonLd = [
       ...getGlobalSchema(),
@@ -593,7 +624,7 @@ async function main() {
         aggregateRating: {
           '@type': 'AggregateRating',
           ratingValue: '4.9',
-          reviewCount: '34',
+          reviewCount: '38',
         },
       },
       {
@@ -624,12 +655,12 @@ async function main() {
 
     routes.push({
       path: `product/${handle}`,
-      title: `${prodTitle} | AVIRENA Demi-Fine Jewelry`,
-      description: `${prodDesc.slice(0, 155)}... Handcrafted in thick 18k gold vermeil & recycled silver. Express shipping & 14-day returns.`,
+      title: `${prodTitle} | AVIRENA Dailywear Jewelry`,
+      description: `${prodDesc.slice(0, 155)}... Handcrafted in anti-tarnish brass. Tracked express delivery & 14-day exchanges.`,
       canonical: `${SITE_URL}/product/${handle}`,
       ogImage: mainImage,
       ogType: 'product',
-      keywords: `${prodTitle}, gold vermeil, fine jewelry, Avirena Jewels, ${product.productType || 'jewelry'}`,
+      keywords: `${prodTitle}, brass jewelry, dailywear jewelry, Avirena Jewels, ${product.productType || 'jewelry'}`,
       jsonLd: productJsonLd,
       htmlContent: `
         <main class="product-detail-page">
@@ -642,7 +673,7 @@ async function main() {
               ${prodImages.map((src: string) => `<img src="${src}" alt="${escapeHtml(prodTitle)}" itemprop="image" />`).join('')}
             </div>
             <div class="product-info">
-              <p class="price">${currency} ${priceAmount}</p>
+              <p class="price">₹${Math.round(priceAmount)}</p>
               <div itemprop="description">${escapeHtml(prodDesc)}</div>
             </div>
           </article>
@@ -704,7 +735,7 @@ ${sitemapUrls
   console.log(`  ✓ Written sitemap.xml with ${sitemapUrls.length} verified URLs.`);
 
   // ---------------- 7. Generate robots.txt ----------------
-  const robotsTxt = `# Robots.txt for Avirena Jewels (avirena.com)
+  const robotsTxt = `# Robots.txt for Avirena Jewels (avirenajewels.com)
 User-agent: *
 Allow: /
 Disallow: /checkout
