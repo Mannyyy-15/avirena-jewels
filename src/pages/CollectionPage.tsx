@@ -208,7 +208,7 @@ export const CollectionPage: React.FC<CollectionPageProps> = ({
       <div
         key={`bento-${product.id}`}
         onClick={() => onSelectProduct(product)}
-        className="collection-page-card group relative flex flex-col justify-between bg-[#F2EFDB] border border-[#D8D2C2] rounded-xs hover:border-[#8F896D] hover:shadow-[0_8px_20px_rgba(65,60,35,0.08)] transition-all duration-300 cursor-pointer col-span-1 sm:col-span-2 lg:col-span-2 lg:row-span-2 p-5 sm:p-7 select-none text-left overflow-hidden min-h-[380px] lg:min-h-0"
+        className="collection-page-card group relative flex flex-col justify-between bg-[#F2EFDB] border border-[#D8D2C2] rounded-xs hover:border-[#8F896D] hover:shadow-[0_8px_20px_rgba(65,60,35,0.08)] transition-all duration-300 cursor-pointer col-span-2 row-span-2 p-4 sm:p-6 select-none text-left overflow-hidden"
       >
         <div className="flex items-center justify-between w-full z-10 mb-2">
           <span className="inline-flex items-center px-2.5 py-1 rounded-2xs bg-[#413C23] text-[#FAF8F5] text-[10px] uppercase tracking-widest font-medium">
@@ -246,12 +246,19 @@ export const CollectionPage: React.FC<CollectionPageProps> = ({
           </div>
         </div>
 
-        <div className="relative flex-1 w-full min-h-[240px] sm:min-h-[300px] flex items-center justify-center overflow-hidden my-3 p-4 sm:p-8">
+        {/* Scales with the tile rather than a fixed pixel cap, so the featured
+            image fills its 2x2 cell at every breakpoint instead of floating
+            small inside it. */}
+        <div className="relative flex-1 w-full min-h-0 flex items-center justify-center overflow-hidden my-2 sm:my-3 p-2 sm:p-6">
           <img
             src={product.images[0]}
             alt={product.name}
             referrerPolicy="no-referrer"
-            className="max-w-[380px] max-h-[380px] sm:max-w-[440px] sm:max-h-[440px] w-auto h-auto object-contain mix-blend-multiply group-hover:scale-106 transition-transform duration-700 ease-out"
+            width={1000}
+            height={1000}
+            loading="lazy"
+            decoding="async"
+            className="max-w-full max-h-full w-auto h-auto object-contain mix-blend-multiply group-hover:scale-106 transition-transform duration-700 ease-out"
           />
         </div>
 
@@ -458,14 +465,17 @@ export const CollectionPage: React.FC<CollectionPageProps> = ({
             </button>
           </div>
         ) : filteredProducts.length === 3 ? (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
-            {/* 3-item Bento: 1st piece is 2 cols & 2 rows, items 2 & 3 stack on the right */}
+          /* 3-item bento: featured piece takes 2 cols x 2 rows, the other two
+             stack down the right-hand column. */
+          <div className="grid grid-cols-2 md:grid-cols-3 auto-rows-fr gap-3 sm:gap-4">
             {renderFeaturedBentoCard(filteredProducts[0])}
             {filteredProducts.slice(1).map((prod) => renderProductCard(prod))}
           </div>
         ) : filteredProducts.length >= 4 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-            {/* 4+ item Bento: 1st piece is 2x2, remaining items fill the grid */}
+          /* 4+ item bento: the featured piece occupies a 2x2 cell and the rest
+             flow around it. auto-rows-fr keeps every row the same height so the
+             featured tile is a true square and normal tiles stay consistent. */
+          <div className="grid grid-cols-2 lg:grid-cols-4 auto-rows-fr gap-3 sm:gap-4">
             {renderFeaturedBentoCard(filteredProducts[0])}
             {filteredProducts.slice(1).map((prod) => renderProductCard(prod))}
           </div>

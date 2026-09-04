@@ -246,8 +246,8 @@ export const HomePage: React.FC<HomePageProps> = ({
             </picture>
           </div>
 
-          {/* Floating Baroque Pearl Ring (Centered & Positioned Slightly Below) */}
-          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-[28%] sm:-translate-y-[25%] md:-translate-y-[22%] z-20 pointer-events-auto">
+          {/* Floating Baroque Pearl Ring (Centered & Positioned Gracefully Below Logo Center) */}
+          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 translate-y-[12%] sm:translate-y-[10%] md:translate-y-[8%] z-20 pointer-events-auto">
             <HeroBaroquePearlRing onClick={() => onNavigateToCollection('rings')} />
           </div>
         </div>
@@ -304,18 +304,18 @@ export const HomePage: React.FC<HomePageProps> = ({
         <div className="w-full space-y-8 sm:space-y-12">
           
           {/* Section Header */}
-          <div className="flex items-end justify-between border-b border-[#D8D2C2] pb-4">
+          <div className="flex items-end justify-between border-b border-[#D8D2C2] pb-5">
             <div>
-              <span className="text-[11px] text-[#8F896D] uppercase tracking-widest font-normal block mb-1">
-                Recent Arrivals
+              <span className="text-xs sm:text-sm text-[#8F896D] uppercase tracking-[0.2em] font-semibold block mb-2">
+                Curated Collection
               </span>
-              <h2 className="font-serif-display text-5xl sm:text-6xl md:text-7xl lg:text-8xl text-[#413C23] font-light italic tracking-tight leading-none">
-                Collection
+              <h2 className="font-sans-body text-3xl sm:text-5xl md:text-6xl text-[#413C23] font-bold tracking-tight leading-[1.08] max-w-xl">
+                Designing, Crafting<br />&amp; Layering.
               </h2>
             </div>
             <button
               onClick={() => onNavigateToCollection('all')}
-              className="text-xs text-[#8F896D] hover:text-[#413C23] transition-colors cursor-pointer font-normal underline underline-offset-4 lowercase"
+              className="text-xs sm:text-sm text-[#8F896D] hover:text-[#413C23] transition-colors cursor-pointer font-medium underline underline-offset-4 tracking-wide uppercase shrink-0 pb-1"
             >
               see all
             </button>
@@ -376,23 +376,23 @@ export const HomePage: React.FC<HomePageProps> = ({
         </div>
       </section>
 
-      {/* 4. SECTION 4: "POPULAR" (5-Column Grid + Wide Campaign Model Banner) */}
+      {/* 4. SECTION 4: "POPULAR / BESTSELLERS" (5-Column Grid + Wide Campaign Model Banner) */}
       <section className="w-full bg-[#E7E4D5] py-16 sm:py-24 border-b border-[#D8D2C2] px-4 sm:px-8 lg:px-12 xl:px-16 2xl:px-20">
         <div className="w-full space-y-8 sm:space-y-12">
           
           {/* Section Header */}
-          <div className="flex items-end justify-between border-b border-[#D8D2C2] pb-4">
+          <div className="flex items-end justify-between border-b border-[#D8D2C2] pb-5">
             <div>
-              <span className="text-[11px] text-[#8F896D] uppercase tracking-widest font-normal block mb-1">
-                Most Coveted
+              <span className="text-xs sm:text-sm text-[#8F896D] uppercase tracking-[0.2em] font-semibold block mb-2">
+                Bestsellers
               </span>
-              <h2 className="font-serif-display text-5xl sm:text-6xl md:text-7xl lg:text-8xl text-[#413C23] font-light italic tracking-tight leading-none">
-                Popular
+              <h2 className="font-sans-body text-3xl sm:text-5xl md:text-6xl text-[#413C23] font-bold tracking-tight leading-[1.08] max-w-xl">
+                Styling, Loving<br />&amp; Living In.
               </h2>
             </div>
             <button
               onClick={() => onNavigateToCollection('all')}
-              className="text-xs text-[#8F896D] hover:text-[#413C23] transition-colors cursor-pointer font-normal underline underline-offset-4 lowercase"
+              className="text-xs sm:text-sm text-[#8F896D] hover:text-[#413C23] transition-colors cursor-pointer font-medium underline underline-offset-4 tracking-wide uppercase shrink-0 pb-1"
             >
               see all
             </button>

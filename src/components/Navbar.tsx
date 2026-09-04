@@ -134,15 +134,16 @@ export const Navbar: React.FC<NavbarProps> = ({
         </div>
       </div>
 
-      <div className="w-full px-4 sm:px-8 lg:px-12 xl:px-16 2xl:px-20 h-16 sm:h-20 grid grid-cols-12 items-center font-sans-body">
-        <div className="col-span-5 flex items-center">
+      <div className="w-full px-4 sm:px-6 lg:px-12 xl:px-16 2xl:px-20 h-16 sm:h-20 flex lg:grid lg:grid-cols-12 items-center justify-between font-sans-body">
+        {/* Left: Mobile menu toggle button & Desktop navigation */}
+        <div className="flex items-center lg:col-span-5">
           <button
             id="mobile-menu-toggle-btn"
             onClick={() => setMobileMenuOpen(true)}
-            className="p-1 -ml-1 text-[#413C23] hover:text-[#8F896D] lg:hidden transition-colors cursor-pointer"
+            className="p-2 -ml-2 text-[#413C23] hover:text-[#8F896D] lg:hidden transition-colors cursor-pointer"
             aria-label="Open menu"
           >
-            <Menu className="w-6 h-6 stroke-[1.25]" />
+            <Menu className="w-6 h-6 stroke-[1.3]" />
           </button>
 
           <nav className="hidden lg:flex items-center space-x-5 xl:space-x-7 text-[11px] xl:text-xs uppercase tracking-[0.16em] font-medium text-[#413C23]">
@@ -270,18 +271,20 @@ export const Navbar: React.FC<NavbarProps> = ({
           </nav>
         </div>
 
-        <div className="col-span-2 flex items-center justify-center text-center">
+        {/* Center: Brand Monogram / Official Logo (Naturally Centered on Mobile and Desktop) */}
+        <div className="flex-1 lg:flex-none lg:col-span-2 flex items-center justify-center text-center px-2">
           <button
             id="nav-brand-monogram-btn"
             onClick={() => navigateTo('home')}
-            className="group px-2 py-1 flex items-center justify-center transition-transform hover:scale-[1.02] cursor-pointer"
+            className="group py-1 flex items-center justify-center transition-transform hover:scale-[1.02] cursor-pointer"
             aria-label="Avirena Home"
           >
-            <AvirenaLogo size="sm" className="h-7 sm:h-9 md:h-10 transition-opacity group-hover:opacity-90" />
+            <AvirenaLogo size="custom" className="h-7 sm:h-8 md:h-10 transition-opacity group-hover:opacity-90" />
           </button>
         </div>
 
-        <div className="col-span-5 flex items-center justify-end space-x-3 sm:space-x-5 text-[#413C23]">
+        {/* Right: Actions (Wishlist and Account hidden on mobile, visible on desktop) */}
+        <div className="flex items-center justify-end space-x-2 sm:space-x-4 lg:space-x-5 lg:col-span-5 text-[#413C23]">
           <button
             id="nav-search-btn"
             onClick={openSearchModal}
@@ -289,18 +292,19 @@ export const Navbar: React.FC<NavbarProps> = ({
             aria-label="Search"
             title="Search the Collection"
           >
-            <Search className="w-4 h-4 sm:w-4.5 sm:h-4.5 stroke-[1.4]" />
+            <Search className="w-4.5 h-4.5 stroke-[1.4]" />
             <span className="hidden xl:inline text-[11px] uppercase tracking-widest font-medium">Search</span>
           </button>
 
+          {/* Desktop-only Wishlist Button */}
           <button
             id="nav-wishlist-btn"
             onClick={openWishlistModal}
-            className="relative p-1.5 text-[#413C23] hover:text-[#8F896D] transition-colors focus:outline-none cursor-pointer"
+            className="hidden lg:flex relative p-1.5 text-[#413C23] hover:text-[#8F896D] transition-colors focus:outline-none cursor-pointer"
             aria-label="Wishlist"
             title="Saved Pieces"
           >
-            <Heart className="w-4 h-4 sm:w-4.5 sm:h-4.5 stroke-[1.4]" />
+            <Heart className="w-4.5 h-4.5 stroke-[1.4]" />
             {wishlistCount > 0 && (
               <span className="absolute -top-0.5 -right-0.5 w-3.5 h-3.5 bg-[#7A0F1A] text-white text-[8px] font-bold rounded-full flex items-center justify-center">
                 {wishlistCount}
@@ -308,7 +312,8 @@ export const Navbar: React.FC<NavbarProps> = ({
             )}
           </button>
 
-          <div className="relative">
+          {/* Desktop-only User Account Button */}
+          <div className="hidden lg:block relative">
             <button
               id="nav-user-account-btn"
               onClick={() => setUserDropdownOpen(!userDropdownOpen)}
@@ -316,7 +321,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               aria-label="Account"
               title="Account"
             >
-              <User className="w-4 h-4 sm:w-4.5 sm:h-4.5 stroke-[1.4]" />
+              <User className="w-4.5 h-4.5 stroke-[1.4]" />
             </button>
 
             {userDropdownOpen && (
@@ -359,6 +364,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             )}
           </div>
 
+          {/* Cart Bag button */}
           <button
             id="nav-cart-bag-btn"
             onClick={openCartDrawer}
@@ -372,42 +378,122 @@ export const Navbar: React.FC<NavbarProps> = ({
         </div>
       </div>
 
+      {/* Mobile Sidebar Navigation Drawer */}
       {mobileMenuOpen && (
-        <div className="fixed inset-0 z-50 flex lg:hidden animate-in fade-in duration-200">
-          <div className="fixed inset-0 bg-black/60 backdrop-blur-xs" onClick={() => setMobileMenuOpen(false)} />
-          <div className="relative w-4/5 max-w-sm bg-[#FAF8F5] h-full shadow-2xl p-6 flex flex-col justify-between overflow-y-auto border-r border-[#E8E2D6] z-10 text-left font-sans-body">
+        <div className="fixed inset-0 z-[100] flex lg:hidden animate-in fade-in duration-200">
+          <div
+            className="fixed inset-0 bg-[#413C23]/60 backdrop-blur-xs transition-opacity"
+            onClick={() => setMobileMenuOpen(false)}
+          />
+          <div className="relative w-[85%] max-w-sm bg-[#E7E4D5] h-full shadow-2xl p-6 flex flex-col justify-between overflow-y-auto border-r border-[#D8D2C2] z-10 text-left font-sans-body">
             <div className="space-y-6">
-              <div className="flex items-center justify-between pb-4 border-b border-[#E8E2D6]">
-                <AvirenaLogo size="sm" className="h-6" />
+              {/* Drawer Top Bar */}
+              <div className="flex items-center justify-between pb-4 border-b border-[#D8D2C2]">
+                <button
+                  onClick={() => navigateTo('home')}
+                  className="cursor-pointer"
+                  aria-label="Avirena Home"
+                >
+                  <AvirenaLogo size="custom" className="h-7" />
+                </button>
                 <button
                   id="mobile-menu-close-btn"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="p-1 text-[#5C5850] hover:text-[#111111] cursor-pointer"
+                  className="p-1.5 -mr-1.5 text-[#413C23] hover:text-[#8F896D] transition-colors cursor-pointer rounded-xs"
                   aria-label="Close menu"
                 >
                   <X className="w-5 h-5 stroke-[1.5]" />
                 </button>
               </div>
 
-              <nav className="flex flex-col space-y-3 text-sm font-semibold uppercase tracking-wider text-[#111111]">
+              {/* Mobile Quick Action Buttons: Saved Pieces & Account */}
+              <div className="grid grid-cols-2 gap-2.5 pb-1">
+                <button
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    openWishlistModal();
+                  }}
+                  className="py-2.5 px-3 bg-[#FAF8F5] border border-[#D8D2C2] hover:border-[#8F896D] text-[#413C23] text-[11px] font-semibold uppercase tracking-wider rounded-xs flex items-center justify-center gap-2 cursor-pointer transition-colors shadow-xs"
+                >
+                  <Heart className="w-4 h-4 text-[#8F896D]" />
+                  <span>Saved ({wishlistCount})</span>
+                </button>
+
+                <button
+                  onClick={() => setUserDropdownOpen((prev) => !prev)}
+                  className={`py-2.5 px-3 bg-[#FAF8F5] border text-[#413C23] text-[11px] font-semibold uppercase tracking-wider rounded-xs flex items-center justify-center gap-2 cursor-pointer transition-colors shadow-xs ${
+                    userDropdownOpen ? 'border-[#413C23] bg-[#F2EFDB]' : 'border-[#D8D2C2] hover:border-[#8F896D]'
+                  }`}
+                >
+                  <User className="w-4 h-4 text-[#8F896D]" />
+                  <span>Account</span>
+                </button>
+              </div>
+
+              {/* Atelier Club / Quick Sign-in Section if toggled */}
+              {userDropdownOpen && (
+                <div className="p-4 bg-[#FAF8F5] border border-[#D8D2C2] rounded-xs space-y-3 animate-in fade-in duration-150">
+                  <div className="border-b border-[#D8D2C2] pb-2">
+                    <h4 className="text-[11px] uppercase tracking-widest font-bold text-[#413C23]">
+                      Avirena Atelier Club
+                    </h4>
+                    <p className="text-[10px] text-[#8F896D] font-serif italic mt-0.5">
+                      Complimentary cleaning, early preview access &amp; birthday gifts.
+                    </p>
+                  </div>
+                  {subscribed ? (
+                    <div className="py-2 text-center text-xs text-[#413C23] font-medium flex items-center justify-center gap-1.5">
+                      <Check className="w-4 h-4 text-[#8F896D]" />
+                      <span>Welcome to the Avirena Atelier.</span>
+                    </div>
+                  ) : (
+                    <form onSubmit={handleQuickSignIn} className="space-y-2">
+                      <input
+                        type="email"
+                        required
+                        value={emailInput}
+                        onChange={(e) => setEmailInput(e.target.value)}
+                        placeholder="Enter your email"
+                        className="w-full px-3 py-2 text-xs bg-white border border-[#D8D2C2] rounded-xs focus:outline-none focus:border-[#413C23] text-[#413C23]"
+                      />
+                      <button
+                        type="submit"
+                        className="w-full py-2 bg-[#413C23] hover:bg-[#8F896D] text-[#E7E4D5] text-xs uppercase tracking-wider font-semibold rounded-xs transition-colors cursor-pointer"
+                      >
+                        Join Atelier
+                      </button>
+                    </form>
+                  )}
+                </div>
+              )}
+
+              {/* Main Navigation Links */}
+              <nav className="flex flex-col space-y-1 text-xs font-semibold uppercase tracking-[0.16em] text-[#413C23]">
                 <button
                   onClick={() => navigateTo('home')}
-                  className="text-left py-1 hover:text-[#8F896D] transition-colors cursor-pointer"
+                  className={`text-left py-2.5 px-2 rounded-xs transition-colors cursor-pointer flex items-center justify-between ${
+                    currentPage === 'home' ? 'bg-[#FAF8F5] text-[#413C23] font-bold' : 'hover:bg-[#F2EFDB] text-[#413C23]/90'
+                  }`}
                 >
-                  Home
+                  <span>Home</span>
+                  {currentPage === 'home' && <span className="text-[10px] text-[#8F896D]">✦</span>}
                 </button>
 
                 <button
                   onClick={() => navigateTo('shop', 'all')}
-                  className="text-left py-1 hover:text-[#8F896D] transition-colors cursor-pointer"
+                  className={`text-left py-2.5 px-2 rounded-xs transition-colors cursor-pointer flex items-center justify-between ${
+                    currentPage === 'shop' || currentPage === 'collection' ? 'bg-[#FAF8F5] text-[#413C23] font-bold' : 'hover:bg-[#F2EFDB] text-[#413C23]/90'
+                  }`}
                 >
-                  Shop All Jewelry
+                  <span>Shop All Jewelry</span>
+                  {(currentPage === 'shop' || currentPage === 'collection') && <span className="text-[10px] text-[#8F896D]">✦</span>}
                 </button>
 
-                <div className="border-y border-[#E8E2D6]/80 py-2">
+                {/* Collections Accordion */}
+                <div className="py-1">
                   <button
                     onClick={() => setMobileCollectionsOpen((prev) => !prev)}
-                    className="w-full flex items-center justify-between text-left py-1 text-sm font-semibold uppercase tracking-wider text-[#111111] hover:text-[#8F896D] transition-colors cursor-pointer"
+                    className="w-full flex items-center justify-between text-left py-2.5 px-2 rounded-xs text-xs font-semibold uppercase tracking-[0.16em] text-[#413C23] hover:bg-[#F2EFDB] transition-colors cursor-pointer"
                   >
                     <span>Collections</span>
                     <ChevronDown
@@ -418,13 +504,13 @@ export const Navbar: React.FC<NavbarProps> = ({
                   </button>
 
                   {mobileCollectionsOpen && (
-                    <div className="pl-3 pt-2 space-y-2 text-xs font-normal text-[#5C5850] animate-in fade-in duration-150">
+                    <div className="pl-3 py-1 space-y-1 text-[11px] font-medium text-[#413C23]/80 animate-in fade-in duration-150">
                       {categoryItems.map((cat) => (
                         <button
                           key={cat.id}
                           onClick={() => selectCategory(cat.id)}
-                          className={`flex w-full items-center justify-between gap-2 text-left py-1 transition-colors ${
-                            cat.isEmpty ? 'text-[#5C5850]/50 hover:text-[#5C5850]' : 'hover:text-[#111111]'
+                          className={`flex w-full items-center justify-between gap-2 text-left py-1.5 px-2 rounded-xs hover:bg-[#FAF8F5] transition-colors ${
+                            cat.isEmpty ? 'text-[#413C23]/40' : 'text-[#413C23]'
                           }`}
                         >
                           <span>{cat.label}</span>
@@ -437,7 +523,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                       ))}
                       <button
                         onClick={() => selectCategory('all')}
-                        className="block w-full text-left py-1 font-semibold text-[#8F896D] hover:text-[#413C23] transition-colors"
+                        className="block w-full text-left py-1.5 px-2 font-semibold text-[#8F896D] hover:text-[#413C23] transition-colors"
                       >
                         All Categories →
                       </button>
@@ -447,59 +533,63 @@ export const Navbar: React.FC<NavbarProps> = ({
 
                 <button
                   onClick={() => navigateTo('journal')}
-                  className="text-left py-1 hover:text-[#8F896D] transition-colors cursor-pointer"
+                  className={`text-left py-2.5 px-2 rounded-xs transition-colors cursor-pointer flex items-center justify-between ${
+                    currentPage === 'journal' ? 'bg-[#FAF8F5] text-[#413C23] font-bold' : 'hover:bg-[#F2EFDB] text-[#413C23]/90'
+                  }`}
                 >
-                  Blog &amp; Journal
+                  <span>Blog &amp; Journal</span>
+                  {currentPage === 'journal' && <span className="text-[10px] text-[#8F896D]">✦</span>}
                 </button>
 
                 <button
                   onClick={() => navigateTo('about')}
-                  className="text-left py-1 hover:text-[#8F896D] transition-colors cursor-pointer"
+                  className={`text-left py-2.5 px-2 rounded-xs transition-colors cursor-pointer flex items-center justify-between ${
+                    currentPage === 'about' ? 'bg-[#FAF8F5] text-[#413C23] font-bold' : 'hover:bg-[#F2EFDB] text-[#413C23]/90'
+                  }`}
                 >
-                  About Our Brand
+                  <span>About Our Brand</span>
+                  {currentPage === 'about' && <span className="text-[10px] text-[#8F896D]">✦</span>}
                 </button>
 
                 <button
                   onClick={() => navigateTo('contact')}
-                  className="text-left py-1 hover:text-[#8F896D] transition-colors cursor-pointer"
+                  className={`text-left py-2.5 px-2 rounded-xs transition-colors cursor-pointer flex items-center justify-between ${
+                    currentPage === 'contact' ? 'bg-[#FAF8F5] text-[#413C23] font-bold' : 'hover:bg-[#F2EFDB] text-[#413C23]/90'
+                  }`}
                 >
-                  Contact &amp; Support
-                </button>
-
-                <button
-                  onClick={() => navigateTo('faq')}
-                  className="text-left py-1 hover:text-[#8F896D] transition-colors cursor-pointer"
-                >
-                  FAQ &amp; Sizing
-                </button>
-
-                <button
-                  onClick={() => navigateTo('guides')}
-                  className="text-left py-1 hover:text-[#8F896D] transition-colors cursor-pointer"
-                >
-                  Jewelry Guides
-                </button>
-
-                <button
-                  onClick={() => navigateTo('policies')}
-                  className="text-left py-1 hover:text-[#8F896D] transition-colors cursor-pointer"
-                >
-                  Policies &amp; Care
+                  <span>Contact &amp; Concierge</span>
+                  {currentPage === 'contact' && <span className="text-[10px] text-[#8F896D]">✦</span>}
                 </button>
               </nav>
             </div>
 
-            <div className="pt-6 border-t border-[#E8E2D6] space-y-4">
-              <button
-                onClick={() => {
-                  setMobileMenuOpen(false);
-                  openWishlistModal();
-                }}
-                className="w-full py-2.5 bg-white border border-[#E8E2D6] text-[#111111] text-xs font-semibold uppercase tracking-wider rounded-xs flex items-center justify-center gap-2 cursor-pointer"
-              >
-                <Heart className="w-4 h-4 text-[#8F896D]" />
-                <span>Saved Pieces ({wishlistCount})</span>
-              </button>
+            {/* Bottom Footer Info inside Sidebar */}
+            <div className="pt-6 border-t border-[#D8D2C2] space-y-3 text-[11px] text-[#8F896D]">
+              <div className="flex items-center justify-between">
+                <button
+                  onClick={() => navigateTo('faq')}
+                  className="hover:text-[#413C23] transition-colors cursor-pointer"
+                >
+                  FAQ &amp; Sizing
+                </button>
+                <span>•</span>
+                <button
+                  onClick={() => navigateTo('guides')}
+                  className="hover:text-[#413C23] transition-colors cursor-pointer"
+                >
+                  Care Guides
+                </button>
+                <span>•</span>
+                <button
+                  onClick={() => navigateTo('policies')}
+                  className="hover:text-[#413C23] transition-colors cursor-pointer"
+                >
+                  Policies
+                </button>
+              </div>
+              <p className="text-[10px] text-center text-[#413C23]/60 tracking-wider">
+                © {new Date().getFullYear()} AVIRENA JEWELS • EST. 2020
+              </p>
             </div>
           </div>
           <div className="flex-1" onClick={() => setMobileMenuOpen(false)} />
