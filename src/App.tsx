@@ -215,6 +215,10 @@ function AppContent() {
   // must stay quiet: on first paint it still holds the default state ('home'),
   // and writing that out would clobber a deep route like /shop/necklaces.
   const isApplyingLocation = React.useRef(true);
+  // Read inside the location effect without making it a dependency: re-running
+  // that effect on every catalog update re-armed isApplyingLocation and
+  // swallowed the user's next in-app navigation.
+  const storeProductsRef = React.useRef<Product[]>([]);
   // No mock seed. Until a real product is selected (or the live catalog lands)
   // this is null, and every consumer already handles an absent product. Seeding
   // it from src/data/products.ts would put a stock-photo placeholder into the
@@ -223,6 +227,18 @@ function AppContent() {
   const [selectedCategory, setSelectedCategory] = useState<Category>('all');
   const [activeGuideSlug, setActiveGuideSlug] = useState<string | null>(null);
   const [currency, setCurrency] = useState<Currency>('INR');
+
+  // Keep the ref in step with the live catalog, and tell the location effect
+  // once — so a deep /product/<handle> link that loaded before Shopify
+  // responded can still resolve, without re-arming isApplyingLocation on
+  // every subsequent catalog update.
+  useEffect(() => {
+    const hadNone = storeProductsRef.current.length === 0;
+    storeProductsRef.current = storeProducts || [];
+    if (hadNone && storeProductsRef.current.length > 0) {
+      window.dispatchEvent(new Event('avirena:catalog-ready'));
+    }
+  }, [storeProducts]);
 
   // Sync selectedProduct if storeProducts change
   useEffect(() => {
@@ -301,6 +317,11 @@ function AppContent() {
     const handleLocationChange = () => {
       // Suppress the URL-writing effect for the state updates this triggers:
       // the URL is already correct — it is the source of truth right now.
+      //
+      // Armed only for a real URL-driven change: first mount and popstate.
+      // This effect ALSO re-runs when the Shopify catalog lands mid-session,
+      // and re-arming there left a stale flag that swallowed the user's next
+      // real navigation (menu -> Shop changed the page but kept the URL at /).
       isApplyingLocation.current = true;
 
       // If there's an old legacy hash like #/shop or #about, normalize it
@@ -320,7 +341,7 @@ function AppContent() {
         // Live product URLs use the Shopify handle. Match on handle OR id.
         // Only the live Shopify catalog is consulted. The mock catalog is not a
         // fallback: resolving a URL against it would render a fake product page.
-        const prod = findProductBySlug(storeProducts, parts[1]);
+        const prod = findProductBySlug(storeProductsRef.current, parts[1]);
         if (prod) {
           setSelectedProduct(prod);
           setCurrentPage('pdp');
@@ -402,8 +423,25 @@ function AppContent() {
 
     handleLocationChange();
     window.addEventListener('popstate', handleLocationChange);
-    return () => window.removeEventListener('popstate', handleLocationChange);
-  }, [storeProducts]);
+
+    // The catalog only changes routing for ONE case: a deep /product/<handle>
+    // link that loaded before Shopify responded. Re-parsing for anything else
+    // arms isApplyingLocation with no state change to consume it, leaving the
+    // flag set — which then swallowed the user's next real navigation.
+    const onCatalogReady = () => {
+      if (window.location.pathname.startsWith('/product/')) {
+        handleLocationChange();
+      }
+    };
+    window.addEventListener('avirena:catalog-ready', onCatalogReady);
+    return () => {
+      window.removeEventListener('popstate', handleLocationChange);
+      window.removeEventListener('avirena:catalog-ready', onCatalogReady);
+    };
+    // Mount only. The catalog is read through storeProductsRef, and the
+    // catalog-ready event covers the one case that needs a re-parse.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // 2. Synchronize Document Title & Clean URL Path on Page Change
   useEffect(() => {
@@ -411,16 +449,22 @@ function AppContent() {
     // matches what scripts/prerender.ts serves for that route.
     document.title = buildTitle(currentPage, selectedProduct, selectedCategory, activeGuideSlug);
 
+    const targetPath = buildPath(currentPage, selectedProduct, selectedCategory, activeGuideSlug);
+    const currentPath = window.location.pathname;
+
     // The URL is authoritative while an initial load or a popstate is being
     // applied to state. Writing during that window is what used to rewrite
     // /shop/earrings -> /shop and push a spurious history entry.
+    //
+    // Consume the flag on the very next run of this effect: by then React has
+    // flushed the state updates handleLocationChange queued, so anything after
+    // is genuine in-app navigation. Do NOT gate clearing on the paths matching
+    // — on an unknown/404 route they never converge, which left the flag stuck
+    // and silently swallowed every later navigation (menu -> Shop kept /).
     if (isApplyingLocation.current) {
       isApplyingLocation.current = false;
       return;
     }
-
-    const targetPath = buildPath(currentPage, selectedProduct, selectedCategory, activeGuideSlug);
-    const currentPath = window.location.pathname;
 
     // Never rewrite the URL when the browser is already on a valid route that
     // represents this state — including deeper routes (/shop/:category,

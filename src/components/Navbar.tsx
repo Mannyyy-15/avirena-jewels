@@ -134,9 +134,9 @@ export const Navbar: React.FC<NavbarProps> = ({
         </div>
       </div>
 
-      <div className="w-full px-4 sm:px-6 lg:px-12 xl:px-16 2xl:px-20 h-16 sm:h-20 flex lg:grid lg:grid-cols-12 items-center justify-between font-sans-body">
+      <div className="relative w-full px-4 sm:px-6 lg:px-12 xl:px-16 2xl:px-20 h-16 sm:h-20 flex lg:grid lg:grid-cols-12 items-center justify-between font-sans-body">
         {/* Left: Mobile menu toggle button & Desktop navigation */}
-        <div className="flex items-center lg:col-span-5">
+        <div className="flex items-center lg:col-span-5 z-20">
           <button
             id="mobile-menu-toggle-btn"
             onClick={() => setMobileMenuOpen(true)}
@@ -271,8 +271,8 @@ export const Navbar: React.FC<NavbarProps> = ({
           </nav>
         </div>
 
-        {/* Center: Brand Monogram / Official Logo (Naturally Centered on Mobile and Desktop) */}
-        <div className="flex-1 lg:flex-none lg:col-span-2 flex items-center justify-center text-center px-2">
+        {/* Center: Brand Monogram / Official Logo (Mathematically Dead-Centered on Mobile and Desktop) */}
+        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 lg:static lg:translate-x-0 lg:translate-y-0 lg:col-span-2 flex items-center justify-center text-center px-2 z-10 pointer-events-auto">
           <button
             id="nav-brand-monogram-btn"
             onClick={() => navigateTo('home')}
@@ -284,7 +284,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         </div>
 
         {/* Right: Actions (Wishlist and Account hidden on mobile, visible on desktop) */}
-        <div className="flex items-center justify-end space-x-2 sm:space-x-4 lg:space-x-5 lg:col-span-5 text-[#413C23]">
+        <div className="flex items-center justify-end space-x-2 sm:space-x-4 lg:space-x-5 lg:col-span-5 text-[#413C23] z-20">
           <button
             id="nav-search-btn"
             onClick={openSearchModal}
@@ -385,7 +385,11 @@ export const Navbar: React.FC<NavbarProps> = ({
             className="fixed inset-0 bg-[#413C23]/60 backdrop-blur-xs transition-opacity"
             onClick={() => setMobileMenuOpen(false)}
           />
-          <div className="relative w-[85%] max-w-sm bg-[#E7E4D5] h-full shadow-2xl p-6 flex flex-col justify-between overflow-y-auto border-r border-[#D8D2C2] z-10 text-left font-sans-body">
+          {/* h-dvh (not h-full) so the panel has a definite height on mobile:
+              as a flex child of a fixed wrapper, h-full collapsed to its own
+              content box and clipped the nav links inside a ~97px scroller.
+              dvh also tracks the mobile browser chrome as it hides/shows. */}
+          <div className="relative w-[85%] max-w-sm bg-[#E7E4D5] h-dvh max-h-dvh shadow-2xl p-6 flex flex-col justify-between overflow-y-auto overscroll-contain border-r border-[#D8D2C2] z-10 text-left font-sans-body">
             <div className="space-y-6">
               {/* Drawer Top Bar */}
               <div className="flex items-center justify-between pb-4 border-b border-[#D8D2C2]">
