@@ -400,7 +400,7 @@ function AppContent() {
             currency={currency}
             isWishlisted={isProductWishlisted}
             onToggleWishlist={handleToggleWishlist}
-            catalogProducts={storeProducts}
+            products={storeProducts}
           />
         )}
 

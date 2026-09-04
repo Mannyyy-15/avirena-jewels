@@ -544,7 +544,7 @@ export function transformShopifyProduct(node: any): Product {
     images: images.length > 0 ? images : ['https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=1200&q=90'],
     description: node.description || 'Handcrafted fine jewellery sculpted for daily wear.',
     details,
-    materials: metal === '18k Gold Vermeil' ? 'Heavy 18k Gold Vermeil over 925 Sterling Silver' : 'Solid 925 Sterling Silver',
+    materials: (metal as string) === '18k Gold Vermeil' ? 'Heavy 18k Gold Vermeil over 925 Sterling Silver' : 'Solid 925 Sterling Silver',
     sizes: category === 'rings' ? ['US 6 (52mm)', 'US 7 (54mm)', 'US 8 (57mm)'] : undefined,
     inStock: node.availableForSale ?? true,
     isBestseller: tagsLower.includes('bestseller') || tagsLower.includes('featured') || true,
