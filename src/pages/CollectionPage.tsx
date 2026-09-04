@@ -98,7 +98,7 @@ export const CollectionPage: React.FC<CollectionPageProps> = ({
       <div
         key={product.id}
         onClick={() => onSelectProduct(product)}
-        className="collection-page-card group relative flex flex-col justify-between bg-[#F2EFDB] border border-[#D8D2C2] rounded-xs hover:border-[#8F896D] hover:shadow-[0_8px_20px_rgba(65,60,35,0.08)] transition-all duration-300 cursor-pointer p-4 sm:p-5 select-none text-left"
+        className="collection-page-card group relative flex h-full flex-col justify-between bg-[#F2EFDB] border border-[#D8D2C2] rounded-xs hover:border-[#8F896D] hover:shadow-[0_8px_20px_rgba(65,60,35,0.08)] transition-all duration-300 cursor-pointer p-4 sm:p-5 select-none text-left overflow-hidden"
       >
         <button
           type="button"
@@ -136,12 +136,17 @@ export const CollectionPage: React.FC<CollectionPageProps> = ({
           </span>
         )}
 
-        <div className="relative aspect-square w-full flex items-center justify-center overflow-hidden mb-3 p-4 sm:p-6">
+        {/* Fills the remaining cell height rather than forcing a square, so the
+            card always fits its grid row and the text block below stays visible. */}
+        <div className="relative flex-1 min-h-0 w-full flex items-center justify-center overflow-hidden mb-3 p-3 sm:p-5">
           <img
             src={product.images[0]}
             alt={product.name}
             referrerPolicy="no-referrer"
+            width={600}
+            height={600}
             loading="lazy"
+            decoding="async"
             className="max-w-full max-h-full w-auto h-auto object-contain mix-blend-multiply group-hover:scale-106 transition-transform duration-500 ease-out"
           />
 
@@ -208,7 +213,7 @@ export const CollectionPage: React.FC<CollectionPageProps> = ({
       <div
         key={`bento-${product.id}`}
         onClick={() => onSelectProduct(product)}
-        className="collection-page-card group relative flex flex-col justify-between bg-[#F2EFDB] border border-[#D8D2C2] rounded-xs hover:border-[#8F896D] hover:shadow-[0_8px_20px_rgba(65,60,35,0.08)] transition-all duration-300 cursor-pointer col-span-2 row-span-2 p-4 sm:p-6 select-none text-left overflow-hidden"
+        className="collection-page-card group relative flex flex-col justify-between bg-[#F2EFDB] border border-[#D8D2C2] rounded-xs hover:border-[#8F896D] hover:shadow-[0_8px_20px_rgba(65,60,35,0.08)] transition-all duration-300 cursor-pointer col-span-2 row-span-2 h-full p-4 sm:p-6 select-none text-left overflow-hidden"
       >
         <div className="flex items-center justify-between w-full z-10 mb-2">
           <span className="inline-flex items-center px-2.5 py-1 rounded-2xs bg-[#413C23] text-[#FAF8F5] text-[10px] uppercase tracking-widest font-medium">
@@ -467,7 +472,7 @@ export const CollectionPage: React.FC<CollectionPageProps> = ({
         ) : filteredProducts.length === 3 ? (
           /* 3-item bento: featured piece takes 2 cols x 2 rows, the other two
              stack down the right-hand column. */
-          <div className="grid grid-cols-2 md:grid-cols-3 auto-rows-fr gap-3 sm:gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 [grid-auto-rows:minmax(0,22rem)] gap-3 sm:gap-4">
             {renderFeaturedBentoCard(filteredProducts[0])}
             {filteredProducts.slice(1).map((prod) => renderProductCard(prod))}
           </div>
@@ -475,7 +480,7 @@ export const CollectionPage: React.FC<CollectionPageProps> = ({
           /* 4+ item bento: the featured piece occupies a 2x2 cell and the rest
              flow around it. auto-rows-fr keeps every row the same height so the
              featured tile is a true square and normal tiles stay consistent. */
-          <div className="grid grid-cols-2 lg:grid-cols-4 auto-rows-fr gap-3 sm:gap-4">
+          <div className="grid grid-cols-2 lg:grid-cols-4 [grid-auto-rows:minmax(0,22rem)] gap-3 sm:gap-4">
             {renderFeaturedBentoCard(filteredProducts[0])}
             {filteredProducts.slice(1).map((prod) => renderProductCard(prod))}
           </div>

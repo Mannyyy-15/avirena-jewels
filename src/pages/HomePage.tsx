@@ -309,7 +309,7 @@ export const HomePage: React.FC<HomePageProps> = ({
               <span className="text-xs sm:text-sm text-[#8F896D] uppercase tracking-[0.2em] font-semibold block mb-2">
                 Curated Collection
               </span>
-              <h2 className="font-serif-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-[#413C23] font-light italic tracking-tight leading-[1.05] max-w-2xl">
+              <h2 className="font-serif-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-[#413C23] font-bold tracking-tight leading-[1.05] max-w-2xl">
                 Designing, Crafting<br />&amp; Layering.
               </h2>
             </div>
@@ -386,7 +386,7 @@ export const HomePage: React.FC<HomePageProps> = ({
               <span className="text-xs sm:text-sm text-[#8F896D] uppercase tracking-[0.2em] font-semibold block mb-2">
                 Bestsellers
               </span>
-              <h2 className="font-serif-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-[#413C23] font-light italic tracking-tight leading-[1.05] max-w-2xl">
+              <h2 className="font-serif-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-[#413C23] font-bold tracking-tight leading-[1.05] max-w-2xl">
                 Styling, Loving<br />&amp; Living In.
               </h2>
             </div>
