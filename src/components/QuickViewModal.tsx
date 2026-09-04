@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Heart, ShoppingBag, Check, ShieldCheck, Sparkles, Ruler, ArrowRight, Star } from 'lucide-react';
+import { X, Heart, ShoppingBag, Check, ShieldCheck, Ruler, ArrowRight } from 'lucide-react';
 import { Product, Currency, Metal } from '../types';
 import { formatPrice } from '../data/products';
 
@@ -26,7 +26,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
 }) => {
   if (!isOpen || !product) return null;
 
-  const [selectedMetal, setSelectedMetal] = useState<Metal>(product.metal || '18k Gold Vermeil');
+  const [selectedMetal, setSelectedMetal] = useState<Metal>(product.metal || 'Gold-Tone Brass');
   const [selectedSize, setSelectedSize] = useState<string>(product.sizes ? product.sizes[0] : '');
   const [quantity, setQuantity] = useState<number>(1);
   const [activeImageIndex, setActiveImageIndex] = useState<number>(0);
@@ -78,7 +78,11 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
                 src={product.images[activeImageIndex] || product.images[0]}
                 alt={product.name}
                 referrerPolicy="no-referrer"
+                width={900}
+                height={900}
                 className="w-full h-full object-contain mix-blend-multiply transition-all duration-300"
+                loading="lazy"
+                decoding="async"
               />
               {/* Badges */}
               <div className="absolute top-3 left-3 flex flex-col gap-1">
@@ -106,7 +110,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
                       activeImageIndex === idx ? 'border-[#C5A059] ring-1 ring-[#C5A059]' : 'border-[#E6DFD3] opacity-70 hover:opacity-100'
                     }`}
                   >
-                    <img src={img} alt="" referrerPolicy="no-referrer" className="w-full h-full object-contain mix-blend-multiply" />
+                    <img src={img} alt="" referrerPolicy="no-referrer" width={56} height={56} loading="lazy" decoding="async" className="w-full h-full object-contain mix-blend-multiply" />
                   </button>
                 ))}
               </div>
@@ -116,16 +120,11 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
           {/* Right Column: Product Config & Purchase */}
           <div className="p-6 sm:p-8 flex flex-col justify-between space-y-6">
             <div className="space-y-4">
-              {/* Category & Rating */}
+              {/* Category */}
               <div className="flex items-center justify-between">
                 <span className="text-[10px] uppercase tracking-[0.2em] text-[#9A9886] font-medium">
                   {product.category} • Atelier Edition
                 </span>
-                <div className="flex items-center gap-1 text-[#C5A059] text-xs">
-                  <Star className="w-3.5 h-3.5 fill-[#C5A059]" />
-                  <span className="font-semibold text-[#2C2C2A]">{product.rating || 4.9}</span>
-                  <span className="text-[#9A9886]">({product.reviewsCount || 48})</span>
-                </div>
               </div>
 
               {/* Title & Price */}

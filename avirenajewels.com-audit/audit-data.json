@@ -1,0 +1,400 @@
+{
+  "summary": {
+    "health_score": 38,
+    "business_type": "E-commerce — D2C jewelry (brass, anti-tarnish e-coating, cultured pearls), India-primary, Shopify headless + prerendered React on Vercel",
+    "audit_date": "2026-09-04",
+    "target": "https://avirenajewels.com",
+    "coverage_note": "Content, Performance, and SXO specialists were terminated by an API session rate limit before filing reports. Those category scores carry lower confidence. No Google API or backlink credentials were configured, so no field CWV, indexation, traffic, ranking, or search-volume data was available — none was estimated.",
+    "top_findings": [
+      "Hydration destroys correct prerendered SEO: one routing defect in src/App.tsx overwrites Product schema with homepage schema, collapses all 5 category URLs to /shop, and replaces prerendered titles",
+      "Fabricated review data sitewide: identical aggregateRating 4.9/38 hardcoded on every product with no review system in the codebase — Google policy violation plus ASCI/CCPA exposure",
+      "Catalog reality: Shopify contains exactly 3 products (all earrings) behind a storefront advertising 5 categories; products.ts holds 19 unused mock items with 41 Unsplash stock photos",
+      "Soft 404s on every invalid URL from an unscoped vercel.json catch-all rewrite, compounded by a /product vs /products URL-scheme collision in SeoMeta.tsx",
+      "False material claims: shopify.ts:547 dead-code ternary labels every brass product 'Solid 925 Sterling Silver'; vermeil/sterling/Vicenza/avirena.com claims across six templates and llms.txt"
+    ],
+    "quick_wins": [
+      "Delete both fabricated aggregateRating blocks and displayed review counts (~30 min)",
+      "Fix the shopify.ts:547 materials ternary (1 line)",
+      "Scope the vercel.json rewrite and ship dist/404.html (~1 hr)",
+      "Strip static meta tags in renderPageHtml() before injection to kill duplicate titles and conflicting canonicals (~1 hr)",
+      "Rewrite public/llms.txt from verified live facts (~30 min)"
+    ]
+  },
+  "categories": [
+    {
+      "name": "Technical SEO",
+      "score": 35,
+      "weight": 22,
+      "what_works": [
+        "Prerendering genuinely works — is_spa:false, all 16 routes return 200 with unique titles and per-route JSON-LD",
+        "HTTPS with HSTS max-age=63072000; http->https and www->non-www consolidate without loops",
+        "Immutable 1-year caching on /assets/*; Vercel edge serving from bom1 with cache HIT",
+        "Correct mobile viewport, no scale-locking; sitemap resolves and parses"
+      ],
+      "findings": [
+        {
+          "title": "Soft 404 on every unmatched path",
+          "severity": "Critical",
+          "description": "The unscoped \"source\": \"/(.*)\" rewrite in vercel.json returns HTTP 200 with homepage content for any invalid URL. Proven by byte-identical ETag (52e43cfd6eb8766b045192d9d4252ee1) and Content-Length on /nonexistent-page-test-404 and /indexnow.txt.",
+          "recommendation": "Remove the catch-all (the 16 routes are already prerendered static files Vercel resolves first), add dist/404.html, set cleanUrls and trailingSlash:false.",
+          "falsifiability": "curl -o /dev/null -w '%{http_code}' https://avirenajewels.com/junk-path returns 404."
+        },
+        {
+          "title": "Duplicate meta tags and conflicting canonicals",
+          "severity": "High",
+          "description": "renderPageHtml() at scripts/prerender.ts:147 injects a second block of title/description/canonical/OG/Twitter without stripping index.html's originals. The homepage serves two conflicting canonicals: https://avirenajewels.com (no slash, index.html:24) and https://avirenajewels.com/ (with slash, prerender.ts:235).",
+          "recommendation": "Strip the static tags before injection; standardize on one trailing-slash form matching the sitemap.",
+          "falsifiability": "curl / | grep -c '<link rel=\"canonical\"' returns 1."
+        },
+        {
+          "title": "Security headers absent",
+          "severity": "High",
+          "description": "CSP, X-Content-Type-Options, X-Frame-Options, Referrer-Policy, and Permissions-Policy are absent on every response tested. Only HSTS is present, missing includeSubDomains/preload. Access-Control-Allow-Origin: * is applied to HTML documents, not just assets.",
+          "recommendation": "Add the five headers via vercel.json; scope the wildcard CORS to /assets/* only.",
+          "falsifiability": "curl -I returns all five headers; securityheaders.com grade improves from F."
+        },
+        {
+          "title": "IndexNow absent; Bing and Pinterest verification are placeholders",
+          "severity": "Info",
+          "description": "IndexNow is not implemented. index.html:14-15 still contain the literal strings BING_WEBMASTER_VERIFICATION_CODE and PINTEREST_DOMAIN_VERIFY_CODE, so neither verification is actually active despite the tags appearing present.",
+          "recommendation": "Fill in real verification codes; add IndexNow submission to the build.",
+          "falsifiability": "Bing Webmaster Tools shows the property as verified."
+        }
+      ]
+    },
+    {
+      "name": "Content Quality",
+      "score": 30,
+      "weight": 23,
+      "confidence": "reduced — specialist terminated by rate limit",
+      "what_works": [
+        "Per-route prerendered H1s and descriptions are unique and intent-matched",
+        "Prerendered copy uses accurate brass/cultured-pearl language (the false vermeil claims appear only after hydration)"
+      ],
+      "findings": [
+        {
+          "title": "Category pages prerender to an H1 and one sentence with zero product links",
+          "severity": "High",
+          "description": "Verified via curl: /shop/earrings prerenders only <h1>Earrings Collection</h1> plus a single sentence. No product anchors exist in static HTML, so crawlers reach products only via the sitemap and no internal link equity flows.",
+          "recommendation": "Emit real product links and unique category intro copy in the prerendered HTML.",
+          "falsifiability": "curl /shop/earrings | grep -c '/product/' is greater than zero."
+        },
+        {
+          "title": "Five category URLs serve effectively identical content",
+          "severity": "High",
+          "description": "Because App.tsx never sets selectedCategory from the URL slug, all five /shop/{category} URLs render the same unfiltered catalog after hydration.",
+          "recommendation": "Fix routing (Phase 1.1); until inventory exists, noindex the four empty categories.",
+          "falsifiability": "/shop/necklaces renders only necklaces."
+        },
+        {
+          "title": "Core product claims are unsubstantiated",
+          "severity": "Medium",
+          "description": "'Anti-tarnish', 'water-resistant', 'hypoallergenic', and 'nickel-free' are the brand's central differentiators but have no supporting care guide, coating specification, warranty, or testing documentation anywhere on the site.",
+          "recommendation": "Publish a materials and care guide documenting the e-coating spec and realistic lifespan.",
+          "falsifiability": "A crawlable URL exists that substantiates each claim."
+        },
+        {
+          "title": "Positioning contradicts the product",
+          "severity": "Medium",
+          "description": "Copy uses luxury-atelier vocabulary (atelier, concierge, lost-wax casting, Vicenza) for brass dailywear jewelry at roughly INR 2,000-3,600, and that vocabulary is not what buyers search with.",
+          "recommendation": "Commit to accessible dailywear positioning and align copy to buyer language.",
+          "falsifiability": "Impressions appear for category-level dailywear queries."
+        },
+        {
+          "title": "/journal has no real editorial content",
+          "severity": "Medium",
+          "description": "The route is prerendered and sitemap-listed but carries no substantive articles.",
+          "recommendation": "Either populate it or remove it from the sitemap.",
+          "falsifiability": "Each /journal URL has a unique article of substance."
+        }
+      ]
+    },
+    {
+      "name": "On-Page SEO",
+      "score": 40,
+      "weight": 20,
+      "what_works": [
+        "Unique, intent-matched titles and meta descriptions per prerendered route",
+        "Clean, readable URL structure; correct html lang; OG and Twitter cards present"
+      ],
+      "findings": [
+        {
+          "title": "Product titles are 101 characters and keyword-stuffed",
+          "severity": "High",
+          "description": "Example: 'Geometric Gold-Tone Statement Earrings for Women | Modern Square Earrings | AVIRENA Dailywear Jewelry' — truncates in every SERP surface.",
+          "recommendation": "Target ~60 characters, front-loading the distinctive product name.",
+          "falsifiability": "All product titles are at or below 60 characters."
+        },
+        {
+          "title": "Hydration overwrites prerendered titles",
+          "severity": "High",
+          "description": "The second effect in App.tsx (~line 231) sets document.title from currentPage, replacing the served 'Earrings — Dailywear Jewelry | AVIRENA' with a generic 'All Jewellery Collection | AVIRENA'.",
+          "recommendation": "Derive title from the actual route, not from currentPage alone.",
+          "falsifiability": "document.title after hydration matches the served title."
+        },
+        {
+          "title": "/policies is live but missing from the sitemap",
+          "severity": "Medium",
+          "description": "The route is fully built, prerendered, and returns 200, but scripts/prerender.ts has no addSitemapUrl call for it — unlike the deliberate /cart and /checkout exclusions.",
+          "recommendation": "Add the sitemap entry.",
+          "falsifiability": "sitemap.xml contains /policies."
+        },
+        {
+          "title": "All lastmod values are the build timestamp",
+          "severity": "Medium",
+          "description": "scripts/prerender.ts:222 stamps new Date() identically onto all 16 URLs, a false freshness signal. Git history already provides real per-file modification dates.",
+          "recommendation": "Derive lastmod per route from git history or Shopify updatedAt.",
+          "falsifiability": "Sitemap lastmod values differ per URL and match real change dates."
+        }
+      ]
+    },
+    {
+      "name": "Schema / Structured Data",
+      "score": 25,
+      "weight": 10,
+      "what_works": [
+        "Organization, JewelryStore, WebSite+SearchAction and per-product Product + BreadcrumbList are all syntactically valid in raw HTML",
+        "Product schema includes offers, priceValidUntil, itemCondition, seller, and hasMerchantReturnPolicy"
+      ],
+      "findings": [
+        {
+          "title": "Hydration replaces Product schema with homepage schema",
+          "severity": "Critical",
+          "description": "SeoMeta.tsx overwrites the #dynamic-jsonld-schema element client-side. Because App.tsx:130 matches products by p.id while live URLs use the Shopify handle, currentPage resolves to 'home' and product pages emit Organization/FAQPage schema instead of Product. Confirmed reproducible with a 13-second Playwright render, ruling out a timing race.",
+          "recommendation": "Match products by handle in handleLocationChange().",
+          "falsifiability": "Rich Results Test with JS rendering on a product URL returns Product, not Organization."
+        },
+        {
+          "title": "Fabricated aggregateRating on every product",
+          "severity": "Critical",
+          "description": "scripts/prerender.ts (~line 625) hardcodes an identical ratingValue 4.9 / reviewCount 38 on every product. src/lib/shopify.ts:542-543 hardcodes rating 4.9 / reviewsCount 24. src/data/products.ts hardcodes per-product ratings 4.7-5.0 and counts 19-62, displayed at ProductDetailPage.tsx:220 and ProductCard.tsx:142. No review collection system exists anywhere in the codebase.",
+          "recommendation": "Remove all review markup and displayed counts. Do not seed or backfill reviews.",
+          "falsifiability": "grep for aggregateRating across the repo and rendered pages returns zero matches."
+        },
+        {
+          "title": "Placeholder phone number in Organization and JewelryStore schema",
+          "severity": "High",
+          "description": "+91-98200-12345 is a placeholder, used consistently across schema and the WhatsApp link.",
+          "recommendation": "Replace with the real business number or remove the property.",
+          "falsifiability": "The number in schema connects to the business."
+        },
+        {
+          "title": "Three conflicting street addresses",
+          "severity": "High",
+          "description": "prerender.ts:120 'Heritage Craft Enclave, Bandra West'; SeoMeta.tsx:124 'Suite 402, Heritage Craft Enclave, Bandra West'; CheckoutPage.tsx:41 '14, Altamount Luxury Enclave, Cumballa Hill'.",
+          "recommendation": "Consolidate to one verified address across the repo.",
+          "falsifiability": "grep streetAddress returns one consistent value."
+        },
+        {
+          "title": "BreadcrumbList missing on 10 pages; no ItemList anywhere",
+          "severity": "Medium",
+          "description": "Breadcrumbs exist only on the 3 product pages. Absent on 5 category pages and /collections, /about, /contact, /faq, /policies, /journal. Category pages carry no ItemList.",
+          "recommendation": "Add BreadcrumbList sitewide and ItemList to category pages once they have inventory.",
+          "falsifiability": "Rich Results Test shows breadcrumbs on every non-home page."
+        },
+        {
+          "title": "FAQPage present with stale content",
+          "severity": "Info",
+          "description": "Google retired FAQ rich results for all sites on 2026-05-07, so there is no SERP feature to gain. Noting only that the markup's content references vermeil and sterling silver, contradicting the actual brass product. Not recommending removal.",
+          "recommendation": "Correct the factual content; leave the markup in place.",
+          "falsifiability": "FAQ answers match the real product materials."
+        }
+      ]
+    },
+    {
+      "name": "Performance (CWV)",
+      "score": 55,
+      "weight": 10,
+      "confidence": "lab/static inference only — no field data, no completed Lighthouse trace",
+      "what_works": [
+        "Brotli compression on JS and CSS; immutable 1-year asset caching; Vercel edge serving locally from bom1",
+        "Google Fonts request includes &display=swap, mitigating FOIT",
+        "Prerendering means the LCP element can be static HTML rather than JS-dependent"
+      ],
+      "findings": [
+        {
+          "title": "320KB uncompressed PNG hero is the likely LCP element",
+          "severity": "High",
+          "description": "/logo.png is 320,384 bytes at native 2128x739, rendered near full viewport width with loading=eager, no width/height attributes, and no preload.",
+          "recommendation": "Convert to WebP/AVIF (60-80% reduction), add dimensions, and preload with fetchpriority=high.",
+          "falsifiability": "Lighthouse LCP improves measurably against a pre-fix baseline."
+        },
+        {
+          "title": "No width or height on any image",
+          "severity": "High",
+          "description": "Verified across the hero, prerendered product cards, and all 6 gallery images. Without reserved layout space, CLS is guaranteed as images resolve.",
+          "recommendation": "Add explicit width/height or CSS aspect-ratio to every img.",
+          "falsifiability": "Lighthouse CLS drops toward 0."
+        },
+        {
+          "title": "747KB single JS bundle with no code-splitting",
+          "severity": "Medium",
+          "description": "/assets/index-SEE23VPG.js is 746,997 bytes uncompressed and ships in full for all 16 routes.",
+          "recommendation": "Route-based code-splitting via React.lazy and dynamic import.",
+          "falsifiability": "Per-route JS transfer size falls."
+        },
+        {
+          "title": "Four font families with ~25 variants in one render-blocking request",
+          "severity": "Medium",
+          "description": "Cormorant Garamond, Montserrat, Playfair Display, and Plus Jakarta Sans load together, blocking first paint.",
+          "recommendation": "Subset to the weights actually rendered; self-host or preload the critical face.",
+          "falsifiability": "Font transfer bytes and render-blocking time both fall."
+        },
+        {
+          "title": "Prerendered skeleton is entirely unstyled",
+          "severity": "Medium",
+          "description": "Verified: .site-header, .hero-section, .cta-btn, .category-page, and .categories-section have zero occurrences in the shipped stylesheet /assets/index-B4SDxzdV.css. The real design is Tailwind utilities injected after hydration, so first paint is browser-default HTML.",
+          "recommendation": "Ship critical inline CSS for the skeleton so first paint is branded.",
+          "falsifiability": "A screenshot at first paint shows styled content."
+        }
+      ]
+    },
+    {
+      "name": "AI Search Readiness",
+      "score": 41,
+      "weight": 10,
+      "what_works": [
+        "Explicit robots.txt allows for GPTBot, ChatGPT-User, PerplexityBot, ClaudeBot, Google-Extended, Applebot-Extended",
+        "Prerendering means non-JS AI crawlers receive real content — currently the accurate brass copy",
+        "All three sameAs social profiles (Instagram, Facebook, Pinterest) resolve"
+      ],
+      "findings": [
+        {
+          "title": "llms.txt feeds answer engines false brand facts",
+          "severity": "Critical",
+          "description": "The file exists specifically to give LLMs authoritative brand facts, and states the wrong domain (avirena.com, a real unrelated third-party site), wrong contact (concierge@avirena.com), wrong materials (3.0-micron 18k gold vermeil over recycled 925 sterling silver), and three fictitious atelier cities including Vicenza, Italy.",
+          "recommendation": "Replace with a corrected version drafted only from verified live facts (draft provided in findings/geo.md).",
+          "falsifiability": "Every claim in llms.txt is verifiable on the live site."
+        },
+        {
+          "title": "Entity data conflicts across schema, llms.txt, and page copy",
+          "severity": "High",
+          "description": "Conflicting domain, email, phone, three addresses, fabricated CIN/GSTIN, and mismatched shipping thresholds (INR 1,999 vs INR 3,000) give answer engines contradictory facts about the same entity.",
+          "recommendation": "Establish one canonical fact set and propagate it.",
+          "falsifiability": "All sources agree on every NAP field."
+        },
+        {
+          "title": "No answer to the category's most common objection",
+          "severity": "Medium",
+          "description": "The brand sells brass and has no accurate on-site answer to 'does brass jewelry turn skin green' — the primary purchase objection for this material.",
+          "recommendation": "Publish an honest, self-contained answer page.",
+          "falsifiability": "A crawlable URL answers the question directly."
+        }
+      ]
+    },
+    {
+      "name": "Images",
+      "score": 60,
+      "weight": 5,
+      "what_works": [
+        "Live product images are served from Shopify CDN with its own optimization and caching",
+        "Alt text is present on prerendered product gallery images"
+      ],
+      "findings": [
+        {
+          "title": "41 Unsplash stock photos in the mock catalog",
+          "severity": "High",
+          "description": "Every image in src/data/products.ts is an Unsplash URL. Because CollectionPage.tsx imports this mock data, stock photography briefly renders as apparent product imagery before the Shopify swap.",
+          "recommendation": "Remove the mock catalog from the render path; use owned photography only.",
+          "falsifiability": "No frame of any page load shows an images.unsplash.com asset."
+        },
+        {
+          "title": "Product images are PNG, not WebP/AVIF",
+          "severity": "Medium",
+          "description": "All live product images are uncompressed .png on the Shopify CDN.",
+          "recommendation": "Serve WebP/AVIF derivatives.",
+          "falsifiability": "Product image transfer bytes fall measurably."
+        },
+        {
+          "title": "Image sitemap covers only 4 of 16 URLs",
+          "severity": "Medium",
+          "description": "Entries exist only for the homepage logo and the 3 product URLs; the 5 category pages have none — a missed Google Images opportunity for a visual product category.",
+          "recommendation": "Add image entries for category pages.",
+          "falsifiability": "GSC reports indexed images for category URLs."
+        }
+      ]
+    }
+  ],
+  "action_plan": {
+    "phases": [
+      {
+        "name": "Phase 0: Stop the exposure",
+        "timeframe": "Today (~2 hours)",
+        "rationale": "False statements currently served to users and search engines. Independent of all other work.",
+        "items": [
+          "Remove all fabricated aggregateRating markup and displayed review counts (prerender.ts, shopify.ts:542-543, products.ts, ProductDetailPage.tsx:220, ProductCard.tsx:142)",
+          "Fix the src/lib/shopify.ts:547 dead-code materials ternary labelling brass as Solid 925 Sterling Silver",
+          "Purge vermeil/sterling/Vicenza/avirena.com/fabricated CIN-GSTIN claims from six templates and llms.txt",
+          "Resolve NAP to one truth: real phone replacing +91-98200-12345, one address across three files, one shipping threshold",
+          "Rotate the Shopify Storefront token hardcoded at scripts/prerender.ts:13 and move to env-only"
+        ]
+      },
+      {
+        "name": "Phase 1: Fix routing — unblocks everything downstream",
+        "timeframe": "Week 1",
+        "rationale": "Schema, titles, and canonicals cannot be validated while hydration overwrites them.",
+        "items": [
+          "src/App.tsx:130 — match products by Shopify handle, not p.id (restores Product schema)",
+          "src/App.tsx:139 — read parts[1] in case 'shop' and set selectedCategory from the slug",
+          "src/App.tsx:231 — derive targetPath from actual location; never pushState a rewrite",
+          "vercel.json — scope the catch-all rewrite, add dist/404.html, set cleanUrls and trailingSlash:false",
+          "SeoMeta.tsx:36,174 — fix the /products/{id} vs /product/{handle} scheme collision",
+          "prerender.ts:147 — strip static meta tags before injecting per-route ones"
+        ]
+      },
+      {
+        "name": "Phase 2: Fix the catalog — the actual revenue constraint",
+        "timeframe": "Weeks 2-4",
+        "rationale": "Traffic to a 3-SKU store converts against 3 SKUs.",
+        "items": [
+          "Business decision: load real inventory into Shopify, or narrow the site to the earrings that exist",
+          "Until inventory exists, noindex the four empty category pages and remove them from sitemap and nav",
+          "Add the missing /policies sitemap entry",
+          "Remove the 19-product mock catalog from CollectionPage.tsx's render path to stop the 19-to-3 flash",
+          "Emit real product links in prerendered category HTML so crawlers reach products through site structure"
+        ]
+      },
+      {
+        "name": "Phase 3: Content and authority",
+        "timeframe": "Month 2",
+        "rationale": "SERP evidence shows the winning formats; needs Phase 1 to be indexed correctly.",
+        "items": [
+          "Write an honest 'does brass jewelry turn skin green' answer — SERP is 100% editorial articles and the brand has no page",
+          "Publish anti-tarnish care, materials, and ring-sizing guides (RingSizerModal content is currently trapped in a modal and unindexable)",
+          "Substantiate anti-tarnish, water-resistant, hypoallergenic, and nickel-free claims",
+          "Rewrite 101-character product titles to ~60 characters",
+          "Resolve the luxury-atelier vs accessible-dailywear positioning contradiction"
+        ]
+      },
+      {
+        "name": "Phase 4: Performance and measurement",
+        "timeframe": "Ongoing",
+        "rationale": "4.1 should arguably come first — without GSC you cannot measure whether any of this worked.",
+        "items": [
+          "Configure a Google API key and connect Search Console — currently there is no field, indexation, or traffic data at all",
+          "Convert the 320KB PNG hero to WebP/AVIF, add width/height to every image, preload the LCP image",
+          "Route-based code-splitting for the 747KB bundle; subset the 4-family font request",
+          "Ship critical inline CSS so the prerendered skeleton paints styled",
+          "Add the five missing security headers; real per-route lastmod from git history; IndexNow; fill placeholder Bing/Pinterest verification codes; category image sitemap entries"
+        ]
+      }
+    ]
+  },
+  "monitoring": {
+    "leading_indicators": [
+      "GSC Coverage: 'Duplicate without user-selected canonical' and 'Crawled - currently not indexed' trending down (Phase 1)",
+      "GSC Enhancements > Products: valid items with no review-snippet warnings (Phase 0.1)",
+      "Rich Results Test on a product URL with JS rendering returns Product, not Organization (Phase 1.1)",
+      "Impressions appearing on non-brand informational queries (Phase 3.1)",
+      "CrUX LCP and CLS entering Good once field data exists (Phase 4)"
+    ]
+  },
+  "artifacts": {
+    "findings_dir": "findings/",
+    "screenshots_dir": "screenshots/",
+    "reports": ["FULL-AUDIT-REPORT.md", "ACTION-PLAN.md"],
+    "specialists_completed": ["technical", "schema", "sitemap", "geo", "ecommerce", "visual"],
+    "specialists_incomplete": ["content", "performance", "sxo"],
+    "not_run_no_credentials": ["seo-google (GSC/CrUX/GA4)", "seo-backlinks (beyond Common Crawl tier)", "seo-local", "seo-maps", "seo-dataforseo"]
+  }
+}

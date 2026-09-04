@@ -116,7 +116,7 @@ export const Footer: React.FC<FooterProps> = ({
             Our Story
           </button>
           <button
-            onClick={() => handleNavigate('policies')}
+            onClick={() => handleNavigate('guides')}
             className="hover:text-white hover:underline transition-all cursor-pointer"
           >
             Materials &amp; Care
@@ -132,6 +132,12 @@ export const Footer: React.FC<FooterProps> = ({
             className="hover:text-white hover:underline transition-all cursor-pointer"
           >
             FAQs
+          </button>
+          <button
+            onClick={() => handleNavigate('guides')}
+            className="hover:text-white hover:underline transition-all cursor-pointer"
+          >
+            Jewelry Guides
           </button>
           <button
             onClick={() => handleNavigate('contact')}

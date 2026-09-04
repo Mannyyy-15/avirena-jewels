@@ -3,7 +3,7 @@ import {
   HelpCircle,
   ShieldCheck,
   RotateCcw,
-  Sparkles,
+  Clock,
   Truck,
   Ruler,
   ChevronDown,
@@ -253,7 +253,7 @@ export const FaqPage: React.FC<FaqPageProps> = ({ onNavigateToContact, onNavigat
 
               <div className="bg-[#E7E4D5] border border-[#D8D2C2] p-6 sm:p-8 rounded-xs space-y-4">
                 <div className="flex items-center gap-3 text-[#413C23]">
-                  <Sparkles className="w-5 h-5" />
+                  <Clock className="w-5 h-5 text-[#8F896D]" />
                   <h3 className="font-serif-display text-xl text-[#413C23]">Daily Care Rituals</h3>
                 </div>
                 <p className="text-xs sm:text-sm text-[#413C23]/80 font-light leading-relaxed">

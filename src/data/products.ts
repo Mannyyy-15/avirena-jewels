@@ -21,8 +21,6 @@ export const PRODUCTS: Product[] = [
     metal: 'Gold-Tone Brass',
     price: 32, // Premium dailywear pricing
     originalPrice: 40,
-    rating: 5.0,
-    reviewsCount: 34,
     images: [
       'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=1200&q=90',
       'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?auto=format&fit=crop&w=1200&q=85',
@@ -51,8 +49,6 @@ export const PRODUCTS: Product[] = [
     metal: 'Gold-Tone Brass',
     price: 26,
     originalPrice: 32,
-    rating: 4.9,
-    reviewsCount: 48,
     images: [
       'https://images.unsplash.com/photo-1630019852942-f89202989a59?auto=format&fit=crop&w=1200&q=85',
       'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?auto=format&fit=crop&w=1200&q=85',
@@ -78,8 +74,6 @@ export const PRODUCTS: Product[] = [
     category: 'brooches',
     metal: 'Silver-Tone Alloy',
     price: 28,
-    rating: 4.8,
-    reviewsCount: 21,
     images: [
       'https://images.unsplash.com/photo-1598560917505-59a3ad559071?auto=format&fit=crop&w=1200&q=85',
       'https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&w=1200&q=85'
@@ -102,8 +96,6 @@ export const PRODUCTS: Product[] = [
     category: 'necklaces',
     metal: 'Gold-Tone Brass',
     price: 36,
-    rating: 4.9,
-    reviewsCount: 56,
     images: [
       'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?auto=format&fit=crop&w=1200&q=85',
       'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=1200&q=85',
@@ -127,8 +119,6 @@ export const PRODUCTS: Product[] = [
     category: 'bracelets',
     metal: 'Gold-Tone Brass',
     price: 29,
-    rating: 4.8,
-    reviewsCount: 29,
     images: [
       'https://images.unsplash.com/photo-1602751584552-8ba73aad10e1?auto=format&fit=crop&w=1200&q=85',
       'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?auto=format&fit=crop&w=1200&q=85'
@@ -152,8 +142,6 @@ export const PRODUCTS: Product[] = [
     category: 'earrings',
     metal: 'Silver-Tone Alloy',
     price: 22,
-    rating: 4.7,
-    reviewsCount: 19,
     images: [
       'https://images.unsplash.com/photo-1630019852942-f89202989a59?auto=format&fit=crop&w=1200&q=85',
       'https://images.unsplash.com/photo-1600003014755-ba31aa59c4b6?auto=format&fit=crop&w=1200&q=85'
@@ -175,8 +163,6 @@ export const PRODUCTS: Product[] = [
     category: 'rings',
     metal: 'Gold-Tone Brass',
     price: 24,
-    rating: 4.8,
-    reviewsCount: 38,
     images: [
       'https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&w=1200&q=85',
       'https://images.unsplash.com/photo-1603561591411-07134e71a2a9?auto=format&fit=crop&w=1200&q=85'
@@ -200,8 +186,6 @@ export const PRODUCTS: Product[] = [
     category: 'rings',
     metal: 'Gold-Tone Brass',
     price: 22,
-    rating: 4.9,
-    reviewsCount: 41,
     images: [
       'https://images.unsplash.com/photo-1603561591411-07134e71a2a9?auto=format&fit=crop&w=1200&q=85',
       'https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&w=1200&q=85'
@@ -224,8 +208,6 @@ export const PRODUCTS: Product[] = [
     category: 'earrings',
     metal: 'Gold-Tone Brass',
     price: 23,
-    rating: 4.8,
-    reviewsCount: 33,
     images: [
       'https://images.unsplash.com/photo-1630019852942-f89202989a59?auto=format&fit=crop&w=1200&q=85',
       'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?auto=format&fit=crop&w=1200&q=85'
@@ -248,8 +230,6 @@ export const PRODUCTS: Product[] = [
     category: 'necklaces',
     metal: 'Gold-Tone Brass',
     price: 34,
-    rating: 4.8,
-    reviewsCount: 27,
     images: [
       'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=1200&q=85',
       'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?auto=format&fit=crop&w=1200&q=85'
@@ -273,8 +253,6 @@ export const PRODUCTS: Product[] = [
     category: 'earrings',
     metal: 'Gold-Tone Brass',
     price: 25,
-    rating: 5.0,
-    reviewsCount: 52,
     images: [
       'https://images.unsplash.com/photo-1630019852942-f89202989a59?auto=format&fit=crop&w=1200&q=85',
       'https://images.unsplash.com/photo-1600003014755-ba31aa59c4b6?auto=format&fit=crop&w=1200&q=85'
@@ -297,8 +275,6 @@ export const PRODUCTS: Product[] = [
     category: 'bracelets',
     metal: 'Silver-Tone Alloy',
     price: 26,
-    rating: 4.9,
-    reviewsCount: 36,
     images: [
       'https://images.unsplash.com/photo-1602751584552-8ba73aad10e1?auto=format&fit=crop&w=1200&q=85',
       'https://images.unsplash.com/photo-1598560917505-59a3ad559071?auto=format&fit=crop&w=1200&q=85'
@@ -322,8 +298,6 @@ export const PRODUCTS: Product[] = [
     metal: 'Gold-Tone Brass',
     price: 35,
     originalPrice: 42,
-    rating: 4.9,
-    reviewsCount: 44,
     images: [
       'https://images.unsplash.com/photo-1602751584552-8ba73aad10e1?auto=format&fit=crop&w=1200&q=85',
       'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?auto=format&fit=crop&w=1200&q=85'
@@ -349,8 +323,6 @@ export const PRODUCTS: Product[] = [
     metal: 'Gold-Tone Brass',
     price: 28,
     originalPrice: 35,
-    rating: 5.0,
-    reviewsCount: 62,
     images: [
       'https://images.unsplash.com/photo-1630019852942-f89202989a59?auto=format&fit=crop&w=1200&q=90',
       'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?auto=format&fit=crop&w=1200&q=85',
@@ -376,8 +348,6 @@ export const PRODUCTS: Product[] = [
     metal: 'Gold-Tone Brass',
     price: 36,
     originalPrice: 45,
-    rating: 4.9,
-    reviewsCount: 49,
     images: [
       'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=1200&q=90',
       'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?auto=format&fit=crop&w=1200&q=85'
@@ -403,8 +373,6 @@ export const PRODUCTS: Product[] = [
     metal: 'Gold-Tone Brass',
     price: 39,
     originalPrice: 48,
-    rating: 4.9,
-    reviewsCount: 42,
     images: [
       'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=1200&q=85',
       'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?auto=format&fit=crop&w=1200&q=85',
@@ -431,8 +399,6 @@ export const PRODUCTS: Product[] = [
     category: 'rings',
     metal: 'Gold-Tone Brass',
     price: 24,
-    rating: 4.8,
-    reviewsCount: 29,
     images: [
       'https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&w=1200&q=85',
       'https://images.unsplash.com/photo-1603561591411-07134e71a2a9?auto=format&fit=crop&w=1200&q=85',
@@ -456,8 +422,6 @@ export const PRODUCTS: Product[] = [
     category: 'rings',
     metal: 'Gold-Tone Brass',
     price: 22,
-    rating: 5.0,
-    reviewsCount: 37,
     images: [
       'https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&w=1200&q=85',
       'https://images.unsplash.com/photo-1603561591411-07134e71a2a9?auto=format&fit=crop&w=1200&q=85'
@@ -482,8 +446,6 @@ export const PRODUCTS: Product[] = [
     metal: 'Gold-Tone Brass',
     price: 26,
     originalPrice: 32,
-    rating: 4.9,
-    reviewsCount: 45,
     images: [
       'https://images.unsplash.com/photo-1603561591411-07134e71a2a9?auto=format&fit=crop&w=1200&q=85',
       'https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&w=1200&q=85'

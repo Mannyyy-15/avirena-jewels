@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Heart, ShoppingBag, Check, Eye, Star } from 'lucide-react';
+import { Heart, ShoppingBag, Check, Eye } from 'lucide-react';
 import { Product, Currency, Metal } from '../types';
 import { formatPrice } from '../data/products';
 
@@ -54,16 +54,16 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       className="group cursor-pointer flex flex-col transition-all duration-300 relative text-left font-sans-body w-full"
     >
       {/* Product Image Canvas Container */}
-      <div className="relative aspect-square w-full bg-[#E7E4D5] border border-[#D8D2C2] rounded-xs overflow-hidden flex items-center justify-center p-4 sm:p-6 transition-all duration-300 group-hover:border-[#8F896D] group-hover:shadow-[0_8px_20px_rgba(65,60,35,0.08)]">
+      <div className="relative aspect-square w-full bg-[#F2EFDB] border border-[#D8D2C2] rounded-xs overflow-hidden flex items-center justify-center p-4 sm:p-6 transition-all duration-300 group-hover:border-[#8F896D] group-hover:shadow-[0_8px_20px_rgba(65,60,35,0.08)]">
         {/* Badges */}
         <div className="absolute top-2.5 left-2.5 flex flex-col gap-1 z-10">
           {product.isBestseller && (
-            <span className="bg-[#413C23] text-[#E7E4D5] text-[9px] tracking-[0.16em] uppercase font-bold px-2 py-0.5 rounded-xs shadow-xs">
+            <span className="bg-[#413C23] text-[#F2EFDB] text-[9px] tracking-[0.16em] uppercase font-bold px-2 py-0.5 rounded-xs shadow-xs">
               Bestseller
             </span>
           )}
           {product.isSculptural && !product.isBestseller && (
-            <span className="bg-[#E7E4D5]/95 text-[#413C23] text-[9px] tracking-[0.16em] uppercase font-semibold px-2 py-0.5 border border-[#D8D2C2] rounded-xs shadow-xs">
+            <span className="bg-[#F2EFDB]/95 text-[#413C23] text-[9px] tracking-[0.16em] uppercase font-semibold px-2 py-0.5 border border-[#D8D2C2] rounded-xs shadow-xs">
               Sculptural
             </span>
           )}
@@ -74,7 +74,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           {onQuickView && (
             <button
               onClick={handleQuickView}
-              className="p-1.5 rounded-full bg-[#E7E4D5]/95 hover:bg-[#413C23] hover:text-[#E7E4D5] text-[#413C23] transition-all shadow-xs cursor-pointer border border-[#D8D2C2]"
+              className="p-1.5 rounded-full bg-[#F2EFDB]/95 hover:bg-[#413C23] hover:text-[#F2EFDB] text-[#413C23] transition-all shadow-xs cursor-pointer border border-[#D8D2C2]"
               title="Quick View"
               aria-label="Quick View"
             >
@@ -84,7 +84,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           <button
             id={`wishlist-btn-${product.id}`}
             onClick={handleToggleWishlist}
-            className="p-1.5 rounded-full bg-[#E7E4D5]/95 hover:bg-[#FAF8F5] text-[#8F896D] hover:text-[#413C23] transition-all shadow-xs cursor-pointer focus:outline-none border border-[#D8D2C2]"
+            className="p-1.5 rounded-full bg-[#F2EFDB]/95 hover:bg-[#FAF8F5] text-[#8F896D] hover:text-[#413C23] transition-all shadow-xs cursor-pointer focus:outline-none border border-[#D8D2C2]"
             title={isWishlisted ? 'Remove from saved' : 'Save to wishlist'}
             aria-label={isWishlisted ? 'Remove from saved' : 'Save to wishlist'}
           >
@@ -101,8 +101,11 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           src={displayImage}
           alt={product.name}
           referrerPolicy="no-referrer"
+          width={800}
+          height={800}
           className="w-full h-full object-contain object-center mix-blend-multiply transition-all duration-500 ease-out group-hover:scale-105"
           loading="lazy"
+          decoding="async"
         />
 
         {/* Quick Add Overlay on Hover */}
@@ -137,10 +140,6 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           <span className="text-[#8F896D] uppercase tracking-[0.18em] font-semibold text-[10px]">
             {product.metal}
           </span>
-          <div className="flex items-center gap-1 text-[#8F896D]">
-            <Star className="w-3 h-3 fill-[#8F896D] text-[#8F896D]" />
-            <span className="font-semibold text-[11px] text-[#413C23]">{product.rating || 4.9}</span>
-          </div>
         </div>
 
         <h3 className="font-serif-display text-base sm:text-lg font-normal text-[#413C23] group-hover:text-[#8F896D] transition-colors leading-snug truncate">

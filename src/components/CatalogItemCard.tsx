@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Product, Currency } from '../types';
 import { formatPrice } from '../data/products';
-import { Heart, ShoppingBag, Eye, Star, Check } from 'lucide-react';
+import { Heart, ShoppingBag, Eye, Check } from 'lucide-react';
 
 interface CatalogItemCardProps {
   product: Product;
@@ -103,8 +103,11 @@ export const CatalogItemCard: React.FC<CatalogItemCardProps> = ({
           src={displayImage}
           alt={product.name}
           referrerPolicy="no-referrer"
+          width={800}
+          height={800}
           className="w-full h-full object-contain object-center mix-blend-multiply transition-all duration-500 ease-out group-hover:scale-105"
           loading="lazy"
+          decoding="async"
         />
 
         {/* Hover Quick Add Action */}
@@ -140,13 +143,6 @@ export const CatalogItemCard: React.FC<CatalogItemCardProps> = ({
           <span className="text-[#8F896D] uppercase tracking-[0.18em] font-semibold text-[10px]">
             {product.metal}
           </span>
-          <div className="flex items-center gap-1 text-[#8F896D]">
-            <Star className="w-3 h-3 fill-[#8F896D] text-[#8F896D]" />
-            <span className="font-semibold text-[#413C23] text-[11px]">{product.rating || 4.9}</span>
-            {product.reviewsCount && (
-              <span className="text-[#8F896D] text-[10px]">({product.reviewsCount})</span>
-            )}
-          </div>
         </div>
 
         <h3 className="font-serif-display text-base sm:text-lg font-normal text-[#413C23] group-hover:text-[#8F896D] transition-colors leading-snug truncate">

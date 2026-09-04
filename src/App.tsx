@@ -1,32 +1,207 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, lazy, Suspense } from 'react';
 import { PageView, Product, CartItem, Currency, Category } from './types';
-import { PRODUCTS } from './data/products';
+import { GUIDES } from './data/guides';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
 import { InstagramFeedSection } from './components/InstagramFeedSection';
+import { JoinUsSection } from './components/JoinUsSection';
 import { CartDrawer } from './components/CartDrawer';
-import { SearchModal } from './components/SearchModal';
-import { QuickViewModal } from './components/QuickViewModal';
+
 import { ToastContainer, ToastMessage } from './components/Toast';
-import { WishlistModal } from './components/WishlistModal';
+
 import { StoryModal, CareModal } from './components/StoryAndCareModals';
 import { HomePage } from './pages/HomePage';
-import { CollectionPage } from './pages/CollectionPage';
-import { CollectionsHubPage } from './pages/CollectionsHubPage';
-import { ProductDetailPage } from './pages/ProductDetailPage';
-import { CartPage } from './pages/CartPage';
-import { CheckoutPage } from './pages/CheckoutPage';
-import { AboutPage } from './pages/AboutPage';
-import { ContactPage } from './pages/ContactPage';
-import { JournalPage } from './pages/JournalPage';
-import { FaqPage } from './pages/FaqPage';
-import { PoliciesPage } from './pages/PoliciesPage';
+
 import { SeoMeta } from './components/SeoMeta';
 import { ShopifyProvider, useShopify } from './context/ShopifyContext';
 import { initSmoothScroll, scrollToTop } from './lib/smoothScroll';
 
+/*
+ * Route-level code splitting. The app shipped as one 747KB bundle across 16
+ * routes; every visitor paid for the checkout flow and every page they never
+ * opened. HomePage stays statically imported because it is the landing route.
+ *
+ * Safe with the prerender flow: src/main.tsx uses createRoot (client render),
+ * not hydrateRoot, so React replaces the prerendered skeleton wholesale and a
+ * suspended chunk cannot cause a hydration mismatch.
+ */
+const CollectionPage = lazy(() =>
+  import('./pages/CollectionPage').then((m) => ({ default: m.CollectionPage }))
+);
+const CollectionsHubPage = lazy(() =>
+  import('./pages/CollectionsHubPage').then((m) => ({ default: m.CollectionsHubPage }))
+);
+const ProductDetailPage = lazy(() =>
+  import('./pages/ProductDetailPage').then((m) => ({ default: m.ProductDetailPage }))
+);
+const CartPage = lazy(() =>
+  import('./pages/CartPage').then((m) => ({ default: m.CartPage }))
+);
+const CheckoutPage = lazy(() =>
+  import('./pages/CheckoutPage').then((m) => ({ default: m.CheckoutPage }))
+);
+const AboutPage = lazy(() =>
+  import('./pages/AboutPage').then((m) => ({ default: m.AboutPage }))
+);
+const ContactPage = lazy(() =>
+  import('./pages/ContactPage').then((m) => ({ default: m.ContactPage }))
+);
+const JournalPage = lazy(() =>
+  import('./pages/JournalPage').then((m) => ({ default: m.JournalPage }))
+);
+const FaqPage = lazy(() =>
+  import('./pages/FaqPage').then((m) => ({ default: m.FaqPage }))
+);
+const PoliciesPage = lazy(() =>
+  import('./pages/PoliciesPage').then((m) => ({ default: m.PoliciesPage }))
+);
+const GuidesPage = lazy(() =>
+  import('./pages/GuidesPage').then((m) => ({ default: m.GuidesPage }))
+);
+const QuickViewModal = lazy(() =>
+  import('./components/QuickViewModal').then((m) => ({ default: m.QuickViewModal }))
+);
+const WishlistModal = lazy(() =>
+  import('./components/WishlistModal').then((m) => ({ default: m.WishlistModal }))
+);
+const SearchModal = lazy(() =>
+  import('./components/SearchModal').then((m) => ({ default: m.SearchModal }))
+);
+
+/**
+ * Category slugs that map to real, prerendered /shop/:category routes.
+ * Kept in sync with scripts/prerender.ts `categories` and the Category union in ./types.
+ * 'all' is intentionally excluded: it is represented by bare /shop, not /shop/all.
+ */
+const CATEGORY_SLUGS = ['rings', 'necklaces', 'earrings', 'bracelets', 'sets', 'brooches'] as const;
+
+const isCategorySlug = (value: string): value is Exclude<Category, 'all'> =>
+  (CATEGORY_SLUGS as readonly string[]).includes(value);
+
+/**
+ * Resolve a URL segment to a product. Live URLs use the Shopify handle
+ * (src/lib/shopify.ts sets `id: node.handle || node.id` and also keeps `handle`),
+ * but local/mock products are keyed by `id`. Match on both, in both catalogs.
+ */
+const findProductBySlug = (catalog: Product[], slug: string): Product | undefined =>
+  catalog.find((p) => p.handle === slug || p.id === slug || p.shopifyId === slug);
+
+/**
+ * Guide slugs that map to real, prerendered /guides/:slug routes.
+ * Sourced from src/data/guides.ts, the same module scripts/prerender.ts reads,
+ * so a guide can never exist on one side of the build and not the other.
+ */
+const isGuideSlug = (value: string): boolean => GUIDES.some((g) => g.slug === value);
+
+/** The canonical URL path for a given page/state. Mirrors scripts/prerender.ts route paths. */
+const buildPath = (
+  page: PageView,
+  product: Product | undefined,
+  category: Category,
+  guideSlug: string | null
+): string => {
+  switch (page) {
+    case 'home':
+      return '/';
+    case 'collection':
+    case 'shop':
+      return category && category !== 'all' ? `/shop/${category}` : '/shop';
+    case 'collections':
+      return '/collections';
+    case 'pdp':
+      return product ? `/product/${product.handle || product.id}` : '/shop';
+    case 'about':
+      return '/about';
+    case 'contact':
+      return '/contact';
+    case 'journal':
+      return '/journal';
+    case 'faq':
+      return '/faq';
+    case 'policies':
+      return '/policies';
+    case 'guides':
+      return guideSlug ? `/guides/${guideSlug}` : '/guides';
+    case 'cart':
+      return '/cart';
+    case 'checkout':
+      return '/checkout';
+    default:
+      return '/';
+  }
+};
+
+/** Document titles, kept consistent with the titles scripts/prerender.ts writes per route. */
+const CATEGORY_TITLES: Record<Exclude<Category, 'all'>, string> = {
+  earrings: 'Earrings — Dailywear Jewelry | AVIRENA',
+  necklaces: 'Necklaces — Dailywear Jewelry | AVIRENA',
+  rings: 'Rings — Dailywear Jewelry | AVIRENA',
+  bracelets: 'Bracelets — Dailywear Jewelry | AVIRENA',
+  brooches: 'Brooches — Dailywear Jewelry | AVIRENA',
+  sets: 'Sets — Dailywear Jewelry | AVIRENA',
+};
+
+const buildTitle = (
+  page: PageView,
+  product: Product | undefined,
+  category: Category,
+  guideSlug: string | null
+): string => {
+  switch (page) {
+    case 'home':
+      return 'AVIRENA | Homegrown Dailywear Jewelry • Anti-Tarnish Brass & Baroque Pearls';
+    case 'collection':
+    case 'shop':
+      return category && category !== 'all'
+        ? CATEGORY_TITLES[category]
+        : 'Shop All Dailywear Jewelry | AVIRENA';
+    case 'collections':
+      return 'Signature Jewelry Design Suites | AVIRENA';
+    case 'pdp':
+      return product ? `${product.name} | AVIRENA Dailywear Jewelry` : 'AVIRENA';
+    case 'about':
+      return 'About Avirena | Homegrown Dailywear Craftsmanship';
+    case 'contact':
+      return 'Contact Concierge & Support | AVIRENA';
+    case 'journal':
+      return 'Journal & Styling Lookbook | AVIRENA';
+    case 'faq':
+      return 'FAQs, Sizing Guide & Jewelry Care | AVIRENA';
+    case 'policies':
+      return 'Policies, Shipping & Returns | AVIRENA';
+    case 'guides': {
+      const guide = guideSlug ? GUIDES.find((g) => g.slug === guideSlug) : undefined;
+      return guide ? guide.metaTitle : 'Jewelry Guides: Materials, Care & Fit | AVIRENA';
+    }
+    case 'cart':
+      return 'Your Shopping Bag | AVIRENA';
+    case 'checkout':
+      return 'Secure Checkout | AVIRENA';
+    default:
+      return 'AVIRENA | Homegrown Dailywear Jewelry';
+  }
+};
+
+/**
+ * Route chunk fallback. Painted in the brand palette rather than left blank so a
+ * slow chunk fetch shows the site's own surface, not a white flash. Sized to the
+ * viewport so swapping it for the real page does not shift layout.
+ */
+function RouteFallback() {
+  return (
+    <div
+      className="w-full min-h-[70vh] bg-[#E7E4D5]"
+      role="status"
+      aria-live="polite"
+      aria-busy="true"
+    >
+      <span className="sr-only">Loading…</span>
+    </div>
+  );
+}
+
 function AppContent() {
-  const { products: storeProducts, isConfigured } = useShopify();
+  const { products: storeProducts, isConfigured, hasLoadedProducts } = useShopify();
 
   // Initialize Lenis Smooth Scroll with GSAP
   useEffect(() => {
@@ -36,12 +211,23 @@ function AppContent() {
 
   // Page Routing State
   const [currentPage, setCurrentPage] = useState<PageView>('home');
-  const [selectedProduct, setSelectedProduct] = useState<Product>(storeProducts[0] || PRODUCTS[0]);
+  // True once the URL -> state sync (effect 1) has run at least once, and again
+  // whenever a popstate is being applied. While false, the URL-writing effect
+  // must stay quiet: on first paint it still holds the default state ('home'),
+  // and writing that out would clobber a deep route like /shop/necklaces.
+  const isApplyingLocation = React.useRef(true);
+  // No mock seed. Until a real product is selected (or the live catalog lands)
+  // this is null, and every consumer already handles an absent product. Seeding
+  // it from src/data/products.ts would put a stock-photo placeholder into the
+  // page title, canonical and Product schema.
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<Category>('all');
+  const [activeGuideSlug, setActiveGuideSlug] = useState<string | null>(null);
   const [currency, setCurrency] = useState<Currency>('INR');
 
   // Sync selectedProduct if storeProducts change
   useEffect(() => {
+    if (!selectedProduct) return;
     if (storeProducts && storeProducts.length > 0) {
       const exists = storeProducts.find((p) => p.id === selectedProduct.id);
       if (!exists) {
@@ -114,6 +300,10 @@ function AppContent() {
   // 1. Parse URL Path on Load & Popstate (Clean HTML5 Routing, no hash)
   useEffect(() => {
     const handleLocationChange = () => {
+      // Suppress the URL-writing effect for the state updates this triggers:
+      // the URL is already correct — it is the source of truth right now.
+      isApplyingLocation.current = true;
+
       // If there's an old legacy hash like #/shop or #about, normalize it
       let path = window.location.pathname;
       if (window.location.hash) {
@@ -124,23 +314,41 @@ function AppContent() {
         }
       }
 
-      const parts = path.split('?')[0].split('/').filter(Boolean);
+      const parts = path.split('?')[0].split('/').filter(Boolean).map(decodeURIComponent);
       const root = parts[0] || 'home';
 
       if (root === 'product' && parts[1]) {
-        const prod = storeProducts.find((p) => p.id === parts[1]) || PRODUCTS.find((p) => p.id === parts[1]);
+        // Live product URLs use the Shopify handle. Match on handle OR id.
+        // Only the live Shopify catalog is consulted. The mock catalog is not a
+        // fallback: resolving a URL against it would render a fake product page.
+        const prod = findProductBySlug(storeProducts, parts[1]);
         if (prod) {
           setSelectedProduct(prod);
           setCurrentPage('pdp');
           return;
         }
+        // Unknown product slug: leave currentPage untouched rather than silently
+        // rendering the homepage under a /product/* URL (which would overwrite the
+        // prerendered Product schema with homepage schema).
+        return;
       }
 
       switch (root) {
         case 'shop':
-        case 'collection':
-          setCurrentPage('collection');
+        case 'collection': {
+          const slug = parts[1];
+          if (!slug) {
+            setSelectedCategory('all');
+            setCurrentPage('collection');
+          } else if (isCategorySlug(slug)) {
+            setSelectedCategory(slug);
+            setCurrentPage('collection');
+          }
+          // An invalid category slug is a not-found case. Vercel serves a real 404
+          // for it (no prerendered file exists), so do not fall back to the
+          // unfiltered catalog or rewrite the URL here.
           break;
+        }
         case 'collections':
         case 'suites':
           setCurrentPage('collections');
@@ -152,6 +360,7 @@ function AppContent() {
           setCurrentPage('contact');
           break;
         case 'journal':
+        case 'blog':
         case 'lookbook':
           setCurrentPage('journal');
           break;
@@ -160,14 +369,34 @@ function AppContent() {
         case 'sizing':
           setCurrentPage('faq');
           break;
+        case 'policies':
+          setCurrentPage('policies');
+          break;
+        case 'guides': {
+          const slug = parts[1];
+          if (!slug) {
+            setActiveGuideSlug(null);
+            setCurrentPage('guides');
+          } else if (isGuideSlug(slug)) {
+            setActiveGuideSlug(slug);
+            setCurrentPage('guides');
+          }
+          // An unknown guide slug is a not-found case: no prerendered file exists,
+          // so the edge serves a real 404. Do not fall back to the hub here.
+          break;
+        }
         case 'cart':
           setCurrentPage('cart');
           break;
         case 'checkout':
           setCurrentPage('checkout');
           break;
-        default:
+        case 'home':
           setCurrentPage('home');
+          break;
+        default:
+          // Unknown route. The edge serves a real 404 for these (no prerendered
+          // file), so do not render the homepage under a foreign URL.
           break;
       }
     };
@@ -179,58 +408,39 @@ function AppContent() {
 
   // 2. Synchronize Document Title & Clean URL Path on Page Change
   useEffect(() => {
-    let title = 'AVIRENA | Timeless Demi-Fine Jewellery';
-    let targetPath = '/';
+    // Title always reflects the real route, including the category segment, and
+    // matches what scripts/prerender.ts serves for that route.
+    document.title = buildTitle(currentPage, selectedProduct, selectedCategory, activeGuideSlug);
 
-    switch (currentPage) {
-      case 'home':
-        title = 'AVIRENA | Timeless Beauty. Uniquely Yours.';
-        targetPath = '/';
-        break;
-      case 'collection':
-      case 'shop':
-        title = 'All Jewellery Collection | AVIRENA';
-        targetPath = '/shop';
-        break;
-      case 'collections':
-        title = 'Collections & Curated Suites | AVIRENA';
-        targetPath = '/collections';
-        break;
-      case 'pdp':
-        title = `${selectedProduct.name} | AVIRENA`;
-        targetPath = `/product/${selectedProduct.id}`;
-        break;
-      case 'about':
-        title = 'About Our Atelier & Heritage | AVIRENA';
-        targetPath = '/about';
-        break;
-      case 'contact':
-        title = 'Atelier Concierge & Bespoke Inquiries | AVIRENA';
-        targetPath = '/contact';
-        break;
-      case 'journal':
-        title = 'Journal & Editorial Lookbook | AVIRENA';
-        targetPath = '/journal';
-        break;
-      case 'faq':
-        title = 'FAQs, Ring Sizing & Care Guide | AVIRENA';
-        targetPath = '/faq';
-        break;
-      case 'cart':
-        title = 'Your Shopping Bag | AVIRENA';
-        targetPath = '/cart';
-        break;
-      case 'checkout':
-        title = 'Secure Atelier Checkout | AVIRENA';
-        targetPath = '/checkout';
-        break;
+    // The URL is authoritative while an initial load or a popstate is being
+    // applied to state. Writing during that window is what used to rewrite
+    // /shop/earrings -> /shop and push a spurious history entry.
+    if (isApplyingLocation.current) {
+      isApplyingLocation.current = false;
+      return;
     }
 
-    document.title = title;
-    if (window.location.pathname !== targetPath || window.location.hash) {
+    const targetPath = buildPath(currentPage, selectedProduct, selectedCategory, activeGuideSlug);
+    const currentPath = window.location.pathname;
+
+    // Never rewrite the URL when the browser is already on a valid route that
+    // represents this state — including deeper routes (/shop/:category,
+    // /product/:handle).
+    const alreadyCorrect =
+      currentPath === targetPath ||
+      // tolerate a trailing slash on the same route
+      currentPath.replace(/\/+$/, '') === targetPath.replace(/\/+$/, '');
+
+    if (!alreadyCorrect) {
+      // Genuine in-app navigation: this is a new destination the user chose,
+      // so it earns a history entry.
       window.history.pushState(null, '', targetPath);
+    } else if (window.location.hash) {
+      // Same route, but a stale legacy hash is hanging around: clean it up
+      // in place, never with pushState.
+      window.history.replaceState(null, '', targetPath);
     }
-  }, [currentPage, selectedProduct]);
+  }, [currentPage, selectedProduct, selectedCategory, activeGuideSlug]);
 
   // Navigation handlers
   const handleSelectProduct = (product: Product) => {
@@ -247,6 +457,12 @@ function AppContent() {
 
   const handlePageChange = (page: PageView) => {
     setCurrentPage(page);
+    scrollToTop();
+  };
+
+  const handleNavigateToGuide = (slug: string | null) => {
+    setActiveGuideSlug(slug);
+    setCurrentPage('guides');
     scrollToTop();
   };
 
@@ -276,13 +492,8 @@ function AppContent() {
       setCart([...cart, newItem]);
     }
 
-    addToast({
-      type: 'cart',
-      title: `Added to Bag`,
-      subtitle: `${item.product.name} • ${item.metal}`,
-      actionLabel: 'View Bag',
-      onAction: () => setIsCartDrawerOpen(true),
-    });
+    // Immediately open the cart drawer so the user sees the item added
+    setIsCartDrawerOpen(true);
   };
 
   const handleQuickAdd = (product: Product) => {
@@ -354,9 +565,10 @@ function AppContent() {
       {/* Dynamic SEO, AEO & GEO Schema.org Engine */}
       <SeoMeta
         currentPage={currentPage}
-        selectedProduct={selectedProduct}
+        selectedProduct={selectedProduct ?? undefined}
         selectedCategory={selectedCategory}
         currency={currency}
+        activeGuideSlug={activeGuideSlug}
       />
 
       {/* Universal Navigation Bar */}
@@ -377,6 +589,7 @@ function AppContent() {
 
       {/* Main Multi-Page View Container */}
       <main className="flex-1 w-full">
+        <Suspense fallback={<RouteFallback />}>
         {currentPage === 'home' && (
           <HomePage
             onSelectProduct={handleSelectProduct}
@@ -387,6 +600,7 @@ function AppContent() {
             isWishlisted={isProductWishlisted}
             onToggleWishlist={handleToggleWishlist}
             catalogProducts={storeProducts}
+            onNavigateToAbout={() => handlePageChange('about')}
           />
         )}
 
@@ -401,6 +615,7 @@ function AppContent() {
             isWishlisted={isProductWishlisted}
             onToggleWishlist={handleToggleWishlist}
             products={storeProducts}
+            isCatalogReady={hasLoadedProducts}
           />
         )}
 
@@ -410,6 +625,7 @@ function AppContent() {
             onSelectProduct={handleSelectProduct}
             currency={currency}
             catalogProducts={storeProducts}
+            isCatalogReady={hasLoadedProducts}
           />
         )}
 
@@ -431,6 +647,7 @@ function AppContent() {
             onSelectProduct={handleSelectProduct}
             onNavigateToShop={() => handleNavigateToCollection('all')}
             currency={currency}
+            catalogProducts={storeProducts}
           />
         )}
 
@@ -448,7 +665,16 @@ function AppContent() {
           />
         )}
 
-        {currentPage === 'pdp' && (
+        {currentPage === 'guides' && (
+          <GuidesPage
+            activeSlug={activeGuideSlug}
+            onSelectGuide={(slug) => handleNavigateToGuide(slug)}
+            onNavigateToHub={() => handleNavigateToGuide(null)}
+            onNavigateToShop={() => handleNavigateToCollection('all')}
+          />
+        )}
+
+        {currentPage === 'pdp' && selectedProduct && (
           <ProductDetailPage
             product={selectedProduct}
             currency={currency}
@@ -483,10 +709,14 @@ function AppContent() {
             onClearCart={handleClearCart}
           />
         )}
+        </Suspense>
       </main>
 
       {/* Instagram Feed Gallery Section */}
       <InstagramFeedSection />
+
+      {/* Join Us Newsletter Section */}
+      <JoinUsSection />
 
       {/* Footer */}
       <Footer
@@ -512,9 +742,15 @@ function AppContent() {
           setIsCartDrawerOpen(false);
           handlePageChange('collection');
         }}
+        onViewCartPage={() => {
+          setIsCartDrawerOpen(false);
+          handlePageChange('cart');
+        }}
       />
 
-      {/* Quick View Modal */}
+      {/* Quick View Modal (chunk fetched only once opened) */}
+      {isQuickViewOpen && (
+      <Suspense fallback={null}>
       <QuickViewModal
         product={quickViewProduct}
         isOpen={isQuickViewOpen}
@@ -525,8 +761,12 @@ function AppContent() {
         isWishlisted={quickViewProduct ? isProductWishlisted(quickViewProduct.id) : false}
         onToggleWishlist={handleToggleWishlist}
       />
+      </Suspense>
+      )}
 
-      {/* Live Search Modal */}
+      {/* Live Search Modal (chunk fetched only once opened) */}
+      {isSearchModalOpen && (
+      <Suspense fallback={null}>
       <SearchModal
         isOpen={isSearchModalOpen}
         onClose={() => setIsSearchModalOpen(false)}
@@ -535,8 +775,12 @@ function AppContent() {
         currency={currency}
         catalogProducts={storeProducts}
       />
+      </Suspense>
+      )}
 
-      {/* Wishlist Modal */}
+      {/* Wishlist Modal (chunk fetched only once opened) */}
+      {isWishlistModalOpen && (
+      <Suspense fallback={null}>
       <WishlistModal
         isOpen={isWishlistModalOpen}
         onClose={() => setIsWishlistModalOpen(false)}
@@ -549,6 +793,8 @@ function AppContent() {
           handleSelectProduct(product);
         }}
       />
+      </Suspense>
+      )}
 
       {/* Story & Care Modals */}
       <StoryModal isOpen={isStoryModalOpen} onClose={() => setIsStoryModalOpen(false)} />

@@ -1,11 +1,14 @@
 import React, { useEffect } from 'react';
 import { PageView, Product, Currency, Category } from '../types';
+import { GUIDES } from '../data/guides';
 
 interface SeoMetaProps {
   currentPage: PageView;
   selectedProduct?: Product;
   selectedCategory?: Category;
   currency: Currency;
+  /** Slug of the guide being viewed, when currentPage is 'guides'. */
+  activeGuideSlug?: string | null;
 }
 
 export const SeoMeta: React.FC<SeoMetaProps> = ({
@@ -13,10 +16,16 @@ export const SeoMeta: React.FC<SeoMetaProps> = ({
   selectedProduct,
   selectedCategory,
   currency,
+  activeGuideSlug,
 }) => {
+  const activeGuide =
+    currentPage === 'guides' && activeGuideSlug
+      ? GUIDES.find((g) => g.slug === activeGuideSlug)
+      : undefined;
+
   useEffect(() => {
     // Dynamic Title & Description Map
-    let title = 'AVIRENA | Handcrafted Demi-Fine Jewelry • 18k Gold Vermeil & Baroque Pearls';
+    let title = 'AVIRENA | Homegrown Dailywear Jewelry • Anti-Tarnish Brass & Baroque Pearls';
     let description =
       'Explore Avirena Jewels. Homegrown premium dailywear jewelry handcrafted in durable brass, anti-tarnish protective coatings, and natural cultured pearls.';
     let canonical = 'https://avirenajewels.com';
@@ -33,10 +42,13 @@ export const SeoMeta: React.FC<SeoMetaProps> = ({
     } else if (currentPage === 'pdp' && selectedProduct) {
       title = `${selectedProduct.name} — ${selectedProduct.metal} | AVIRENA`;
       description = `${selectedProduct.description} Handcrafted in ${selectedProduct.metal} with anti-tarnish protective coating. 14-day exchanges & express delivery.`;
-      canonical = `https://avirenajewels.com/products/${selectedProduct.id}`;
+      // Real product URLs are singular /product/{handle} (see scripts/prerender.ts
+      // and the sitemap). shopify.ts sets id = handle for live products, so prefer
+      // handle and fall back to id — the same value the router resolves by.
+      canonical = `https://avirenajewels.com/product/${selectedProduct.handle || selectedProduct.id}`;
     } else if (currentPage === 'about') {
-      title = 'Our Heritage & Lost-Wax Craftsmanship | AVIRENA';
-      description = 'Learn about Studio Avirena, our heritage lost-wax casting ateliers in Jaipur and Vicenza, and our 100% recycled precious metals commitment.';
+      title = 'About Avirena | Homegrown Dailywear Craftsmanship';
+      description = 'Learn about Avirena Jewels, our homegrown Indian design studio, and our commitment to skin-safe anti-tarnish brass jewelry made for everyday wear.';
       canonical = 'https://avirenajewels.com/about';
     } else if (currentPage === 'contact') {
       title = 'Atelier Concierge & Private Appointments | AVIRENA';
@@ -46,9 +58,22 @@ export const SeoMeta: React.FC<SeoMetaProps> = ({
       title = 'Policies, Shipping & Client Assurance | AVIRENA';
       description = 'Official written policies of Avirena Jewels covering worldwide insured delivery, 14-day returns, material hallmarking, and data privacy.';
       canonical = 'https://avirenajewels.com/policies';
+    } else if (currentPage === 'guides') {
+      // Must mirror scripts/prerender.ts exactly: without this branch, hydrating a
+      // /guides/* page would rewrite its canonical back to the homepage.
+      if (activeGuide) {
+        title = activeGuide.metaTitle;
+        description = activeGuide.metaDescription;
+        canonical = `https://avirenajewels.com/guides/${activeGuide.slug}`;
+      } else {
+        title = 'Jewelry Guides: Materials, Care & Fit | AVIRENA';
+        description =
+          'Honest guides to brass jewelry: whether it turns skin green, how anti-tarnish coating behaves, brass vs plated vs vermeil vs solid gold, and ring sizing.';
+        canonical = 'https://avirenajewels.com/guides';
+      }
     } else if (currentPage === 'faq') {
       title = 'FAQs, Ring Sizing & Jewelry Care | AVIRENA';
-      description = 'Frequently asked questions about 18k gold vermeil, ring sizing calipers, hypoallergenic silver, and natural baroque pearl care.';
+      description = 'Frequently asked questions about gold-tone brass, ring sizing, hypoallergenic alloys, anti-tarnish protection, and daily jewelry care.';
       canonical = 'https://avirenajewels.com/faq';
     }
 
@@ -163,7 +188,7 @@ export const SeoMeta: React.FC<SeoMetaProps> = ({
         name: selectedProduct.name,
         image: selectedProduct.images,
         description: selectedProduct.description,
-        sku: selectedProduct.id,
+        sku: selectedProduct.handle || selectedProduct.id,
         brand: {
           '@type': 'Brand',
           name: 'Avirena Jewels',
@@ -171,7 +196,7 @@ export const SeoMeta: React.FC<SeoMetaProps> = ({
         material: selectedProduct.materials || selectedProduct.metal,
         offers: {
           '@type': 'Offer',
-          url: `https://avirenajewels.com/products/${selectedProduct.id}`,
+          url: `https://avirenajewels.com/product/${selectedProduct.handle || selectedProduct.id}`,
           priceCurrency: currency,
           price: selectedProduct.price,
           priceValidUntil: '2027-12-31',
@@ -215,11 +240,40 @@ export const SeoMeta: React.FC<SeoMetaProps> = ({
             returnFees: 'https://schema.org/FreeReturn',
           },
         },
-        aggregateRating: {
-          '@type': 'AggregateRating',
-          ratingValue: selectedProduct.rating || '4.9',
-          reviewCount: selectedProduct.reviewsCount || '38',
+      });
+    }
+
+    // 4b. Guide Article + FAQPage Schema — mirrors what scripts/prerender.ts
+    // writes for /guides/:slug, so hydration reinforces the static schema
+    // instead of replacing it with homepage schema.
+    if (activeGuide) {
+      schemas.push({
+        '@context': 'https://schema.org',
+        '@type': 'Article',
+        headline: activeGuide.heading,
+        description: activeGuide.directAnswer,
+        url: `https://avirenajewels.com/guides/${activeGuide.slug}`,
+        mainEntityOfPage: {
+          '@type': 'WebPage',
+          '@id': `https://avirenajewels.com/guides/${activeGuide.slug}`,
         },
+        author: { '@type': 'Organization', name: 'Avirena Jewels' },
+        publisher: {
+          '@type': 'Organization',
+          name: 'Avirena Jewels',
+          logo: { '@type': 'ImageObject', url: 'https://avirenajewels.com/logo.png' },
+        },
+        articleSection: activeGuide.category,
+        inLanguage: 'en',
+      });
+      schemas.push({
+        '@context': 'https://schema.org',
+        '@type': 'FAQPage',
+        mainEntity: activeGuide.faqs.map((f) => ({
+          '@type': 'Question',
+          name: f.question,
+          acceptedAnswer: { '@type': 'Answer', text: f.answer },
+        })),
       });
     }
 
@@ -231,10 +285,10 @@ export const SeoMeta: React.FC<SeoMetaProps> = ({
         mainEntity: [
           {
             '@type': 'Question',
-            name: 'What is 18k Gold Vermeil and how is it made?',
+            name: 'What materials are used in Avirena dailywear jewelry?',
             acceptedAnswer: {
               '@type': 'Answer',
-              text: 'Gold Vermeil is a premium French plating technique where an ultra-thick layer of 3.0 microns of 18k yellow gold is electroplated over a solid recycled 925 sterling silver core. It is 6 times thicker than standard flash-plated fashion jewelry and will not tarnish or discolor skin.',
+              text: 'Avirena crafts jewelry using high-density brass and durable alloys sealed with a protective anti-tarnish e-coating for everyday water resistance and long-lasting wear.',
             },
           },
           {
@@ -242,7 +296,7 @@ export const SeoMeta: React.FC<SeoMetaProps> = ({
             name: 'Is Avirena jewelry hypoallergenic and nickel-free?',
             acceptedAnswer: {
               '@type': 'Answer',
-              text: 'Yes, 100%. All Avirena creations are strictly nickel-free, lead-free, and cadmium-free, crafted with solid 925 sterling silver and titanium-reinforced earring posts safe for sensitive skin.',
+              text: 'Yes. All Avirena pieces are nickel-free, lead-free, and cadmium-free, and earring posts are surgical steel, making them suitable for sensitive skin.',
             },
           },
           {
@@ -250,7 +304,7 @@ export const SeoMeta: React.FC<SeoMetaProps> = ({
             name: 'Are Avirena baroque pearls natural?',
             acceptedAnswer: {
               '@type': 'Answer',
-              text: 'Yes, Avirena exclusively uses 100% natural, hand-selected freshwater baroque pearls. We never use simulated resin, plastic, or synthetic pearls.',
+              text: 'Yes, Avirena uses hand-selected cultured freshwater baroque pearls known for their organic luster and naturally unique contours. We never use simulated resin, plastic, or synthetic pearls.',
             },
           },
           {
@@ -274,7 +328,7 @@ export const SeoMeta: React.FC<SeoMetaProps> = ({
       document.head.appendChild(scriptTag);
     }
     scriptTag.textContent = JSON.stringify(schemas);
-  }, [currentPage, selectedProduct, selectedCategory, currency]);
+  }, [currentPage, selectedProduct, selectedCategory, currency, activeGuide]);
 
   return null;
 };

@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { Product, CartItem, ShopifyCart } from '../types';
-import { PRODUCTS as FALLBACK_PRODUCTS } from '../data/products';
 import {
   isShopifyConfigured,
   shopifyFetch,
@@ -18,6 +17,14 @@ interface ShopifyContextType {
   isConfigured: boolean;
   products: Product[];
   isLoadingProducts: boolean;
+  /**
+   * True once the Shopify catalog fetch has settled (resolved OR failed).
+   * Consumers use this to tell "still loading, show a skeleton" apart from
+   * "loaded and genuinely empty, show an empty state". Never render an empty
+   * state before this flips, and never substitute placeholder inventory:
+   * anything shown as a product must be a real, purchasable SKU.
+   */
+  hasLoadedProducts: boolean;
   shopifyCart: ShopifyCart | null;
   isLoadingCart: boolean;
   addToShopifyCart: (variantId: string, quantity: number) => Promise<boolean>;
@@ -33,15 +40,22 @@ const SHOPIFY_CART_ID_STORAGE_KEY = 'avirena_shopify_cart_id';
 
 export const ShopifyProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const isConfigured = isShopifyConfigured();
-  const [products, setProducts] = useState<Product[]>(FALLBACK_PRODUCTS);
-  const [isLoadingProducts, setIsLoadingProducts] = useState<boolean>(false);
+  // Shopify is the single source of truth for inventory. The catalog starts
+  // EMPTY — never seeded with the mock array in src/data/products.ts — so no
+  // frame of any page can ever paint stock-photo placeholders as if they were
+  // real, purchasable products.
+  const [products, setProducts] = useState<Product[]>([]);
+  const [isLoadingProducts, setIsLoadingProducts] = useState<boolean>(isShopifyConfigured());
+  const [hasLoadedProducts, setHasLoadedProducts] = useState<boolean>(!isShopifyConfigured());
   const [shopifyCart, setShopifyCart] = useState<ShopifyCart | null>(null);
   const [isLoadingCart, setIsLoadingCart] = useState<boolean>(false);
 
   // 1. Fetch live Shopify products if configured
   useEffect(() => {
     if (!isConfigured) {
-      setProducts(FALLBACK_PRODUCTS);
+      setProducts([]);
+      setIsLoadingProducts(false);
+      setHasLoadedProducts(true);
       return;
     }
 
@@ -54,17 +68,15 @@ export const ShopifyProvider: React.FC<{ children: ReactNode }> = ({ children })
         });
 
         const fetchedEdges = res.data?.products?.edges || [];
-        if (fetchedEdges.length > 0) {
-          const transformed = fetchedEdges.map((e: any) => transformShopifyProduct(e.node));
-          setProducts(transformed);
-        } else {
-          setProducts(FALLBACK_PRODUCTS);
-        }
+        setProducts(fetchedEdges.map((e: any) => transformShopifyProduct(e.node)));
       } catch (err) {
-        console.warn('Could not fetch from Shopify Storefront API, using fallback catalog:', err);
-        setProducts(FALLBACK_PRODUCTS);
+        // A failed fetch means "we don't know the catalog", not "here is a
+        // catalog". Showing mock products here would misrepresent inventory.
+        console.warn('Could not fetch the Shopify catalog:', err);
+        setProducts([]);
       } finally {
         setIsLoadingProducts(false);
+        setHasLoadedProducts(true);
       }
     };
 
@@ -266,6 +278,7 @@ export const ShopifyProvider: React.FC<{ children: ReactNode }> = ({ children })
         isConfigured,
         products,
         isLoadingProducts,
+        hasLoadedProducts,
         shopifyCart,
         isLoadingCart,
         addToShopifyCart,

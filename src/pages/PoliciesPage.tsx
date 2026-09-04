@@ -116,7 +116,7 @@ Welcome to the Avirena Jewels online boutique (avirena.com). By visiting our web
 • You agree not to duplicate, resell, copy, or exploit any portion of our jewelry sculptures, design patents, or website assets without express written consent.
 
 2. Products, Materials & Pricing:
-• All descriptions, gemstone dimensions, and metal purities (18k Gold Vermeil, 925 Sterling Silver, natural baroque pearls) are documented with utmost accuracy. Because our pieces feature natural baroque pearls, slight organic variations in contour and iridescence celebrate each item's uniqueness.
+• All descriptions, dimensions, and material compositions (high-grade brass, durable alloys, anti-tarnish protective coatings, cultured freshwater baroque pearls) are documented with utmost accuracy. Because our pieces feature cultured baroque pearls, slight organic variations in contour and iridescence celebrate each item's uniqueness.
 • Prices are subject to change without prior notice. We reserve the right to correct typographical pricing errors.
 
 3. Order Acceptance & Cancellations:
@@ -194,10 +194,11 @@ Corporate Identity Number (CIN): U36999MH2024PTC123456
 GSTIN / Tax ID: 27AAAAA0000A1Z5
 Director / Representative: Avirena Atelier Management Board
 
-2. Metallurgical & Hallmarking Disclosures:
-• All precious silver jewelry manufactured and retailed by Avirena conforms to Bureau of Indian Standards (BIS) 925 fineness guidelines (IS 2112:2014) and European Assay standards.
-• Gold Vermeil pieces feature minimum 3.0-micron 18k yellow gold electrolytic deposition over 100% recycled 925 sterling silver cores.
-• Natural baroque pearls are ethically sourced cultivated freshwater pearls.
+2. Material Disclosures:
+• Avirena jewelry is fashion jewelry crafted from high-density brass and durable alloys. It does not contain precious metal and is not sold as, or hallmarked to, any precious-metal fineness standard.
+• Gold-tone and rose gold-tone finishes are achieved with a protective anti-tarnish e-coating over a brass base. Finish longevity varies with wear, skin chemistry, and care.
+• Baroque pearls are ethically sourced cultured freshwater pearls.
+• All pieces are nickel-free, lead-free, and cadmium-free. Earring posts are surgical steel.
 
 3. Dispute Resolution:
 • The European Commission provides an online dispute resolution platform: https://ec.europa.eu/consumers/odr
@@ -244,7 +245,7 @@ Director / Representative: Avirena Atelier Management Board
                 className={`px-4 py-2.5 text-xs uppercase tracking-wider rounded-xs flex items-center gap-2 cursor-pointer transition-all shrink-0 font-medium ${
                   isActive
                     ? 'bg-[#413C23] text-[#E7E4D5] shadow-xs'
-                    : 'bg-[#F4EFE6] text-[#413C23] border border-[#D8D2C2] hover:border-[#8F896D]'
+                    : 'bg-[#F2EFDB] text-[#413C23] border border-[#D8D2C2] hover:border-[#8F896D]'
                 }`}
               >
                 <Icon className="w-3.5 h-3.5" />
@@ -257,7 +258,7 @@ Director / Representative: Avirena Atelier Management Board
 
       {/* 3. Main Policy Content Box */}
       <section className="w-full px-4 sm:px-8 lg:px-12 xl:px-16 2xl:px-20 max-w-5xl mx-auto">
-        <div className="bg-[#F4EFE6] border border-[#D8D2C2] rounded-xs p-6 sm:p-10 lg:p-12 space-y-8 shadow-xs text-left">
+        <div className="bg-[#F2EFDB] border border-[#D8D2C2] rounded-xs p-6 sm:p-10 lg:p-12 space-y-8 shadow-xs text-left">
           
           {/* Policy Title & 1-Click Copy Button */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#D8D2C2] pb-6">
@@ -319,7 +320,7 @@ Director / Representative: Avirena Atelier Management Board
                       placeholder="Order ID (e.g. AV-10482)"
                       value={returnForm.orderId}
                       onChange={(e) => setReturnForm({ ...returnForm, orderId: e.target.value })}
-                      className="px-3.5 py-2.5 bg-[#F4EFE6] border border-[#D8D2C2] rounded-xs text-xs text-[#413C23] focus:outline-none focus:border-[#8F896D]"
+                      className="px-3.5 py-2.5 bg-[#F2EFDB] border border-[#D8D2C2] rounded-xs text-xs text-[#413C23] focus:outline-none focus:border-[#8F896D]"
                     />
                     <input
                       type="email"
@@ -327,14 +328,14 @@ Director / Representative: Avirena Atelier Management Board
                       placeholder="Email used during checkout"
                       value={returnForm.email}
                       onChange={(e) => setReturnForm({ ...returnForm, email: e.target.value })}
-                      className="px-3.5 py-2.5 bg-[#F4EFE6] border border-[#D8D2C2] rounded-xs text-xs text-[#413C23] focus:outline-none focus:border-[#8F896D]"
+                      className="px-3.5 py-2.5 bg-[#F2EFDB] border border-[#D8D2C2] rounded-xs text-xs text-[#413C23] focus:outline-none focus:border-[#8F896D]"
                     />
                   </div>
 
                   <select
                     value={returnForm.reason}
                     onChange={(e) => setReturnForm({ ...returnForm, reason: e.target.value })}
-                    className="w-full px-3.5 py-2.5 bg-[#F4EFE6] border border-[#D8D2C2] rounded-xs text-xs text-[#413C23] focus:outline-none focus:border-[#8F896D]"
+                    className="w-full px-3.5 py-2.5 bg-[#F2EFDB] border border-[#D8D2C2] rounded-xs text-xs text-[#413C23] focus:outline-none focus:border-[#8F896D]"
                   >
                     <option value="size_exchange">Exchange Size (Ring, Bracelet, Chain)</option>
                     <option value="different_piece">Exchange for Another Atelier Piece</option>
@@ -347,7 +348,7 @@ Director / Representative: Avirena Atelier Management Board
                     placeholder="Additional notes or desired replacement ring size..."
                     value={returnForm.notes}
                     onChange={(e) => setReturnForm({ ...returnForm, notes: e.target.value })}
-                    className="w-full px-3.5 py-2.5 bg-[#F4EFE6] border border-[#D8D2C2] rounded-xs text-xs text-[#413C23] focus:outline-none focus:border-[#8F896D]"
+                    className="w-full px-3.5 py-2.5 bg-[#F2EFDB] border border-[#D8D2C2] rounded-xs text-xs text-[#413C23] focus:outline-none focus:border-[#8F896D]"
                   />
 
                   <button

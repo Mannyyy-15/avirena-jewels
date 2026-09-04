@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
-    <loc>https://avirenajewels.com/</loc>
+    <loc>https://avirenajewels.com</loc>
     <lastmod>2026-09-04</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
@@ -21,30 +21,15 @@
     <lastmod>2026-09-04</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://avirenajewels.com/shop/necklaces</loc>
-    <lastmod>2026-09-04</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://avirenajewels.com/shop/rings</loc>
-    <lastmod>2026-09-04</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://avirenajewels.com/shop/bracelets</loc>
-    <lastmod>2026-09-04</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://avirenajewels.com/shop/brooches</loc>
-    <lastmod>2026-09-04</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://cdn.shopify.com/s/files/1/1031/9364/1282/files/c66d3039-fc47-4cf2-a54e-759a77ec846e.png?v=1788435680</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>https://cdn.shopify.com/s/files/1/1031/9364/1282/files/ce7cd063-9f47-4a8e-854b-f1969024daa8.png?v=1788435730</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>https://cdn.shopify.com/s/files/1/1031/9364/1282/files/1a7f5799-a9be-4879-81b7-a9d548e4e3ff.png?v=1788435532</image:loc>
+    </image:image>
   </url>
   <url>
     <loc>https://avirenajewels.com/collections</loc>
@@ -80,6 +65,36 @@
     <loc>https://avirenajewels.com/journal</loc>
     <lastmod>2026-09-04</lastmod>
     <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://avirenajewels.com/guides</loc>
+    <lastmod>2026-09-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://avirenajewels.com/guides/does-brass-jewelry-turn-skin-green</loc>
+    <lastmod>2026-09-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://avirenajewels.com/guides/anti-tarnish-jewelry-care</loc>
+    <lastmod>2026-09-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://avirenajewels.com/guides/jewelry-materials-guide</loc>
+    <lastmod>2026-09-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://avirenajewels.com/guides/ring-size-guide</loc>
+    <lastmod>2026-09-04</lastmod>
+    <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>

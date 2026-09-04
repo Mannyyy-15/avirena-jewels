@@ -3,7 +3,6 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import {
   ArrowRight,
-  Sparkles,
   ShieldCheck,
   Gem,
   Package,
@@ -13,9 +12,9 @@ import {
   Heart
 } from 'lucide-react';
 import { Product, Currency, Category } from '../types';
-import { PRODUCTS, formatPrice } from '../data/products';
+import { formatPrice } from '../data/products';
 import { HeroBaroquePearlRing } from '../components/HeroBaroquePearlRing';
-import HoverImageReveal from '../components/originkit/ui/hover-image-reveal';
+import { AboutUsEditorialSection } from '../components/AboutUsEditorialSection';
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
@@ -30,6 +29,7 @@ interface HomePageProps {
   isWishlisted: (id: string) => boolean;
   onToggleWishlist: (product: Product) => void;
   catalogProducts?: Product[];
+  onNavigateToAbout?: () => void;
 }
 
 export const HomePage: React.FC<HomePageProps> = ({
@@ -40,7 +40,8 @@ export const HomePage: React.FC<HomePageProps> = ({
   currency,
   isWishlisted,
   onToggleWishlist,
-  catalogProducts = PRODUCTS,
+  catalogProducts = [],
+  onNavigateToAbout,
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const heroRef = useRef<HTMLDivElement>(null);
@@ -48,27 +49,28 @@ export const HomePage: React.FC<HomePageProps> = ({
   // Gifting filter tab state
   const [activeGiftTier, setActiveGiftTier] = useState<'all' | 'under150' | 'heirloom' | 'pearls'>('all');
 
-  // Fallback safety to ensure catalog is always populated
-  const safeProducts = useMemo(() => {
-    if (catalogProducts && Array.isArray(catalogProducts) && catalogProducts.length > 0) {
-      return catalogProducts;
-    }
-    return PRODUCTS;
-  }, [catalogProducts]);
+  // Live Shopify catalog only — no mock fallback. When it is empty (still
+  // loading, or genuinely empty) product sections render nothing rather than
+  // stock-photo placeholders.
+  const safeProducts = useMemo(
+    () => (Array.isArray(catalogProducts) ? catalogProducts : []),
+    [catalogProducts]
+  );
 
-  // Safe image getter
+  // Safe image getter. Falls back to the brand logo, never to stock photography:
+  // an Unsplash image here would render as this product's photograph.
   const getProductImage = (prod?: Product) => {
     if (prod && Array.isArray(prod.images) && prod.images.length > 0 && prod.images[0]) {
       return prod.images[0];
     }
-    return 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=800&q=85';
+    return '/logo.png';
   };
 
   // Featured Spotlight Product from live catalog (or fallback)
   const spotlightProduct = useMemo(() => {
     // Select first live product or piece with multiple images
     const multiImg = safeProducts.find((p) => p.images && p.images.length > 1);
-    return multiImg || safeProducts[0] || PRODUCTS[0];
+    return multiImg || safeProducts[0];
   }, [safeProducts]);
 
   // Left side image: Last image of the product assigned in Shopify
@@ -76,7 +78,8 @@ export const HomePage: React.FC<HomePageProps> = ({
     if (spotlightProduct && spotlightProduct.images && spotlightProduct.images.length > 0) {
       return spotlightProduct.images[spotlightProduct.images.length - 1];
     }
-    return 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=1200&q=95';
+    // Brand logo, not stock photography: this slot depicts the spotlight product.
+    return '/logo.png';
   }, [spotlightProduct]);
 
   // Right side image: First image of the product assigned in Shopify
@@ -84,53 +87,9 @@ export const HomePage: React.FC<HomePageProps> = ({
     if (spotlightProduct && spotlightProduct.images && spotlightProduct.images.length > 0) {
       return spotlightProduct.images[0];
     }
-    return 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?auto=format&fit=crop&w=800&q=90';
+    // Brand logo, not stock photography: this slot depicts the spotlight product.
+    return '/logo.png';
   }, [spotlightProduct]);
-
-  // 5-Category Hover Image Reveal dataset
-  const categoryRevealItems = {
-    itemCount: 5,
-    item1: {
-      text: 'Bracelets',
-      image: {
-        src: 'https://images.unsplash.com/photo-1602751584552-8ba73aad10e1?auto=format&fit=crop&w=1000&q=85',
-        alt: 'Handcrafted Demi-Fine Bracelets & Cuffs',
-      },
-      onClick: () => onNavigateToCollection('bracelets'),
-    },
-    item2: {
-      text: 'Rings',
-      image: {
-        src: 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&w=1000&q=85',
-        alt: 'Sculptural Demi-Fine Rings & Bands',
-      },
-      onClick: () => onNavigateToCollection('rings'),
-    },
-    item3: {
-      text: 'Earrings',
-      image: {
-        src: 'https://images.unsplash.com/photo-1630019852942-f89202989a59?auto=format&fit=crop&w=1000&q=85',
-        alt: 'Molten Gold Earrings & Hoops',
-      },
-      onClick: () => onNavigateToCollection('earrings'),
-    },
-    item4: {
-      text: 'Necklaces',
-      image: {
-        src: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=1000&q=85',
-        alt: 'Architectural Geometric Figaro Necklaces',
-      },
-      onClick: () => onNavigateToCollection('necklaces'),
-    },
-    item5: {
-      text: 'Brooches',
-      image: {
-        src: 'https://images.unsplash.com/photo-1598560917505-59a3ad559071?auto=format&fit=crop&w=1000&q=85',
-        alt: 'Fluid Sculptural Kinetic Brooches',
-      },
-      onClick: () => onNavigateToCollection('brooches'),
-    },
-  };
 
   // Curated pieces for "Collection" section dynamically from live catalog
   const collectionFive = useMemo(() => {
@@ -181,6 +140,64 @@ export const HomePage: React.FC<HomePageProps> = ({
         delay: 0.15,
         ease: 'power2.out',
       });
+
+      // General scroll reveal elements
+      gsap.utils.toArray<HTMLElement>('.gsap-home-reveal').forEach((el) => {
+        gsap.fromTo(
+          el,
+          { opacity: 0, y: 32 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.85,
+            ease: 'power2.out',
+            scrollTrigger: {
+              trigger: el,
+              start: 'top 85%',
+              toggleActions: 'play none none reverse',
+            },
+          }
+        );
+      });
+
+      // Staggered collection cards
+      gsap.from('.collection-card', {
+        y: 35,
+        opacity: 0,
+        duration: 0.75,
+        stagger: 0.08,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: '.collection-grid',
+          start: 'top 85%',
+        },
+      });
+
+      // Staggered popular cards
+      gsap.from('.popular-card', {
+        y: 35,
+        opacity: 0,
+        duration: 0.75,
+        stagger: 0.08,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: '.popular-grid',
+          start: 'top 85%',
+        },
+      });
+
+      // Staggered gifting cards
+      gsap.from('.gifting-card', {
+        y: 30,
+        opacity: 0,
+        duration: 0.75,
+        stagger: 0.1,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: '.gifting-grid',
+          start: 'top 85%',
+        },
+      });
     }, containerRef);
 
     return () => ctx.revert();
@@ -211,12 +228,22 @@ export const HomePage: React.FC<HomePageProps> = ({
         <div className="relative my-auto py-10 sm:py-16 flex items-center justify-center w-full z-10 overflow-visible">
           {/* Official Brand Logo */}
           <div className="gsap-hero-title w-full flex items-center justify-center select-none pointer-events-none z-0">
-            <img
-              src="/logo.png"
-              alt="AVIRENA"
-              className="w-[98vw] sm:w-[96vw] md:w-[94vw] lg:w-[92vw] xl:w-[90vw] 2xl:w-[88vw] max-w-[1550px] scale-105 sm:scale-110 md:scale-115 lg:scale-120 h-auto object-contain mix-blend-multiply select-none"
-              loading="eager"
-            />
+            {/* LCP element. WebP (91KB) is served to every modern browser with the
+                320KB PNG kept only as a fallback. Intrinsic 2128x739 is declared so
+                the browser reserves the correct box before the bytes land (CLS). */}
+            <picture>
+              <source srcSet="/logo.webp" type="image/webp" />
+              <img
+                src="/logo.png"
+                alt="AVIRENA"
+                width={2128}
+                height={739}
+                className="w-[98vw] sm:w-[96vw] md:w-[94vw] lg:w-[92vw] xl:w-[90vw] 2xl:w-[88vw] max-w-[1550px] scale-105 sm:scale-110 md:scale-115 lg:scale-120 h-auto object-contain mix-blend-multiply select-none"
+                loading="eager"
+                fetchPriority="high"
+                decoding="sync"
+              />
+            </picture>
           </div>
 
           {/* Floating Baroque Pearl Ring (Centered & Positioned Slightly Below) */}
@@ -280,7 +307,7 @@ export const HomePage: React.FC<HomePageProps> = ({
           <div className="flex items-end justify-between border-b border-[#D8D2C2] pb-4">
             <div>
               <span className="text-[11px] text-[#8F896D] uppercase tracking-widest font-normal block mb-1">
-                (02)
+                Recent Arrivals
               </span>
               <h2 className="font-serif-display text-5xl sm:text-6xl md:text-7xl lg:text-8xl text-[#413C23] font-light italic tracking-tight leading-none">
                 Collection
@@ -295,7 +322,7 @@ export const HomePage: React.FC<HomePageProps> = ({
           </div>
 
           {/* 5-Column Uniform Product Grid */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-5">
+          <div className="collection-grid grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-5">
             {collectionFive.map(({ product, displayTitle }) => {
               if (!product || !product.id) return null;
               const imageSrc = getProductImage(product);
@@ -304,15 +331,19 @@ export const HomePage: React.FC<HomePageProps> = ({
                 <div
                   key={product.id}
                   onClick={() => onSelectProduct(product)}
-                  className="group cursor-pointer flex flex-col space-y-2 text-left w-full"
+                  className="collection-card group cursor-pointer flex flex-col space-y-2 text-left w-full"
                 >
                   {/* Fixed Uniform Square Box Container */}
-                  <div className="relative aspect-square w-full bg-[#E7E4D5] border border-[#D8D2C2] rounded-xs flex items-center justify-center p-6 transition-all duration-300 group-hover:border-[#8F896D] group-hover:shadow-[0_8px_20px_rgba(65,60,35,0.08)] overflow-hidden">
+                  <div className="relative aspect-square w-full bg-[#F2EFDB] border border-[#D8D2C2] rounded-xs flex items-center justify-center p-6 transition-all duration-300 group-hover:border-[#8F896D] group-hover:shadow-[0_8px_20px_rgba(65,60,35,0.08)] overflow-hidden">
                     <div className="w-full h-full flex items-center justify-center">
                       <img
                         src={imageSrc}
                         alt={product.name || displayTitle}
                         referrerPolicy="no-referrer"
+                        width={800}
+                        height={800}
+                        loading="lazy"
+                        decoding="async"
                         className="max-w-full max-h-full w-auto h-auto object-contain mix-blend-multiply group-hover:scale-108 transition-transform duration-500 ease-out"
                       />
                     </div>
@@ -353,7 +384,7 @@ export const HomePage: React.FC<HomePageProps> = ({
           <div className="flex items-end justify-between border-b border-[#D8D2C2] pb-4">
             <div>
               <span className="text-[11px] text-[#8F896D] uppercase tracking-widest font-normal block mb-1">
-                (03)
+                Most Coveted
               </span>
               <h2 className="font-serif-display text-5xl sm:text-6xl md:text-7xl lg:text-8xl text-[#413C23] font-light italic tracking-tight leading-none">
                 Popular
@@ -368,18 +399,22 @@ export const HomePage: React.FC<HomePageProps> = ({
           </div>
 
           {/* Wide Dramatic Model Banner */}
-          <div className="w-full h-56 sm:h-72 md:h-80 lg:h-96 rounded-xs overflow-hidden border border-[#D8D2C2] relative bg-[#413C23] shadow-xs">
+          <div className="gsap-home-reveal w-full h-56 sm:h-72 md:h-80 lg:h-96 rounded-xs overflow-hidden border border-[#D8D2C2] relative bg-[#413C23] shadow-xs">
             <img
               src="https://images.unsplash.com/photo-1630019852942-f89202989a59?auto=format&fit=crop&w=2000&q=90"
               alt="Sculptural Molten Earring Campaign"
               referrerPolicy="no-referrer"
+              width={2000}
+              height={1000}
+              loading="lazy"
+              decoding="async"
               className="w-full h-full object-cover object-[center_35%] filter contrast-110 opacity-90"
             />
             <div className="absolute inset-0 bg-gradient-to-r from-[#413C23]/60 via-transparent to-[#413C23]/40 pointer-events-none" />
           </div>
 
           {/* 5-Column Uniform Product Grid */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-5">
+          <div className="popular-grid grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-5">
             {popularFive.map((product) => {
               if (!product || !product.id) return null;
               const imageSrc = getProductImage(product);
@@ -388,15 +423,19 @@ export const HomePage: React.FC<HomePageProps> = ({
                 <div
                   key={product.id}
                   onClick={() => onSelectProduct(product)}
-                  className="group cursor-pointer flex flex-col space-y-2 text-left w-full"
+                  className="popular-card group cursor-pointer flex flex-col space-y-2 text-left w-full"
                 >
                   {/* Fixed Uniform Square Box Container */}
-                  <div className="relative aspect-square w-full bg-[#E7E4D5] border border-[#D8D2C2] rounded-xs flex items-center justify-center p-6 transition-all duration-300 group-hover:border-[#8F896D] group-hover:shadow-[0_8px_20px_rgba(65,60,35,0.08)] overflow-hidden">
+                  <div className="relative aspect-square w-full bg-[#F2EFDB] border border-[#D8D2C2] rounded-xs flex items-center justify-center p-6 transition-all duration-300 group-hover:border-[#8F896D] group-hover:shadow-[0_8px_20px_rgba(65,60,35,0.08)] overflow-hidden">
                     <div className="w-full h-full flex items-center justify-center">
                       <img
                         src={imageSrc}
                         alt={product.name}
                         referrerPolicy="no-referrer"
+                        width={800}
+                        height={800}
+                        loading="lazy"
+                        decoding="async"
                         className="max-w-full max-h-full w-auto h-auto object-contain mix-blend-multiply group-hover:scale-108 transition-transform duration-500 ease-out"
                       />
                     </div>
@@ -429,10 +468,15 @@ export const HomePage: React.FC<HomePageProps> = ({
         </div>
       </section>
 
-      {/* FEATURED PIECE SECTION (Full-Width Italian Editorial Showcase) */}
+      {/* FEATURED PIECE SECTION (Full-Width Italian Editorial Showcase)
+          Rendered only when there is a real product to spotlight. The live
+          Shopify catalog can be empty (initial load, or a failed fetch), and
+          this whole section is about one specific piece — with no product it
+          has nothing honest to show. */}
+      {spotlightProduct && (
       <section className="w-full bg-[#E7E4D5] border-t border-b border-[#D8D2C2] select-none overflow-hidden">
         <div className="w-full grid grid-cols-1 md:grid-cols-2 items-stretch">
-          
+
           {/* Left Column: Last Product Image (Full-Width Half at 85vh) */}
           <div
             onClick={() => onSelectProduct(spotlightProduct)}
@@ -442,7 +486,10 @@ export const HomePage: React.FC<HomePageProps> = ({
               src={leftLifestyleImage}
               alt={spotlightProduct.name}
               referrerPolicy="no-referrer"
+              width={1200}
+              height={1600}
               loading="lazy"
+              decoding="async"
               className="w-full h-full object-cover object-[center_30%] group-hover:scale-104 transition-transform duration-700 ease-out"
             />
             <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors duration-300 pointer-events-none" />
@@ -454,10 +501,10 @@ export const HomePage: React.FC<HomePageProps> = ({
             {/* Top Text: Category & Headline */}
             <div className="space-y-2 z-10 pt-2 sm:pt-4">
               <span className="text-[11px] sm:text-xs text-[#FAF8F5]/75 uppercase tracking-[0.28em] font-medium block">
-                01 / CATEGORY
+                Atelier Editorial
               </span>
               <h3 className="font-serif-display text-3xl sm:text-5xl md:text-6xl lg:text-[62px] text-[#FAF8F5] font-light tracking-wide">
-                Italian editorial
+                Signature Dailywear
               </h3>
             </div>
 
@@ -471,7 +518,10 @@ export const HomePage: React.FC<HomePageProps> = ({
                   src={rightProductImage}
                   alt={spotlightProduct.name}
                   referrerPolicy="no-referrer"
+                  width={840}
+                  height={840}
                   loading="lazy"
+                  decoding="async"
                   className="w-full h-full object-contain filter drop-shadow-[0_20px_40px_rgba(0,0,0,0.45)] group-hover:scale-106 transition-transform duration-500 ease-out"
                 />
               </div>
@@ -496,6 +546,10 @@ export const HomePage: React.FC<HomePageProps> = ({
 
         </div>
       </section>
+      )}
+
+      {/* 4. SECTION 4: EDITORIAL ABOUT US (Roman Arch & Cascading Vignettes) */}
+      <AboutUsEditorialSection onNavigateToAbout={onNavigateToAbout} />
 
       {/* 5. SECTION 5: CURATED GIFTING & OCCASION HUB */}
       <section className="w-full bg-[#E7E4D5] py-16 sm:py-24 border-b border-[#D8D2C2] px-4 sm:px-8 lg:px-12 xl:px-16 2xl:px-20">
@@ -504,7 +558,7 @@ export const HomePage: React.FC<HomePageProps> = ({
           <div className="flex flex-col sm:flex-row sm:items-end justify-between border-b border-[#D8D2C2] pb-4 text-left gap-3">
             <div>
               <span className="text-[10px] text-[#8F896D] uppercase tracking-widest font-semibold block mb-1">
-                (04) / Gifting & Curated Edits
+                Gifting & Curated Edits
               </span>
               <h2 className="font-serif-display text-4xl sm:text-6xl text-[#413C23] font-light">
                 Shop By <span className="italic font-normal">Occasion</span>
@@ -538,7 +592,7 @@ export const HomePage: React.FC<HomePageProps> = ({
           </div>
 
           {/* 4-Item Grid for Gifting */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="gifting-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {giftingProducts.map((product) => {
               if (!product || !product.id) return null;
               const imageSrc = getProductImage(product);
@@ -547,16 +601,20 @@ export const HomePage: React.FC<HomePageProps> = ({
                 <div
                   key={product.id}
                   onClick={() => onSelectProduct(product)}
-                  className="group cursor-pointer flex flex-col justify-between bg-[#E7E4D5] border border-[#D8D2C2] rounded-xs overflow-hidden transition-all duration-300 hover:shadow-md hover:border-[#8F896D] text-left"
+                  className="gifting-card group cursor-pointer flex flex-col justify-between bg-[#F2EFDB] border border-[#D8D2C2] rounded-xs overflow-hidden transition-all duration-300 hover:shadow-md hover:border-[#8F896D] text-left"
                 >
-                  <div className="relative aspect-square w-full bg-[#E7E4D5] p-6 flex items-center justify-center overflow-hidden">
+                  <div className="relative aspect-square w-full bg-[#F2EFDB] p-6 flex items-center justify-center overflow-hidden">
                     <img
                       src={imageSrc}
                       alt={product.name}
                       referrerPolicy="no-referrer"
+                      width={800}
+                      height={800}
+                      loading="lazy"
+                      decoding="async"
                       className="w-full h-full object-contain mix-blend-multiply group-hover:scale-106 transition-transform duration-500"
                     />
-                    <div className="absolute top-3 left-3 bg-[#E7E4D5] text-[#413C23] text-[10px] font-semibold px-2 py-0.5 rounded-xs border border-[#D8D2C2] uppercase tracking-wider">
+                    <div className="absolute top-3 left-3 bg-[#F2EFDB] text-[#413C23] text-[10px] font-semibold px-2 py-0.5 rounded-xs border border-[#D8D2C2] uppercase tracking-wider">
                       {product.metal}
                     </div>
                     <button
@@ -594,7 +652,7 @@ export const HomePage: React.FC<HomePageProps> = ({
       <section className="border-b border-[#D8D2C2] bg-[#E7E4D5] py-8 px-4 sm:px-8 lg:px-12 xl:px-16 2xl:px-20">
         <div className="w-full grid grid-cols-2 md:grid-cols-4 gap-6 text-center md:text-left">
           <div className="flex items-center justify-center md:justify-start gap-3.5 text-xs font-medium text-[#413C23]">
-            <div className="w-10 h-10 rounded-full bg-[#F4EFE6] border border-[#D8D2C2] flex items-center justify-center text-[#413C23] shrink-0">
+            <div className="w-10 h-10 rounded-full bg-[#F2EFDB] border border-[#D8D2C2] flex items-center justify-center text-[#413C23] shrink-0">
               <Truck className="w-4 h-4" />
             </div>
             <div>
@@ -604,7 +662,7 @@ export const HomePage: React.FC<HomePageProps> = ({
           </div>
 
           <div className="flex items-center justify-center md:justify-start gap-3.5 text-xs font-medium text-[#413C23]">
-            <div className="w-10 h-10 rounded-full bg-[#F4EFE6] border border-[#D8D2C2] flex items-center justify-center text-[#413C23] shrink-0">
+            <div className="w-10 h-10 rounded-full bg-[#F2EFDB] border border-[#D8D2C2] flex items-center justify-center text-[#413C23] shrink-0">
               <Package className="w-4 h-4" />
             </div>
             <div>
@@ -614,7 +672,7 @@ export const HomePage: React.FC<HomePageProps> = ({
           </div>
 
           <div className="flex items-center justify-center md:justify-start gap-3.5 text-xs font-medium text-[#413C23]">
-            <div className="w-10 h-10 rounded-full bg-[#F4EFE6] border border-[#D8D2C2] flex items-center justify-center text-[#413C23] shrink-0">
+            <div className="w-10 h-10 rounded-full bg-[#F2EFDB] border border-[#D8D2C2] flex items-center justify-center text-[#413C23] shrink-0">
               <Gem className="w-4 h-4" />
             </div>
             <div>
@@ -624,7 +682,7 @@ export const HomePage: React.FC<HomePageProps> = ({
           </div>
 
           <div className="flex items-center justify-center md:justify-start gap-3.5 text-xs font-medium text-[#413C23]">
-            <div className="w-10 h-10 rounded-full bg-[#F4EFE6] border border-[#D8D2C2] flex items-center justify-center text-[#413C23] shrink-0">
+            <div className="w-10 h-10 rounded-full bg-[#F2EFDB] border border-[#D8D2C2] flex items-center justify-center text-[#413C23] shrink-0">
               <RotateCcw className="w-4 h-4" />
             </div>
             <div>

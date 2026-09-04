@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Ruler, Sparkles, Check, Info } from 'lucide-react';
+import { X, Ruler, Check, Info } from 'lucide-react';
 
 interface RingSizerModalProps {
   isOpen: boolean;
@@ -52,7 +52,7 @@ export const RingSizerModal: React.FC<RingSizerModalProps> = ({
         <div className="relative w-full max-w-xl transform overflow-hidden rounded-xs bg-[#E7E4D5] border border-[#D8D2C2] text-left shadow-2xl transition-all animate-in zoom-in-95 duration-200 text-[#413C23]">
           
           {/* Header */}
-          <div className="flex items-center justify-between border-b border-[#D8D2C2] bg-[#F4EFE6] px-6 py-4">
+          <div className="flex items-center justify-between border-b border-[#D8D2C2] bg-[#F2EFDB] px-6 py-4">
             <div className="flex items-center gap-2">
               <Ruler className="w-4 h-4 text-[#8F896D]" />
               <h3 className="font-serif-display text-xl sm:text-2xl text-[#413C23]">
@@ -103,7 +103,7 @@ export const RingSizerModal: React.FC<RingSizerModalProps> = ({
                 </div>
 
                 {/* Visual Ring Gauge Circle */}
-                <div className="py-6 flex flex-col items-center justify-center bg-[#F4EFE6] border border-[#D8D2C2] rounded-xs space-y-4">
+                <div className="py-6 flex flex-col items-center justify-center bg-[#F2EFDB] border border-[#D8D2C2] rounded-xs space-y-4">
                   <div
                     className="rounded-full border-2 border-[#8F896D] bg-[#FAF8F5]/80 flex items-center justify-center shadow-inner transition-all duration-100 relative"
                     style={{
@@ -174,7 +174,7 @@ export const RingSizerModal: React.FC<RingSizerModalProps> = ({
 
                 <div className="overflow-x-auto border border-[#D8D2C2] rounded-xs bg-[#FAF8F5]">
                   <table className="w-full text-left text-xs">
-                    <thead className="bg-[#F4EFE6] text-[#413C23] border-b border-[#D8D2C2] font-serif-display text-sm uppercase tracking-wider">
+                    <thead className="bg-[#F2EFDB] text-[#413C23] border-b border-[#D8D2C2] font-serif-display text-sm uppercase tracking-wider">
                       <tr>
                         <th className="p-3">US / Canada</th>
                         <th className="p-3">UK / Australia</th>
@@ -210,8 +210,15 @@ export const RingSizerModal: React.FC<RingSizerModalProps> = ({
           </div>
 
           {/* Footer note */}
-          <div className="border-t border-[#D8D2C2] bg-[#F4EFE6] px-6 py-3 flex items-center justify-between text-[11px] text-[#8F896D]">
-            <span>Need custom bespoke sizing? Message our WhatsApp Concierge.</span>
+          <div className="border-t border-[#D8D2C2] bg-[#F2EFDB] px-6 py-3 flex items-center justify-between text-[11px] text-[#8F896D]">
+            {/* The full guidance lives at a real, crawlable URL (see src/data/guides.ts).
+                This modal is a convenience layer over it, never the only copy. */}
+            <a
+              href="/guides/ring-size-guide"
+              className="text-[#413C23] hover:underline font-medium"
+            >
+              Read the full ring size guide
+            </a>
             <button
               onClick={onClose}
               className="text-xs font-semibold text-[#413C23] hover:underline uppercase tracking-wider"

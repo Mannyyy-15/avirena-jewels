@@ -1,13 +1,14 @@
 import React, { useRef } from 'react';
-import { ArrowRight, Sparkles, Gem, ArrowUpRight } from 'lucide-react';
+import { ArrowRight, Gem, ArrowUpRight } from 'lucide-react';
 import { Product, Currency, Category } from '../types';
-import { PRODUCTS, formatPrice } from '../data/products';
 
 interface CollectionsHubPageProps {
   onNavigateToCategory: (category: Category) => void;
   onSelectProduct: (product: Product) => void;
   currency: Currency;
   catalogProducts?: Product[];
+  /** False until the live Shopify catalog fetch has settled. */
+  isCatalogReady?: boolean;
 }
 
 interface CollectionSuite {
@@ -17,7 +18,6 @@ interface CollectionSuite {
   category: Category;
   description: string;
   coverImage: string;
-  pieceCount: string;
   featuredProductId: string;
 }
 
@@ -27,9 +27,8 @@ const SUITES: CollectionSuite[] = [
     title: 'Molten Gold Bands & Rings',
     subtitle: 'Lost-Wax Sculpted Silhouettes',
     category: 'rings',
-    description: 'Organic gold contours, molten ridges, and diamond-paved geometric bands cast in thick 18k vermeil.',
+    description: 'Organic contours, molten ridges, and sculpted geometric bands crafted in premium gold-tone brass alloy.',
     coverImage: 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&w=1200&q=85',
-    pieceCount: '6 Unique Styles',
     featuredProductId: 'row-edge-ring',
   },
   {
@@ -37,9 +36,8 @@ const SUITES: CollectionSuite[] = [
     title: 'Architectural Figaro & Solitaires',
     subtitle: 'Geometric Weight & Balance',
     category: 'necklaces',
-    description: 'Chunky interlocking figaro links, minimal Y-chokers, and baroque pearl drops designed for effortless stacking.',
+    description: 'Chunky interlocking links, minimal chokers, and baroque pearl drops designed for effortless stacking.',
     coverImage: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=1200&q=85',
-    pieceCount: '8 Unique Styles',
     featuredProductId: 'square-form-necklace',
   },
   {
@@ -49,7 +47,6 @@ const SUITES: CollectionSuite[] = [
     category: 'earrings',
     description: 'Featherweight hollow-core dome studs, spiraling vortices, and bold huggies with high-polished mirror luster.',
     coverImage: 'https://images.unsplash.com/photo-1630019852942-f89202989a59?auto=format&fit=crop&w=1200&q=85',
-    pieceCount: '7 Unique Styles',
     featuredProductId: 'lucid-studs',
   },
   {
@@ -57,9 +54,8 @@ const SUITES: CollectionSuite[] = [
     title: 'Open Wire Cuffs & Bangles',
     subtitle: 'Fluid Ergonomic Wristwear',
     category: 'bracelets',
-    description: 'Hand-shaped malleable gold wire cuffs tipped with natural freshwater pearls and architectural bar bangles.',
+    description: 'Hand-shaped malleable wire cuffs tipped with natural freshwater pearls and architectural bar bangles.',
     coverImage: 'https://images.unsplash.com/photo-1602751584552-8ba73aad10e1?auto=format&fit=crop&w=1200&q=85',
-    pieceCount: '5 Unique Styles',
     featuredProductId: 'two-pearl-cuff',
   },
   {
@@ -67,9 +63,8 @@ const SUITES: CollectionSuite[] = [
     title: 'Kinetic Ribbons & Modern Pins',
     subtitle: 'Sculpted Statement Accents',
     category: 'brooches',
-    description: 'Fluid kinetic ribbons in recycled 925 silver and 18k vermeil that elevate silk scarves, lapels, and knitwear.',
+    description: 'Fluid kinetic ribbons in silver-tone and gold-tone brass alloy that elevate silk scarves, lapels, and knitwear.',
     coverImage: 'https://images.unsplash.com/photo-1598560917505-59a3ad559071?auto=format&fit=crop&w=1200&q=85',
-    pieceCount: '4 Unique Styles',
     featuredProductId: 'solid-wave-brooch',
   },
 ];
@@ -78,17 +73,23 @@ export const CollectionsHubPage: React.FC<CollectionsHubPageProps> = ({
   onNavigateToCategory,
   onSelectProduct,
   currency,
-  catalogProducts = PRODUCTS,
+  catalogProducts = [],
+  isCatalogReady = true,
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
 
+  // Counts come from the live Shopify catalog only. There is no mock fallback:
+  // an unstocked category honestly reads 0 rather than borrowing a placeholder.
+  const countFor = (cat: Category) =>
+    catalogProducts.filter((p) => p.category === cat).length;
+
   const categories: { id: Category; label: string; count: number }[] = [
     { id: 'all', label: 'All Pieces', count: catalogProducts.length },
-    { id: 'rings', label: 'Rings', count: catalogProducts.filter((p) => p.category === 'rings').length },
-    { id: 'necklaces', label: 'Necklaces', count: catalogProducts.filter((p) => p.category === 'necklaces').length },
-    { id: 'earrings', label: 'Earrings', count: catalogProducts.filter((p) => p.category === 'earrings').length },
-    { id: 'bracelets', label: 'Bracelets', count: catalogProducts.filter((p) => p.category === 'bracelets').length },
-    { id: 'brooches', label: 'Brooches', count: catalogProducts.filter((p) => p.category === 'brooches').length },
+    { id: 'rings', label: 'Rings', count: countFor('rings') },
+    { id: 'necklaces', label: 'Necklaces', count: countFor('necklaces') },
+    { id: 'earrings', label: 'Earrings', count: countFor('earrings') },
+    { id: 'bracelets', label: 'Bracelets', count: countFor('bracelets') },
+    { id: 'brooches', label: 'Brooches', count: countFor('brooches') },
   ];
 
   return (
@@ -120,7 +121,7 @@ export const CollectionsHubPage: React.FC<CollectionsHubPageProps> = ({
             Collections & <span className="italic font-normal text-[#FAF8F5]">Suites</span>
           </h1>
           <p className="text-xs sm:text-sm text-[#E7E4D5]/80 font-normal max-w-xl leading-relaxed pt-2">
-            Explore our permanent design suites crafted with certified 100% recycled precious metals, natural gemstones, and organic baroque pearls.
+            Explore our permanent design suites crafted in anti-tarnish brass with protective gold-tone and silver-tone finishes, and cultured baroque pearls.
           </p>
         </div>
       </section>
@@ -129,18 +130,33 @@ export const CollectionsHubPage: React.FC<CollectionsHubPageProps> = ({
       <section className="sticky top-0 z-30 w-full px-4 sm:px-8 lg:px-12 xl:px-16 2xl:px-20 py-3.5 bg-[#E7E4D5]/95 backdrop-blur-md border-b border-[#D8D2C2]">
         <div className="w-full flex items-center justify-between gap-4">
           <div className="flex items-center gap-2 overflow-x-auto pb-1 md:pb-0 scrollbar-none">
-            {categories.map((cat) => (
-              <button
-                key={cat.id}
-                onClick={() => onNavigateToCategory(cat.id)}
-                className="text-xs px-4 py-2 rounded-xs transition-all cursor-pointer font-medium uppercase tracking-wider shrink-0 flex items-center gap-1.5 bg-[#F4EFE6] hover:bg-[#FAF8F5] text-[#413C23] border border-[#D8D2C2] hover:border-[#8F896D]"
-              >
-                <span>{cat.label}</span>
-                <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-[#E7E4D5] text-[#8F896D]">
-                  {cat.count}
-                </span>
-              </button>
-            ))}
+            {categories.map((cat) => {
+              // Categories with no live inventory stay clickable (the route is
+              // real and reachable) but are visually de-emphasised and labelled
+              // so nobody is sent to an empty grid without warning.
+              const isEmpty = isCatalogReady && cat.count === 0;
+              return (
+                <button
+                  key={cat.id}
+                  onClick={() => onNavigateToCategory(cat.id)}
+                  title={isEmpty ? `${cat.label} — coming soon` : undefined}
+                  className={`text-xs px-4 py-2 rounded-xs transition-all cursor-pointer font-medium uppercase tracking-wider shrink-0 flex items-center gap-1.5 border ${
+                    isEmpty
+                      ? 'bg-transparent text-[#413C23]/45 border-dashed border-[#D8D2C2] hover:text-[#413C23]/70'
+                      : 'bg-[#F2EFDB] hover:bg-[#FAF8F5] text-[#413C23] border-[#D8D2C2] hover:border-[#8F896D]'
+                  }`}
+                >
+                  <span>{cat.label}</span>
+                  {isEmpty ? (
+                    <span className="text-[9px] tracking-[0.15em] text-[#8F896D]">Soon</span>
+                  ) : (
+                    <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-[#E7E4D5] text-[#8F896D]">
+                      {isCatalogReady ? cat.count : '—'}
+                    </span>
+                  )}
+                </button>
+              );
+            })}
           </div>
 
           <button
@@ -174,17 +190,21 @@ export const CollectionsHubPage: React.FC<CollectionsHubPageProps> = ({
           {/* Collection Suites Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
             {SUITES.map((suite, idx) => {
+              // Only ever a REAL product from the live Shopify catalog. When the
+              // suite has no live inventory this is undefined and the "Signature
+              // Piece" block is replaced by an honest "coming soon" note — never
+              // by a mock product with stock photography.
+              const suiteProducts = catalogProducts.filter((p) => p.category === suite.category);
               const featuredProduct =
-                catalogProducts.find((p) => p.id === suite.featuredProductId) || 
-                PRODUCTS.find((p) => p.id === suite.featuredProductId) || 
-                catalogProducts[0] || 
-                PRODUCTS[0];
+                suiteProducts.find((p) => p.handle === suite.featuredProductId) ||
+                suiteProducts.find((p) => p.id === suite.featuredProductId) ||
+                suiteProducts[0];
 
               return (
                 <div
                   key={suite.id}
                   onClick={() => onNavigateToCategory(suite.category)}
-                  className="group cursor-pointer flex flex-col justify-between bg-[#F4EFE6] border border-[#D8D2C2] rounded-xs overflow-hidden transition-all duration-300 hover:shadow-md hover:border-[#8F896D] text-left"
+                  className="group cursor-pointer flex flex-col justify-between bg-[#F2EFDB] border border-[#D8D2C2] rounded-xs overflow-hidden transition-all duration-300 hover:shadow-md hover:border-[#8F896D] text-left"
                 >
                   {/* Suite Image Header */}
                   <div className="relative aspect-[4/3] w-full overflow-hidden bg-[#E7E4D5]">
@@ -201,7 +221,11 @@ export const CollectionsHubPage: React.FC<CollectionsHubPageProps> = ({
                         (0{idx + 1})
                       </span>
                       <span className="text-[11px] font-medium bg-[#413C23]/80 backdrop-blur-xs px-2.5 py-0.5 rounded-xs border border-white/20">
-                        {suite.pieceCount}
+                        {!isCatalogReady
+                          ? '—'
+                          : suiteProducts.length === 0
+                          ? 'Coming Soon'
+                          : `${suiteProducts.length} ${suiteProducts.length === 1 ? 'Style' : 'Styles'}`}
                       </span>
                     </div>
                   </div>
@@ -222,22 +246,38 @@ export const CollectionsHubPage: React.FC<CollectionsHubPageProps> = ({
 
                     {/* Featured Piece Highlight */}
                     <div className="pt-3.5 border-t border-[#D8D2C2] flex items-center justify-between">
-                      <div className="flex items-center gap-2.5">
-                        <div className="w-10 h-10 bg-[#FAF8F5] border border-[#D8D2C2] rounded-xs flex items-center justify-center p-1">
-                          <img
-                            src={featuredProduct.images[0]}
-                            alt={featuredProduct.name}
-                            referrerPolicy="no-referrer"
-                            className="w-full h-full object-contain mix-blend-multiply"
-                          />
+                      {featuredProduct ? (
+                        <div className="flex items-center gap-2.5">
+                          <div className="w-10 h-10 bg-[#FAF8F5] border border-[#D8D2C2] rounded-xs flex items-center justify-center p-1">
+                            <img
+                              src={featuredProduct.images[0]}
+                              alt={featuredProduct.name}
+                              referrerPolicy="no-referrer"
+                              className="w-full h-full object-contain mix-blend-multiply"
+                            />
+                          </div>
+                          <div>
+                            <span className="text-[10px] text-[#8F896D] uppercase tracking-wider block font-medium">Signature Piece</span>
+                            <span className="text-xs font-serif-display text-[#413C23] font-medium truncate block max-w-[140px]">
+                              {featuredProduct.name}
+                            </span>
+                          </div>
                         </div>
-                        <div>
-                          <span className="text-[10px] text-[#8F896D] uppercase tracking-wider block font-medium">Signature Piece</span>
-                          <span className="text-xs font-serif-display text-[#413C23] font-medium truncate block max-w-[140px]">
-                            {featuredProduct.name}
-                          </span>
+                      ) : (
+                        <div className="flex items-center gap-2.5">
+                          <div className="w-10 h-10 bg-[#FAF8F5] border border-dashed border-[#D8D2C2] rounded-xs flex items-center justify-center">
+                            <Gem className="w-4 h-4 text-[#8F896D]" />
+                          </div>
+                          <div>
+                            <span className="text-[10px] text-[#8F896D] uppercase tracking-wider block font-medium">
+                              {isCatalogReady ? 'In Development' : 'Loading'}
+                            </span>
+                            <span className="text-xs font-serif-display text-[#413C23]/70 font-medium block">
+                              {isCatalogReady ? 'Not yet released' : '—'}
+                            </span>
+                          </div>
                         </div>
-                      </div>
+                      )}
 
                       <div className="text-right">
                         <span className="inline-flex items-center gap-1 text-xs font-semibold text-[#413C23] group-hover:text-[#8F896D] transition-colors uppercase tracking-wider">
@@ -260,12 +300,12 @@ export const CollectionsHubPage: React.FC<CollectionsHubPageProps> = ({
         <div className="bg-[#FAF8F5] border border-[#D8D2C2] p-8 sm:p-12 rounded-xs text-center space-y-6 max-w-7xl mx-auto shadow-xs">
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-center">
             <div className="space-y-1">
-              <span className="text-xs uppercase tracking-[0.2em] font-semibold text-[#8F896D] block">Artisan Casting</span>
-              <p className="font-serif-display text-lg sm:text-xl text-[#413C23]">3.0μ Heavy 18k Vermeil</p>
+              <span className="text-xs uppercase tracking-[0.2em] font-semibold text-[#8F896D] block">Everyday Durability</span>
+              <p className="font-serif-display text-lg sm:text-xl text-[#413C23]">Anti-Tarnish E-Coating</p>
             </div>
             <div className="space-y-1 border-y sm:border-y-0 sm:border-x border-[#D8D2C2] py-4 sm:py-0">
-              <span className="text-xs uppercase tracking-[0.2em] font-semibold text-[#8F896D] block">Ethical Sourcing</span>
-              <p className="font-serif-display text-lg sm:text-xl text-[#413C23]">100% Recycled 925 Silver</p>
+              <span className="text-xs uppercase tracking-[0.2em] font-semibold text-[#8F896D] block">Skin Safe</span>
+              <p className="font-serif-display text-lg sm:text-xl text-[#413C23]">Nickel & Lead Free</p>
             </div>
             <div className="space-y-1">
               <span className="text-xs uppercase tracking-[0.2em] font-semibold text-[#8F896D] block">Maison Standard</span>

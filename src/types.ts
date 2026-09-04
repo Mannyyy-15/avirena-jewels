@@ -1,6 +1,6 @@
 export type Category = 'all' | 'rings' | 'necklaces' | 'earrings' | 'bracelets' | 'sets' | 'brooches';
 
-export type Metal = 'Gold-Tone Brass' | 'Silver-Tone Alloy' | 'Anti-Tarnish Brass' | 'Rose Gold-Tone' | '18k Gold Vermeil';
+export type Metal = 'Gold-Tone Brass' | 'Silver-Tone Alloy' | 'Anti-Tarnish Brass' | 'Rose Gold-Tone';
 
 export type Currency = 'EUR' | 'INR' | 'USD' | 'GBP';
 
@@ -23,8 +23,10 @@ export interface Product {
   metal: Metal;
   price: number; // Base in EUR
   originalPrice?: number;
-  rating: number;
-  reviewsCount: number;
+  /** Only set when backed by a real review system. Never hardcode. */
+  rating?: number;
+  /** Only set when backed by a real review system. Never hardcode. */
+  reviewsCount?: number;
   images: string[];
   description: string;
   details: string[];
@@ -65,6 +67,7 @@ export type PageView =
   | 'journal'
   | 'faq'
   | 'policies'
+  | 'guides'
   | 'pdp'
   | 'cart'
   | 'checkout'

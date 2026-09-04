@@ -1,19 +1,27 @@
-import React, { useState } from 'react';
-import { Sparkles, ArrowRight, Clock, BookOpen, Share2, Tag, ChevronRight } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { ArrowRight, Clock, BookOpen, Share2, ChevronRight, Check } from 'lucide-react';
 import { Product, Currency } from '../types';
-import { PRODUCTS, formatPrice } from '../data/products';
+import { formatPrice } from '../data/products';
+
+if (typeof window !== 'undefined') {
+  gsap.registerPlugin(ScrollTrigger);
+}
 
 interface JournalPageProps {
   onSelectProduct: (product: Product) => void;
   onNavigateToShop: () => void;
   currency: Currency;
+  /** Live Shopify catalog. Article product strips resolve against this only. */
+  catalogProducts?: Product[];
 }
 
 interface Article {
   id: string;
   title: string;
   subtitle: string;
-  category: 'Craftsmanship' | 'Style Guide' | 'Heritage' | 'Care Guide';
+  category: 'Craftsmanship' | 'Style Guide' | 'Our Story' | 'Care Guide';
   readTime: string;
   date: string;
   image: string;
@@ -26,78 +34,99 @@ export const JournalPage: React.FC<JournalPageProps> = ({
   onSelectProduct,
   onNavigateToShop,
   currency,
+  catalogProducts = [],
 }) => {
+  const containerRef = useRef<HTMLDivElement>(null);
   const [activeCategory, setActiveCategory] = useState<string>('all');
   const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
+  const [copied, setCopied] = useState(false);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      gsap.from('.journal-reveal', {
+        y: 28,
+        opacity: 0,
+        duration: 0.8,
+        stagger: 0.1,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: 'top 85%',
+        },
+      });
+    }, containerRef);
+
+    return () => ctx.revert();
+  }, [selectedArticle, activeCategory]);
 
   const articles: Article[] = [
     {
-      id: 'sculptural-vermeil-craft',
-      title: 'The Art of Sculptural Vermeil: Inside Our Arezzo & Jaipur Foundries',
-      subtitle: 'Where ancient lost-wax casting meets contemporary minimalist architecture.',
-      category: 'Craftsmanship',
+      id: 'our-2020-story',
+      title: 'Born in Quarantine: How a 2020 Lockdown Passion Project Built Avirena',
+      subtitle: 'From hand-assembling jewelry in a living room to an everyday modern design label.',
+      category: 'Our Story',
       readTime: '4 min read',
-      date: 'Autumn Edition',
+      date: 'Brand Chronicle',
       image: 'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?auto=format&fit=crop&w=1600&q=90',
       excerpt:
-        'Behind every organic curve of Avirena jewelry lies a multi-generational tradition of Italian and Indian metalsmiths. Discover how 3.0-micron thick gold vermeil bridges the worlds of high fine jewelry and modern effortless wear.',
+        'When the global lockdown paused daily life in 2020, we sought solace in creative hands-on craft. What began as small, thoughtful jewelry gifts for our immediate neighborhood quickly resonated into a community of women seeking high-grade, everyday luxury that is beautiful, skin-friendly, and accessible.',
       content: [
-        'True vermeil is not merely gold plating. By historical standard and French decree, authentic vermeil requires a solid base of 925 sterling silver layered with a generous coating of gold measuring at least 2.5 microns thick.',
-        'At Studio Avirena, we surpass standard industry thresholds by depositing a resilient 3.0-micron coating of 18-karat yellow gold over recycled silver cores. Every single master model is sculpted by hand in jeweller’s wax, allowing our craftsmen to form undulating, molten silhouettes that reflect natural sunlight with remarkable depth.',
-        'This painstaking dual-origin process unites the sculptural purity of Arezzo goldsmithing with the intricate filigree heritage of Jaipur artisans. The result is modern fine jewelry made to accompany you through daily rituals and special occasions alike.'
+        'In the spring of 2020, during the height of the COVID lockdown, normal routines came to a sudden halt. In those quiet weeks confined indoors, our founders took comfort at the workbench—sketching sculptural curves, sourcing skin-friendly alloys, and hand-finishing pieces for friends and family.',
+        'The response was immediate and heartwarming. Friends loved that our pieces felt substantial, warm, and sophisticated without the prohibitive price tag or delicacy of solid gold. They could wear them working from home, stepping out for quick errands, or styling up their simplest outfits.',
+        'Encouraged by local community demand, we formalized our vision into AVIRENA: a homegrown Indian jewelry brand dedicated to honest craft, timeless modern aesthetics, and daily wearable durability. Today, we remain true to that founding ethos—every piece is thoughtfully engineered for life as you truly live it.'
       ],
       featuredProductIds: ['square-form-necklace', 'lucid-studs', 'scalo-bracelet']
     },
     {
+      id: 'high-grade-brass-alloy',
+      title: 'The Brass Alloy Standard: Why We Choose Premium Brass Over Precious Metals',
+      subtitle: 'Understanding protective plating, skin-friendly alloys, and anti-tarnish everyday wear.',
+      category: 'Craftsmanship',
+      readTime: '4 min read',
+      date: 'Material Study',
+      image: 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&w=1600&q=90',
+      excerpt:
+        'We believe in transparency. We don’t sell overpriced solid gold or fragile mined diamonds. Instead, we master high-grade brass alloy coated in durable gold-tone and silver-tone protective finishes—engineered for sweat resistance, lightweight comfort, and zero tarnish.',
+      content: [
+        'For decades, the jewelry market forced shoppers to choose between two extremes: cheap fast-fashion metals that turn your skin green after two wears, or exorbitant solid gold pieces you are terrified to wear outside the house.',
+        'At AVIRENA, we carve a conscious third path. We craft our pieces using high-tensile, lead-free and nickel-free brass alloy. Brass is ductile yet resilient, allowing us to mold architectural arches, organic fluting, and bold dome silhouettes that maintain their crisp lines over time.',
+        'Each piece is finished with a protective anti-tarnish coating and sealed with a hypoallergenic barrier. The result is warm, luminous gold-tone and crisp silver-tone jewelry that withstands moisture, humidity, and daily friction without fading.'
+      ],
+      featuredProductIds: ['dome-studs', 'row-edge-ring', 'wave-prism-ring']
+    },
+    {
       id: 'modern-ear-stacking-guide',
-      title: 'The Architectural Ear Stack: Balancing Bold Domes with Delicate Huggies',
-      subtitle: 'A structural approach to everyday jewelry layering without the clutter.',
+      title: 'The Everyday Stacking Blueprint: Minimalist Combinations for Work and Weekend',
+      subtitle: 'How to balance chunky domes, textured huggies, and clean lines without looking overdone.',
       category: 'Style Guide',
       readTime: '3 min read',
       date: 'Style Notes',
       image: 'https://images.unsplash.com/photo-1630019852942-f89202989a59?auto=format&fit=crop&w=1600&q=90',
       excerpt:
-        'Layering earrings is an exercise in scale, texture, and negative space. Master the art of pairing high-polish dome studs with ribbed hoop huggies and sparkling crystal accents.',
+        'Building an effortless jewelry uniform is about harmony and contrast. Discover how our community pairs bold sculptural rings with textured hoops for seamless day-to-night transitions.',
       content: [
-        'When assembling an intentional ear stack, begin with a commanding focal point. The Dome Stud or Lucid Stud anchors the first lobe piercing with its bold, light-catching surface.',
-        'As you move upwards along the ear lobe, introduce contrasting textures: the vertical fluting of the Twin Hoop Huggies or the delicate twinkle of our Accent Huggies. The juxtaposition of smooth molten metal against micro-pavé crystals creates visual dimension without overwhelming.',
-        'Rule of thumb: leave breathing room between bold elements. If your first piercing is a substantial sculptural piece, keep the secondary accents slender and closely contoured to the ear.'
+        'An intentional ear stack begins with a clear anchor point. Our Dome Studs or Lucid Studs command the primary lobe with bold, reflective surfaces.',
+        'Moving along the ear, contrast is key. Pair a high-polish dome with the subtle fluting of the Twin Hoop Huggies. The interplay of mirror-finish metal against grooved ribbing creates visual richness without feeling cluttered.',
+        'When stacking necklaces, balance chain weights: pair a substantial architectural chain like the Square Form Necklace with a delicate choker to frame your collarbone naturally with open collars, knits, or crisp button-downs.'
       ],
-      featuredProductIds: ['dome-studs', 'accent-earrings', 'twin-hoop-earrings', 'lucid-studs']
+      featuredProductIds: ['dome-studs', 'twin-hoop-earrings', 'accent-earrings']
     },
     {
-      id: 'baroque-pearl-modern-classic',
-      title: 'Lustrous Imperfection: Why Organic Baroque Pearls Outshine the Spherical',
-      subtitle: 'Celebrating individuality, iridescence, and the allure of natural contours.',
-      category: 'Heritage',
-      readTime: '5 min read',
-      date: 'Material Study',
-      image: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=1600&q=90',
-      excerpt:
-        'Unlike manufactured uniform beads, no two freshwater baroque pearls are ever identical. Explore how Studio Avirena frames these luminous treasures in modern gold wire architecture.',
-      content: [
-        'Derived from the Portuguese word "barroco"—meaning an irregular or non-spherical pearl—baroque pearls have captivated royal courts and contemporary sculptors for centuries.',
-        'Each pearl harvested for Avirena is hand-selected for its high nacre thickness and celestial orient (the rainbow play of color across its iridescent skin). Rather than forcing these natural gems into rigid symmetrical settings, our designers mold the gold around each pearl’s unique contours.',
-        'From the Luna Pearl Choker to the Two Pearl Cuff, these pieces celebrate the poetic truth that genuine luxury lies in unrepeatable individuality.'
-      ],
-      featuredProductIds: ['luna-pearl-choker', 'two-pearl-cuff', 'pearl-drop-meridian']
-    },
-    {
-      id: 'prolonging-vermeil-brilliance',
-      title: 'The Atelier Guide: Caring for 18k Gold Vermeil for Generations',
-      subtitle: 'Simple preservation rituals to maintain your jewelry’s warm mirror luster.',
+      id: 'caring-for-brass-jewelry',
+      title: 'Everyday Longevity: How to Keep Your Anti-Tarnish Pieces Glowing',
+      subtitle: 'Simple, practical care routines designed for busy daily life.',
       category: 'Care Guide',
       readTime: '3 min read',
       date: 'Care & Longevity',
-      image: 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&w=1600&q=90',
+      image: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=1600&q=90',
       excerpt:
-        'Gold vermeil is remarkably resilient when cared for with mindful intention. Follow our master goldsmiths’ recommendations for cleaning, storing, and wearing your collection.',
+        'Our protective anti-tarnish coating is engineered for real life. Here are four straightforward, hassle-free habits to preserve your jewelry’s warm gleam season after season.',
       content: [
-        'The golden rule of fine vermeil: "Last on, first off." Apply your perfumes, serums, hairsprays, and lotions before putting on your jewelry. Chemicals and alcohol in cosmetics can react with surface finishes.',
-        'Remove your jewelry before swimming in chlorinated pools or bathing in thermal baths. Water itself is gentle, but household detergents and pool chlorines accelerate oxidation.',
-        'At the end of each wear, gently buff the surface with the complimentary Studio Avirena microfiber cloth to remove skin oils and dust. Store each piece separately in its velvet pouch to prevent scratches.'
+        'Apply fragrances and cosmetics first. Allow lotions, hairsprays, and perfumes to settle into your skin before fastening your necklaces or slipping on your rings.',
+        'While our protective coatings are moisture and sweat-resistant, avoid exposing your pieces to harsh chlorinated pools or industrial detergents, which can dull any surface over extended periods.',
+        'At the end of your day, a gentle wipe with a soft dry microfiber cloth removes body oils and urban dust. Store your pieces in individual compartments or pouches to keep them free from friction scratches.'
       ],
-      featuredProductIds: ['row-edge-ring', 'wave-prism-ring', 'gold-curve-necklace']
+      featuredProductIds: ['luna-pearl-choker', 'two-pearl-cuff', 'gold-curve-necklace']
     }
   ];
 
@@ -107,56 +136,60 @@ export const JournalPage: React.FC<JournalPageProps> = ({
 
   // If viewing single article
   if (selectedArticle) {
+    // Resolve against the live Shopify catalog only. An article that names a
+    // piece we do not actually stock simply renders no product strip.
     const featuredProds = selectedArticle.featuredProductIds
-      .map(id => PRODUCTS.find(p => p.id === id))
+      .map((id) => catalogProducts.find((p) => p.handle === id || p.id === id))
       .filter(Boolean) as Product[];
 
     return (
-      <div className="w-full text-left font-sans-body bg-[#FAF8F5] pb-24">
-        {/* Article Header & Breadcrumbs */}
-        <section className="w-full px-4 sm:px-8 lg:px-12 xl:px-16 pt-6 pb-6">
-          <div className="flex items-center gap-2 text-xs text-[#7D7973] uppercase tracking-wider mb-6">
+      <div ref={containerRef} className="w-full text-left font-sans-body bg-[#E7E4D5] text-[#413C23] pb-24 select-none">
+        {/* Article Breadcrumbs */}
+        <section className="w-full px-4 sm:px-8 lg:px-12 xl:px-16 2xl:px-20 pt-8 pb-4">
+          <div className="flex items-center gap-2 text-xs uppercase tracking-widest text-[#8F896D]">
             <button
               onClick={() => setSelectedArticle(null)}
-              className="hover:text-[#2C2C2A] cursor-pointer"
+              className="hover:text-[#413C23] transition-colors cursor-pointer"
             >
               Journal
             </button>
             <span>/</span>
-            <span className="text-[#C5A059] font-medium">{selectedArticle.category}</span>
+            <span className="text-[#413C23] font-medium">{selectedArticle.category}</span>
           </div>
+        </section>
 
-          <div className="max-w-3xl space-y-4">
-            <span className="inline-block px-3 py-1 bg-[#EAE6DB] text-[#2C2C2A] text-[11px] font-medium uppercase tracking-widest rounded-xs">
-              {selectedArticle.category} • {selectedArticle.readTime}
+        {/* Article Header */}
+        <section className="w-full px-4 sm:px-8 lg:px-12 xl:px-16 2xl:px-20 pb-8">
+          <div className="max-w-4xl space-y-4">
+            <span className="inline-block text-[11px] font-semibold uppercase tracking-[0.2em] text-[#8F896D]">
+              {selectedArticle.category} · {selectedArticle.readTime}
             </span>
-            <h1 className="font-serif-display text-3xl sm:text-5xl lg:text-6xl text-[#2C2C2A] tracking-tight leading-tight">
+            <h1 className="font-serif-display text-3xl sm:text-5xl lg:text-6xl text-[#413C23] tracking-tight leading-tight font-normal">
               {selectedArticle.title}
             </h1>
-            <p className="text-base sm:text-lg text-[#5C5850] font-light leading-relaxed">
+            <p className="text-base sm:text-lg text-[#413C23]/80 font-normal leading-relaxed">
               {selectedArticle.subtitle}
             </p>
           </div>
         </section>
 
         {/* Hero Image */}
-        <section className="w-full px-4 sm:px-8 lg:px-12 xl:px-16 mb-12">
-          <div className="relative aspect-[16/9] sm:aspect-[21/9] rounded-xs overflow-hidden border border-[#E6DFD3] bg-[#2C2C2A]">
+        <section className="w-full px-4 sm:px-8 lg:px-12 xl:px-16 2xl:px-20 mb-12">
+          <div className="relative aspect-[16/9] sm:aspect-[21/9] rounded-xs overflow-hidden border border-[#D8D2C2] bg-[#F2EFDB]">
             <img
               src={selectedArticle.image}
               alt={selectedArticle.title}
-              referrerPolicy="no-referrer"
               className="w-full h-full object-cover object-center"
             />
           </div>
         </section>
 
         {/* Article Body & Featured Jewelry Sidebar */}
-        <section className="w-full px-4 sm:px-8 lg:px-12 xl:px-16">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 max-w-6xl">
+        <section className="w-full px-4 sm:px-8 lg:px-12 xl:px-16 2xl:px-20">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 max-w-7xl">
             {/* Main Article Content */}
-            <div className="lg:col-span-8 space-y-6 text-[#2C2C2A]/90 text-sm sm:text-base leading-relaxed font-light">
-              <p className="text-base sm:text-lg font-normal text-[#2C2C2A] border-l-2 border-[#C5A059] pl-4 italic">
+            <div className="lg:col-span-8 space-y-6 text-[#413C23]/85 text-sm sm:text-base leading-relaxed font-normal">
+              <p className="text-base sm:text-lg font-normal text-[#413C23] border-l-2 border-[#8F896D] pl-4 italic">
                 {selectedArticle.excerpt}
               </p>
               {selectedArticle.content.map((paragraph, index) => (
@@ -165,61 +198,72 @@ export const JournalPage: React.FC<JournalPageProps> = ({
                 </p>
               ))}
 
-              <div className="pt-8 border-t border-[#E6DFD3] flex items-center justify-between">
+              <div className="pt-8 border-t border-[#D8D2C2] flex items-center justify-between">
                 <button
                   onClick={() => setSelectedArticle(null)}
-                  className="px-5 py-2.5 bg-[#2C2C2A] text-white text-xs uppercase tracking-widest rounded-xs hover:bg-[#444238] transition-colors cursor-pointer"
+                  className="px-5 py-2.5 bg-[#413C23] text-[#E7E4D5] text-xs uppercase tracking-widest font-semibold rounded-xs hover:bg-[#8F896D] transition-colors cursor-pointer"
                 >
                   ← Back to All Stories
                 </button>
                 <button
                   onClick={() => {
                     navigator.clipboard?.writeText(window.location.href);
-                    alert('Article link copied to clipboard!');
+                    setCopied(true);
+                    setTimeout(() => setCopied(false), 2500);
                   }}
-                  className="px-4 py-2 border border-[#E6DFD3] hover:border-[#2C2C2A] text-xs text-[#2C2C2A] rounded-xs flex items-center gap-1.5 cursor-pointer transition-colors"
+                  className="px-4 py-2 border border-[#D8D2C2] hover:border-[#413C23] text-xs text-[#413C23] rounded-xs flex items-center gap-1.5 cursor-pointer transition-colors bg-[#F2EFDB]"
                 >
-                  <Share2 className="w-3.5 h-3.5" /> Share Article
+                  {copied ? (
+                    <>
+                      <Check className="w-3.5 h-3.5 text-[#413C23]" />
+                      <span>Link Copied!</span>
+                    </>
+                  ) : (
+                    <>
+                      <Share2 className="w-3.5 h-3.5" />
+                      <span>Share Article</span>
+                    </>
+                  )}
                 </button>
               </div>
             </div>
 
             {/* Featured Jewelry in Story */}
             <div className="lg:col-span-4 space-y-6">
-              <div className="bg-[#F3EFE6] border border-[#E6DFD3] p-6 rounded-xs space-y-5">
-                <div className="flex items-center gap-2">
-                  <Sparkles className="w-4 h-4 text-[#C5A059]" />
-                  <h3 className="font-serif-display text-lg text-[#2C2C2A]">Featured In This Story</h3>
+              <div className="bg-[#F2EFDB] border border-[#D8D2C2] p-6 rounded-xs space-y-5">
+                <div className="flex items-center gap-2 pb-2 border-b border-[#D8D2C2]">
+                  <h3 className="font-serif-display text-lg text-[#413C23] font-medium tracking-wide uppercase">
+                    Featured in This Story
+                  </h3>
                 </div>
-                <div className="space-y-4">
+                <div className="space-y-3.5">
                   {featuredProds.map(product => (
                     <div
                       key={product.id}
                       onClick={() => onSelectProduct(product)}
-                      className="flex items-center gap-3 p-2 bg-white rounded-xs border border-[#E6DFD3] hover:border-[#C5A059] cursor-pointer transition-all duration-200 group"
+                      className="flex items-center gap-3.5 p-2.5 bg-[#E7E4D5] rounded-xs border border-[#D8D2C2] hover:border-[#8F896D] cursor-pointer transition-all duration-200 group"
                     >
                       <img
                         src={product.images[0]}
                         alt={product.name}
-                        referrerPolicy="no-referrer"
                         className="w-14 h-14 object-cover rounded-xs"
                       />
                       <div className="flex-1 min-w-0">
-                        <h4 className="text-xs font-normal text-[#2C2C2A] group-hover:text-[#C5A059] transition-colors truncate">
+                        <h4 className="text-xs font-normal text-[#413C23] group-hover:text-[#8F896D] transition-colors truncate">
                           {product.name}
                         </h4>
-                        <p className="text-[11px] text-[#7D7973] truncate">{product.metal}</p>
-                        <p className="text-xs font-medium text-[#2C2C2A] mt-0.5">
+                        <p className="text-[11px] text-[#8F896D] truncate">{product.metal}</p>
+                        <p className="text-xs font-medium text-[#413C23] mt-0.5">
                           {formatPrice(product.price, currency)}
                         </p>
                       </div>
-                      <ChevronRight className="w-4 h-4 text-[#7D7973] group-hover:text-[#2C2C2A] transition-colors" />
+                      <ChevronRight className="w-4 h-4 text-[#8F896D] group-hover:text-[#413C23] transition-colors" />
                     </div>
                   ))}
                 </div>
                 <button
                   onClick={onNavigateToShop}
-                  className="w-full py-2.5 bg-[#2C2C2A] text-white text-xs uppercase tracking-widest rounded-xs hover:bg-[#444238] transition-colors text-center cursor-pointer block"
+                  className="w-full py-3 bg-[#413C23] text-[#E7E4D5] text-xs uppercase tracking-widest font-semibold rounded-xs hover:bg-[#8F896D] transition-colors text-center cursor-pointer block"
                 >
                   Explore Complete Collection
                 </button>
@@ -233,35 +277,35 @@ export const JournalPage: React.FC<JournalPageProps> = ({
 
   // Main Journal & Lookbook List View
   return (
-    <div className="w-full text-left font-sans-body bg-[#FAF8F5] pb-24">
+    <div ref={containerRef} className="w-full text-left font-sans-body bg-[#E7E4D5] text-[#413C23] pb-24 select-none">
       {/* 1. Top Editorial Banner */}
-      <section className="relative w-full px-4 sm:px-8 lg:px-12 xl:px-16 pt-4 pb-8 sm:pb-12">
-        <div className="relative rounded-xs overflow-hidden border border-[#E6DFD3] bg-[#EAE6DB] py-14 sm:py-20 px-6 sm:px-12 text-center space-y-4">
-          <div>
-            <span className="text-[11px] sm:text-xs font-semibold tracking-[0.25em] text-[#C5A059] uppercase block mb-2">
-              The Studio Avirena Gazette
+      <section className="relative w-full px-4 sm:px-8 lg:px-12 xl:px-16 2xl:px-20 pt-4 pb-8 sm:pb-12">
+        <div className="relative rounded-xs overflow-hidden border border-[#D8D2C2] bg-[#413C23] text-[#E7E4D5] py-14 sm:py-20 px-6 sm:px-12 text-center space-y-4 shadow-sm">
+          <div className="max-w-2xl mx-auto space-y-3">
+            <span className="journal-reveal text-[10px] sm:text-xs font-semibold tracking-[0.25em] text-[#8F896D] uppercase block">
+              Editorial Notes & Care Insights
             </span>
-            <h1 className="font-serif-display text-4xl sm:text-6xl lg:text-7xl text-[#2C2C2A] tracking-tight">
-              Journal & Lookbook
+            <h1 className="journal-reveal font-serif-display text-4xl sm:text-6xl lg:text-7xl text-[#E7E4D5] tracking-tight font-light leading-tight">
+              The Avirena Journal
             </h1>
+            <p className="journal-reveal text-xs sm:text-sm text-[#E7E4D5]/80 max-w-lg mx-auto font-normal leading-relaxed pt-1">
+              Reflections on homegrown design, durable brass craftsmanship, and intentional styling rituals for everyday life.
+            </p>
           </div>
-          <p className="text-xs sm:text-sm text-[#7D7973] max-w-xl mx-auto font-light leading-relaxed">
-            Stories of hereditary craftsmanship, architectural jewelry styling, and the art of living with modern luxury.
-          </p>
         </div>
       </section>
 
       {/* 2. Category Filter Tabs */}
-      <section className="w-full px-4 sm:px-8 lg:px-12 xl:px-16 mb-8">
-        <div className="flex items-center gap-2 overflow-x-auto pb-2 border-b border-[#E6DFD3]">
-          {['all', 'craftsmanship', 'style guide', 'heritage', 'care guide'].map(cat => (
+      <section className="w-full px-4 sm:px-8 lg:px-12 xl:px-16 2xl:px-20 mb-10">
+        <div className="flex items-center gap-2 overflow-x-auto pb-2 border-b border-[#D8D2C2]">
+          {['all', 'our story', 'craftsmanship', 'style guide', 'care guide'].map(cat => (
             <button
               key={cat}
               onClick={() => setActiveCategory(cat)}
               className={`px-4 py-2 text-xs uppercase tracking-wider rounded-xs transition-all whitespace-nowrap cursor-pointer ${
                 activeCategory === cat
-                  ? 'bg-[#2C2C2A] text-white font-medium shadow-xs'
-                  : 'bg-[#F3EFE6] text-[#5C5850] hover:bg-[#EAE6DB] hover:text-[#2C2C2A]'
+                  ? 'bg-[#413C23] text-[#FAF8F5] font-medium shadow-xs'
+                  : 'bg-[#F2EFDB] text-[#413C23]/80 hover:bg-[#E7E4D5] hover:text-[#413C23] border border-[#D8D2C2]'
               }`}
             >
               {cat === 'all' ? 'All Stories' : cat}
@@ -272,34 +316,33 @@ export const JournalPage: React.FC<JournalPageProps> = ({
 
       {/* 3. Hero Featured Story (First Article) */}
       {filteredArticles.length > 0 && (
-        <section className="w-full px-4 sm:px-8 lg:px-12 xl:px-16 mb-12">
+        <section className="w-full px-4 sm:px-8 lg:px-12 xl:px-16 2xl:px-20 mb-12">
           <div
             onClick={() => setSelectedArticle(filteredArticles[0])}
-            className="group cursor-pointer grid grid-cols-1 lg:grid-cols-12 gap-8 bg-white border border-[#E6DFD3] rounded-xs p-6 sm:p-8 hover:border-[#C5A059] hover:shadow-sm transition-all duration-300 items-center"
+            className="group cursor-pointer grid grid-cols-1 lg:grid-cols-12 gap-8 bg-[#F2EFDB] border border-[#D8D2C2] rounded-xs p-6 sm:p-8 hover:border-[#8F896D] hover:shadow-sm transition-all duration-300 items-center"
           >
-            <div className="lg:col-span-7 aspect-[16/10] overflow-hidden rounded-xs bg-[#EAE6DB]">
+            <div className="lg:col-span-7 aspect-[16/10] overflow-hidden rounded-xs bg-[#E7E4D5] border border-[#D8D2C2]">
               <img
                 src={filteredArticles[0].image}
                 alt={filteredArticles[0].title}
-                referrerPolicy="no-referrer"
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+                className="w-full h-full object-cover group-hover:scale-104 transition-transform duration-700 ease-out"
               />
             </div>
             <div className="lg:col-span-5 space-y-4 text-left">
-              <div className="flex items-center gap-2 text-xs text-[#7D7973]">
-                <span className="px-2.5 py-1 bg-[#F3EFE6] text-[#C5A059] font-medium uppercase tracking-wider rounded-xs text-[10px]">
+              <div className="flex items-center gap-2 text-xs text-[#8F896D]">
+                <span className="text-[10px] uppercase font-semibold tracking-wider">
                   Featured Story
                 </span>
-                <span>•</span>
+                <span>·</span>
                 <span>{filteredArticles[0].readTime}</span>
               </div>
-              <h2 className="font-serif-display text-2xl sm:text-3xl lg:text-4xl text-[#2C2C2A] group-hover:text-[#C5A059] transition-colors leading-tight">
+              <h2 className="font-serif-display text-2xl sm:text-3xl lg:text-4xl text-[#413C23] group-hover:text-[#8F896D] transition-colors leading-tight font-normal">
                 {filteredArticles[0].title}
               </h2>
-              <p className="text-xs sm:text-sm text-[#7D7973] font-light leading-relaxed">
+              <p className="text-xs sm:text-sm text-[#413C23]/80 font-normal leading-relaxed line-clamp-3">
                 {filteredArticles[0].excerpt}
               </p>
-              <div className="pt-2 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-[#2C2C2A] group-hover:text-[#C5A059] transition-colors">
+              <div className="pt-2 flex items-center gap-2 text-xs font-medium uppercase tracking-wider text-[#413C23] group-hover:text-[#8F896D] transition-colors">
                 <span>Read Full Story</span>
                 <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" />
               </div>
@@ -309,36 +352,35 @@ export const JournalPage: React.FC<JournalPageProps> = ({
       )}
 
       {/* 4. Stories Grid */}
-      <section className="w-full px-4 sm:px-8 lg:px-12 xl:px-16">
+      <section className="w-full px-4 sm:px-8 lg:px-12 xl:px-16 2xl:px-20">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
           {filteredArticles.slice(1).map(article => (
             <div
               key={article.id}
               onClick={() => setSelectedArticle(article)}
-              className="group cursor-pointer bg-white border border-[#E6DFD3] rounded-xs overflow-hidden flex flex-col hover:border-[#C5A059] hover:shadow-xs transition-all duration-300"
+              className="group cursor-pointer bg-[#F2EFDB] border border-[#D8D2C2] rounded-xs overflow-hidden flex flex-col hover:border-[#8F896D] hover:shadow-xs transition-all duration-300"
             >
-              <div className="aspect-[16/11] overflow-hidden bg-[#EAE6DB] relative">
+              <div className="aspect-[16/11] overflow-hidden bg-[#E7E4D5] relative border-b border-[#D8D2C2]">
                 <img
                   src={article.image}
                   alt={article.title}
-                  referrerPolicy="no-referrer"
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
+                  className="w-full h-full object-cover group-hover:scale-104 transition-transform duration-500 ease-out"
                 />
-                <span className="absolute top-3 left-3 px-2.5 py-1 bg-white/90 backdrop-blur-xs text-[10px] uppercase font-medium tracking-wider text-[#2C2C2A] rounded-xs">
+                <span className="absolute top-3 left-3 px-2.5 py-1 bg-[#FAF8F5]/95 backdrop-blur-xs text-[10px] uppercase font-medium tracking-wider text-[#413C23] rounded-xs border border-[#D8D2C2]">
                   {article.category}
                 </span>
               </div>
               <div className="p-6 flex-1 flex flex-col justify-between space-y-4">
                 <div className="space-y-2">
-                  <div className="text-[11px] text-[#7D7973]">{article.readTime}</div>
-                  <h3 className="font-serif-display text-xl text-[#2C2C2A] group-hover:text-[#C5A059] transition-colors leading-snug">
+                  <div className="text-[11px] text-[#8F896D] font-medium">{article.readTime}</div>
+                  <h3 className="font-serif-display text-xl text-[#413C23] group-hover:text-[#8F896D] transition-colors leading-snug font-normal">
                     {article.title}
                   </h3>
-                  <p className="text-xs text-[#7D7973] font-light line-clamp-3 leading-relaxed">
+                  <p className="text-xs text-[#413C23]/75 font-normal line-clamp-3 leading-relaxed">
                     {article.excerpt}
                   </p>
                 </div>
-                <div className="pt-2 border-t border-[#E6DFD3] flex items-center justify-between text-xs text-[#2C2C2A] font-medium group-hover:text-[#C5A059]">
+                <div className="pt-3 border-t border-[#D8D2C2] flex items-center justify-between text-xs text-[#413C23] font-medium group-hover:text-[#8F896D]">
                   <span className="uppercase tracking-wider text-[11px]">Read Article</span>
                   <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" />
                 </div>

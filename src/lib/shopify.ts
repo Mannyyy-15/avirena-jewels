@@ -4,6 +4,21 @@ const SHOPIFY_STORE_DOMAIN = import.meta.env.VITE_SHOPIFY_STORE_DOMAIN || '';
 const SHOPIFY_STOREFRONT_ACCESS_TOKEN = import.meta.env.VITE_SHOPIFY_STOREFRONT_ACCESS_TOKEN || '';
 const SHOPIFY_API_VERSION = import.meta.env.VITE_SHOPIFY_API_VERSION || '2025-01';
 
+/**
+ * Material description per metal finish. These must describe what the piece is
+ * actually made of — brass and alloy with protective coatings, not precious metal.
+ */
+const METAL_MATERIALS: Record<Metal, string> = {
+  'Gold-Tone Brass':
+    'High-grade brass with anti-tarnish gold-tone e-coating (hypoallergenic, nickel-free)',
+  'Anti-Tarnish Brass':
+    'High-grade brass with protective anti-tarnish e-coating (hypoallergenic, nickel-free)',
+  'Silver-Tone Alloy':
+    'Durable silver-tone alloy with protective anti-tarnish coating (hypoallergenic, nickel-free)',
+  'Rose Gold-Tone':
+    'High-grade brass with anti-tarnish rose gold-tone e-coating (hypoallergenic, nickel-free)',
+};
+
 export const isShopifyConfigured = (): boolean => {
   return Boolean(
     SHOPIFY_STORE_DOMAIN &&
@@ -539,12 +554,10 @@ export function transformShopifyProduct(node: any): Product {
     metal,
     price: basePriceEur,
     originalPrice: baseComparePriceEur,
-    rating: 4.9,
-    reviewsCount: 24,
-    images: images.length > 0 ? images : ['https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=1200&q=90'],
-    description: node.description || 'Handcrafted fine jewellery sculpted for daily wear.',
+    images: images.length > 0 ? images : ['/logo.png'],
+    description: node.description || 'Handcrafted dailywear jewellery sculpted for everyday wear.',
     details,
-    materials: (metal as string) === '18k Gold Vermeil' ? 'Heavy 18k Gold Vermeil over 925 Sterling Silver' : 'Solid 925 Sterling Silver',
+    materials: METAL_MATERIALS[metal],
     sizes: category === 'rings' ? ['US 6 (52mm)', 'US 7 (54mm)', 'US 8 (57mm)'] : undefined,
     inStock: node.availableForSale ?? true,
     isBestseller: tagsLower.includes('bestseller') || tagsLower.includes('featured') || true,

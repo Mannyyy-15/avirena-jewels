@@ -10,7 +10,7 @@
   --color-ivory-sand: #E7E4D5;
   --color-olive-moss: #413C23;
   --color-stone-taupe: #8F896D;
-  --color-warm-linen: #F4EFE6;
+  --color-warm-linen: #F2EFDB;
   --color-soft-silver: #FAF8F5;
 
   /* Accent Tones */
@@ -153,4 +153,26 @@ html.lenis, html.lenis body {
 .lenis.lenis-smooth iframe {
   pointer-events: none;
 }
+
+/* Infinite Luxury Marquee Animation */
+@keyframes infinite-marquee {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-infinite-marquee {
+  display: flex;
+  width: max-content;
+  will-change: transform;
+  animation: infinite-marquee 40s linear infinite;
+}
+
+.marquee-pause:hover .animate-infinite-marquee {
+  animation-play-state: paused;
+}
+
 

@@ -5,7 +5,6 @@ import {
   Lock,
   ArrowRight,
   CheckCircle2,
-  Sparkles,
   ShoppingBag,
   Truck,
   ArrowLeft
