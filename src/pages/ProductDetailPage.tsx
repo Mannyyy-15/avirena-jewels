@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { ChevronRight, Plus, Minus, Heart } from 'lucide-react';
+import { ChevronRight, Plus, Minus, Heart, Maximize2 } from 'lucide-react';
 import { Product, Currency, Metal, CartItem } from '../types';
 import { formatPrice } from '../data/products';
 import { useShopify } from '../context/ShopifyContext';
+import { ProductImageLightbox } from '../components/ProductImageLightbox';
 
 interface ProductDetailPageProps {
   product: Product;
@@ -35,6 +36,9 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
   const [zoomPosition, setZoomPosition] = useState<{ x: number; y: number }>({ x: 50, y: 50 });
   const [isZoomed, setIsZoomed] = useState<boolean>(false);
 
+  // Fullscreen High-Res Lightbox State (Mobile & Desktop)
+  const [isLightboxOpen, setIsLightboxOpen] = useState<boolean>(false);
+
   // Accordion state (Product Description, Materials / Composition, Dimensions & Fit, Care)
   const [openAccordion, setOpenAccordion] = useState<'description' | 'materials' | 'dimensions' | 'care' | null>(null);
 
@@ -57,6 +61,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
     setOpenAccordion(null);
     setActiveTab('overview');
     setIsZoomed(false);
+    setIsLightboxOpen(false);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [product.id]);
 
@@ -142,10 +147,11 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
           <div className="lg:col-span-6 xl:col-span-6 space-y-4 w-full">
             {/* Main Interactive Zoom Canvas */}
             <div
+              onClick={() => setIsLightboxOpen(true)}
               onMouseEnter={() => setIsZoomed(true)}
               onMouseLeave={() => setIsZoomed(false)}
               onMouseMove={handleMouseMove}
-              className="relative w-full aspect-[4/5] max-h-[calc(100vh-140px)] bg-[#F2EFDB] border border-[#D8D2C2] rounded-xs overflow-hidden flex items-center justify-center cursor-crosshair shadow-xs select-none"
+              className="relative w-full aspect-[4/5] max-h-[calc(100vh-140px)] bg-[#F2EFDB] border border-[#D8D2C2] rounded-xs overflow-hidden flex items-center justify-center cursor-pointer sm:cursor-crosshair shadow-xs select-none group/canvas"
             >
               <img
                 src={imagesList[activeImageIndex] || imagesList[0]}
@@ -160,12 +166,13 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                   transformOrigin: `${zoomPosition.x}% ${zoomPosition.y}%`,
                 }}
                 className={`w-full h-full object-cover object-center transition-transform duration-100 ease-out select-none pointer-events-none ${
-                  isZoomed ? 'scale-[2.4]' : 'scale-100'
+                  isZoomed ? 'sm:scale-[2.4] scale-100' : 'scale-100'
                 }`}
               />
 
               {/* Wishlist Button */}
               <button
+                type="button"
                 onClick={(e) => {
                   e.stopPropagation();
                   onToggleWishlist(product);
@@ -177,9 +184,29 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                 <Heart className={`w-4 h-4 ${isWishlisted ? 'fill-[#7A0F1A] text-[#7A0F1A]' : 'stroke-[1.5]'}`} />
               </button>
 
-              {/* Hover to Zoom Hint */}
-              <div className="absolute bottom-3 left-3.5 pointer-events-none text-[9px] uppercase tracking-widest text-[#8F896D] font-semibold bg-[#FAF8F5]/85 px-2 py-0.5 rounded-2xs border border-[#D8D2C2]/60 backdrop-blur-xs">
-                Hover to Zoom
+              {/* Fullscreen Expand Button (Mobile & Desktop) */}
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsLightboxOpen(true);
+                }}
+                className="absolute top-3.5 left-3.5 z-10 p-2.5 rounded-full bg-[#FAF8F5]/90 hover:bg-[#FAF8F5] text-[#413C23] transition-all shadow-xs cursor-pointer border border-[#D8D2C2] flex items-center justify-center group-hover/canvas:scale-105"
+                title="Expand image fullscreen"
+                aria-label="Expand image fullscreen"
+              >
+                <Maximize2 className="w-4 h-4 text-[#413C23]" />
+              </button>
+
+              {/* Desktop hint: Hover to Zoom • Click to Expand */}
+              <div className="hidden sm:block absolute bottom-3 left-3.5 pointer-events-none text-[9px] uppercase tracking-widest text-[#8F896D] font-semibold bg-[#FAF8F5]/85 px-2 py-0.5 rounded-2xs border border-[#D8D2C2]/60 backdrop-blur-xs">
+                Hover to Zoom • Click to Expand
+              </div>
+
+              {/* Mobile hint: Tap to Expand */}
+              <div className="flex sm:hidden items-center gap-1.5 absolute bottom-3 left-3.5 pointer-events-none text-[9px] uppercase tracking-widest text-[#413C23] font-semibold bg-[#FAF8F5]/90 px-2.5 py-1 rounded-xs border border-[#D8D2C2] shadow-xs">
+                <Maximize2 className="w-3 h-3 text-[#8F896D]" />
+                <span>Tap to Expand</span>
               </div>
             </div>
 
@@ -537,6 +564,15 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
 
         </div>
       </section>
+
+      {/* 8. HIGH-RES FULLSCREEN LIGHTBOX (Mobile & Desktop) */}
+      <ProductImageLightbox
+        isOpen={isLightboxOpen}
+        onClose={() => setIsLightboxOpen(false)}
+        images={imagesList}
+        initialIndex={activeImageIndex}
+        productName={product.name}
+      />
 
     </div>
   );
