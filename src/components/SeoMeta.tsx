@@ -19,37 +19,37 @@ export const SeoMeta: React.FC<SeoMetaProps> = ({
     let title = 'AVIRENA | Handcrafted Demi-Fine Jewelry • 18k Gold Vermeil & Baroque Pearls';
     let description =
       'Explore Avirena Jewels. Homegrown premium dailywear jewelry handcrafted in durable brass, anti-tarnish protective coatings, and natural cultured pearls.';
-    let canonical = 'https://avirena.com';
+    let canonical = 'https://avirenajewels.com';
 
     if (currentPage === 'collection' || currentPage === 'shop') {
       const catLabel = selectedCategory && selectedCategory !== 'all' ? `${selectedCategory.toUpperCase()} | ` : '';
       title = `${catLabel}Shop Dailywear Jewelry | AVIRENA`;
       description = `Discover our curated collection of ${selectedCategory || 'dailywear'} jewelry in premium anti-tarnish brass. Complimentary express shipping over ₹1,999.`;
-      canonical = `https://avirena.com/shop${selectedCategory && selectedCategory !== 'all' ? `/${selectedCategory}` : ''}`;
+      canonical = `https://avirenajewels.com/shop${selectedCategory && selectedCategory !== 'all' ? `/${selectedCategory}` : ''}`;
     } else if (currentPage === 'collections') {
       title = 'Signature Jewelry Design Suites | AVIRENA';
       description = 'Explore the signature design suites of Avirena: Sculptural Brass, Baroque Pearl Editions, and Architectural Chains.';
-      canonical = 'https://avirena.com/collections';
+      canonical = 'https://avirenajewels.com/collections';
     } else if (currentPage === 'pdp' && selectedProduct) {
       title = `${selectedProduct.name} — ${selectedProduct.metal} | AVIRENA`;
       description = `${selectedProduct.description} Handcrafted in ${selectedProduct.metal} with anti-tarnish protective coating. 14-day exchanges & express delivery.`;
-      canonical = `https://avirena.com/products/${selectedProduct.id}`;
+      canonical = `https://avirenajewels.com/products/${selectedProduct.id}`;
     } else if (currentPage === 'about') {
       title = 'Our Heritage & Lost-Wax Craftsmanship | AVIRENA';
       description = 'Learn about Studio Avirena, our heritage lost-wax casting ateliers in Jaipur and Vicenza, and our 100% recycled precious metals commitment.';
-      canonical = 'https://avirena.com/about';
+      canonical = 'https://avirenajewels.com/about';
     } else if (currentPage === 'contact') {
       title = 'Atelier Concierge & Private Appointments | AVIRENA';
       description = 'Contact Avirena concierge for bespoke bridal commissions, custom ring sizing, and order assistance. Available via WhatsApp and email.';
-      canonical = 'https://avirena.com/contact';
+      canonical = 'https://avirenajewels.com/contact';
     } else if (currentPage === 'policies') {
       title = 'Policies, Shipping & Client Assurance | AVIRENA';
       description = 'Official written policies of Avirena Jewels covering worldwide insured delivery, 14-day returns, material hallmarking, and data privacy.';
-      canonical = 'https://avirecom/policies';
+      canonical = 'https://avirenajewels.com/policies';
     } else if (currentPage === 'faq') {
       title = 'FAQs, Ring Sizing & Jewelry Care | AVIRENA';
       description = 'Frequently asked questions about 18k gold vermeil, ring sizing calipers, hypoallergenic silver, and natural baroque pearl care.';
-      canonical = 'https://avirena.com/faq';
+      canonical = 'https://avirenajewels.com/faq';
     }
 
     // Update document head
@@ -89,10 +89,10 @@ export const SeoMeta: React.FC<SeoMetaProps> = ({
       '@type': 'Organization',
       name: 'Avirena Jewels',
       legalName: 'Avirena Jewels Private Limited',
-      url: 'https://avirena.com',
-      logo: 'https://avirena.com/logo.png',
+      url: 'https://avirenajewels.com',
+      logo: 'https://avirenajewels.com/logo.png',
       description:
-        'Luxury demi-fine jewelry atelier crafting sculptural pieces in 18k gold vermeil, recycled 925 sterling silver, and natural baroque pearls.',
+        'Luxury demi-fine jewelry atelier crafting sculptural pieces in durable brass, anti-tarnish protective coatings, and natural cultured pearls.',
       sameAs: [
         'https://www.instagram.com/avirena.jewels',
         'https://www.facebook.com/avirenajewels',
@@ -112,12 +112,12 @@ export const SeoMeta: React.FC<SeoMetaProps> = ({
       '@context': 'https://schema.org',
       '@type': 'JewelryStore',
       name: 'Studio Avirena Atelier',
-      image: 'https://avirena.com/logo.png',
-      '@id': 'https://avirena.com/#store',
-      url: 'https://avirena.com',
+      image: 'https://avirenajewels.com/logo.png',
+      '@id': 'https://avirenajewels.com/#store',
+      url: 'https://avirenajewels.com',
       telephone: '+91-98200-12345',
       priceRange: '$$',
-      currenciesAccepted: 'EUR, USD, INR, GBP',
+      currenciesAccepted: 'INR, EUR, USD, GBP',
       paymentAccepted: 'Credit Card, Apple Pay, Google Pay, UPI, Cash on Delivery',
       address: {
         '@type': 'PostalAddress',
@@ -147,10 +147,10 @@ export const SeoMeta: React.FC<SeoMetaProps> = ({
       '@context': 'https://schema.org',
       '@type': 'WebSite',
       name: 'Avirena Jewels',
-      url: 'https://avirena.com',
+      url: 'https://avirenajewels.com',
       potentialAction: {
         '@type': 'SearchAction',
-        target: 'https://avirena.com/shop?q={search_term_string}',
+        target: 'https://avirenajewels.com/shop?q={search_term_string}',
         'query-input': 'required name=search_term_string',
       },
     });
@@ -171,7 +171,7 @@ export const SeoMeta: React.FC<SeoMetaProps> = ({
         material: selectedProduct.materials || selectedProduct.metal,
         offers: {
           '@type': 'Offer',
-          url: `https://avirena.com/products/${selectedProduct.id}`,
+          url: `https://avirenajewels.com/products/${selectedProduct.id}`,
           priceCurrency: currency,
           price: selectedProduct.price,
           priceValidUntil: '2027-12-31',

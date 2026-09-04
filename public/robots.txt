@@ -25,4 +25,4 @@ User-agent: Applebot-Extended
 Allow: /
 
 # Sitemaps & LLM Manifest
-Sitemap: https://avirena.com/sitemap.xml
+Sitemap: https://avirenajewels.com/sitemap.xml

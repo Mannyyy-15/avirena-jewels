@@ -13,7 +13,7 @@ const SHOPIFY_STORE_DOMAIN = process.env.VITE_SHOPIFY_STORE_DOMAIN || 'm5yhxq-gb
 const SHOPIFY_STOREFRONT_ACCESS_TOKEN = process.env.VITE_SHOPIFY_STOREFRONT_ACCESS_TOKEN || 'db9c487f9b1aaafdc4f81665bbabcf07';
 const SHOPIFY_API_VERSION = process.env.VITE_SHOPIFY_API_VERSION || '2025-01';
 
-const SITE_URL = 'https://avirena.com';
+const SITE_URL = 'https://avirenajewels.com';
 
 interface RouteData {
   path: string;
