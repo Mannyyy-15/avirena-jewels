@@ -4,7 +4,6 @@ import { GUIDES } from './data/guides';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
 import { InstagramFeedSection } from './components/InstagramFeedSection';
-import { JoinUsSection } from './components/JoinUsSection';
 import { CartDrawer } from './components/CartDrawer';
 
 import { ToastContainer, ToastMessage } from './components/Toast';
@@ -714,9 +713,6 @@ function AppContent() {
 
       {/* Instagram Feed Gallery Section */}
       <InstagramFeedSection />
-
-      {/* Join Us Newsletter Section */}
-      <JoinUsSection />
 
       {/* Footer */}
       <Footer

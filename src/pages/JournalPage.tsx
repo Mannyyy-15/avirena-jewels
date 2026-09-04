@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ArrowRight, Clock, BookOpen, Share2, ChevronRight, Check } from 'lucide-react';
+import blogHeroImg from '../assets/blog-hero-editorial.jpg';
 import { Product, Currency } from '../types';
 import { formatPrice } from '../data/products';
 
@@ -280,15 +281,25 @@ export const JournalPage: React.FC<JournalPageProps> = ({
     <div ref={containerRef} className="w-full text-left font-sans-body bg-[#E7E4D5] text-[#413C23] pb-24 select-none">
       {/* 1. Top Editorial Banner */}
       <section className="relative w-full px-4 sm:px-8 lg:px-12 xl:px-16 2xl:px-20 pt-4 pb-8 sm:pb-12">
-        <div className="relative rounded-xs overflow-hidden border border-[#D8D2C2] bg-[#413C23] text-[#E7E4D5] py-14 sm:py-20 px-6 sm:px-12 text-center space-y-4 shadow-sm">
-          <div className="max-w-2xl mx-auto space-y-3">
+        <div className="relative rounded-xs overflow-hidden border border-[#D8D2C2] bg-[#413C23] text-[#E7E4D5] py-16 sm:py-24 px-6 sm:px-12 text-center space-y-4 shadow-sm min-h-[320px] sm:min-h-[380px] flex items-center justify-center">
+          {/* Atmospheric Editorial Background Photo */}
+          <div className="absolute inset-0 pointer-events-none overflow-hidden">
+            <img
+              src={blogHeroImg}
+              alt="Avirena Jewelry Journal & Editorial Still Life"
+              className="w-full h-full object-cover object-center filter contrast-[1.05] opacity-45 scale-105"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#413C23] via-[#413C23]/80 to-[#413C23]/60 pointer-events-none" />
+          </div>
+
+          <div className="relative z-10 max-w-2xl mx-auto space-y-3">
             <span className="journal-reveal text-[10px] sm:text-xs font-semibold tracking-[0.25em] text-[#8F896D] uppercase block">
               Editorial Notes & Care Insights
             </span>
             <h1 className="journal-reveal font-serif-display text-4xl sm:text-6xl lg:text-7xl text-[#E7E4D5] tracking-tight font-light leading-tight">
               The Avirena Journal
             </h1>
-            <p className="journal-reveal text-xs sm:text-sm text-[#E7E4D5]/80 max-w-lg mx-auto font-normal leading-relaxed pt-1">
+            <p className="journal-reveal text-xs sm:text-sm text-[#E7E4D5]/90 max-w-lg mx-auto font-normal leading-relaxed pt-1">
               Reflections on homegrown design, durable brass craftsmanship, and intentional styling rituals for everyday life.
             </p>
           </div>

@@ -3,6 +3,7 @@ import gsap from 'gsap';
 import { Product, Currency, Category, Metal } from '../types';
 import { formatPrice } from '../data/products';
 import { ChevronDown, Heart, Check, ShoppingBag, Eye } from 'lucide-react';
+import shopHeroImg from '../assets/shop-hero-editorial.jpg';
 
 interface CollectionPageProps {
   products: Product[];
@@ -284,15 +285,14 @@ export const CollectionPage: React.FC<CollectionPageProps> = ({
 
   return (
     <div ref={containerRef} className="pb-10 font-sans-body w-full text-[#413C23] bg-[#E7E4D5] select-none">
-      <section className="relative w-full bg-[#8A8568] text-[#FAF8F5] min-h-[360px] sm:min-h-[420px] md:min-h-[480px] flex flex-col justify-between pt-8 sm:pt-10 px-4 sm:px-8 lg:px-12 select-none overflow-hidden border-b border-[#7B765B]">
-        <div className="absolute inset-x-0 top-0 bottom-12 flex justify-center items-start pointer-events-none overflow-hidden">
+      <section className="relative w-full bg-[#413C23] text-[#FAF8F5] min-h-[380px] sm:min-h-[440px] md:min-h-[500px] flex flex-col justify-between pt-8 sm:pt-10 px-4 sm:px-8 lg:px-12 select-none overflow-hidden border-b border-[#35311B]">
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
           <img
-            src="https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=1200&q=95"
-            alt="Avirena Jewelry Editorial Model"
-            referrerPolicy="no-referrer"
-            className="h-[115%] w-auto max-w-none object-cover object-top filter contrast-[1.03] opacity-95 translate-y-[-5%]"
+            src={shopHeroImg}
+            alt="Avirena Dailywear Jewelry Editorial Model in Golden Hour"
+            className="w-full h-full object-cover object-center filter contrast-[1.04] opacity-85 scale-102"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-[#8A8568]/40 via-transparent to-[#8A8568] pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#413C23]/90 via-[#413C23]/40 to-[#413C23]/60 pointer-events-none" />
         </div>
         <div className="relative z-10 w-full flex items-center justify-between text-[11px] sm:text-xs font-serif text-[#FAF8F5]/90 pt-1">
           <span className="italic tracking-wider font-light">Homegrown dailywear jewels</span>
