@@ -124,7 +124,7 @@ Welcome to the Avirena Jewels online boutique (avirena.com). By visiting our web
 • Orders may be cancelled within 4 hours of placement by contacting avirenajewels@gmail.com prior to dispatch handover.
 
 4. Intellectual Property:
-• All visual branding, typography treatments, original design sculpts, product photography, and editorial copy are the exclusive intellectual property of Avirena Jewels Private Limited.
+• All visual branding, typography treatments, original design sculpts, product photography, and editorial copy are the exclusive intellectual property of Avirena Jewels.
 
 5. Governing Law:
 • These Terms of Service and any separate agreements whereby we provide you services shall be governed by and construed in accordance with the laws of India, with jurisdiction in Mumbai courts.`,
@@ -161,7 +161,7 @@ Every Avirena creation is carefully packaged in our signature velvet travel pouc
       text: `AVIRENA JEWELS — CONTACT INFORMATION
 
 Legal Business Entity:
-Avirena Jewels Private Limited
+Avirena Jewels
 
 Registered Atelier & Studio Office:
 Studio Avirena, Suite 402, Heritage Craft Enclave,

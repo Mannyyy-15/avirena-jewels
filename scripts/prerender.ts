@@ -143,7 +143,6 @@ function getGlobalSchema() {
       '@context': 'https://schema.org',
       '@type': 'Organization',
       name: 'Avirena Jewels',
-      legalName: 'Avirena Jewels Private Limited',
       url: SITE_URL,
       logo: `${SITE_URL}/logo.png`,
       description:
@@ -535,7 +534,7 @@ async function main() {
   // ---------------- ROUTE 1: Home Page (/) ----------------
   routes.push({
     path: '',
-    title: 'AVIRENA | Homegrown Dailywear Jewelry • Anti-Tarnish Brass & Baroque Pearls',
+    title: 'AVIRENA | Anti-Tarnish Brass Jewellery for Daily Wear',
     description:
       'Explore AVIRENA Jewels. Homegrown dailywear jewelry handcrafted in durable brass, anti-tarnish protective coatings, and natural cultured pearls. Timeless beauty, uniquely yours.',
     canonical: SITE_URL,
@@ -652,13 +651,13 @@ async function main() {
 
   routes.push({
     path: 'shop',
-    title: 'Shop All Dailywear Jewelry | AVIRENA',
+    title: 'Anti-Tarnish Jewellery Online India | AVIRENA',
     description:
-      'Discover handcrafted dailywear jewelry sculpted in durable anti-tarnish brass and natural cultured baroque pearls. Complimentary express delivery across India over ₹1,999.',
+      'Shop anti-tarnish gold-tone brass jewellery for daily wear. Nickel-free, skin-safe, from ₹499. Free delivery over ₹1,999 and 14-day exchanges across India.',
     canonical: `${SITE_URL}/shop`,
     ogImage: shopifyProducts[0]?.images?.edges?.[0]?.node?.url || `${SITE_URL}/logo.png`,
     ogType: 'website',
-    keywords: 'shop dailywear jewelry, brass earrings, rings, necklaces, bracelets, anti tarnish jewelry',
+    keywords: 'anti tarnish jewellery india, brass jewellery online, dailywear jewellery, gold tone earrings, nickel free jewellery, office wear jewellery',
     jsonLd: [
       ...getGlobalSchema(),
       {
@@ -729,7 +728,7 @@ async function main() {
 
     routes.push({
       path: `shop/${cat.id}`,
-      title: `${cat.title} — Dailywear Jewelry | AVIRENA`,
+      title: `Anti-Tarnish ${cat.title} Online India | AVIRENA`,
       description: isEmpty
         ? `${cat.title} are not in stock at AVIRENA yet. Browse our current dailywear jewelry in anti-tarnish brass.`
         : `${cat.desc} Handcrafted in premium brass with anti-tarnish protective sealing.`,

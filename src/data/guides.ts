@@ -77,9 +77,9 @@ export const GUIDES: Guide[] = [
     slug: 'does-brass-jewelry-turn-skin-green',
     heading: 'Does Brass Jewelry Turn Your Skin Green?',
     shortTitle: 'Does Brass Turn Skin Green?',
-    metaTitle: 'Does Brass Jewelry Turn Skin Green? | AVIRENA',
+    metaTitle: 'Does Brass Jewellery Turn Skin Green? | AVIRENA',
     metaDescription:
-      'Brass can leave a green mark on skin. Here is the actual chemistry, what an anti-tarnish e-coating changes, and the habits that keep it from happening.',
+      'Brass can leave a green mark on skin. The real chemistry, what an anti-tarnish coating changes, and how humid Indian weather and sweat affect it.',
     summary:
       'The honest answer to the most common brass jewelry objection, including what our protective coating does and does not prevent.',
     category: 'Materials',
@@ -170,9 +170,9 @@ export const GUIDES: Guide[] = [
     slug: 'anti-tarnish-jewelry-care',
     heading: 'How to Care for Anti-Tarnish Brass Jewelry',
     shortTitle: 'Anti-Tarnish Care Guide',
-    metaTitle: 'Anti-Tarnish Brass Jewelry Care Guide | AVIRENA',
+    metaTitle: 'Anti-Tarnish Jewellery Care Guide India | AVIRENA',
     metaDescription:
-      'Five daily habits that keep an anti-tarnish coating intact: when to take pieces off, how to clean them, what to avoid, and how to store them properly.',
+      'How to make anti-tarnish jewellery last in Indian humidity: when to take pieces off, how to clean them, what to avoid, and how to store them.',
     summary:
       'Practical daily habits that make a protective coating last, and the everyday exposures that quietly wear it down.',
     category: 'Care',
@@ -270,7 +270,7 @@ export const GUIDES: Guide[] = [
     slug: 'jewelry-materials-guide',
     heading: 'Brass, Plated, Vermeil and Solid Gold: A Materials Guide',
     shortTitle: 'Jewelry Materials Guide',
-    metaTitle: 'Brass vs Plated vs Vermeil vs Solid Gold | AVIRENA',
+    metaTitle: 'Brass vs Gold Plated vs Vermeil vs Gold | AVIRENA',
     metaDescription:
       'What each jewelry material actually is, how they differ in construction, price and lifespan, and where coated brass dailywear jewelry honestly fits in.',
     summary:
@@ -400,7 +400,7 @@ export const GUIDES: Guide[] = [
     slug: 'ring-size-guide',
     heading: 'Ring Size Guide: Measure Your Finger at Home',
     shortTitle: 'Ring Size Guide',
-    metaTitle: 'Ring Size Guide & Conversion Chart | AVIRENA',
+    metaTitle: 'Ring Size Chart India | US UK EU Conversion | AVIRENA',
     metaDescription:
       'Measure your ring size at home with a strip of paper, then convert millimetres to US, UK, EU and India sizes with our full international ring size chart.',
     summary:

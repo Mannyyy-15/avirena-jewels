@@ -25,7 +25,7 @@ export const SeoMeta: React.FC<SeoMetaProps> = ({
 
   useEffect(() => {
     // Dynamic Title & Description Map
-    let title = 'AVIRENA | Homegrown Dailywear Jewelry • Anti-Tarnish Brass & Baroque Pearls';
+    let title = 'AVIRENA | Anti-Tarnish Brass Jewellery for Daily Wear';
     let description =
       'Explore Avirena Jewels. Homegrown premium dailywear jewelry handcrafted in durable brass, anti-tarnish protective coatings, and natural cultured pearls.';
     let canonical = 'https://avirenajewels.com';
@@ -113,7 +113,6 @@ export const SeoMeta: React.FC<SeoMetaProps> = ({
       '@context': 'https://schema.org',
       '@type': 'Organization',
       name: 'Avirena Jewels',
-      legalName: 'Avirena Jewels Private Limited',
       url: 'https://avirenajewels.com',
       logo: 'https://avirenajewels.com/logo.png',
       description:

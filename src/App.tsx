@@ -132,12 +132,12 @@ const buildPath = (
 
 /** Document titles, kept consistent with the titles scripts/prerender.ts writes per route. */
 const CATEGORY_TITLES: Record<Exclude<Category, 'all'>, string> = {
-  earrings: 'Earrings — Dailywear Jewelry | AVIRENA',
-  necklaces: 'Necklaces — Dailywear Jewelry | AVIRENA',
-  rings: 'Rings — Dailywear Jewelry | AVIRENA',
-  bracelets: 'Bracelets — Dailywear Jewelry | AVIRENA',
-  brooches: 'Brooches — Dailywear Jewelry | AVIRENA',
-  sets: 'Sets — Dailywear Jewelry | AVIRENA',
+  earrings: 'Anti-Tarnish Earrings Online India | AVIRENA',
+  necklaces: 'Anti-Tarnish Necklaces Online India | AVIRENA',
+  rings: 'Anti-Tarnish Rings Online India | AVIRENA',
+  bracelets: 'Anti-Tarnish Bracelets Online India | AVIRENA',
+  brooches: 'Anti-Tarnish Brooches Online India | AVIRENA',
+  sets: 'Anti-Tarnish Jewellery Sets Online India | AVIRENA',
 };
 
 const buildTitle = (
@@ -148,12 +148,12 @@ const buildTitle = (
 ): string => {
   switch (page) {
     case 'home':
-      return 'AVIRENA | Homegrown Dailywear Jewelry • Anti-Tarnish Brass & Baroque Pearls';
+      return 'AVIRENA | Anti-Tarnish Brass Jewellery for Daily Wear';
     case 'collection':
     case 'shop':
       return category && category !== 'all'
         ? CATEGORY_TITLES[category]
-        : 'Shop All Dailywear Jewelry | AVIRENA';
+        : 'Anti-Tarnish Jewellery Online India | AVIRENA';
     case 'collections':
       return 'Signature Jewelry Design Suites | AVIRENA';
     case 'pdp':
@@ -177,7 +177,7 @@ const buildTitle = (
     case 'checkout':
       return 'Secure Checkout | AVIRENA';
     default:
-      return 'AVIRENA | Homegrown Dailywear Jewelry';
+      return 'AVIRENA | Anti-Tarnish Brass Jewellery for Daily Wear';
   }
 };
 
