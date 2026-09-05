@@ -4,6 +4,23 @@
   "framework": "vite",
   "cleanUrls": true,
   "trailingSlash": false,
+  "redirects": [
+    {
+      "source": "/product/geometric-gold-tone-statement-earrings-for-women-modern-square-earrings",
+      "destination": "/product/nadir-square-studs-gold-tone-brass-earrings",
+      "permanent": true
+    },
+    {
+      "source": "/product/gold-tone-drop-earrings-for-women-minimalist-long-dangle-earrings",
+      "destination": "/product/lume-drop-earrings-gold-tone-brass",
+      "permanent": true
+    },
+    {
+      "source": "/product/gold-tone-statement-drop-earrings-for-women-geometric-dangle-earrings",
+      "destination": "/product/forma-statement-drops-geometric-brass-earrings",
+      "permanent": true
+    }
+  ],
   "headers": [
     {
       "source": "/(.*)",
