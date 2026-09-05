@@ -155,6 +155,29 @@ async function ensureStorefrontToken() {
   return created.access_token;
 }
 
+async function checkDomains() {
+  const data = await adminGraphQL(`
+    query {
+      shop {
+        domains {
+          id
+          url
+          host
+          sslEnabled
+        }
+        primaryDomain {
+          id
+          url
+          host
+          sslEnabled
+        }
+      }
+    }
+  `);
+  console.log('\n🌐 Shopify Domains:');
+  console.log(JSON.stringify(data, null, 2));
+}
+
 async function main() {
   const cmd = process.argv[2] || 'status';
   try {
@@ -162,6 +185,8 @@ async function main() {
       await checkStatus();
     } else if (cmd === 'token') {
       await ensureStorefrontToken();
+    } else if (cmd === 'domains') {
+      await checkDomains();
     } else {
       console.log(`Unknown command: ${cmd}`);
       console.log(`Available commands: status, token`);
