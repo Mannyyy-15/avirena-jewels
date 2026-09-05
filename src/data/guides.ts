@@ -22,7 +22,10 @@ export type GuideSlug =
   | 'does-brass-jewelry-turn-skin-green'
   | 'anti-tarnish-jewelry-care'
   | 'jewelry-materials-guide'
-  | 'ring-size-guide';
+  | 'ring-size-guide'
+  | 'jewellery-for-sensitive-skin-india'
+  | 'jewellery-care-monsoon-humidity-india'
+  | 'jewellery-gifting-guide-india';
 
 /** A body block. `lead` renders the direct answer; `table` renders sizing data. */
 export type GuideBlock =
@@ -511,6 +514,249 @@ export const GUIDES: Guide[] = [
         question: 'What ring size is 54 mm?',
         answer:
           'A finger circumference of about 54 mm corresponds to a US size 7, a UK size N 1/2, an EU size 54 and an India size 14. Measured the other way, that is an inside band diameter of roughly 17.3 mm. For reference on either side of it: 51.8 mm circumference (16.5 mm diameter) is a US 6, EU 51.5 and India 12, while 56.9 mm circumference (18.1 mm diameter) is a US 8, EU 56.5 and India 16. If your measurement falls between two rows on a conversion chart, choose the larger size, particularly for a wide or domed band, which sits against more of the finger and feels tighter than a narrow one.',
+      },
+    ],
+  },
+
+  // ------------------------------------------------------------------
+  {
+    slug: 'jewellery-for-sensitive-skin-india',
+    heading: 'Jewellery for Sensitive Skin: What Actually Causes Reactions',
+    shortTitle: 'Sensitive Skin Guide',
+    metaTitle: 'Jewellery for Sensitive Skin India | Nickel-Free | AVIRENA',
+    metaDescription:
+      'Nickel causes most jewellery skin reactions in India. How to identify nickel-free pieces, what "hypoallergenic" really means, and what to check before buying.',
+    summary:
+      'Nickel is the usual culprit behind itching and rashes. How to spot genuinely nickel-free jewellery and what marketing terms actually mean.',
+    category: 'Materials',
+    readTime: '5 min read',
+    directAnswer:
+      'Most jewellery skin reactions in India are caused by nickel, not by brass or gold plating. Nickel is the leading cause of allergic contact dermatitis worldwide, and it is commonly used in cheap fashion jewellery either in the base alloy or as an under-plating layer beneath the gold finish.',
+    blocks: [
+      {
+        type: 'lead',
+        text: 'Most jewellery skin reactions in India are caused by nickel, not by brass or gold plating. Nickel is the leading cause of allergic contact dermatitis worldwide, and it is commonly used in cheap fashion jewellery either in the base alloy or as an under-plating layer beneath the gold finish. If a piece makes your skin itch, redden or break out in small bumps, nickel is the first thing to suspect.',
+      },
+      { type: 'heading', text: 'Itching is not the same as a green mark' },
+      {
+        type: 'paragraph',
+        text: 'These are two different things and they get confused constantly. A green or grey mark on the skin is a harmless cosmetic stain, caused by copper in the alloy reacting with sweat and washing off with soap. An allergic reaction is a medical response: itching, redness, small raised bumps, sometimes flaking skin that appears hours after wearing and persists after the piece is removed. A stain is an annoyance. A reaction means your body is objecting to a specific metal, most often nickel.',
+      },
+      { type: 'heading', text: 'Why nickel is so common in fashion jewellery' },
+      {
+        type: 'paragraph',
+        text: 'Nickel is cheap, hard and takes plating well, which is exactly why it ends up in inexpensive jewellery. It appears in two places. It can be alloyed into the base metal itself, or it can be used as a thin under-plate between the base and the decorative gold layer, because it helps the gold adhere and gives a brighter finish. The second case is the more frustrating one: a piece can look and behave perfectly for months, then start causing reactions once the top layer wears through and exposes the nickel underneath.',
+      },
+      { type: 'heading', text: 'What to check before buying' },
+      {
+        type: 'list',
+        items: [
+          'Does the brand state "nickel-free" explicitly, in writing? Vague terms are not a commitment.',
+          'Does it name the actual base metal? A brand that says "brass" or "316L stainless steel" is telling you something; "alloy" is telling you nothing.',
+          'Are earring posts specified separately? Posts sit in a piercing and are the highest-risk contact point of any piece.',
+          'Is lead and cadmium mentioned too? Brands that have tested for one usually declare all three.',
+          'Be cautious with "hypoallergenic" on its own. It is not a regulated term and carries no legal definition in India.',
+        ],
+      },
+      { type: 'heading', text: '"Hypoallergenic" does not mean what most people assume' },
+      {
+        type: 'paragraph',
+        text: 'Hypoallergenic simply means "less likely to cause an allergic reaction". It is a comparative claim with no threshold behind it and no certification body enforcing it. A brand can print it on a piece that still contains nickel. This is why a specific statement — "nickel-free, lead-free, cadmium-free", naming the base metal — is worth far more than a general reassurance. Specificity is a claim a brand can be held to; hypoallergenic is not.',
+      },
+      { type: 'heading', text: 'Which metals are genuinely low-risk' },
+      {
+        type: 'list',
+        items: [
+          'Surgical steel (316L): very low nickel release, which is why it is used for medical implants and piercing jewellery.',
+          'Titanium and niobium: biocompatible and among the safest options for freshly pierced or highly reactive skin.',
+          'Nickel-free brass: safe for most people; the copper content can still leave a cosmetic green mark, which is a stain and not an allergy.',
+          'Solid gold at 18k and above: low reactivity, though lower karats contain more alloy metals and more risk.',
+          'Platinum: essentially non-reactive, and priced accordingly.',
+        ],
+      },
+      { type: 'heading', text: 'What Avirena uses' },
+      {
+        type: 'paragraph',
+        text: 'Avirena pieces are made from nickel-free, lead-free and cadmium-free brass with a protective anti-tarnish coating, and every earring post is surgical steel. We say this specifically rather than calling it hypoallergenic, because the specific claim is the one that is useful to you. To be equally clear about what this does not mean: brass contains copper, so a cosmetic green mark remains possible on some skin in hot or humid conditions. That is a stain, not an allergy, and our guide on brass and skin colour explains why it happens and how to avoid it.',
+      },
+      { type: 'heading', text: 'If you have reacted to jewellery before' },
+      {
+        type: 'paragraph',
+        text: 'Start with a short wear test — a few hours rather than a full day — and check the skin underneath before wearing anything overnight. Keep pieces dry, since sweat and moisture increase metal release from any alloy. If you have had a confirmed nickel allergy diagnosed by a dermatologist, be aware that sensitivity can extend to trace amounts, and a patch test through a dermatologist is a more reliable guide than trial and error. Nothing in this guide is medical advice.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'What jewellery is best for sensitive skin in India?',
+        answer:
+          'Look for pieces that state a specific composition rather than a general claim. Surgical steel (316L), titanium and niobium are the lowest-risk options, and nickel-free brass is safe for most people. The single most important factor is nickel, which causes most jewellery-related contact dermatitis. Check that the brand states "nickel-free" explicitly and names its base metal — vague terms like "alloy" or "hypoallergenic" are not commitments. Earring posts deserve separate attention, since they sit inside a piercing; surgical steel posts are the safer choice. In humid Indian conditions, keeping pieces dry matters too, because sweat increases metal release from any alloy.',
+      },
+      {
+        question: 'Does nickel-free jewellery still turn skin green?',
+        answer:
+          'It can, and that is not an allergic reaction. A green mark comes from copper in the alloy reacting with sweat and moisture to form copper salts, which transfer harmlessly onto the skin and wash off with soap and water. Nickel-free simply means the alloy has no nickel in it, which addresses the allergy risk — itching, redness and raised bumps — but says nothing about copper. Brass contains copper by definition, so a nickel-free brass piece can still leave a stain while being entirely safe to wear. A protective coating prevents the copper contacting your skin, which is why coated pieces rarely mark until the coating wears.',
+      },
+      {
+        question: 'Is "hypoallergenic" jewellery actually safe?',
+        answer:
+          'Not necessarily. Hypoallergenic means "less likely to cause a reaction" — it is a comparative term with no legal definition or certification behind it in India, and a piece labelled hypoallergenic can still contain nickel. It is more useful to look for specific statements: does the brand say "nickel-free, lead-free, cadmium-free"? Does it name the base metal? Does it specify what the earring posts are made from? A brand willing to state its composition precisely is making a claim it can be held to. A general reassurance is not.',
+      },
+    ],
+  },
+
+  // ------------------------------------------------------------------
+  {
+    slug: 'jewellery-care-monsoon-humidity-india',
+    heading: 'Jewellery Care in Indian Humidity and Monsoon',
+    shortTitle: 'Monsoon Care Guide',
+    metaTitle: 'Jewellery Care in Monsoon & Humidity India | AVIRENA',
+    metaDescription:
+      'Humidity accelerates tarnish. How to store and wear jewellery through Indian monsoon and coastal weather so plated and coated pieces last longer.',
+    summary:
+      'Why Indian humidity is harder on jewellery than dry climates, and the storage and wear habits that make the difference.',
+    category: 'Care',
+    readTime: '5 min read',
+    directAnswer:
+      'Humidity speeds up tarnishing because moisture in the air lets metal react with oxygen and sulphur compounds faster. Through monsoon, store jewellery in airtight pouches with a silica gel sachet, dry each piece after wear, and keep it out of bathrooms — the single most damaging storage spot in an Indian home.',
+    blocks: [
+      {
+        type: 'lead',
+        text: 'Humidity speeds up tarnishing because moisture in the air lets metal react with oxygen and sulphur compounds faster. Through monsoon, store jewellery in airtight pouches with a silica gel sachet, dry each piece after wear, and keep it out of bathrooms — the single most damaging storage spot in an Indian home.',
+      },
+      { type: 'heading', text: 'Why Indian weather is harder on jewellery' },
+      {
+        type: 'paragraph',
+        text: 'Most jewellery care advice online is written for dry, temperate climates and does not transfer well. Coastal Indian cities regularly sit above 70% relative humidity, and monsoon pushes that higher for weeks at a stretch. Two things follow. Moisture in the air forms a thin film on metal that lets oxidation proceed continuously rather than only on contact with skin. And heat means more sweat, which is mildly acidic and salty, and is the other main driver of both tarnish and skin marking. Coastal air adds airborne salt to that.',
+      },
+      { type: 'heading', text: 'Storage: where most damage actually happens' },
+      {
+        type: 'paragraph',
+        text: 'Jewellery spends most of its life in storage, not on a body, which is where the greatest gains are available. The worst place in an Indian home is a bathroom shelf or a bedroom cupboard that shares a wall with a bathroom: constant steam, chemical fumes from cleaning products and no ventilation. A bedroom drawer or dressing table away from any water source is significantly better.',
+      },
+      {
+        type: 'list',
+        items: [
+          'Use airtight zip pouches or a sealed box rather than an open tray or bowl.',
+          'Add a silica gel sachet to the container and replace it when the beads change colour. Sachets from packaging work fine.',
+          'Store pieces separately so they cannot rub against each other and scratch their coatings.',
+          'Avoid unlined wooden boxes: some woods release organic acids that accelerate tarnish.',
+          'Keep jewellery away from rubber bands, wool and felt, which can contain sulphur.',
+          'During peak monsoon, check stored pieces every week or two so early tarnish is caught while it is still easy to wipe away.',
+        ],
+      },
+      { type: 'heading', text: 'Wearing through humid weather' },
+      {
+        type: 'list',
+        items: [
+          'Put jewellery on last, after perfume, sunscreen, lotion and hairspray have fully dried.',
+          'Take pieces off before a workout, a commute in heavy heat, or anything else that means heavy sweating.',
+          'Remove jewellery before swimming and before a bath or shower. Chlorine is particularly aggressive.',
+          'Wipe each piece with a soft dry cloth when you take it off, before it goes back into storage. This one habit removes accumulated sweat and does more than any occasional deep clean.',
+          'In heavy rain, dry pieces properly rather than leaving them to air-dry, which leaves mineral residue behind.',
+        ],
+      },
+      { type: 'heading', text: 'Cleaning without damaging a coating' },
+      {
+        type: 'paragraph',
+        text: 'Start with the gentlest method that works and stop there. A soft dry cloth removes most residue. If a piece still looks dull, use lukewarm water with a drop of mild soap, then dry it completely including any crevices. What to avoid on coated or plated jewellery: commercial silver dips, baking soda pastes, toothpaste, ultrasonic cleaners and abrasive cloths. These are formulated for solid precious metal and will strip a protective coating, which is the layer doing all the work.',
+      },
+      { type: 'heading', text: 'What to expect realistically' },
+      {
+        type: 'paragraph',
+        text: 'A protective coating is a finish, not a permanent property, and every finish wears with time and use. Careful habits meaningfully extend its life; nothing makes it indefinite. Anyone promising permanence in Indian humidity is overselling. The honest position is that consistent drying and airtight storage make a substantial difference, and that pieces worn daily through monsoon will show wear sooner than pieces worn occasionally.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'How do I stop jewellery from tarnishing in monsoon?',
+        answer:
+          'Control moisture and remove sweat. Store pieces in airtight zip pouches or a sealed box with a silica gel sachet inside, and replace the sachet when its beads change colour. Keep that container away from bathrooms and any wall shared with one — steam and chemical fumes are the most damaging environment in a typical Indian home. Wipe each piece with a soft dry cloth every time you take it off, which removes the sweat residue that drives tarnish. Take jewellery off before workouts, swimming and bathing. During heavy monsoon weeks, check stored pieces occasionally so early tarnish can be wiped away before it sets.',
+      },
+      {
+        question: 'Does humidity make jewellery tarnish faster?',
+        answer:
+          'Yes, considerably. Tarnish is a reaction between metal and oxygen or sulphur compounds in the air, and moisture accelerates it by forming a thin film on the surface that lets the reaction proceed continuously rather than only on contact. In coastal Indian cities where humidity regularly exceeds 70%, and through monsoon when it stays high for weeks, jewellery tarnishes noticeably faster than in a dry climate. Coastal air carries salt as well, which adds to it. This is why airtight storage with a desiccant matters more in India than the generic care advice written for temperate climates suggests.',
+      },
+      {
+        question: 'Can I wear anti-tarnish jewellery in the rain?',
+        answer:
+          'Brief contact with rain is not a problem for a coated piece, but it should not be treated as waterproof. Dry it properly afterwards with a soft cloth rather than letting it air-dry, since evaporating water leaves mineral residue behind. What genuinely shortens a coating\'s life is prolonged or repeated immersion: swimming, bathing, showering and washing up. Chlorinated pool water is the harshest of these. The practical rule is that incidental water is fine if you dry the piece, and deliberate immersion should be avoided.',
+      },
+    ],
+  },
+
+  // ------------------------------------------------------------------
+  {
+    slug: 'jewellery-gifting-guide-india',
+    heading: 'How to Choose Jewellery as a Gift',
+    shortTitle: 'Gifting Guide',
+    metaTitle: 'Jewellery Gifting Guide India | What to Buy | AVIRENA',
+    metaDescription:
+      'Choosing jewellery as a gift without knowing sizes or taste. What is safe to buy, what to avoid, and how to pick for Rakhi, Diwali and birthdays.',
+    summary:
+      'Earrings are the safest jewellery gift because they need no sizing. What else to consider before buying for someone.',
+    category: 'Fit',
+    readTime: '4 min read',
+    directAnswer:
+      'Earrings are the safest jewellery gift because they need no sizing and suit most tastes. Rings are the riskiest, since they require a finger measurement you probably do not have. If you are unsure, choose a simple pair of studs or drops over anything highly specific to one style.',
+    blocks: [
+      {
+        type: 'lead',
+        text: 'Earrings are the safest jewellery gift because they need no sizing and suit most tastes. Rings are the riskiest, since they require a finger measurement you probably do not have. If you are unsure, choose a simple pair of studs or drops over anything highly specific to one style.',
+      },
+      { type: 'heading', text: 'Ranked by how likely it is to fit' },
+      {
+        type: 'list',
+        items: [
+          'Earrings: no sizing at all. Studs and small drops suit nearly everyone and work across daily and occasion wear.',
+          'Pendants and chains: length varies but most people wear 40-45 cm comfortably, and adjustable chains remove the guesswork.',
+          'Brooches and pins: no sizing, though a more specific taste, so best when you know the person dresses expressively.',
+          'Bracelets: some sizing risk. Adjustable cuffs and chains with an extender are much safer than fixed bangles.',
+          'Rings: highest risk. Only buy a ring if you have measured, or can borrow one they already wear.',
+        ],
+      },
+      { type: 'heading', text: 'If you must buy a ring' },
+      {
+        type: 'paragraph',
+        text: 'Borrow a ring they already wear on the relevant finger, measure the inside diameter across the centre, and check it against a conversion chart. Our ring size guide has the full chart. If you cannot do that discreetly, size up rather than down: a slightly loose ring is wearable, a tight one is not, particularly in Indian heat when fingers swell. Then check the return policy before buying, so an exchange is possible if the size is wrong.',
+      },
+      { type: 'heading', text: 'Choosing for a festival or occasion' },
+      {
+        type: 'paragraph',
+        text: 'For Rakhi, Diwali, Karwa Chauth and birthdays, the practical advantage of jewellery is that a well-chosen piece stays useful long after the occasion. A pair of earrings that works with both a kurta and a western outfit will be worn through the year rather than once. Statement pieces feel more generous in the moment but are worn less often. If the intent is for it to be worn regularly, err towards simpler shapes and a finish that suits daily wear.',
+      },
+      { type: 'heading', text: 'Practical things people forget' },
+      {
+        type: 'list',
+        items: [
+          'Sensitive skin: if they have reacted to jewellery before, check the piece is explicitly nickel-free and that earring posts are surgical steel.',
+          'What they already wear: gold-tone or silver-tone? Most people consistently lean one way, and it is easy to observe.',
+          'Their actual daily life: heavy statement pieces are impractical for someone commuting or working with their hands.',
+          'The return window: a gift that cannot be exchanged is a gamble. Check the policy before you buy.',
+          'Packaging: for gifting, a piece that arrives ready to give saves you a step.',
+        ],
+      },
+      { type: 'heading', text: 'On budget' },
+      {
+        type: 'paragraph',
+        text: 'Fashion jewellery in the ₹400-1,500 band is where most considered gifting happens in India, and it is a sensible place to be. It is enough to buy something well-made and properly finished, without the awkwardness that a very expensive gift can create between friends or colleagues. What matters more than the amount is that the piece looks considered rather than generic — a distinctive shape in a clean finish reads better than a larger, plainer piece at the same price.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'What jewellery is best to gift if you do not know their size?',
+        answer:
+          'Earrings, by a clear margin. They require no sizing at all, and simple studs or drops suit most tastes and both daily and occasion wear. Pendants on adjustable chains are the next safest, since length can be adjusted by the wearer. Bracelets carry some risk, though adjustable cuffs and chains with extenders largely solve it. Rings are the one category to avoid unless you have measured their finger or can borrow a ring they already wear — a ring that does not fit cannot be worn at all, whereas almost any earring can. Whatever you choose, check the return policy first so an exchange is possible.',
+      },
+      {
+        question: 'What is a good jewellery gift under ₹1000 in India?',
+        answer:
+          'A well-made pair of earrings is the strongest option in this range. Under ₹1,000 you are buying fashion jewellery rather than precious metal, so the things worth judging are the finish, the weight and the design. Look for a piece with a distinctive shape and a clean, even coating, and check that it is nickel-free if the recipient has sensitive skin. Earrings avoid sizing problems entirely and, if you choose a simple silhouette, will be worn through the year rather than only on the occasion itself. A distinctive design at ₹500 reads better as a gift than a plain one at ₹1,000.',
+      },
+      {
+        question: 'Is fashion jewellery an acceptable gift?',
+        answer:
+          'Yes, and increasingly it is the norm for everyday gifting in India. Fashion jewellery is bought for design and wearability rather than material value, which suits occasions where an expensive gift would feel like an obligation. It also means the recipient can wear it without worrying about loss or damage, unlike solid gold. The one thing worth being straightforward about is what it is: a good brand states clearly that a piece is brass or steel with a protective finish rather than implying precious metal. Buying from a brand that is honest about its materials means the recipient knows how to care for it.',
       },
     ],
   },
