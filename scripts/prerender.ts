@@ -155,35 +155,33 @@ function getGlobalSchema() {
       ],
       contactPoint: {
         '@type': 'ContactPoint',
-        telephone: '+91-98200-12345',
+        telephone: '+91-78238-89290',
         contactType: 'customer service',
-        availableLanguage: ['English', 'Hindi', 'Italian'],
+        availableLanguage: ['English', 'Hindi'],
         areaServed: ['IN', 'US', 'GB', 'EU'],
       },
     },
     {
+      // OnlineStore, not JewelryStore/LocalBusiness: Avirena sells online and has
+      // no walk-in storefront. A LocalBusiness type with a street address and geo
+      // coordinates asserts a physical location customers can visit, and the
+      // address previously stated here was not a real one.
       '@context': 'https://schema.org',
-      '@type': 'JewelryStore',
-      name: 'Studio Avirena Atelier',
+      '@type': 'OnlineStore',
+      name: 'Avirena Jewels',
       image: `${SITE_URL}/logo.png`,
       '@id': `${SITE_URL}/#store`,
       url: SITE_URL,
-      telephone: '+91-98200-12345',
+      email: 'avirenajewels@gmail.com',
+      telephone: '+91-78238-89290',
       priceRange: '₹₹',
-      currenciesAccepted: 'INR, EUR, USD, GBP',
-      paymentAccepted: 'Credit Card, Apple Pay, Google Pay, UPI, Net Banking, Cash on Delivery',
+      currenciesAccepted: 'INR',
+      paymentAccepted: 'Credit Card, Debit Card, UPI, Net Banking',
       address: {
         '@type': 'PostalAddress',
-        streetAddress: 'Heritage Craft Enclave, Bandra West',
         addressLocality: 'Mumbai',
         addressRegion: 'MH',
-        postalCode: '400050',
         addressCountry: 'IN',
-      },
-      geo: {
-        '@type': 'GeoCoordinates',
-        latitude: 19.0596,
-        longitude: 72.8295,
       },
     },
     {

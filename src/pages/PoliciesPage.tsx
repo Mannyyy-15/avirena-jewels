@@ -64,7 +64,7 @@ At Avirena Jewels, we take immense pride in the artisanal craftsmanship and meta
 • Custom bespoke commissions, personalized engravings, and gift cards are final sale and cannot be returned unless a structural defect is verified.
 
 2. How to Initiate a Return:
-• Email our concierge team at concierge@avirena.com or WhatsApp us with your Order ID (#AV-XXXXX) and reason for return/exchange.
+• Email our concierge team at avirenajewels@gmail.com or WhatsApp us with your Order ID (#AV-XXXXX) and reason for return/exchange.
 • Our atelier will schedule an insured doorstep courier pickup at your designated address.
 
 3. Refunds & Processing:
@@ -73,7 +73,7 @@ At Avirena Jewels, we take immense pride in the artisanal craftsmanship and meta
 • Alternatively, you may choose Instant Atelier Store Credit with zero deductions.
 
 4. Damaged or Defective Items:
-• If an item arrives damaged during transit, please notify concierge@avirena.com within 48 hours of receipt with clear photographs. We will immediately dispatch a priority replacement at zero additional charge.`,
+• If an item arrives damaged during transit, please notify avirenajewels@gmail.com within 48 hours of receipt with clear photographs. We will immediately dispatch a priority replacement at zero additional charge.`,
     },
 
     privacy: {
@@ -121,10 +121,10 @@ Welcome to the Avirena Jewels online boutique (avirena.com). By visiting our web
 
 3. Order Acceptance & Cancellations:
 • An order confirmation does not signify our final acceptance of an order. We reserve the right to limit order quantities per household or cancel orders affected by inventory inaccuracies.
-• Orders may be cancelled within 4 hours of placement by contacting concierge@avirena.com prior to dispatch handover.
+• Orders may be cancelled within 4 hours of placement by contacting avirenajewels@gmail.com prior to dispatch handover.
 
 4. Intellectual Property:
-• All visual branding, Cormorant/Atelier typography treatments, lost-wax casting sculpts, product photography, and editorial copy are the exclusive intellectual property of Avirena Jewels Private Limited.
+• All visual branding, typography treatments, original design sculpts, product photography, and editorial copy are the exclusive intellectual property of Avirena Jewels Private Limited.
 
 5. Governing Law:
 • These Terms of Service and any separate agreements whereby we provide you services shall be governed by and construed in accordance with the laws of India, with jurisdiction in Mumbai courts.`,
@@ -168,8 +168,8 @@ Studio Avirena, Suite 402, Heritage Craft Enclave,
 Bandra West, Mumbai, Maharashtra 400050, India
 
 Customer Concierge Email:
-concierge@avirena.com
-support@avirena.com
+avirenajewels@gmail.com
+avirenajewels@gmail.com
 
 Telephone & WhatsApp Support:
 +91 98200 12345 / +91 80505 56004

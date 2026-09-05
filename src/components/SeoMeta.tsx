@@ -37,7 +37,7 @@ export const SeoMeta: React.FC<SeoMetaProps> = ({
       canonical = `https://avirenajewels.com/shop${selectedCategory && selectedCategory !== 'all' ? `/${selectedCategory}` : ''}`;
     } else if (currentPage === 'collections') {
       title = 'Signature Jewelry Design Suites | AVIRENA';
-      description = 'Explore the signature design suites of Avirena: Sculptural Brass, Baroque Pearl Editions, and Architectural Chains.';
+      description = 'Explore the Avirena collections: sculptural brass earrings, baroque pearl pieces and architectural chains, all in anti-tarnish gold-tone brass.';
       canonical = 'https://avirenajewels.com/collections';
     } else if (currentPage === 'pdp' && selectedProduct) {
       title = `${selectedProduct.name} — ${selectedProduct.metal} | AVIRENA`;
@@ -51,12 +51,12 @@ export const SeoMeta: React.FC<SeoMetaProps> = ({
       description = 'Learn about Avirena Jewels, our homegrown Indian design studio, and our commitment to skin-safe anti-tarnish brass jewelry made for everyday wear.';
       canonical = 'https://avirenajewels.com/about';
     } else if (currentPage === 'contact') {
-      title = 'Atelier Concierge & Private Appointments | AVIRENA';
-      description = 'Contact Avirena concierge for bespoke bridal commissions, custom ring sizing, and order assistance. Available via WhatsApp and email.';
+      title = 'Contact Avirena | Support & Order Help';
+      description = 'Get in touch with Avirena Jewels for order assistance, ring sizing help, exchanges and product questions. Reach us on WhatsApp or by email.';
       canonical = 'https://avirenajewels.com/contact';
     } else if (currentPage === 'policies') {
-      title = 'Policies, Shipping & Client Assurance | AVIRENA';
-      description = 'Official written policies of Avirena Jewels covering worldwide insured delivery, 14-day returns, material hallmarking, and data privacy.';
+      title = 'Policies, Shipping & Returns | AVIRENA';
+      description = 'Avirena Jewels policies covering tracked delivery, 14-day exchanges, material disclosures and data privacy.';
       canonical = 'https://avirenajewels.com/policies';
     } else if (currentPage === 'guides') {
       // Must mirror scripts/prerender.ts exactly: without this branch, hydrating a
@@ -117,7 +117,7 @@ export const SeoMeta: React.FC<SeoMetaProps> = ({
       url: 'https://avirenajewels.com',
       logo: 'https://avirenajewels.com/logo.png',
       description:
-        'Luxury demi-fine jewelry atelier crafting sculptural pieces in durable brass, anti-tarnish protective coatings, and natural cultured pearls.',
+        'Homegrown dailywear jewelry brand crafting sculptural pieces in durable brass with anti-tarnish protective coatings and cultured freshwater pearls.',
       sameAs: [
         'https://www.instagram.com/avirena.jewels',
         'https://www.facebook.com/avirenajewels',
@@ -125,46 +125,34 @@ export const SeoMeta: React.FC<SeoMetaProps> = ({
       ],
       contactPoint: {
         '@type': 'ContactPoint',
-        telephone: '+91-98200-12345',
+        telephone: '+91-78238-89290',
         contactType: 'customer service',
-        availableLanguage: ['English', 'Hindi', 'Italian'],
+        availableLanguage: ['English', 'Hindi'],
         areaServed: ['IN', 'US', 'GB', 'EU'],
       },
     });
 
-    // 2. LocalBusiness / JewelryStore (GEO Schema)
+    // 2. OnlineStore — must mirror scripts/prerender.ts getGlobalSchema() exactly.
+    // Not JewelryStore/LocalBusiness: that type asserts a walk-in storefront with
+    // a street address, coordinates and opening hours, none of which exist.
     schemas.push({
       '@context': 'https://schema.org',
-      '@type': 'JewelryStore',
-      name: 'Studio Avirena Atelier',
+      '@type': 'OnlineStore',
+      name: 'Avirena Jewels',
       image: 'https://avirenajewels.com/logo.png',
       '@id': 'https://avirenajewels.com/#store',
       url: 'https://avirenajewels.com',
-      telephone: '+91-98200-12345',
-      priceRange: '$$',
-      currenciesAccepted: 'INR, EUR, USD, GBP',
-      paymentAccepted: 'Credit Card, Apple Pay, Google Pay, UPI, Cash on Delivery',
+      email: 'avirenajewels@gmail.com',
+      telephone: '+91-78238-89290',
+      priceRange: '₹₹',
+      currenciesAccepted: 'INR',
+      paymentAccepted: 'Credit Card, Debit Card, UPI, Net Banking',
       address: {
         '@type': 'PostalAddress',
-        streetAddress: 'Suite 402, Heritage Craft Enclave, Bandra West',
         addressLocality: 'Mumbai',
         addressRegion: 'MH',
-        postalCode: '400050',
         addressCountry: 'IN',
       },
-      geo: {
-        '@type': 'GeoCoordinates',
-        latitude: 19.0596,
-        longitude: 72.8295,
-      },
-      openingHoursSpecification: [
-        {
-          '@type': 'OpeningHoursSpecification',
-          dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
-          opens: '10:00',
-          closes: '19:00',
-        },
-      ],
     });
 
     // 3. WebSite & SearchAction Schema
