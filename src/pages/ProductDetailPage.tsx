@@ -26,7 +26,11 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
   onToggleWishlist,
   catalogProducts = [],
 }) => {
-  const { isConfigured, addToShopifyCart } = useShopify();
+  const { isConfigured, addToShopifyCart, syncLocalCartToShopify } = useShopify();
+
+  // Buy Now redirects to Shopify; this disables the button while that resolves
+  // so a second tap cannot create a second checkout.
+  const [isBuyingNow, setIsBuyingNow] = useState(false);
 
   // Finish selector: "Gold Tone Brass" and "Silver Tone Brass"
   const [selectedFinish, setSelectedFinish] = useState<'Gold Tone Brass' | 'Silver Tone Brass'>('Gold Tone Brass');
@@ -94,6 +98,43 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
         await addToShopifyCart(targetVariant.id, 1);
       }
     }
+  };
+
+  /**
+   * Buy Now: straight to Shopify checkout with only this piece.
+   *
+   * Deliberately does NOT touch the local bag — a shopper using Buy Now is
+   * buying this one item, and silently adding it to a bag they may already
+   * have items in (or leaving it there after an abandoned checkout) creates
+   * duplicates. syncLocalCartToShopify creates a fresh Shopify cart from the
+   * lines passed in, so we hand it this product alone.
+   *
+   * If Shopify is not configured or the variant is missing, fall back to the
+   * normal add-to-bag flow rather than leaving the button dead.
+   */
+  const handleBuyNow = async () => {
+    const metal: Metal = selectedFinish === 'Gold Tone Brass' ? 'Gold-Tone Brass' : 'Silver-Tone Alloy';
+    const variantId = product.variants && product.variants.length > 0 ? product.variants[0].id : undefined;
+
+    if (isConfigured && variantId) {
+      setIsBuyingNow(true);
+      try {
+        const checkoutUrl = await syncLocalCartToShopify([
+          { id: `buynow-${product.id}`, product, quantity: 1, metal, variantId },
+        ]);
+        if (checkoutUrl) {
+          window.location.href = checkoutUrl;
+          return;
+        }
+      } catch (e) {
+        console.warn('[BuyNow] Falling back to add-to-bag:', e);
+      } finally {
+        setIsBuyingNow(false);
+      }
+    }
+
+    // Fallback: add to the bag and open the drawer so the sale is still reachable.
+    await handleAddToCart();
   };
 
   const handleQuickAddRecommendation = async (recommendedItem: Product) => {
@@ -312,15 +353,29 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
               </div>
             </div>
 
-            {/* Primary CTA and Wishlist Action */}
+            {/* Primary CTA and Wishlist Action.
+                Buy Now is the filled primary and Add to Bag the outlined
+                secondary: a shopper who has decided should reach checkout in
+                one tap, while browsing still has an obvious path. */}
             <div className="pt-3 flex flex-wrap items-center gap-4 sm:gap-6 w-full">
-              <button
-                id="pdp-add-to-bag-cta"
-                onClick={handleAddToCart}
-                className="w-full sm:w-auto sm:min-w-[280px] py-4 px-8 bg-[#413C23] hover:bg-[#8F896D] text-[#FAF8F5] text-xs uppercase tracking-[0.2em] font-semibold rounded-xs transition-all shadow-md flex items-center justify-center cursor-pointer active:scale-98"
-              >
-                Add to Bag
-              </button>
+              <div className="w-full sm:w-auto flex flex-col sm:flex-row gap-2.5 sm:gap-3">
+                <button
+                  id="pdp-buy-now-cta"
+                  onClick={handleBuyNow}
+                  disabled={isBuyingNow}
+                  className="w-full sm:w-auto sm:min-w-[190px] py-4 px-8 bg-[#413C23] hover:bg-[#8F896D] disabled:opacity-60 disabled:cursor-wait text-[#FAF8F5] text-xs uppercase tracking-[0.2em] font-semibold rounded-xs transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer active:scale-98"
+                >
+                  {isBuyingNow ? 'Taking you to checkout…' : 'Buy Now'}
+                </button>
+
+                <button
+                  id="pdp-add-to-bag-cta"
+                  onClick={handleAddToCart}
+                  className="w-full sm:w-auto sm:min-w-[190px] py-4 px-8 bg-transparent border border-[#413C23] hover:bg-[#413C23] hover:text-[#FAF8F5] text-[#413C23] text-xs uppercase tracking-[0.2em] font-semibold rounded-xs transition-all flex items-center justify-center cursor-pointer active:scale-98"
+                >
+                  Add to Bag
+                </button>
+              </div>
 
               <button
                 onClick={() => onToggleWishlist(product)}
