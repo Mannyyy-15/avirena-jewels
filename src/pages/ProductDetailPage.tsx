@@ -32,6 +32,10 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
   const [selectedFinish, setSelectedFinish] = useState<'Gold Tone Brass' | 'Silver Tone Brass'>('Gold Tone Brass');
   const [activeImageIndex, setActiveImageIndex] = useState(0);
 
+  // Long Shopify descriptions are clamped to 4 lines so the price and Add to
+  // Bag stay above the fold; this toggles the full text.
+  const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
+
   // Interactive Magnifying Zoom Lens State
   const [zoomPosition, setZoomPosition] = useState<{ x: number; y: number }>({ x: 50, y: 50 });
   const [isZoomed, setIsZoomed] = useState<boolean>(false);
@@ -62,6 +66,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
     setActiveTab('overview');
     setIsZoomed(false);
     setIsLightboxOpen(false);
+    setIsDescriptionExpanded(false);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [product.id]);
 
@@ -145,13 +150,16 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
           
           {/* LEFT: Hero Image with Interactive Magnifying Zoom Lens */}
           <div className="lg:col-span-6 xl:col-span-6 space-y-4 w-full">
-            {/* Main Interactive Zoom Canvas */}
+            {/* Main Interactive Zoom Canvas.
+                Square on mobile, 4:5 portrait from sm up: a 4:5 canvas on a
+                390px screen is ~490px tall, which pushed the title, price and
+                Add to Bag below the fold before the shopper saw them. */}
             <div
               onClick={() => setIsLightboxOpen(true)}
               onMouseEnter={() => setIsZoomed(true)}
               onMouseLeave={() => setIsZoomed(false)}
               onMouseMove={handleMouseMove}
-              className="relative w-full aspect-[4/5] max-h-[calc(100vh-140px)] bg-[#F2EFDB] border border-[#D8D2C2] rounded-xs overflow-hidden flex items-center justify-center cursor-pointer sm:cursor-crosshair shadow-xs select-none group/canvas"
+              className="relative w-full aspect-square sm:aspect-[4/5] max-h-[calc(100vh-140px)] bg-[#F2EFDB] border border-[#D8D2C2] rounded-xs overflow-hidden flex items-center justify-center cursor-pointer sm:cursor-crosshair shadow-xs select-none group/canvas"
             >
               <img
                 src={imagesList[activeImageIndex] || imagesList[0]}
@@ -216,7 +224,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                 <button
                   key={idx}
                   onClick={() => setActiveImageIndex(idx)}
-                  className={`w-16 h-16 shrink-0 aspect-square rounded-xs border overflow-hidden transition-all cursor-pointer ${
+                  className={`w-12 h-12 sm:w-16 sm:h-16 shrink-0 aspect-square rounded-xs border overflow-hidden transition-all cursor-pointer ${
                     activeImageIndex === idx
                       ? 'border-[#413C23] ring-2 ring-[#413C23]/25'
                       : 'border-[#D8D2C2] opacity-80 hover:opacity-100'
@@ -251,15 +259,28 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
               </h1>
             </div>
 
-            {/* Narrative Story Description - Spanning full column width */}
+            {/* Narrative description, clamped to 4 lines.
+                Full Shopify descriptions run several hundred words; printed in
+                full they pushed the price and Add to Bag below the fold, so a
+                shopper had to scroll past the whole story to buy. The text is
+                always in the DOM (line-clamp is CSS only), so crawlers and
+                screen readers still get all of it. */}
             <div className="space-y-1.5 text-xs sm:text-sm text-[#413C23]/85 leading-relaxed font-normal w-full">
               <p className="font-semibold text-[#413C23] tracking-wide">
                 Raw, Radiant, Eternal.
               </p>
-              <p className="w-full">
+              <p className={`w-full ${isDescriptionExpanded ? '' : 'line-clamp-4'}`}>
                 {product.description ||
-                  'Hand-sculpted gold jewelry with organic texture and engraved symbols reminiscent of ancient sun emblems. Each curve and imperfection tells a story of light, resilience, and individuality.'}
+                  'Hand-sculpted jewelry with organic texture and sculptural form. Each curve tells a story of light, resilience, and individuality.'}
               </p>
+              <button
+                type="button"
+                onClick={() => setIsDescriptionExpanded((v) => !v)}
+                className="text-[11px] uppercase tracking-[0.18em] font-semibold text-[#8F896D] hover:text-[#413C23] transition-colors cursor-pointer underline underline-offset-4 decoration-[#D8D2C2]"
+                aria-expanded={isDescriptionExpanded}
+              >
+                {isDescriptionExpanded ? 'Read less' : 'Read more'}
+              </button>
             </div>
 
             {/* Price */}

@@ -493,13 +493,24 @@ export function transformShopifyProduct(node: any): Product {
     category = 'rings';
   }
 
-  // Derive Metal
-  let metal: Metal = 'Gold-Tone Brass';
-  if (fullText.includes('silver') || fullText.includes('silver-tone') || fullText.includes('steel')) {
-    metal = 'Silver-Tone Alloy';
-  } else if (fullText.includes('rose gold')) {
+  // Derive Metal — from title and tags ONLY, never the description.
+  //
+  // The description is deliberately excluded: every product description ends
+  // with "surgical steel posts", so matching 'steel' against the full text
+  // labelled all nine products "Silver-Tone Alloy", including the gold ones.
+  // The post material is not the finish of the piece.
+  //
+  // 'gold-tone' is tested before the bare 'silver'/'gold' checks so that a
+  // title like "Solene Crystal Hoops — Gold" cannot be mis-read.
+  const finishText = `${titleLower} ${typeLower} ${tagsLower}`;
+  let metal: Metal;
+  if (finishText.includes('rose gold')) {
     metal = 'Rose Gold-Tone';
-  } else if (fullText.includes('anti-tarnish') || fullText.includes('brass')) {
+  } else if (finishText.includes('silver-tone') || /\bsilver\b/.test(finishText)) {
+    metal = 'Silver-Tone Alloy';
+  } else if (finishText.includes('gold-tone') || /\bgold\b/.test(finishText)) {
+    metal = 'Gold-Tone Brass';
+  } else if (finishText.includes('anti-tarnish') || finishText.includes('brass')) {
     metal = 'Anti-Tarnish Brass';
   } else {
     metal = 'Gold-Tone Brass';

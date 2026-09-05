@@ -80,7 +80,10 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
       />
 
       <div className="fixed inset-y-0 right-0 max-w-full flex pl-4 sm:pl-10">
-        <div className="w-screen max-w-md bg-[#FAF8F5] border-l border-[#D8D2C2] shadow-2xl flex flex-col justify-between animate-in slide-in-from-right duration-300 text-[#413C23]">
+        {/* h-dvh so the panel has a definite height on mobile and tracks the
+            browser chrome as it hides. justify-between is dropped: the item
+            list already flexes, and combining the two let the footer drift. */}
+        <div className="w-screen max-w-md h-dvh bg-[#FAF8F5] border-l border-[#D8D2C2] shadow-2xl flex flex-col animate-in slide-in-from-right duration-300 text-[#413C23]">
           
           {/* 1. TOP HEADER */}
           <div className="p-5 sm:p-6 border-b border-[#D8D2C2] bg-[#F2EFDB] space-y-3">
@@ -159,12 +162,18 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                     key={item.id}
                     className="flex gap-4 p-4 bg-[#F2EFDB] border border-[#D8D2C2] rounded-xs transition-all hover:border-[#8F896D]"
                   >
-                    {/* Square Thumbnail */}
-                    <div className="w-20 h-20 bg-[#FAF8F5] border border-[#D8D2C2] rounded-xs flex items-center justify-center p-2 shrink-0 overflow-hidden">
+                    {/* Square thumbnail. Larger and less padded than before:
+                        at 80px with 8px inset the piece was too small to
+                        recognise, which is the thumbnail's only job here. */}
+                    <div className="w-24 h-24 bg-[#FAF8F5] border border-[#D8D2C2] rounded-xs flex items-center justify-center p-1.5 shrink-0 overflow-hidden">
                       <img
                         src={item.product.images[0]}
                         alt={item.product.name}
                         referrerPolicy="no-referrer"
+                        width={96}
+                        height={96}
+                        loading="lazy"
+                        decoding="async"
                         className="max-w-full max-h-full w-auto h-auto object-contain mix-blend-multiply"
                       />
                     </div>
@@ -173,7 +182,11 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                     <div className="flex-1 flex flex-col justify-between min-w-0">
                       <div>
                         <div className="flex items-start justify-between gap-2">
-                          <h4 className="font-serif-display text-base font-medium text-[#413C23] leading-snug truncate">
+                          {/* Wraps to two lines rather than truncating: names
+                              like "Solene Crystal Hoops - Gold" lose the finish
+                              at the ellipsis, which is the part that tells the
+                              shopper which variant is in their bag. */}
+                          <h4 className="font-serif-display text-base font-medium text-[#413C23] leading-snug line-clamp-2">
                             {item.product.name}
                           </h4>
                           <button

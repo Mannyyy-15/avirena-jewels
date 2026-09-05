@@ -557,15 +557,9 @@ function AppContent() {
   };
 
   const handleRemoveFromCart = (id: string) => {
-    const removedItem = cart.find((i) => i.id === id);
+    // No toast: the cart drawer is the feedback. A notification that repeats
+    // what the user just watched happen is noise.
     setCart(cart.filter((item) => item.id !== id));
-    if (removedItem) {
-      addToast({
-        type: 'info',
-        title: 'Removed from Bag',
-        subtitle: removedItem.product.name,
-      });
-    }
   };
 
   const handleClearCart = () => {
