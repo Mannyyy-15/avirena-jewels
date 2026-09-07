@@ -309,30 +309,27 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
           
           {/* LEFT: Hero Image with Interactive Magnifying Zoom Lens */}
           <div className="lg:col-span-6 xl:col-span-6 space-y-4 w-full">
-            {/* Main Interactive Zoom Canvas.
-                Square on mobile, 4:5 portrait from sm up: a 4:5 canvas on a
-                390px screen is ~490px tall, which pushed the title, price and
-                Add to Bag below the fold before the shopper saw them. */}
+            {/* Main Interactive Zoom Canvas (True 1:1 Square) */}
             <div
               onClick={() => setIsLightboxOpen(true)}
               onMouseEnter={() => setIsZoomed(true)}
               onMouseLeave={() => setIsZoomed(false)}
               onMouseMove={handleMouseMove}
-              className="relative w-full aspect-square sm:aspect-[4/5] max-h-[calc(100vh-140px)] bg-[#F2EFDB] border border-[#D8D2C2] rounded-xs overflow-hidden flex items-center justify-center cursor-pointer sm:cursor-crosshair shadow-xs select-none group/canvas"
+              className="relative w-full aspect-square max-h-[calc(100vh-140px)] bg-[#F2EFDB] border border-[#D8D2C2] rounded-xs overflow-hidden flex items-center justify-center cursor-pointer sm:cursor-crosshair shadow-xs select-none group/canvas"
             >
               <img
                 src={imagesList[activeImageIndex] || imagesList[0]}
                 alt={product.name}
                 referrerPolicy="no-referrer"
-                width={1000}
-                height={1250}
+                width={1254}
+                height={1254}
                 loading="eager"
                 fetchPriority="high"
                 decoding="sync"
                 style={{
                   transformOrigin: `${zoomPosition.x}% ${zoomPosition.y}%`,
                 }}
-                className={`w-full h-full object-cover object-center transition-transform duration-100 ease-out select-none pointer-events-none ${
+                className={`w-full h-full object-contain object-center p-3 sm:p-5 transition-transform duration-100 ease-out select-none pointer-events-none ${
                   isZoomed ? 'sm:scale-[2.4] scale-100' : 'scale-100'
                 }`}
               />
@@ -377,8 +374,8 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
               </div>
             </div>
 
-            {/* Mobile Thumbnails Strip (Immediately below hero image on mobile) */}
-            <div className="flex lg:hidden items-center gap-2.5 overflow-x-auto no-scrollbar py-1">
+            {/* Thumbnails Strip (Clean single horizontal row on desktop & mobile) */}
+            <div className="flex items-center gap-2.5 overflow-x-auto no-scrollbar py-1.5">
               {imagesList.map((img, idx) => (
                 <button
                   key={idx}
