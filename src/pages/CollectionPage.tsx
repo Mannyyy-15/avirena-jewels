@@ -15,6 +15,7 @@ interface CollectionPageProps {
   isCatalogReady?: boolean;
   selectedCategory: Category;
   setSelectedCategory: (cat: Category) => void;
+  initialMetal?: string;
   onSelectProduct: (product: Product) => void;
   onQuickAdd: (product: Product) => void;
   onQuickView?: (product: Product) => void;
@@ -29,6 +30,7 @@ export const CollectionPage: React.FC<CollectionPageProps> = ({
   isCatalogReady = true,
   selectedCategory,
   setSelectedCategory,
+  initialMetal,
   onSelectProduct,
   onQuickAdd,
   onQuickView,
@@ -37,8 +39,14 @@ export const CollectionPage: React.FC<CollectionPageProps> = ({
   onToggleWishlist,
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [selectedMetal, setSelectedMetal] = useState<string>('all');
+  const [selectedMetal, setSelectedMetal] = useState<string>(initialMetal || 'all');
   const [sortBy, setSortBy] = useState<'featured' | 'price-asc' | 'price-desc'>('featured');
+
+  useEffect(() => {
+    if (initialMetal !== undefined) {
+      setSelectedMetal(initialMetal);
+    }
+  }, [initialMetal]);
   
   const [categoryDropdownOpen, setCategoryDropdownOpen] = useState(false);
   const [metalDropdownOpen, setMetalDropdownOpen] = useState(false);

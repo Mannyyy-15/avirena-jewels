@@ -9,7 +9,8 @@ import {
   ShoppingBag,
   Truck,
   RotateCcw,
-  Heart
+  Heart,
+  Check
 } from 'lucide-react';
 import { Product, Currency, Category } from '../types';
 import { formatPrice } from '../data/products';
@@ -22,7 +23,7 @@ if (typeof window !== 'undefined') {
 
 interface HomePageProps {
   onSelectProduct: (product: Product) => void;
-  onNavigateToCollection: (category?: Category) => void;
+  onNavigateToCollection: (category?: Category, metal?: string) => void;
   onQuickAdd: (product: Product) => void;
   onQuickView?: (product: Product) => void;
   currency: Currency;
@@ -109,6 +110,38 @@ export const HomePage: React.FC<HomePageProps> = ({
     return sorted.slice(0, 5);
   }, [safeProducts]);
 
+  // Curated Gold-Tone Brass pieces dynamically from live catalog
+  const goldProducts = useMemo(() => {
+    if (!safeProducts || safeProducts.length === 0) return [];
+    return safeProducts.filter((p) => {
+      if (!p || !p.id) return false;
+      const m = (p.metal || '').toLowerCase();
+      const n = (p.name || '').toLowerCase();
+      const t = Array.isArray(p.tags) ? p.tags.join(' ').toLowerCase() : '';
+      if (m.includes('silver') || /\bsilver\b/.test(n) || /\bsilver\b/.test(t)) return false;
+      return true;
+    });
+  }, [safeProducts]);
+
+  // Curated Silver-Tone pieces dynamically from live catalog
+  const silverProducts = useMemo(() => {
+    if (!safeProducts || safeProducts.length === 0) return [];
+    return safeProducts.filter((p) => {
+      if (!p || !p.id) return false;
+      const m = (p.metal || '').toLowerCase();
+      const n = (p.name || '').toLowerCase();
+      const t = Array.isArray(p.tags) ? p.tags.join(' ').toLowerCase() : '';
+      const hasSilverVariant = p.variants?.some((v) => /silver/i.test(v.title));
+      return (
+        m.includes('silver') ||
+        /\bsilver\b/.test(n) ||
+        /\brhodium\b/.test(n) ||
+        /\bsilver\b/.test(t) ||
+        hasSilverVariant
+      );
+    });
+  }, [safeProducts]);
+
   // Filtered Gifting items dynamically from live catalog
   const giftingProducts = useMemo(() => {
     if (!safeProducts || safeProducts.length === 0) return [];
@@ -136,7 +169,7 @@ export const HomePage: React.FC<HomePageProps> = ({
       ScrollTrigger.refresh();
     }, 120);
     return () => clearTimeout(timer);
-  }, [safeProducts.length, activeGiftTier]);
+  }, [safeProducts.length, activeGiftTier, goldProducts.length, silverProducts.length]);
 
   // Smoothly reveal gifting cards whenever the active tier or items change
   useEffect(() => {
@@ -213,6 +246,32 @@ export const HomePage: React.FC<HomePageProps> = ({
         ease: 'power2.out',
         scrollTrigger: {
           trigger: '.popular-grid',
+          start: 'top 85%',
+        },
+      });
+
+      // Staggered gold cards
+      gsap.from('.gold-card', {
+        y: 35,
+        opacity: 0,
+        duration: 0.75,
+        stagger: 0.08,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: '.gold-grid',
+          start: 'top 85%',
+        },
+      });
+
+      // Silver section reveal
+      gsap.from('.silver-card', {
+        y: 35,
+        opacity: 0,
+        duration: 0.75,
+        stagger: 0.08,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: '.silver-grid',
           start: 'top 85%',
         },
       });
@@ -419,16 +478,15 @@ export const HomePage: React.FC<HomePageProps> = ({
           {/* Wide Dramatic Model Banner */}
           <div className="gsap-home-reveal w-full h-56 sm:h-72 md:h-80 lg:h-96 rounded-xs overflow-hidden border border-[#D8D2C2] relative bg-[#413C23] shadow-xs">
             <img
-              src="https://images.unsplash.com/photo-1630019852942-f89202989a59?auto=format&fit=crop&w=2000&q=90"
-              alt="Sculptural Molten Earring Campaign"
-              referrerPolicy="no-referrer"
+              src="/assets/editorial/bestsellers-campaign-banner.jpg"
+              alt="Avirena Sculptural Jewelry Campaign"
               width={2000}
               height={1000}
               loading="lazy"
               decoding="async"
-              className="w-full h-full object-cover object-[center_35%] filter contrast-110 opacity-90"
+              className="w-full h-full object-cover object-[center_30%]"
             />
-            <div className="absolute inset-0 bg-gradient-to-r from-[#413C23]/60 via-transparent to-[#413C23]/40 pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-r from-[#413C23]/40 via-transparent to-transparent pointer-events-none" />
           </div>
 
           {/* 5-Column Uniform Product Grid */}
@@ -481,6 +539,314 @@ export const HomePage: React.FC<HomePageProps> = ({
                 </div>
               );
             })}
+          </div>
+
+        </div>
+      </section>
+
+      {/* 5. SECTION 5: THE GOLD TONE EDIT (Curated 18K Gold-Tone Brass Showcase) */}
+      <section className="w-full bg-[#E7E4D5] py-16 sm:py-24 border-b border-[#D8D2C2] px-4 sm:px-8 lg:px-12 xl:px-16 2xl:px-20 select-none">
+        <div className="w-full space-y-8 sm:space-y-12">
+          
+          {/* Section Header */}
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between border-b border-[#D8D2C2] pb-5 gap-4">
+            <div>
+              <div className="flex items-center gap-2 mb-2">
+                <span className="w-2.5 h-2.5 rounded-full bg-[#C6A664] border border-[#A68846]/40 shadow-xs" />
+                <span className="text-xs sm:text-sm text-[#8F896D] uppercase tracking-[0.2em] font-semibold">
+                  The Gold Tone Edit • Warm Luster
+                </span>
+              </div>
+              <h2 className="font-serif-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-[#413C23] font-bold tracking-tight leading-[1.05] max-w-2xl">
+                Gilded Warmth &amp;<br />Sculptural Brass.
+              </h2>
+            </div>
+            <div className="flex flex-col sm:items-end gap-2 shrink-0">
+              <p className="text-xs sm:text-[13px] text-[#413C23]/80 font-normal max-w-xs sm:text-right leading-relaxed">
+                Rich sunlit tones in heavy brass with durable anti-tarnish protective sealing.
+              </p>
+              <button
+                onClick={() => onNavigateToCollection('all', 'brass')}
+                className="text-xs sm:text-sm text-[#8F896D] hover:text-[#413C23] transition-colors cursor-pointer font-medium underline underline-offset-4 tracking-wide uppercase pt-1"
+              >
+                see all gold ({goldProducts.length})
+              </button>
+            </div>
+          </div>
+
+          {/* Gold Edit Wide Campaign Banner */}
+          <div className="gsap-home-reveal w-full h-52 sm:h-64 md:h-72 lg:h-80 rounded-xs overflow-hidden border border-[#D8D2C2] relative bg-[#413C23] shadow-xs">
+            <img
+              src="/assets/editorial/gold-edit-campaign-banner.jpg"
+              alt="Avirena Gold-Tone Brass Campaign"
+              width={2000}
+              height={1000}
+              loading="lazy"
+              decoding="async"
+              className="w-full h-full object-cover object-[center_28%]"
+            />
+            <div className="absolute inset-0 bg-gradient-to-r from-[#413C23]/35 via-transparent to-transparent pointer-events-none" />
+          </div>
+
+          {/* Gold Product Grid (4 curated pieces) */}
+          <div className="gold-grid grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
+            {goldProducts.length === 0 ? (
+              Array.from({ length: 4 }).map((_, idx) => (
+                <div
+                  key={`gold-skeleton-${idx}`}
+                  className="flex flex-col justify-between bg-[#F2EFDB] border border-[#D8D2C2] rounded-xs overflow-hidden animate-pulse p-4"
+                >
+                  <div className="aspect-square w-full bg-[#E7E4D5] rounded-xs mb-3" />
+                  <div className="h-4 bg-[#E7E4D5] rounded w-3/4 mb-2" />
+                  <div className="h-3 bg-[#E7E4D5] rounded w-1/3" />
+                </div>
+              ))
+            ) : (
+              goldProducts.slice(0, 4).map((product) => {
+                if (!product || !product.id) return null;
+                const imageSrc = getProductImage(product);
+                const wishlisted = isWishlisted(product.id);
+
+                return (
+                  <div
+                    key={product.id}
+                    onClick={() => onSelectProduct(product)}
+                    className="gold-card group cursor-pointer flex flex-col justify-between bg-[#F2EFDB] border border-[#D8D2C2] rounded-xs p-3.5 sm:p-5 transition-all duration-300 hover:border-[#8F896D] hover:shadow-[0_10px_25px_rgba(65,60,35,0.08)] relative text-left"
+                  >
+                    {/* Top Bar: Metal Finish Badge & Wishlist Heart */}
+                    <div className="flex items-center justify-between w-full z-10">
+                      <span className="text-[10px] sm:text-[11px] font-semibold text-[#413C23] bg-[#E7E4D5] px-2 py-0.5 rounded-xs border border-[#D8D2C2] uppercase tracking-wider">
+                        Gold-Tone Brass
+                      </span>
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onToggleWishlist(product);
+                        }}
+                        className={`w-7 h-7 rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer ${
+                          wishlisted
+                            ? 'bg-[#413C23] text-white opacity-100 shadow-xs'
+                            : 'bg-[#F2EFDB]/90 text-[#413C23] opacity-80 sm:opacity-0 group-hover:opacity-100 hover:bg-[#FAF8F5] border border-[#D8D2C2] shadow-xs'
+                        }`}
+                        aria-label="Wishlist"
+                      >
+                        <Heart className={`w-3.5 h-3.5 ${wishlisted ? 'fill-[#7A0F1A] text-[#7A0F1A]' : ''}`} />
+                      </button>
+                    </div>
+
+                    {/* Uniform Square Image Container */}
+                    <div className="relative aspect-square w-full my-3 flex items-center justify-center p-3 overflow-hidden">
+                      <img
+                        src={imageSrc}
+                        alt={product.name}
+                        referrerPolicy="no-referrer"
+                        width={800}
+                        height={800}
+                        loading="lazy"
+                        decoding="async"
+                        className="max-w-full max-h-full w-auto h-auto object-contain mix-blend-multiply group-hover:scale-108 transition-transform duration-500 ease-out"
+                      />
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onQuickAdd(product);
+                        }}
+                        className="absolute bottom-1 right-1 p-2.5 bg-[#413C23] hover:bg-[#8F896D] text-[#E7E4D5] rounded-xs opacity-0 group-hover:opacity-100 transition-opacity shadow-md cursor-pointer z-10"
+                        title="Quick Add"
+                      >
+                        <ShoppingBag className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+
+                    {/* Meta Box */}
+                    <div className="flex flex-col justify-between pt-2 border-t border-[#D8D2C2]/60">
+                      <h4 className="font-serif-display text-sm sm:text-base text-[#413C23] group-hover:text-[#8F896D] transition-colors font-medium truncate">
+                        {product.name}
+                      </h4>
+                      <div className="flex items-baseline justify-between mt-1">
+                        <p className="text-sm sm:text-base font-bold text-[#413C23] tracking-tight">
+                          {formatPrice(product.price || 0, currency)}
+                        </p>
+                        <span className="text-[10px] sm:text-xs text-[#8F896D] uppercase tracking-wider font-medium group-hover:text-[#413C23] transition-colors">
+                          View Piece →
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })
+            )}
+          </div>
+
+          {/* Subtle Craftsmanship Highlights Strip */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2 text-xs text-[#413C23]/80">
+            <div className="py-2.5 px-4 bg-[#F2EFDB]/70 border border-[#D8D2C2] rounded-xs flex items-center justify-center sm:justify-start gap-2.5">
+              <ShieldCheck className="w-4 h-4 text-[#8F896D] shrink-0" />
+              <span className="font-medium">Anti-Tarnish Protective Shield</span>
+            </div>
+            <div className="py-2.5 px-4 bg-[#F2EFDB]/70 border border-[#D8D2C2] rounded-xs flex items-center justify-center sm:justify-start gap-2.5">
+              <Gem className="w-4 h-4 text-[#8F896D] shrink-0" />
+              <span className="font-medium">Handcrafted Sculptural Brass</span>
+            </div>
+            <div className="py-2.5 px-4 bg-[#F2EFDB]/70 border border-[#D8D2C2] rounded-xs flex items-center justify-center sm:justify-start gap-2.5">
+              <Check className="w-4 h-4 text-[#8F896D] shrink-0" />
+              <span className="font-medium">Hypoallergenic Surgical Steel Posts</span>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      {/* 6. SECTION 6: THE SILVER TONE EDIT (Curated Silver-Tone Alloy & Rhodium Showcase) */}
+      <section className="silver-section w-full bg-[#E7E4D5] py-16 sm:py-24 border-b border-[#D8D2C2] px-4 sm:px-8 lg:px-12 xl:px-16 2xl:px-20 select-none">
+        <div className="w-full space-y-8 sm:space-y-12">
+          
+          {/* Section Header */}
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between border-b border-[#D8D2C2] pb-5 gap-4">
+            <div>
+              <div className="flex items-center gap-2 mb-2">
+                <span className="w-2.5 h-2.5 rounded-full bg-[#A8B2BC] border border-[#7D8893]/40 shadow-xs" />
+                <span className="text-xs sm:text-sm text-[#8F896D] uppercase tracking-[0.2em] font-semibold">
+                  The Silver Tone Edit • Cool Modernity
+                </span>
+              </div>
+              <h2 className="font-serif-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-[#413C23] font-bold tracking-tight leading-[1.05] max-w-2xl">
+                Architectural Polish &amp;<br />Silver Silhouette.
+              </h2>
+            </div>
+            <div className="flex flex-col sm:items-end gap-2 shrink-0">
+              <p className="text-xs sm:text-[13px] text-[#413C23]/80 font-normal max-w-xs sm:text-right leading-relaxed">
+                Mirror rhodium finish in precision silver alloy. Crisp, architectural, and anti-tarnish.
+              </p>
+              <button
+                onClick={() => onNavigateToCollection('all', 'alloy')}
+                className="text-xs sm:text-sm text-[#8F896D] hover:text-[#413C23] transition-colors cursor-pointer font-medium underline underline-offset-4 tracking-wide uppercase pt-1"
+              >
+                see all silver ({silverProducts.length})
+              </button>
+            </div>
+          </div>
+
+          {/* Silver Edit Wide Campaign Banner */}
+          <div className="gsap-home-reveal w-full h-52 sm:h-64 md:h-72 lg:h-80 rounded-xs overflow-hidden border border-[#D8D2C2] relative bg-[#413C23] shadow-xs">
+            <img
+              src="/assets/editorial/silver-edit-campaign-banner.jpg"
+              alt="Avirena Silver-Tone Alloy Campaign"
+              width={2000}
+              height={1000}
+              loading="lazy"
+              decoding="async"
+              className="w-full h-full object-cover object-[center_20%]"
+            />
+            <div className="absolute inset-0 bg-gradient-to-r from-[#413C23]/35 via-transparent to-transparent pointer-events-none" />
+          </div>
+
+          {/* Silver Product Grid */}
+          <div className="silver-grid grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
+            {silverProducts.length === 0 ? (
+              Array.from({ length: 4 }).map((_, idx) => (
+                <div
+                  key={`silver-skeleton-${idx}`}
+                  className="flex flex-col justify-between bg-[#F2EFDB] border border-[#D8D2C2] rounded-xs overflow-hidden animate-pulse p-4"
+                >
+                  <div className="aspect-square w-full bg-[#E7E4D5] rounded-xs mb-3" />
+                  <div className="h-4 bg-[#E7E4D5] rounded w-3/4 mb-2" />
+                  <div className="h-3 bg-[#E7E4D5] rounded w-1/3" />
+                </div>
+              ))
+            ) : (
+              silverProducts.map((product) => {
+                if (!product || !product.id) return null;
+                const imageSrc = getProductImage(product);
+                const wishlisted = isWishlisted(product.id);
+
+                return (
+                  <div
+                    key={product.id}
+                    onClick={() => onSelectProduct(product)}
+                    className="silver-card group cursor-pointer flex flex-col justify-between bg-[#F2EFDB] border border-[#D8D2C2] rounded-xs p-3.5 sm:p-5 transition-all duration-300 hover:border-[#8F896D] hover:shadow-[0_10px_25px_rgba(65,60,35,0.08)] relative text-left"
+                  >
+                    {/* Top Bar: Metal Finish Badge & Wishlist Heart */}
+                    <div className="flex items-center justify-between w-full z-10">
+                      <span className="text-[10px] sm:text-[11px] font-semibold text-[#413C23] bg-[#E7E4D5] px-2 py-0.5 rounded-xs border border-[#D8D2C2] uppercase tracking-wider">
+                        Silver-Tone Alloy
+                      </span>
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onToggleWishlist(product);
+                        }}
+                        className={`w-7 h-7 rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer ${
+                          wishlisted
+                            ? 'bg-[#413C23] text-white opacity-100 shadow-xs'
+                            : 'bg-[#F2EFDB]/90 text-[#413C23] opacity-80 sm:opacity-0 group-hover:opacity-100 hover:bg-[#FAF8F5] border border-[#D8D2C2] shadow-xs'
+                        }`}
+                        aria-label="Wishlist"
+                      >
+                        <Heart className={`w-3.5 h-3.5 ${wishlisted ? 'fill-[#7A0F1A] text-[#7A0F1A]' : ''}`} />
+                      </button>
+                    </div>
+
+                    {/* Uniform Square Image Container */}
+                    <div className="relative aspect-square w-full my-3 flex items-center justify-center p-3 overflow-hidden">
+                      <img
+                        src={imageSrc}
+                        alt={product.name}
+                        referrerPolicy="no-referrer"
+                        width={800}
+                        height={800}
+                        loading="lazy"
+                        decoding="async"
+                        className="max-w-full max-h-full w-auto h-auto object-contain mix-blend-multiply group-hover:scale-108 transition-transform duration-500 ease-out"
+                      />
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onQuickAdd(product);
+                        }}
+                        className="absolute bottom-1 right-1 p-2.5 bg-[#413C23] hover:bg-[#8F896D] text-[#E7E4D5] rounded-xs opacity-0 group-hover:opacity-100 transition-opacity shadow-md cursor-pointer z-10"
+                        title="Quick Add"
+                      >
+                        <ShoppingBag className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+
+                    {/* Meta Box */}
+                    <div className="flex flex-col justify-between pt-2 border-t border-[#D8D2C2]/60">
+                      <h4 className="font-serif-display text-sm sm:text-base text-[#413C23] group-hover:text-[#8F896D] transition-colors font-medium truncate">
+                        {product.name}
+                      </h4>
+                      <div className="flex items-baseline justify-between mt-1">
+                        <p className="text-sm sm:text-base font-bold text-[#413C23] tracking-tight">
+                          {formatPrice(product.price || 0, currency)}
+                        </p>
+                        <span className="text-[10px] sm:text-xs text-[#8F896D] uppercase tracking-wider font-medium group-hover:text-[#413C23] transition-colors">
+                          View Piece →
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })
+            )}
+          </div>
+
+          {/* Subtle Craftsmanship Highlights Strip */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2 text-xs text-[#413C23]/80">
+            <div className="py-2.5 px-4 bg-[#F2EFDB]/70 border border-[#D8D2C2] rounded-xs flex items-center justify-center sm:justify-start gap-2.5">
+              <ShieldCheck className="w-4 h-4 text-[#8F896D] shrink-0" />
+              <span className="font-medium">Anti-Tarnish Dual-Action Protective Seal</span>
+            </div>
+            <div className="py-2.5 px-4 bg-[#F2EFDB]/70 border border-[#D8D2C2] rounded-xs flex items-center justify-center sm:justify-start gap-2.5">
+              <Gem className="w-4 h-4 text-[#8F896D] shrink-0" />
+              <span className="font-medium">Mirror-Polished Rhodium &amp; Silver Luster</span>
+            </div>
+            <div className="py-2.5 px-4 bg-[#F2EFDB]/70 border border-[#D8D2C2] rounded-xs flex items-center justify-center sm:justify-start gap-2.5">
+              <Check className="w-4 h-4 text-[#8F896D] shrink-0" />
+              <span className="font-medium">Hypoallergenic Surgical Steel Posts</span>
+            </div>
           </div>
 
         </div>

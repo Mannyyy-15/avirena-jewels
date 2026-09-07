@@ -225,6 +225,7 @@ function AppContent() {
   // page title, canonical and Product schema.
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<Category>('all');
+  const [selectedMetal, setSelectedMetal] = useState<string>('all');
   const [activeGuideSlug, setActiveGuideSlug] = useState<string | null>(null);
   const [currency, setCurrency] = useState<Currency>('INR');
 
@@ -492,8 +493,9 @@ function AppContent() {
     scrollToTop();
   };
 
-  const handleNavigateToCollection = (category: Category = 'all') => {
+  const handleNavigateToCollection = (category: Category = 'all', metal: string = 'all') => {
     setSelectedCategory(category);
+    setSelectedMetal(metal);
     setCurrentPage('collection');
     scrollToTop();
   };
@@ -645,6 +647,7 @@ function AppContent() {
           <CollectionPage
             selectedCategory={selectedCategory}
             setSelectedCategory={setSelectedCategory}
+            initialMetal={selectedMetal}
             onSelectProduct={handleSelectProduct}
             onQuickAdd={handleQuickAdd}
             onQuickView={handleOpenQuickView}
