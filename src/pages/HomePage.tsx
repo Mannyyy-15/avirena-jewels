@@ -249,32 +249,6 @@ export const HomePage: React.FC<HomePageProps> = ({
           start: 'top 85%',
         },
       });
-
-      // Staggered gold cards
-      gsap.from('.gold-card', {
-        y: 35,
-        opacity: 0,
-        duration: 0.75,
-        stagger: 0.08,
-        ease: 'power2.out',
-        scrollTrigger: {
-          trigger: '.gold-grid',
-          start: 'top 85%',
-        },
-      });
-
-      // Silver section reveal
-      gsap.from('.silver-card', {
-        y: 35,
-        opacity: 0,
-        duration: 0.75,
-        stagger: 0.08,
-        ease: 'power2.out',
-        scrollTrigger: {
-          trigger: '.silver-grid',
-          start: 'top 85%',
-        },
-      });
     }, containerRef);
 
     return () => ctx.revert();
@@ -476,7 +450,7 @@ export const HomePage: React.FC<HomePageProps> = ({
           </div>
 
           {/* Wide Dramatic Model Banner */}
-          <div className="gsap-home-reveal w-full h-56 sm:h-72 md:h-80 lg:h-96 rounded-xs overflow-hidden border border-[#D8D2C2] relative bg-[#413C23] shadow-xs">
+          <div className="gsap-home-reveal w-full h-64 sm:h-80 md:h-96 lg:h-[460px] xl:h-[500px] rounded-xs overflow-hidden border border-[#D8D2C2] relative bg-[#413C23] shadow-xs">
             <img
               src="/assets/editorial/bestsellers-campaign-banner.jpg"
               alt="Avirena Sculptural Jewelry Campaign"
@@ -484,7 +458,7 @@ export const HomePage: React.FC<HomePageProps> = ({
               height={1000}
               loading="lazy"
               decoding="async"
-              className="w-full h-full object-cover object-[center_30%]"
+              className="w-full h-full object-cover object-center"
             />
             <div className="absolute inset-0 bg-gradient-to-r from-[#413C23]/40 via-transparent to-transparent pointer-events-none" />
           </div>
@@ -575,7 +549,7 @@ export const HomePage: React.FC<HomePageProps> = ({
           </div>
 
           {/* Gold Edit Wide Campaign Banner */}
-          <div className="gsap-home-reveal w-full h-52 sm:h-64 md:h-72 lg:h-80 rounded-xs overflow-hidden border border-[#D8D2C2] relative bg-[#413C23] shadow-xs">
+          <div className="gsap-home-reveal w-full h-64 sm:h-80 md:h-96 lg:h-[460px] xl:h-[500px] rounded-xs overflow-hidden border border-[#D8D2C2] relative bg-[#413C23] shadow-xs">
             <img
               src="/assets/editorial/gold-edit-campaign-banner.jpg"
               alt="Avirena Gold-Tone Brass Campaign"
@@ -583,7 +557,7 @@ export const HomePage: React.FC<HomePageProps> = ({
               height={1000}
               loading="lazy"
               decoding="async"
-              className="w-full h-full object-cover object-[center_28%]"
+              className="w-full h-full object-cover object-center"
             />
             <div className="absolute inset-0 bg-gradient-to-r from-[#413C23]/35 via-transparent to-transparent pointer-events-none" />
           </div>
@@ -729,7 +703,7 @@ export const HomePage: React.FC<HomePageProps> = ({
           </div>
 
           {/* Silver Edit Wide Campaign Banner */}
-          <div className="gsap-home-reveal w-full h-52 sm:h-64 md:h-72 lg:h-80 rounded-xs overflow-hidden border border-[#D8D2C2] relative bg-[#413C23] shadow-xs">
+          <div className="gsap-home-reveal w-full h-64 sm:h-80 md:h-96 lg:h-[460px] xl:h-[500px] rounded-xs overflow-hidden border border-[#D8D2C2] relative bg-[#413C23] shadow-xs">
             <img
               src="/assets/editorial/silver-edit-campaign-banner.jpg"
               alt="Avirena Silver-Tone Alloy Campaign"
@@ -737,7 +711,7 @@ export const HomePage: React.FC<HomePageProps> = ({
               height={1000}
               loading="lazy"
               decoding="async"
-              className="w-full h-full object-cover object-[center_20%]"
+              className="w-full h-full object-cover object-center"
             />
             <div className="absolute inset-0 bg-gradient-to-r from-[#413C23]/35 via-transparent to-transparent pointer-events-none" />
           </div>
