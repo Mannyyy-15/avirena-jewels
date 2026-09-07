@@ -164,9 +164,21 @@ export const Footer: React.FC<FooterProps> = ({
         </div>
       </div>
 
-      {/* 4. COPYRIGHT NOTICE */}
-      <div className="w-full pt-4 pb-1 text-center">
-        <p className="text-[11px] text-white/75 font-light tracking-wider">
+      {/* 4. BRAND CREDITS & COPYRIGHT (Backlink to The PieCraft Marketing) */}
+      <div className="w-full pt-5 pb-1 text-center space-y-1.5 border-t border-white/20 mt-4">
+        <p className="text-xs text-white/90 font-normal tracking-wide">
+          AVIRENA is an atelier jewellery venture by{' '}
+          <a
+            href="https://thepiecraftmarketing.com/"
+            target="_blank"
+            rel="noopener"
+            className="underline underline-offset-4 text-white hover:text-[#FAF8F5] font-semibold transition-colors"
+          >
+            The PieCraft Marketing
+          </a>
+          .
+        </p>
+        <p className="text-[11px] text-white/70 font-light tracking-wider">
           © {new Date().getFullYear()} Avirena Jewels. All rights reserved.
         </p>
       </div>

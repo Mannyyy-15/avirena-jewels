@@ -182,6 +182,11 @@ function getGlobalSchema() {
         addressRegion: 'MH',
         addressCountry: 'IN',
       },
+      parentOrganization: {
+        '@type': 'Organization',
+        name: 'The PieCraft Marketing',
+        url: 'https://thepiecraftmarketing.com/',
+      },
     },
     {
       '@context': 'https://schema.org',

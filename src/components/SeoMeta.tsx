@@ -152,6 +152,11 @@ export const SeoMeta: React.FC<SeoMetaProps> = ({
         addressRegion: 'MH',
         addressCountry: 'IN',
       },
+      parentOrganization: {
+        '@type': 'Organization',
+        name: 'The PieCraft Marketing',
+        url: 'https://thepiecraftmarketing.com/',
+      },
     });
 
     // 3. WebSite & SearchAction Schema

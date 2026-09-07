@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { ChevronRight, Plus, Minus, Heart, Maximize2 } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { ChevronRight, ChevronLeft, Plus, Minus, Heart, Maximize2 } from 'lucide-react';
 import { Product, Currency, Metal, CartItem } from '../types';
 import { formatPrice } from '../data/products';
 import { useShopify } from '../context/ShopifyContext';
@@ -44,6 +44,11 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
   const [zoomPosition, setZoomPosition] = useState<{ x: number; y: number }>({ x: 50, y: 50 });
   const [isZoomed, setIsZoomed] = useState<boolean>(false);
 
+  // Desktop Thumbnail Strip Scrolling (Strict single row when > 5 images)
+  const desktopThumbnailRef = useRef<HTMLDivElement>(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(false);
+
   // Fullscreen High-Res Lightbox State (Mobile & Desktop)
   const [isLightboxOpen, setIsLightboxOpen] = useState<boolean>(false);
 
@@ -73,6 +78,42 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
     setIsDescriptionExpanded(false);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [product.id]);
+
+  const checkThumbnailScroll = () => {
+    if (!desktopThumbnailRef.current) return;
+    const { scrollLeft, scrollWidth, clientWidth } = desktopThumbnailRef.current;
+    setCanScrollLeft(scrollLeft > 4);
+    setCanScrollRight(scrollLeft + clientWidth < scrollWidth - 4);
+  };
+
+  useEffect(() => {
+    const timer = setTimeout(checkThumbnailScroll, 120);
+    window.addEventListener('resize', checkThumbnailScroll);
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener('resize', checkThumbnailScroll);
+    };
+  }, [product.id, imagesList.length]);
+
+  const scrollThumbnails = (direction: 'left' | 'right') => {
+    if (!desktopThumbnailRef.current) return;
+    const scrollAmount = desktopThumbnailRef.current.clientWidth * 0.7;
+    desktopThumbnailRef.current.scrollBy({
+      left: direction === 'left' ? -scrollAmount : scrollAmount,
+      behavior: 'smooth',
+    });
+    setTimeout(checkThumbnailScroll, 350);
+  };
+
+  useEffect(() => {
+    if (desktopThumbnailRef.current && imagesList.length > 5) {
+      const activeEl = desktopThumbnailRef.current.children[activeImageIndex] as HTMLElement | undefined;
+      if (activeEl) {
+        activeEl.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
+      }
+      setTimeout(checkThumbnailScroll, 350);
+    }
+  }, [activeImageIndex, imagesList.length]);
 
   const toggleAccordion = (key: 'description' | 'materials' | 'dimensions' | 'care') => {
     setOpenAccordion(openAccordion === key ? null : key);
@@ -488,31 +529,102 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
           {/* LEFT SIDE: 5 Thumbnails spanning full column width + Editorial Tabs */}
           <div className="lg:col-span-6 xl:col-span-6 space-y-8 w-full">
             
-            {/* Desktop 5-Column Thumbnail Grid spanning the entire left column width */}
-            <div className="hidden lg:grid grid-cols-5 gap-3 sm:gap-4 w-full py-1">
-              {imagesList.map((img, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => setActiveImageIndex(idx)}
-                  className={`w-full aspect-square rounded-xs border overflow-hidden transition-all cursor-pointer bg-[#F2EFDB] ${
-                    activeImageIndex === idx
-                      ? 'border-[#413C23] ring-2 ring-[#413C23]/25 shadow-xs'
-                      : 'border-[#D8D2C2] opacity-80 hover:opacity-100 hover:border-[#8F896D]'
-                  }`}
-                  aria-label={`View gallery image ${idx + 1}`}
-                >
-                  <img
-                    src={img}
-                    alt={`${product.name} thumbnail ${idx + 1}`}
-                    referrerPolicy="no-referrer"
-                    width={160}
-                    height={160}
-                    loading="lazy"
-                    decoding="async"
-                    className="w-full h-full object-cover object-center"
-                  />
-                </button>
-              ))}
+            {/* Desktop Thumbnail Gallery (Strict single row on desktop, scrollable if > 5 images) */}
+            <div className="hidden lg:block relative w-full group/gallery py-1">
+              {imagesList.length <= 5 ? (
+                /* Exactly 5 or fewer images: standard 5-column grid */
+                <div className="grid grid-cols-5 gap-3 sm:gap-4 w-full">
+                  {imagesList.map((img, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => setActiveImageIndex(idx)}
+                      className={`w-full aspect-square rounded-xs border overflow-hidden transition-all cursor-pointer bg-[#F2EFDB] ${
+                        activeImageIndex === idx
+                          ? 'border-[#413C23] ring-2 ring-[#413C23]/25 shadow-xs'
+                          : 'border-[#D8D2C2] opacity-80 hover:opacity-100 hover:border-[#8F896D]'
+                      }`}
+                      aria-label={`View gallery image ${idx + 1}`}
+                    >
+                      <img
+                        src={img}
+                        alt={`${product.name} thumbnail ${idx + 1}`}
+                        referrerPolicy="no-referrer"
+                        width={160}
+                        height={160}
+                        loading="lazy"
+                        decoding="async"
+                        className="w-full h-full object-cover object-center"
+                      />
+                    </button>
+                  ))}
+                </div>
+              ) : (
+                /* More than 5 images: single horizontal scrollable row with sleek chevrons (never wraps) */
+                <div className="relative w-full">
+                  {/* Left Scroll Chevron */}
+                  {canScrollLeft && (
+                    <button
+                      type="button"
+                      onClick={() => scrollThumbnails('left')}
+                      className="absolute -left-3.5 top-1/2 -translate-y-1/2 z-20 w-8 h-8 rounded-full bg-[#FAF8F5]/95 text-[#413C23] hover:bg-white hover:scale-105 transition-all shadow-md border border-[#D8D2C2] flex items-center justify-center cursor-pointer active:scale-95"
+                      title="Previous thumbnails"
+                      aria-label="Scroll left"
+                    >
+                      <ChevronLeft className="w-4 h-4 text-[#413C23]" />
+                    </button>
+                  )}
+
+                  {/* Horizontal Scroll Track (Strictly 1 line, exactly 5 visible at once) */}
+                  <div
+                    ref={desktopThumbnailRef}
+                    onScroll={checkThumbnailScroll}
+                    className="flex items-center gap-3 sm:gap-4 overflow-x-auto no-scrollbar scroll-smooth w-full py-0.5"
+                  >
+                    {imagesList.map((img, idx) => (
+                      <button
+                        key={idx}
+                        onClick={() => setActiveImageIndex(idx)}
+                        className={`w-[calc((100%-12px*4)/5)] sm:w-[calc((100%-16px*4)/5)] min-w-[calc((100%-12px*4)/5)] sm:min-w-[calc((100%-16px*4)/5)] shrink-0 aspect-square rounded-xs border overflow-hidden transition-all cursor-pointer bg-[#F2EFDB] ${
+                          activeImageIndex === idx
+                            ? 'border-[#413C23] ring-2 ring-[#413C23]/25 shadow-xs'
+                            : 'border-[#D8D2C2] opacity-80 hover:opacity-100 hover:border-[#8F896D]'
+                        }`}
+                        aria-label={`View gallery image ${idx + 1}`}
+                      >
+                        <img
+                          src={img}
+                          alt={`${product.name} thumbnail ${idx + 1}`}
+                          referrerPolicy="no-referrer"
+                          width={160}
+                          height={160}
+                          loading="lazy"
+                          decoding="async"
+                          className="w-full h-full object-cover object-center"
+                        />
+                      </button>
+                    ))}
+                  </div>
+
+                  {/* Right Scroll Chevron */}
+                  {canScrollRight && (
+                    <button
+                      type="button"
+                      onClick={() => scrollThumbnails('right')}
+                      className="absolute -right-3.5 top-1/2 -translate-y-1/2 z-20 w-8 h-8 rounded-full bg-[#FAF8F5]/95 text-[#413C23] hover:bg-white hover:scale-105 transition-all shadow-md border border-[#D8D2C2] flex items-center justify-center cursor-pointer active:scale-95"
+                      title="Next thumbnails"
+                      aria-label="Scroll right"
+                    >
+                      <ChevronRight className="w-4 h-4 text-[#413C23]" />
+                    </button>
+                  )}
+
+                  {/* Subtle photo counter micro-bar */}
+                  <div className="flex items-center justify-between pt-1.5 px-0.5 text-[10px] text-[#8F896D] uppercase tracking-wider font-medium">
+                    <span>{imagesList.length} photos</span>
+                    <span className="italic">Scroll or click arrows to browse all →</span>
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Horizontal Tabs: Product Overview | Packaging | Shipping & Returns */}

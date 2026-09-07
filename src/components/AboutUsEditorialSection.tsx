@@ -36,7 +36,16 @@ export const AboutUsEditorialSection: React.FC<AboutUsEditorialSectionProps> = (
                 There is an intimate story behind every piece in your jewelry box. All those quiet, cherished moments you hold onto—that is the very heartbeat of AVIRENA.
               </p>
               <p className="text-xs sm:text-sm lg:text-[15px] text-[#413C23]/85 leading-relaxed">
-                Founded in 2020 during the lockdown as a homegrown creative journey, AVIRENA began with small, bespoke orders for our local community. Today, we have evolved into a beloved modern daily jewelry label. We intentionally craft our collections using premium brass alloy, durable water-resistant protective finishes, and hypoallergenic coatings—never overpriced solid gold or mined diamonds, but high-grade, tarnish-resistant pieces designed for effortless, everyday luxury.
+                Founded in 2020 during the lockdown as a homegrown creative journey, AVIRENA began with small, bespoke orders for our local community. Today, as an atelier brand backed and nurtured by{' '}
+                <a
+                  href="https://thepiecraftmarketing.com/"
+                  target="_blank"
+                  rel="noopener"
+                  className="underline underline-offset-4 text-[#413C23] hover:text-[#8F896D] font-medium transition-colors"
+                >
+                  The PieCraft Marketing
+                </a>
+                , we have evolved into a beloved modern daily jewelry label. We intentionally craft our collections using premium brass alloy, durable water-resistant protective finishes, and hypoallergenic coatings—never overpriced solid gold or mined diamonds, but high-grade, tarnish-resistant pieces designed for effortless, everyday luxury.
               </p>
             </div>
 
