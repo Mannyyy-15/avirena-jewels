@@ -481,10 +481,12 @@ function AppContent() {
   }, [currentPage, selectedProduct, selectedCategory, activeGuideSlug]);
 
   // Navigation handlers
-  const handleSelectProduct = (product: Product) => {
+  const handleSelectProduct = (product: Product, shouldScroll: boolean = true) => {
     setSelectedProduct(product);
     setCurrentPage('pdp');
-    scrollToTop();
+    if (shouldScroll) {
+      scrollToTop();
+    }
   };
 
   const handleNavigateToCollection = (category: Category = 'all', metal: string = 'all') => {

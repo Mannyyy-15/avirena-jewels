@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { ChevronRight, ChevronLeft, Plus, Minus, Heart, Maximize2 } from 'lucide-react';
 import { Product, Currency, Metal, CartItem } from '../types';
 import { formatPrice, getCompareAtPrice, getDiscountPercentage } from '../data/products';
@@ -9,12 +9,33 @@ interface ProductDetailPageProps {
   product: Product;
   currency: Currency;
   onAddToCart: (item: Omit<CartItem, 'id'>) => void;
-  onSelectProduct: (product: Product) => void;
+  onSelectProduct: (product: Product, shouldScroll?: boolean) => void;
   onNavigateBack: () => void;
   isWishlisted: boolean;
   onToggleWishlist: (product: Product) => void;
   catalogProducts?: Product[];
 }
+
+// Helpers to identify metal tone and group product families
+const isProductSilver = (p: Product): boolean => {
+  const text = `${p.name} ${p.metal} ${p.handle || ''} ${(p.tags || []).join(' ')}`.toLowerCase();
+  return text.includes('silver-tone') || text.includes('— silver') || text.includes('-silver-') || text.includes('silver');
+};
+
+const isProductGold = (p: Product): boolean => {
+  const text = `${p.name} ${p.metal} ${p.handle || ''} ${(p.tags || []).join(' ')}`.toLowerCase();
+  if (text.includes('silver-tone') || text.includes('— silver') || text.includes('-silver-')) return false;
+  return text.includes('gold') || text.includes('brass') || text.includes('gold-tone');
+};
+
+const getProductFamilyKey = (p: Product): string => {
+  if (!p) return '';
+  return p.name
+    .replace(/\s*[-—–]\s*(Gold|Silver)(\s*Tone)?/i, '')
+    .replace(/\s*(Gold|Silver)(\s*Tone)?\s*(Brass|Alloy)?/i, '')
+    .trim()
+    .toLowerCase();
+};
 
 export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
   product,
@@ -32,8 +53,13 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
   // so a second tap cannot create a second checkout.
   const [isBuyingNow, setIsBuyingNow] = useState(false);
 
+  // Tracks in-place variant changes to avoid jumpy scrollToTop
+  const isVariantSwitchRef = useRef(false);
+
   // Finish selector: "Gold Tone Brass" and "Silver Tone Brass"
-  const [selectedFinish, setSelectedFinish] = useState<'Gold Tone Brass' | 'Silver Tone Brass'>('Gold Tone Brass');
+  const [selectedFinish, setSelectedFinish] = useState<'Gold Tone Brass' | 'Silver Tone Brass'>(() =>
+    isProductSilver(product) ? 'Silver Tone Brass' : 'Gold Tone Brass'
+  );
   const [activeImageIndex, setActiveImageIndex] = useState(0);
 
   // Long Shopify descriptions are clamped to 4 lines so the price and Add to
@@ -69,15 +95,66 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
   const imagesList =
     product.images && product.images.length > 0 ? product.images : ['/logo.png'];
 
+  // Discover sibling variant pieces in the live catalog (e.g. Solene Crystal Hoops Gold & Silver)
+  const { goldVariant, silverVariant, isGoldAvailable, isSilverAvailable } = useMemo(() => {
+    const familyKey = getProductFamilyKey(product);
+    const familyProducts = (catalogProducts || []).filter(
+      (p) => getProductFamilyKey(p) === familyKey
+    );
+
+    const gold = familyProducts.find(isProductGold) || (isProductGold(product) ? product : undefined);
+    const silver = familyProducts.find(isProductSilver) || (isProductSilver(product) ? product : undefined);
+
+    return {
+      goldVariant: gold,
+      silverVariant: silver,
+      isGoldAvailable: !!gold,
+      isSilverAvailable: !!silver,
+    };
+  }, [product, catalogProducts]);
+
   useEffect(() => {
-    setActiveImageIndex(0);
-    setOpenAccordion(null);
-    setActiveTab('overview');
-    setIsZoomed(false);
-    setIsLightboxOpen(false);
-    setIsDescriptionExpanded(false);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (isVariantSwitchRef.current) {
+      isVariantSwitchRef.current = false;
+      setActiveImageIndex(0);
+      setIsZoomed(false);
+      setIsLightboxOpen(false);
+    } else {
+      setActiveImageIndex(0);
+      setOpenAccordion(null);
+      setActiveTab('overview');
+      setIsZoomed(false);
+      setIsLightboxOpen(false);
+      setIsDescriptionExpanded(false);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    if (isProductSilver(product)) {
+      setSelectedFinish('Silver Tone Brass');
+    } else {
+      setSelectedFinish('Gold Tone Brass');
+    }
   }, [product.id]);
+
+  const handleFinishChange = (finish: 'Gold Tone Brass' | 'Silver Tone Brass') => {
+    if (finish === selectedFinish) return;
+
+    if (finish === 'Gold Tone Brass' && goldVariant) {
+      setSelectedFinish('Gold Tone Brass');
+      setActiveImageIndex(0);
+      if (goldVariant.id !== product.id) {
+        isVariantSwitchRef.current = true;
+        onSelectProduct(goldVariant, false);
+      }
+    } else if (finish === 'Silver Tone Brass' && silverVariant) {
+      setSelectedFinish('Silver Tone Brass');
+      setActiveImageIndex(0);
+      if (silverVariant.id !== product.id) {
+        isVariantSwitchRef.current = true;
+        onSelectProduct(silverVariant, false);
+      }
+    }
+  };
 
   const checkThumbnailScroll = () => {
     if (!desktopThumbnailRef.current) return;
@@ -390,23 +467,61 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
 
             {/* Finish Selector (Gold Tone Brass & Silver Tone Brass) */}
             <div className="space-y-2 pt-1 w-full">
-              <span className="text-xs font-semibold text-[#413C23] block uppercase tracking-wider">
-                Finish
-              </span>
+              <div className="flex items-center justify-between text-xs">
+                <span className="font-semibold text-[#413C23] uppercase tracking-wider">
+                  Finish: <span className="font-normal text-[#8F896D]">{selectedFinish}</span>
+                </span>
+                {!isSilverAvailable && selectedFinish === 'Gold Tone Brass' && (
+                  <span className="text-[11px] text-[#8F896D]/80 italic">Silver edition unavailable</span>
+                )}
+                {!isGoldAvailable && selectedFinish === 'Silver Tone Brass' && (
+                  <span className="text-[11px] text-[#8F896D]/80 italic">Gold edition unavailable</span>
+                )}
+              </div>
               <div className="flex flex-wrap items-center gap-3">
-                {(['Gold Tone Brass', 'Silver Tone Brass'] as const).map((finish) => (
-                  <button
-                    key={finish}
-                    onClick={() => setSelectedFinish(finish)}
-                    className={`px-5 py-2.5 rounded-xs border text-xs font-semibold transition-all cursor-pointer ${
-                      selectedFinish === finish
-                        ? 'border-[#413C23] bg-[#413C23] text-[#FAF8F5] shadow-xs'
-                        : 'border-[#D8D2C2] text-[#413C23] bg-[#F2EFDB] hover:border-[#413C23]'
-                    }`}
-                  >
-                    {finish}
-                  </button>
-                ))}
+                {/* Gold Tone Brass */}
+                <button
+                  type="button"
+                  onClick={() => handleFinishChange('Gold Tone Brass')}
+                  disabled={!isGoldAvailable}
+                  title={isGoldAvailable ? 'Select Gold Tone Brass' : 'Unavailable in Silver/Gold Tone Brass'}
+                  className={`px-5 py-2.5 rounded-xs border text-xs font-semibold transition-all ${
+                    selectedFinish === 'Gold Tone Brass'
+                      ? 'border-[#413C23] bg-[#413C23] text-[#FAF8F5] shadow-xs cursor-default'
+                      : isGoldAvailable
+                      ? 'border-[#D8D2C2] text-[#413C23] bg-[#F2EFDB] hover:border-[#413C23] cursor-pointer'
+                      : 'border-dashed border-[#D8D2C2] text-[#8F896D]/50 bg-[#E7E4D5]/40 cursor-not-allowed opacity-50'
+                  }`}
+                >
+                  <span>Gold Tone Brass</span>
+                  {!isGoldAvailable && (
+                    <span className="ml-1.5 text-[10px] uppercase font-normal tracking-wide text-[#8F896D]/70">
+                      (N/A)
+                    </span>
+                  )}
+                </button>
+
+                {/* Silver Tone Brass */}
+                <button
+                  type="button"
+                  onClick={() => handleFinishChange('Silver Tone Brass')}
+                  disabled={!isSilverAvailable}
+                  title={isSilverAvailable ? 'Select Silver Tone Brass' : 'Unavailable in Silver Tone Brass'}
+                  className={`px-5 py-2.5 rounded-xs border text-xs font-semibold transition-all ${
+                    selectedFinish === 'Silver Tone Brass'
+                      ? 'border-[#413C23] bg-[#413C23] text-[#FAF8F5] shadow-xs cursor-default'
+                      : isSilverAvailable
+                      ? 'border-[#D8D2C2] text-[#413C23] bg-[#F2EFDB] hover:border-[#413C23] cursor-pointer'
+                      : 'border-dashed border-[#D8D2C2] text-[#8F896D]/50 bg-[#E7E4D5]/40 cursor-not-allowed opacity-50'
+                  }`}
+                >
+                  <span>Silver Tone Brass</span>
+                  {!isSilverAvailable && (
+                    <span className="ml-1.5 text-[10px] uppercase font-normal tracking-wide text-[#8F896D]/70">
+                      (N/A)
+                    </span>
+                  )}
+                </button>
               </div>
             </div>
 
