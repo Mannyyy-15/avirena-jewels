@@ -374,8 +374,8 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
               </div>
             </div>
 
-            {/* Thumbnails Strip (Clean single horizontal row on desktop & mobile) */}
-            <div className="flex items-center gap-2.5 overflow-x-auto no-scrollbar py-1.5">
+            {/* Mobile Thumbnails Strip (Immediately below hero canvas on mobile; desktop gallery is in Section 3 below) */}
+            <div className="flex lg:hidden items-center gap-2.5 overflow-x-auto no-scrollbar py-1.5">
               {imagesList.map((img, idx) => (
                 <button
                   key={idx}
