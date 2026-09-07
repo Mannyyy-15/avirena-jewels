@@ -3,6 +3,7 @@ import heroArchImg from '../assets/about/about-hero-arch.jpg';
 import vignette1Img from '../assets/about/about-vignette-1.jpg';
 import vignette2Img from '../assets/about/about-vignette-2.jpg';
 import vignette3Img from '../assets/about/about-vignette-3.jpg';
+import vignette4Img from '../assets/about/about-vignette-4.jpg';
 
 interface AboutUsEditorialSectionProps {
   onNavigateToAbout?: () => void;
@@ -70,33 +71,54 @@ export const AboutUsEditorialSection: React.FC<AboutUsEditorialSectionProps> = (
             </div>
           </div>
 
-          {/* Bottom Vignettes: Side-by-Side Horizontal Row */}
+          {/* Bottom Vignettes: 4 Side-by-Side Shaped Arch Images */}
           <div className="pt-3 sm:pt-4 w-full">
-            <div className="flex items-center gap-3 sm:gap-4 md:gap-5 w-full">
+            <div className="grid grid-cols-4 gap-2.5 sm:gap-3.5 md:gap-4 w-full max-w-xl lg:max-w-2xl">
               {/* Vignette 1: Sculptural Drop Earrings */}
-              <div className="w-28 sm:w-36 md:w-44 aspect-[3/4] rounded-t-none rounded-b-full overflow-hidden bg-[#F2EFDB] border border-[#D8D2C2] shadow-sm transition-transform duration-300 hover:scale-103 shrink-0">
+              <div className="aspect-[3/4] rounded-t-none rounded-b-full overflow-hidden bg-[#F2EFDB] border border-[#D8D2C2] shadow-sm transition-transform duration-300 hover:scale-104">
                 <img
                   src={vignette1Img}
-                  alt="Avirena sculptural earrings on silk"
+                  alt="Avirena sculptural drop earrings on silk"
                   className="w-full h-full object-cover object-center"
+                  loading="lazy"
+                  width={300}
+                  height={400}
                 />
               </div>
 
               {/* Vignette 2: Jewelry Flatlay */}
-              <div className="w-28 sm:w-36 md:w-44 aspect-[3/4] rounded-t-none rounded-b-full overflow-hidden bg-[#F2EFDB] border border-[#D8D2C2] shadow-sm transition-transform duration-300 hover:scale-103 shrink-0">
+              <div className="aspect-[3/4] rounded-t-none rounded-b-full overflow-hidden bg-[#F2EFDB] border border-[#D8D2C2] shadow-sm transition-transform duration-300 hover:scale-104">
                 <img
                   src={vignette2Img}
                   alt="Avirena handcrafted gold rings and necklaces"
                   className="w-full h-full object-cover object-center"
+                  loading="lazy"
+                  width={300}
+                  height={400}
                 />
               </div>
 
               {/* Vignette 3: Ribbed Gold Hoops */}
-              <div className="w-28 sm:w-36 md:w-44 aspect-[3/4] rounded-t-none rounded-b-full overflow-hidden bg-[#F2EFDB] border border-[#D8D2C2] shadow-sm transition-transform duration-300 hover:scale-103 shrink-0">
+              <div className="aspect-[3/4] rounded-t-none rounded-b-full overflow-hidden bg-[#F2EFDB] border border-[#D8D2C2] shadow-sm transition-transform duration-300 hover:scale-104">
                 <img
                   src={vignette3Img}
                   alt="Avirena ribbed gold hoop earrings on satin"
                   className="w-full h-full object-cover object-center"
+                  loading="lazy"
+                  width={300}
+                  height={400}
+                />
+              </div>
+
+              {/* Vignette 4: Botanical Leaf & Chain */}
+              <div className="aspect-[3/4] rounded-t-none rounded-b-full overflow-hidden bg-[#F2EFDB] border border-[#D8D2C2] shadow-sm transition-transform duration-300 hover:scale-104">
+                <img
+                  src={vignette4Img}
+                  alt="Avirena golden botanical leaf jewel on travertine stone"
+                  className="w-full h-full object-cover object-center"
+                  loading="lazy"
+                  width={300}
+                  height={400}
                 />
               </div>
             </div>
