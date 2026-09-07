@@ -1,4 +1,5 @@
 import { Product, ProductVariant, Category, Metal, ShopifyCart } from '../types';
+import { getCompareAtPrice } from '../data/products';
 
 const SHOPIFY_STORE_DOMAIN = import.meta.env.VITE_SHOPIFY_STORE_DOMAIN || '';
 const SHOPIFY_STOREFRONT_ACCESS_TOKEN = import.meta.env.VITE_SHOPIFY_STOREFRONT_ACCESS_TOKEN || '';
@@ -459,6 +460,9 @@ export function transformShopifyProduct(node: any): Product {
     } else {
       baseComparePriceEur = rawCompareAmount;
     }
+  } else {
+    // If not in Shopify, derive realistic compare-at MRP (~68%–70% off)
+    baseComparePriceEur = getCompareAtPrice(basePriceEur);
   }
 
   // Derive Category from title, productType, tags, description

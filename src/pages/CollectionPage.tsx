@@ -1,8 +1,8 @@
 import React, { useState, useMemo, useRef, useEffect } from 'react';
 import gsap from 'gsap';
 import { Product, Currency, Category, Metal } from '../types';
-import { formatPrice } from '../data/products';
-import { ChevronDown, Heart, Check, ShoppingBag, Eye } from 'lucide-react';
+import { formatPrice, getCompareAtPrice, getDiscountPercentage } from '../data/products';
+import { ChevronDown, Heart, Check, ShoppingBag } from 'lucide-react';
 import shopHeroImg from '../assets/shop-hero-editorial.jpg';
 
 interface CollectionPageProps {
@@ -18,7 +18,6 @@ interface CollectionPageProps {
   initialMetal?: string;
   onSelectProduct: (product: Product) => void;
   onQuickAdd: (product: Product) => void;
-  onQuickView?: (product: Product) => void;
   currency: Currency;
   isWishlisted: (productId: string) => boolean;
   onToggleWishlist: (product: Product) => void;
@@ -33,7 +32,6 @@ export const CollectionPage: React.FC<CollectionPageProps> = ({
   initialMetal,
   onSelectProduct,
   onQuickAdd,
-  onQuickView,
   currency,
   isWishlisted,
   onToggleWishlist,
@@ -124,19 +122,6 @@ export const CollectionPage: React.FC<CollectionPageProps> = ({
           <Heart className={`w-3.5 h-3.5 ${wishlisted ? 'fill-[#7A0F1A] text-[#7A0F1A]' : ''}`} />
         </button>
 
-        {onQuickView && (
-          <button
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              onQuickView(product);
-            }}
-            className="absolute top-3.5 right-12 z-10 w-7 h-7 rounded-full flex items-center justify-center transition-all duration-200 bg-[#F2EFDB]/90 text-[#413C23] opacity-0 group-hover:opacity-100 hover:bg-[#FAF8F5] border border-[#D8D2C2] shadow-xs"
-            aria-label="Quick View"
-          >
-            <Eye className="w-3.5 h-3.5" />
-          </button>
-        )}
 
         {product.isBestseller && (
           <span className="absolute top-3.5 left-3.5 z-10 bg-[#413C23] text-[#FAF8F5] text-[9px] uppercase tracking-wider font-semibold px-2 py-0.5 rounded-2xs">
@@ -178,9 +163,27 @@ export const CollectionPage: React.FC<CollectionPageProps> = ({
           <h3 className="font-serif-display text-base sm:text-lg font-normal text-[#413C23] group-hover:text-[#8F896D] transition-colors leading-snug truncate">
             {product.name}
           </h3>
-          <p className="text-base sm:text-lg font-bold text-[#413C23] tracking-tight mt-0.5">
-            {formatPrice(product.price, currency)}
-          </p>
+          {(() => {
+            const comparePrice = getCompareAtPrice(product.price, product.originalPrice);
+            const discount = getDiscountPercentage(product.price, comparePrice);
+            return (
+              <div className="flex items-baseline gap-2 mt-0.5 flex-wrap">
+                <span className="text-base sm:text-lg font-bold text-[#413C23] tracking-tight">
+                  {formatPrice(product.price, currency)}
+                </span>
+                {comparePrice > product.price && (
+                  <>
+                    <span className="text-xs sm:text-sm text-[#8F896D]/75 line-through font-normal">
+                      {formatPrice(comparePrice, currency)}
+                    </span>
+                    <span className="text-[10px] font-bold text-[#7A0F1A] bg-[#7A0F1A]/10 border border-[#7A0F1A]/20 px-1.5 py-0.5 rounded-2xs uppercase tracking-wider">
+                      {discount}% OFF
+                    </span>
+                  </>
+                )}
+              </div>
+            );
+          })()}
         </div>
       </div>
     );
@@ -228,19 +231,6 @@ export const CollectionPage: React.FC<CollectionPageProps> = ({
             Featured Piece
           </span>
           <div className="flex items-center gap-2">
-            {onQuickView && (
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onQuickView(product);
-                }}
-                className="w-8 h-8 rounded-full flex items-center justify-center transition-all duration-200 bg-[#F2EFDB]/90 text-[#413C23] hover:bg-[#FAF8F5] border border-[#D8D2C2] shadow-xs"
-                aria-label="Quick View"
-              >
-                <Eye className="w-4 h-4" />
-              </button>
-            )}
             <button
               type="button"
               onClick={(e) => {
@@ -283,9 +273,27 @@ export const CollectionPage: React.FC<CollectionPageProps> = ({
             <h3 className="font-serif-display text-xl sm:text-2xl font-normal text-[#413C23] group-hover:text-[#8F896D] transition-colors leading-snug truncate">
               {product.name}
             </h3>
-            <p className="text-lg sm:text-xl font-bold text-[#413C23] tracking-tight mt-0.5">
-              {formatPrice(product.price, currency)}
-            </p>
+            {(() => {
+              const comparePrice = getCompareAtPrice(product.price, product.originalPrice);
+              const discount = getDiscountPercentage(product.price, comparePrice);
+              return (
+                <div className="flex items-baseline gap-2 mt-0.5 flex-wrap">
+                  <span className="text-lg sm:text-xl font-bold text-[#413C23] tracking-tight">
+                    {formatPrice(product.price, currency)}
+                  </span>
+                  {comparePrice > product.price && (
+                    <>
+                      <span className="text-sm sm:text-base text-[#8F896D]/75 line-through font-normal">
+                        {formatPrice(comparePrice, currency)}
+                      </span>
+                      <span className="text-[10px] font-bold text-[#7A0F1A] bg-[#7A0F1A]/10 border border-[#7A0F1A]/20 px-1.5 py-0.5 rounded-2xs uppercase tracking-wider">
+                        {discount}% OFF
+                      </span>
+                    </>
+                  )}
+                </div>
+              );
+            })()}
           </div>
           <button
             type="button"

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { ChevronRight, ChevronLeft, Plus, Minus, Heart, Maximize2 } from 'lucide-react';
 import { Product, Currency, Metal, CartItem } from '../types';
-import { formatPrice } from '../data/products';
+import { formatPrice, getCompareAtPrice, getDiscountPercentage } from '../data/products';
 import { useShopify } from '../context/ShopifyContext';
 import { ProductImageLightbox } from '../components/ProductImageLightbox';
 
@@ -365,12 +365,28 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
               </button>
             </div>
 
-            {/* Price */}
-            <div className="pt-1">
-              <span className="text-2xl sm:text-3xl font-bold text-[#413C23] tracking-tight">
-                {formatPrice(product.price, currency)}
-              </span>
-            </div>
+            {/* Price with Strikethrough Compare-At Price and Discount Badge */}
+            {(() => {
+              const comparePrice = getCompareAtPrice(product.price, product.originalPrice);
+              const discount = getDiscountPercentage(product.price, comparePrice);
+              return (
+                <div className="pt-1 flex items-baseline gap-3 flex-wrap">
+                  <span className="text-2xl sm:text-3xl font-bold text-[#413C23] tracking-tight">
+                    {formatPrice(product.price, currency)}
+                  </span>
+                  {comparePrice > product.price && (
+                    <>
+                      <span className="text-base sm:text-lg text-[#8F896D]/70 line-through font-normal">
+                        {formatPrice(comparePrice, currency)}
+                      </span>
+                      <span className="text-xs font-bold text-[#7A0F1A] bg-[#7A0F1A]/10 border border-[#7A0F1A]/20 px-2.5 py-0.5 rounded-2xs uppercase tracking-wider">
+                        {discount}% OFF
+                      </span>
+                    </>
+                  )}
+                </div>
+              );
+            })()}
 
             {/* Finish Selector (Gold Tone Brass & Silver Tone Brass) */}
             <div className="space-y-2 pt-1 w-full">

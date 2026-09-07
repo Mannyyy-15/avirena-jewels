@@ -105,6 +105,12 @@ async function fetchShopifyProducts(): Promise<any[]> {
                   currencyCode
                 }
               }
+              compareAtPriceRange {
+                minVariantPrice {
+                  amount
+                  currencyCode
+                }
+              }
               images(first: 6) {
                 edges {
                   node {

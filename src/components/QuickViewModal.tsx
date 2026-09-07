@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { X, Heart, ShoppingBag, Check, ShieldCheck, Ruler, ArrowRight } from 'lucide-react';
 import { Product, Currency, Metal } from '../types';
-import { formatPrice } from '../data/products';
+import { formatPrice, getCompareAtPrice, getDiscountPercentage } from '../data/products';
 
 interface QuickViewModalProps {
   product: Product | null;
@@ -132,16 +132,27 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
                 <h3 className="font-serif-display text-2xl sm:text-3xl text-[#2C2C2A] leading-tight">
                   {product.name}
                 </h3>
-                <div className="mt-1 flex items-baseline gap-2">
-                  <span className="font-serif-display text-xl font-medium text-[#2C2C2A]">
-                    {formatPrice(product.price, currency)}
-                  </span>
-                  {product.originalPrice && (
-                    <span className="text-xs text-[#9A9886] line-through">
-                      {formatPrice(product.originalPrice, currency)}
-                    </span>
-                  )}
-                </div>
+                {(() => {
+                  const comparePrice = getCompareAtPrice(product.price, product.originalPrice);
+                  const discount = getDiscountPercentage(product.price, comparePrice);
+                  return (
+                    <div className="mt-1 flex items-baseline gap-2 flex-wrap">
+                      <span className="font-serif-display text-xl font-medium text-[#2C2C2A]">
+                        {formatPrice(product.price, currency)}
+                      </span>
+                      {comparePrice > product.price && (
+                        <>
+                          <span className="text-xs text-[#9A9886] line-through font-normal">
+                            {formatPrice(comparePrice, currency)}
+                          </span>
+                          <span className="text-[10px] font-bold text-[#7A0F1A] bg-[#7A0F1A]/10 border border-[#7A0F1A]/20 px-1.5 py-0.5 rounded-2xs uppercase tracking-wider">
+                            {discount}% OFF
+                          </span>
+                        </>
+                      )}
+                    </div>
+                  );
+                })()}
               </div>
 
               {/* Description excerpt */}

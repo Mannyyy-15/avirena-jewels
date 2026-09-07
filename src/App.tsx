@@ -57,9 +57,6 @@ const PoliciesPage = lazy(() =>
 const GuidesPage = lazy(() =>
   import('./pages/GuidesPage').then((m) => ({ default: m.GuidesPage }))
 );
-const QuickViewModal = lazy(() =>
-  import('./components/QuickViewModal').then((m) => ({ default: m.QuickViewModal }))
-);
 const WishlistModal = lazy(() =>
   import('./components/WishlistModal').then((m) => ({ default: m.WishlistModal }))
 );
@@ -259,9 +256,6 @@ function AppContent() {
   const [isStoryModalOpen, setIsStoryModalOpen] = useState<boolean>(false);
   const [isCareModalOpen, setIsCareModalOpen] = useState<boolean>(false);
   
-  // Quick View Modal
-  const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
-  const [isQuickViewOpen, setIsQuickViewOpen] = useState<boolean>(false);
 
   // Toast Notification System
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
@@ -511,10 +505,6 @@ function AppContent() {
     scrollToTop();
   };
 
-  const handleOpenQuickView = (product: Product) => {
-    setQuickViewProduct(product);
-    setIsQuickViewOpen(true);
-  };
 
   // Cart operations
   const handleAddToCart = (item: Omit<CartItem, 'id'>) => {
@@ -634,7 +624,6 @@ function AppContent() {
             onSelectProduct={handleSelectProduct}
             onNavigateToCollection={handleNavigateToCollection}
             onQuickAdd={handleQuickAdd}
-            onQuickView={handleOpenQuickView}
             currency={currency}
             isWishlisted={isProductWishlisted}
             onToggleWishlist={handleToggleWishlist}
@@ -650,7 +639,6 @@ function AppContent() {
             initialMetal={selectedMetal}
             onSelectProduct={handleSelectProduct}
             onQuickAdd={handleQuickAdd}
-            onQuickView={handleOpenQuickView}
             currency={currency}
             isWishlisted={isProductWishlisted}
             onToggleWishlist={handleToggleWishlist}
@@ -785,21 +773,6 @@ function AppContent() {
         }}
       />
 
-      {/* Quick View Modal (chunk fetched only once opened) */}
-      {isQuickViewOpen && (
-      <Suspense fallback={null}>
-      <QuickViewModal
-        product={quickViewProduct}
-        isOpen={isQuickViewOpen}
-        onClose={() => setIsQuickViewOpen(false)}
-        onAddToCart={handleAddToCart}
-        onSelectProduct={handleSelectProduct}
-        currency={currency}
-        isWishlisted={quickViewProduct ? isProductWishlisted(quickViewProduct.id) : false}
-        onToggleWishlist={handleToggleWishlist}
-      />
-      </Suspense>
-      )}
 
       {/* Live Search Modal (chunk fetched only once opened) */}
       {isSearchModalOpen && (

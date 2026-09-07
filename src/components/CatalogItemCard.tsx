@@ -1,14 +1,13 @@
 import React, { useState } from 'react';
 import { Product, Currency } from '../types';
-import { formatPrice } from '../data/products';
-import { Heart, ShoppingBag, Eye, Check } from 'lucide-react';
+import { formatPrice, getCompareAtPrice, getDiscountPercentage } from '../data/products';
+import { Heart, ShoppingBag, Check } from 'lucide-react';
 
 interface CatalogItemCardProps {
   product: Product;
   currency: Currency;
   onSelect: (product: Product) => void;
   onQuickAdd?: (product: Product) => void;
-  onQuickView?: (product: Product) => void;
   isWishlisted?: boolean;
   onToggleWishlist?: (product: Product) => void;
 }
@@ -18,7 +17,6 @@ export const CatalogItemCard: React.FC<CatalogItemCardProps> = ({
   currency,
   onSelect,
   onQuickAdd,
-  onQuickView,
   isWishlisted = false,
   onToggleWishlist,
 }) => {
@@ -34,10 +32,6 @@ export const CatalogItemCard: React.FC<CatalogItemCardProps> = ({
     }
   };
 
-  const handleQuickView = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    onQuickView?.(product);
-  };
 
   const handleToggleWishlist = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -72,16 +66,7 @@ export const CatalogItemCard: React.FC<CatalogItemCardProps> = ({
 
         {/* Top Right Quick Actions */}
         <div className="absolute top-2.5 right-2.5 z-10 flex items-center gap-1.5 opacity-90 group-hover:opacity-100 transition-opacity">
-          {onQuickView && (
-            <button
-              onClick={handleQuickView}
-              className="p-1.5 rounded-full bg-[#E7E4D5]/95 hover:bg-[#413C23] hover:text-[#E7E4D5] text-[#413C23] transition-all shadow-xs cursor-pointer border border-[#D8D2C2]"
-              title="Quick View"
-              aria-label="Quick View"
-            >
-              <Eye className="w-3.5 h-3.5" />
-            </button>
-          )}
+
           {onToggleWishlist && (
             <button
               onClick={handleToggleWishlist}
@@ -150,16 +135,27 @@ export const CatalogItemCard: React.FC<CatalogItemCardProps> = ({
         </h3>
 
         {/* Prominent High-Visibility Price */}
-        <div className="flex items-baseline gap-2 pt-0.5">
-          <span className="text-base sm:text-lg font-bold text-[#413C23] tracking-tight">
-            {formatPrice(product.price, currency)}
-          </span>
-          {product.originalPrice && product.originalPrice > product.price && (
-            <span className="text-xs sm:text-sm text-[#8F896D]/80 line-through font-normal">
-              {formatPrice(product.originalPrice, currency)}
-            </span>
-          )}
-        </div>
+        {(() => {
+          const comparePrice = getCompareAtPrice(product.price, product.originalPrice);
+          const discount = getDiscountPercentage(product.price, comparePrice);
+          return (
+            <div className="flex items-baseline gap-2 pt-0.5 flex-wrap">
+              <span className="text-base sm:text-lg font-bold text-[#413C23] tracking-tight">
+                {formatPrice(product.price, currency)}
+              </span>
+              {comparePrice > product.price && (
+                <>
+                  <span className="text-xs sm:text-sm text-[#8F896D]/75 line-through font-normal">
+                    {formatPrice(comparePrice, currency)}
+                  </span>
+                  <span className="text-[10px] font-bold text-[#7A0F1A] bg-[#7A0F1A]/10 border border-[#7A0F1A]/20 px-1.5 py-0.5 rounded-2xs uppercase tracking-wider">
+                    {discount}% OFF
+                  </span>
+                </>
+              )}
+            </div>
+          );
+        })()}
       </div>
     </div>
   );

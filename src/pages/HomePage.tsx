@@ -13,7 +13,7 @@ import {
   Check
 } from 'lucide-react';
 import { Product, Currency, Category } from '../types';
-import { formatPrice } from '../data/products';
+import { formatPrice, getCompareAtPrice, getDiscountPercentage } from '../data/products';
 import { HeroBaroquePearlRing } from '../components/HeroBaroquePearlRing';
 import { AboutUsEditorialSection } from '../components/AboutUsEditorialSection';
 
@@ -25,7 +25,6 @@ interface HomePageProps {
   onSelectProduct: (product: Product) => void;
   onNavigateToCollection: (category?: Category, metal?: string) => void;
   onQuickAdd: (product: Product) => void;
-  onQuickView?: (product: Product) => void;
   currency: Currency;
   isWishlisted: (id: string) => boolean;
   onToggleWishlist: (product: Product) => void;
@@ -37,7 +36,6 @@ export const HomePage: React.FC<HomePageProps> = ({
   onSelectProduct,
   onNavigateToCollection,
   onQuickAdd,
-  onQuickView,
   currency,
   isWishlisted,
   onToggleWishlist,
@@ -410,14 +408,32 @@ export const HomePage: React.FC<HomePageProps> = ({
                     </button>
                   </div>
 
-                  {/* Meta Box with Prominent Bold Price */}
+                  {/* Meta Box with Prominent Bold Price & Discount Badge */}
                   <div className="flex flex-col justify-between pt-1">
                     <h4 className="font-serif-display text-sm sm:text-base text-[#413C23] group-hover:text-[#8F896D] transition-colors font-normal leading-snug truncate block">
                       {displayTitle}
                     </h4>
-                    <p className="text-sm sm:text-base font-bold text-[#413C23] tracking-tight mt-0.5 block">
-                      {formatPrice(product.price || 0, currency)}
-                    </p>
+                    {(() => {
+                      const comparePrice = getCompareAtPrice(product.price || 0, product.originalPrice);
+                      const discount = getDiscountPercentage(product.price || 0, comparePrice);
+                      return (
+                        <div className="flex items-baseline gap-2 mt-0.5 flex-wrap">
+                          <span className="text-sm sm:text-base font-bold text-[#413C23] tracking-tight">
+                            {formatPrice(product.price || 0, currency)}
+                          </span>
+                          {comparePrice > (product.price || 0) && (
+                            <>
+                              <span className="text-xs text-[#8F896D]/75 line-through font-normal">
+                                {formatPrice(comparePrice, currency)}
+                              </span>
+                              <span className="text-[10px] font-bold text-[#7A0F1A] bg-[#7A0F1A]/10 border border-[#7A0F1A]/20 px-1.5 py-0.2 rounded-2xs uppercase tracking-wider">
+                                {discount}% OFF
+                              </span>
+                            </>
+                          )}
+                        </div>
+                      );
+                    })()}
                   </div>
                 </div>
               );
@@ -501,14 +517,32 @@ export const HomePage: React.FC<HomePageProps> = ({
                     </button>
                   </div>
 
-                  {/* Meta Box with Prominent Bold Price */}
+                  {/* Meta Box with Prominent Bold Price & Discount Badge */}
                   <div className="flex flex-col justify-between pt-1">
                     <h4 className="font-serif-display text-sm sm:text-base text-[#413C23] group-hover:text-[#8F896D] transition-colors font-normal leading-snug truncate block">
                       {product.name}
                     </h4>
-                    <p className="text-sm sm:text-base font-bold text-[#413C23] tracking-tight mt-0.5 block">
-                      {formatPrice(product.price || 0, currency)}
-                    </p>
+                    {(() => {
+                      const comparePrice = getCompareAtPrice(product.price || 0, product.originalPrice);
+                      const discount = getDiscountPercentage(product.price || 0, comparePrice);
+                      return (
+                        <div className="flex items-baseline gap-2 mt-0.5 flex-wrap">
+                          <span className="text-sm sm:text-base font-bold text-[#413C23] tracking-tight">
+                            {formatPrice(product.price || 0, currency)}
+                          </span>
+                          {comparePrice > (product.price || 0) && (
+                            <>
+                              <span className="text-xs text-[#8F896D]/75 line-through font-normal">
+                                {formatPrice(comparePrice, currency)}
+                              </span>
+                              <span className="text-[10px] font-bold text-[#7A0F1A] bg-[#7A0F1A]/10 border border-[#7A0F1A]/20 px-1.5 py-0.2 rounded-2xs uppercase tracking-wider">
+                                {discount}% OFF
+                              </span>
+                            </>
+                          )}
+                        </div>
+                      );
+                    })()}
                   </div>
                 </div>
               );
@@ -638,10 +672,28 @@ export const HomePage: React.FC<HomePageProps> = ({
                       <h4 className="font-serif-display text-sm sm:text-base text-[#413C23] group-hover:text-[#8F896D] transition-colors font-medium truncate">
                         {product.name}
                       </h4>
-                      <div className="flex items-baseline justify-between mt-1">
-                        <p className="text-sm sm:text-base font-bold text-[#413C23] tracking-tight">
-                          {formatPrice(product.price || 0, currency)}
-                        </p>
+                      <div className="flex items-baseline justify-between mt-1 flex-wrap gap-1.5">
+                        {(() => {
+                          const comparePrice = getCompareAtPrice(product.price || 0, product.originalPrice);
+                          const discount = getDiscountPercentage(product.price || 0, comparePrice);
+                          return (
+                            <div className="flex items-baseline gap-2 flex-wrap">
+                              <span className="text-sm sm:text-base font-bold text-[#413C23] tracking-tight">
+                                {formatPrice(product.price || 0, currency)}
+                              </span>
+                              {comparePrice > (product.price || 0) && (
+                                <>
+                                  <span className="text-xs text-[#8F896D]/75 line-through font-normal">
+                                    {formatPrice(comparePrice, currency)}
+                                  </span>
+                                  <span className="text-[10px] font-bold text-[#7A0F1A] bg-[#7A0F1A]/10 border border-[#7A0F1A]/20 px-1.5 py-0.2 rounded-2xs uppercase tracking-wider">
+                                    {discount}% OFF
+                                  </span>
+                                </>
+                              )}
+                            </div>
+                          );
+                        })()}
                         <span className="text-[10px] sm:text-xs text-[#8F896D] uppercase tracking-wider font-medium group-hover:text-[#413C23] transition-colors">
                           View Piece →
                         </span>
@@ -792,10 +844,28 @@ export const HomePage: React.FC<HomePageProps> = ({
                       <h4 className="font-serif-display text-sm sm:text-base text-[#413C23] group-hover:text-[#8F896D] transition-colors font-medium truncate">
                         {product.name}
                       </h4>
-                      <div className="flex items-baseline justify-between mt-1">
-                        <p className="text-sm sm:text-base font-bold text-[#413C23] tracking-tight">
-                          {formatPrice(product.price || 0, currency)}
-                        </p>
+                      <div className="flex items-baseline justify-between mt-1 flex-wrap gap-1.5">
+                        {(() => {
+                          const comparePrice = getCompareAtPrice(product.price || 0, product.originalPrice);
+                          const discount = getDiscountPercentage(product.price || 0, comparePrice);
+                          return (
+                            <div className="flex items-baseline gap-2 flex-wrap">
+                              <span className="text-sm sm:text-base font-bold text-[#413C23] tracking-tight">
+                                {formatPrice(product.price || 0, currency)}
+                              </span>
+                              {comparePrice > (product.price || 0) && (
+                                <>
+                                  <span className="text-xs text-[#8F896D]/75 line-through font-normal">
+                                    {formatPrice(comparePrice, currency)}
+                                  </span>
+                                  <span className="text-[10px] font-bold text-[#7A0F1A] bg-[#7A0F1A]/10 border border-[#7A0F1A]/20 px-1.5 py-0.2 rounded-2xs uppercase tracking-wider">
+                                    {discount}% OFF
+                                  </span>
+                                </>
+                              )}
+                            </div>
+                          );
+                        })()}
                         <span className="text-[10px] sm:text-xs text-[#8F896D] uppercase tracking-wider font-medium group-hover:text-[#413C23] transition-colors">
                           View Piece →
                         </span>
@@ -1006,8 +1076,26 @@ export const HomePage: React.FC<HomePageProps> = ({
                     <h4 className="font-serif-display text-base text-[#413C23] group-hover:text-[#8F896D] transition-colors font-medium truncate">
                       {product.name}
                     </h4>
-                    <div className="flex items-center justify-between text-xs pt-0.5">
-                      <span className="text-base font-bold text-[#413C23] tracking-tight">{formatPrice(product.price || 0, currency)}</span>
+                    <div className="flex items-center justify-between text-xs pt-0.5 flex-wrap gap-1">
+                      {(() => {
+                        const comparePrice = getCompareAtPrice(product.price || 0, product.originalPrice);
+                        const discount = getDiscountPercentage(product.price || 0, comparePrice);
+                        return (
+                          <div className="flex items-baseline gap-2 flex-wrap">
+                            <span className="text-base font-bold text-[#413C23] tracking-tight">{formatPrice(product.price || 0, currency)}</span>
+                            {comparePrice > (product.price || 0) && (
+                              <>
+                                <span className="text-xs text-[#8F896D]/75 line-through font-normal">
+                                  {formatPrice(comparePrice, currency)}
+                                </span>
+                                <span className="text-[10px] font-bold text-[#7A0F1A] bg-[#7A0F1A]/10 border border-[#7A0F1A]/20 px-1.5 py-0.2 rounded-2xs uppercase tracking-wider">
+                                  {discount}% OFF
+                                </span>
+                              </>
+                            )}
+                          </div>
+                        );
+                      })()}
                       <span className="text-[10px] text-[#413C23] uppercase tracking-wider font-semibold group-hover:underline">
                         View Details →
                       </span>
