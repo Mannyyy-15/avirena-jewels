@@ -58,451 +58,276 @@ export const getDiscountPercentage = (price: number, compareAtPrice?: number): n
 
 export const PRODUCTS: Product[] = [
   {
-    id: 'square-form-necklace',
-    name: 'Square Form Necklace',
-    subtitle: 'Architectural Geometric Figaro Chain',
-    category: 'necklaces',
-    metal: 'Gold-Tone Brass',
-    price: 32, // Premium dailywear pricing
-    originalPrice: 40,
-    images: [
-      'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=1200&q=90',
-      'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?auto=format&fit=crop&w=1200&q=85',
-      'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?auto=format&fit=crop&w=1200&q=85',
-    ],
-    description: 'An architectural dailywear statement featuring interlocking square-cut Figaro links rendered in premium brass with an advanced anti-tarnish gold-tone finish.',
-    details: [
-      'Square profile interlocking links in durable premium brass',
-      'Custom Avirena ergonomic box clasp with security lock',
-      'Length: 45cm + 5cm extension for flexible layering',
-      'Water-resistant & anti-tarnish e-coating for everyday longevity',
-      'Homegrown design handcrafted by skilled Indian artisans'
-    ],
-    materials: 'Premium High-Grade Brass with Anti-Tarnish Gold-Tone E-Coating (Hypoallergenic & Nickel-Free)',
-    sizes: ['42 cm', '45 cm', '50 cm'],
-    inStock: true,
-    isBestseller: true,
-    isSculptural: true,
-    styledWithIds: ['lucid-studs', 'scalo-bracelet', 'row-edge-ring']
-  },
-  {
-    id: 'lucid-studs',
-    name: 'Lucid Studs',
-    subtitle: 'Sculptural Molten Organic Spiral Studs',
+    id: 'avirena-square-studs-gold-tone-brass-earrings',
+    shopifyId: 'gid://shopify/Product/10511623815490',
+    handle: 'avirena-square-studs-gold-tone-brass-earrings',
+    name: 'Avirena Square Studs',
+    subtitle: 'Modern Geometric Square Stud Earrings',
     category: 'earrings',
     metal: 'Gold-Tone Brass',
-    price: 26,
-    originalPrice: 32,
+    price: 8.88,
+    originalPrice: 27.77,
     images: [
-      'https://images.unsplash.com/photo-1630019852942-f89202989a59?auto=format&fit=crop&w=1200&q=85',
-      'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?auto=format&fit=crop&w=1200&q=85',
-      'https://images.unsplash.com/photo-1600003014755-ba31aa59c4b6?auto=format&fit=crop&w=1200&q=85'
+      'https://cdn.shopify.com/s/files/1/1031/9364/1282/files/square_nadir-square-studs-gold-tone-brass-earrings_1.png?v=1788779598',
+      'https://cdn.shopify.com/s/files/1/1031/9364/1282/files/square_clean_nadir-square-studs-gold-tone-brass-earrings_2.png?v=1788782981',
+      'https://cdn.shopify.com/s/files/1/1031/9364/1282/files/ChatGPTImageSep3_2026_03_17_00PM.png?v=1788433626',
+      'https://cdn.shopify.com/s/files/1/1031/9364/1282/files/square_clean_nadir-square-studs-gold-tone-brass-earrings_4.png?v=1788783010',
+      'https://cdn.shopify.com/s/files/1/1031/9364/1282/files/ChatGPTImageSep3_2026_03_17_40PM.png?v=1788433627',
+      'https://cdn.shopify.com/s/files/1/1031/9364/1282/files/square_clean_nadir-square-studs-gold-tone-brass-earrings_6.png?v=1788783055'
     ],
-    description: 'Textured golden vortices created with organic molten folds that catch ambient light. Featherlight dailywear designed for zero lobe strain.',
+    description: 'Modern geometry. Effortless statement. A refined square silhouette that adds structure to everyday dressing. Brushed gold-tone texture meets a smooth polished edge, creating a subtle contrast that catches the light as you move. Clean enough for the office, distinctive enough for evenings. Product highlights Modern geometric square design Brushed and polished surface contrast Contemporary statement silhouette Lightweight for comfortable all-day wear Materials High-grade brass with an anti-tarnish gold-tone protective coating Nickel-free, lead-free and cadmium-free Surgical steel posts, suitable for sensitive skin This is fashion jewellery. It is not solid gold, gold vermeil or sterling silver, and is not hallmarked to any precious-metal standard. Style them with Sarees and ethnic wear Dresses and evening outfits Shirts and smart-casual looks Office wear Care Remove before swimming, bathing or exercise. Apply perfume and lotion before putting them on. Wipe gently with a soft dry cloth after wear and store dry. Tracked express delivery. Free delivery across India. 7-day easy returns on unworn pieces in original packaging.',
     details: [
-      'Handcrafted organic molten texture in premium brass',
-      'Diameter: 22mm',
-      'Surgical steel hypoallergenic posts with comfort secure backings',
-      'Featherweight core for comfortable all-day wear'
+      'Modern geometric square design with brushed-and-polished contrast',
+      'Contemporary architectural statement silhouette',
+      'Lightweight core for comfortable all-day wear',
+      'Surgical steel hypoallergenic posts for sensitive ears',
+      'Free delivery across India & 7-day easy returns'
     ],
-    materials: 'High-Grade Brass with Anti-Tarnish Gold-Tone Finish, Surgical Steel Posts',
+    materials: 'High-grade brass with anti-tarnish gold-tone protective coating (nickel-free, lead-free) and surgical steel posts',
     inStock: true,
     isBestseller: true,
-    isSculptural: true,
-    styledWithIds: ['square-form-necklace', 'row-edge-ring']
+    isSculptural: true
   },
   {
-    id: 'solid-wave-brooch',
-    name: 'Solid Wave Brooch',
-    subtitle: 'Fluid Sculptural Kinetic Ribbon Pin',
-    category: 'brooches',
-    metal: 'Silver-Tone Alloy',
-    price: 28,
-    images: [
-      'https://images.unsplash.com/photo-1598560917505-59a3ad559071?auto=format&fit=crop&w=1200&q=85',
-      'https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&w=1200&q=85'
-    ],
-    description: 'Inspired by modern kinetic art, this fluid ribbon pin secures outerwear, silk scarves, or tailored lapels with effortless grace.',
-    details: [
-      'High-polished mirror silver-tone protective finish',
-      'Reinforced safety barrel closure pin',
-      'Dimensions: 52mm x 26mm'
-    ],
-    materials: 'Durable Alloy & Brass with Anti-Tarnish Silver-Tone Polish',
-    inStock: true,
-    isSculptural: true,
-    styledWithIds: ['twin-hoop-earrings', 'wave-prism-ring']
-  },
-  {
-    id: 'ornate-scroll-pendant',
-    name: 'Ornate Scroll Pendant',
-    subtitle: 'Sculptural Filigree Relief Medallion',
-    category: 'necklaces',
-    metal: 'Gold-Tone Brass',
-    price: 36,
-    images: [
-      'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?auto=format&fit=crop&w=1200&q=85',
-      'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=1200&q=85',
-    ],
-    description: 'An intricate openwork relief medallion suspended on an airy chain. A statement dailywear jewel designed to elevate any outfit.',
-    details: [
-      'Intricate laser-detailed openwork scroll medallion',
-      '50cm adjustable trace chain with 5cm extension',
-      'Pendant diameter: 28mm'
-    ],
-    materials: 'High-Grade Brass with Dual-Layer Anti-Tarnish Gold-Tone Finish',
-    sizes: ['45 cm + 5 cm Extender'],
-    inStock: true,
-    isBestseller: true,
-    styledWithIds: ['lucid-studs', 'two-pearl-cuff']
-  },
-  {
-    id: 'two-pearl-cuff',
-    name: 'Two Pearl Cuff',
-    subtitle: 'Open Wire Bangle with Floating Lustrous Pearls',
-    category: 'bracelets',
-    metal: 'Gold-Tone Brass',
-    price: 29,
-    images: [
-      'https://images.unsplash.com/photo-1602751584552-8ba73aad10e1?auto=format&fit=crop&w=1200&q=85',
-      'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?auto=format&fit=crop&w=1200&q=85'
-    ],
-    description: 'A minimal open cuff framed with dual luminous cultured pearls nestled at each terminal tip. Ergonomic tension band effortlessly adjusts to any wrist.',
-    details: [
-      'Flexible open contour architecture with spring-back memory in brass',
-      'Lustrous hand-selected pearls (approx 8mm)',
-      'Anti-tarnish gold-tone protective seal'
-    ],
-    materials: 'Durable Brass with Gold-Tone Finish & Cultured Lustrous Pearls',
-    sizes: ['Small (14-16cm)', 'Medium (16-18cm)', 'Large (18-20cm)'],
-    inStock: true,
-    isBestseller: true,
-    styledWithIds: ['ornate-scroll-pendant', 'wave-prism-ring']
-  },
-  {
-    id: 'twin-hoop-earrings',
-    name: 'Twin Hoop Earrings',
-    subtitle: 'Two-Tone Ribbed Oval Huggie Hoops',
-    category: 'earrings',
-    metal: 'Silver-Tone Alloy',
-    price: 22,
-    images: [
-      'https://images.unsplash.com/photo-1630019852942-f89202989a59?auto=format&fit=crop&w=1200&q=85',
-      'https://images.unsplash.com/photo-1600003014755-ba31aa59c4b6?auto=format&fit=crop&w=1200&q=85'
-    ],
-    description: 'Sculpted with vertical flute ridges that capture light in rhythmic intervals. Subtle dailywear luxury suitable for daily work and outings.',
-    details: [
-      'Click-in snap huggie clasp with secure locking mechanism',
-      'Diameter: 22mm, width: 8mm',
-      'Hypoallergenic dailywear construction'
-    ],
-    materials: 'Durable Alloy & Brass with Anti-Tarnish Silver-Tone Finish',
-    inStock: true,
-    styledWithIds: ['solid-wave-brooch', 'linked-heart-bracelet']
-  },
-  {
-    id: 'row-edge-ring',
-    name: 'Row Edge Ring',
-    subtitle: 'Etched Sunburst Wide Gold-Tone Cigar Band',
-    category: 'rings',
-    metal: 'Gold-Tone Brass',
-    price: 24,
-    images: [
-      'https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&w=1200&q=85',
-      'https://images.unsplash.com/photo-1603561591411-07134e71a2a9?auto=format&fit=crop&w=1200&q=85'
-    ],
-    description: 'Etched with fine ray motifs. A standout standalone piece or confident ring-stack foundation for everyday styling.',
-    details: [
-      'Comfort-fit smooth polished interior',
-      'Micro-etched relief detailing along edge fluting',
-      'Band width: 8mm'
-    ],
-    materials: 'High-Grade Brass with Anti-Tarnish Gold-Tone Finish',
-    sizes: ['US 5', 'US 6', 'US 7', 'US 8', 'US 9'],
-    inStock: true,
-    isBestseller: true,
-    styledWithIds: ['wave-prism-ring', 'square-form-necklace']
-  },
-  {
-    id: 'wave-prism-ring',
-    name: 'Wave Prism Ring',
-    subtitle: 'Faceted Crystal on Contoured Band',
-    category: 'rings',
-    metal: 'Gold-Tone Brass',
-    price: 22,
-    images: [
-      'https://images.unsplash.com/photo-1603561591411-07134e71a2a9?auto=format&fit=crop&w=1200&q=85',
-      'https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&w=1200&q=85'
-    ],
-    description: 'A single bezel-set faceted sparkling zirconia crystal nestled atop a contoured, knife-edge minimal band.',
-    details: [
-      '4.5mm round brilliant cut sparkling cubic zirconia',
-      'Low-profile protective bezel setting in brass',
-      'Micro knife-edge contour band'
-    ],
-    materials: 'Durable Brass with Gold-Tone Coating, Brilliant Zirconia Crystal',
-    sizes: ['US 5', 'US 6', 'US 7', 'US 8'],
-    inStock: true,
-    styledWithIds: ['row-edge-ring', 'two-pearl-cuff']
-  },
-  {
-    id: 'shell-radiance-studs',
-    name: 'Shell Radiance Studs',
-    subtitle: 'Scalloped Textured Fan Seashell Earrings',
+    id: 'avirena-drop-earrings-gold-tone-brass',
+    shopifyId: 'gid://shopify/Product/10511624438082',
+    handle: 'avirena-drop-earrings-gold-tone-brass',
+    name: 'Avirena Drop Earrings',
+    subtitle: 'Elongated Minimalist Drop Earrings',
     category: 'earrings',
     metal: 'Gold-Tone Brass',
-    price: 23,
+    price: 7.77,
+    originalPrice: 24.43,
     images: [
-      'https://images.unsplash.com/photo-1630019852942-f89202989a59?auto=format&fit=crop&w=1200&q=85',
-      'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?auto=format&fit=crop&w=1200&q=85'
+      'https://cdn.shopify.com/s/files/1/1031/9364/1282/files/square_lume-drop-earrings-gold-tone-brass_1.png?v=1788779533',
+      'https://cdn.shopify.com/s/files/1/1031/9364/1282/files/square_clean_lume-drop-earrings-gold-tone-brass_2.png?v=1788782837',
+      'https://cdn.shopify.com/s/files/1/1031/9364/1282/files/square_clean_lume-drop-earrings-gold-tone-brass_3.png?v=1788782872',
+      'https://cdn.shopify.com/s/files/1/1031/9364/1282/files/square_clean_lume-drop-earrings-gold-tone-brass_4.png?v=1788782905',
+      'https://cdn.shopify.com/s/files/1/1031/9364/1282/files/square_clean_lume-drop-earrings-gold-tone-brass_5.png?v=1788782931',
+      'https://cdn.shopify.com/s/files/1/1031/9364/1282/files/square_clean_lume-drop-earrings-gold-tone-brass_6.png?v=1788782949'
     ],
-    description: 'Delicate fluted scallop shells sculpted from molded brass with an anti-tarnish golden luster, capturing coastal aesthetics with everyday refinement.',
+    description: 'Delicate length. Effortless elegance. An elongated silhouette with a sleek polished finish, finished with a clear round accent that catches the light as it moves. Streamlined enough for daily wear, graceful enough to carry an evening look. Product highlights Elegant elongated drop design Minimalist contemporary silhouette Polished gold-tone finish Clear round accent detail Light on the lobe for all-day wear Materials High-grade brass with an anti-tarnish gold-tone protective coating Nickel-free, lead-free and cadmium-free Surgical steel posts, suitable for sensitive skin This is fashion jewellery. It is not solid gold, gold vermeil or sterling silver, and is not hallmarked to any precious-metal standard. Perfect for Everyday and office wear Dinner dates and celebrations Sarees and ethnic wear Dresses and western outfits Gifting Care Remove before swimming, bathing or exercise. Apply perfume and lotion before putting them on. Wipe gently with a soft dry cloth after wear and store dry. Tracked express delivery. Free delivery across India. 7-day easy returns on unworn pieces in original packaging.',
     details: [
-      'Dimensions: 16mm x 14mm',
-      'Hypoallergenic post and silicone-padded backing',
-      'Featherweight 3.8g pair weight for zero fatigue'
+      'Elegant elongated drop design with clear round accent detail',
+      'Streamlined minimalist silhouette suitable from office to evening',
+      'Hollow-formed drop staying featherlight on the lobe',
+      'Surgical steel hypoallergenic posts for sensitive ears',
+      'Free delivery across India & 7-day easy returns'
     ],
-    materials: 'High-Grade Brass with Anti-Tarnish Gold-Tone Finish',
+    materials: 'High-grade brass with anti-tarnish gold-tone protective coating (nickel-free, lead-free) and surgical steel posts',
     inStock: true,
     isBestseller: true,
-    styledWithIds: ['gold-curve-necklace', 'two-pearl-cuff']
+    isSculptural: true
   },
   {
-    id: 'gold-curve-necklace',
-    name: 'Gold Curve Necklace',
-    subtitle: 'Minimalist Wavy Wire Collar Necklace',
-    category: 'necklaces',
-    metal: 'Gold-Tone Brass',
-    price: 34,
-    images: [
-      'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=1200&q=85',
-      'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?auto=format&fit=crop&w=1200&q=85'
-    ],
-    description: 'An architectural Y-silhouette featuring a fluid molten wire arch that floats gracefully over the clavicle collarbone.',
-    details: [
-      'Fluid hand-shaped golden wire centerpiece in brass',
-      'Adjustable 42cm + 5cm cable chain',
-      'Comfort tapered dailywear profile'
-    ],
-    materials: 'Premium Brass with Anti-Tarnish Gold-Tone Finish',
-    sizes: ['42 cm + 5 cm Extender'],
-    inStock: true,
-    isSculptural: true,
-    styledWithIds: ['shell-radiance-studs', 'scalo-bracelet']
-  },
-  {
-    id: 'accent-earrings',
-    name: 'Accent Huggies',
-    subtitle: 'Micro Crystal Huggie Hoops',
+    id: 'avirena-statement-drops-geometric-brass-earrings',
+    shopifyId: 'gid://shopify/Product/10511624896834',
+    handle: 'avirena-statement-drops-geometric-brass-earrings',
+    name: 'Avirena Statement Drops',
+    subtitle: 'Sculptural Layered Geometric Brass Earrings',
     category: 'earrings',
     metal: 'Gold-Tone Brass',
-    price: 25,
+    price: 13.32,
+    originalPrice: 44.43,
     images: [
-      'https://images.unsplash.com/photo-1630019852942-f89202989a59?auto=format&fit=crop&w=1200&q=85',
-      'https://images.unsplash.com/photo-1600003014755-ba31aa59c4b6?auto=format&fit=crop&w=1200&q=85'
+      'https://cdn.shopify.com/s/files/1/1031/9364/1282/files/square_forma-statement-drops-geometric-brass-earrings_1.png?v=1788779456',
+      'https://cdn.shopify.com/s/files/1/1031/9364/1282/files/square_clean_forma-statement-drops-geometric-brass-earrings_2.png?v=1788782683',
+      'https://cdn.shopify.com/s/files/1/1031/9364/1282/files/square_clean_forma-statement-drops-geometric-brass-earrings_3.png?v=1788782716',
+      'https://cdn.shopify.com/s/files/1/1031/9364/1282/files/square_clean_forma-statement-drops-geometric-brass-earrings_4.png?v=1788782767',
+      'https://cdn.shopify.com/s/files/1/1031/9364/1282/files/square_clean_forma-statement-drops-geometric-brass-earrings_5.png?v=1788782807',
+      'https://cdn.shopify.com/s/files/1/1031/9364/1282/files/square_clean_forma-statement-drops-geometric-brass-earrings_6.png?v=1788782819'
     ],
-    description: 'Refined miniature hoops encrusted with hand-set brilliant micro crystals. Designed to hug the lobe seamlessly for daily styling.',
+    description: 'Bold geometry. Effortless glamour. Layered organic shapes in a polished gold-tone finish, built to hold their line as they move. A sculptural drop that carries an outfit on its own — no other jewellery required. Product highlights Layered geometric drop design Sculptural organic shaping Polished gold-tone finish Statement scale without the weight Materials High-grade brass with an anti-tarnish gold-tone protective coating Nickel-free, lead-free and cadmium-free Surgical steel posts, suitable for sensitive skin This is fashion jewellery. It is not solid gold, gold vermeil or sterling silver, and is not hallmarked to any precious-metal standard. Perfect for Festive and occasion wear Sarees and ethnic outfits Parties and celebrations Dresses and evening looks Gifting Care Remove before swimming, bathing or exercise. Apply perfume and lotion before putting them on. Wipe gently with a soft dry cloth after wear and store dry. Tracked express delivery. Free delivery across India. 7-day easy returns on unworn pieces in original packaging.',
     details: [
-      'Precision flush-set sparkling micro crystals',
-      'Audible locking snap closure',
-      'Inner diameter: 10mm, outer 14mm'
-    ],
-    materials: 'Durable Brass with Gold-Tone Finish, High-Brilliance Zirconia Crystals',
-    inStock: true,
-    isBestseller: true,
-    styledWithIds: ['square-form-necklace', 'scalo-bracelet']
-  },
-  {
-    id: 'linked-heart-bracelet',
-    name: 'Linked Heart Bracelet',
-    subtitle: 'Liquid Snake Chain with Sculpted Heart Toggle',
-    category: 'bracelets',
-    metal: 'Silver-Tone Alloy',
-    price: 26,
-    images: [
-      'https://images.unsplash.com/photo-1602751584552-8ba73aad10e1?auto=format&fit=crop&w=1200&q=85',
-      'https://images.unsplash.com/photo-1598560917505-59a3ad559071?auto=format&fit=crop&w=1200&q=85'
-    ],
-    description: 'A liquid-finish snake chain completed by an organic, sculpted heart charm and ergonomic T-bar toggle.',
-    details: [
-      'High-grade brass and alloy core',
-      'Total chain length: 18cm',
-      'Anti-tarnish silver-tone e-coating for shine retention'
-    ],
-    materials: 'Premium Brass & Alloy with Anti-Tarnish Silver-Tone Finish',
-    sizes: ['17 cm', '19 cm'],
-    inStock: true,
-    styledWithIds: ['twin-hoop-earrings', 'solid-wave-brooch']
-  },
-  {
-    id: 'scalo-bracelet',
-    name: 'Scalo Bracelet',
-    subtitle: 'Undulating Molten Wave Wrist Cuff',
-    category: 'bracelets',
-    metal: 'Gold-Tone Brass',
-    price: 35,
-    originalPrice: 42,
-    images: [
-      'https://images.unsplash.com/photo-1602751584552-8ba73aad10e1?auto=format&fit=crop&w=1200&q=85',
-      'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?auto=format&fit=crop&w=1200&q=85'
-    ],
-    description: 'A continuous fluid wave of gold-tone brass that wraps organically around the wrist. Sculpted with an architectural opening for effortless wear.',
-    details: [
-      'Adjustable tension fit cuff in durable brass',
-      'Width: 16mm at undulating peak',
-      'Comfortable lightweight dailywear build'
-    ],
-    materials: 'High-Grade Brass with Anti-Tarnish Gold-Tone Protective Coating',
-    sizes: ['Small (14-16cm)', 'Medium (16-18cm)', 'Large (18-20cm)'],
-    inStock: true,
-    isBestseller: true,
-    isSculptural: true,
-    styledWithIds: ['square-form-necklace', 'row-edge-ring']
-  },
-  {
-    id: 'dome-studs',
-    name: 'Dome Studs',
-    subtitle: 'Sculptural Molten Spherical Stud Earrings',
-    category: 'earrings',
-    metal: 'Gold-Tone Brass',
-    price: 28,
-    originalPrice: 35,
-    images: [
-      'https://images.unsplash.com/photo-1630019852942-f89202989a59?auto=format&fit=crop&w=1200&q=90',
-      'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?auto=format&fit=crop&w=1200&q=85',
-    ],
-    description: 'Bold, hollow-formed spherical dome studs echoing modern architecture. Featherlight for all-day comfort yet visually commanding.',
-    details: [
-      'Hollow-form construction for zero lobe fatigue',
+      'Layered organic geometric drop design with fluid movement',
+      'Sculptural statement scale without lobe weight',
       'High-polish mirror gold-tone finish',
-      'Surgical steel hypoallergenic posts with secure backing',
-      'Diameter: 26mm'
+      'Surgical steel hypoallergenic posts for sensitive ears',
+      'Free delivery across India & 7-day easy returns'
     ],
-    materials: 'Premium Brass with Anti-Tarnish Gold-Tone Finish, Surgical Steel Posts',
+    materials: 'High-grade brass with anti-tarnish gold-tone protective coating (nickel-free, lead-free) and surgical steel posts',
     inStock: true,
     isBestseller: true,
-    isSculptural: true,
-    styledWithIds: ['square-form-necklace', 'scalo-bracelet']
+    isSculptural: true
   },
   {
-    id: 'pearl-drop-meridian',
-    name: 'Pearl Drop Meridian',
-    subtitle: 'Figaro Chain with Floating Baroque Pearl',
-    category: 'necklaces',
-    metal: 'Gold-Tone Brass',
-    price: 36,
-    originalPrice: 45,
+    id: 'avirena-heart-drops-silver-tone-earrings',
+    shopifyId: 'gid://shopify/Product/10513953587522',
+    handle: 'avirena-heart-drops-silver-tone-earrings',
+    name: 'Avirena Heart Drops',
+    subtitle: 'Puffed Double Heart Silver-Tone Earrings',
+    category: 'earrings',
+    metal: 'Silver-Tone Alloy',
+    price: 8.66,
+    originalPrice: 27.77,
     images: [
-      'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=1200&q=90',
-      'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?auto=format&fit=crop&w=1200&q=85'
+      'https://cdn.shopify.com/s/files/1/1031/9364/1282/files/460a6da3-5131-4cc4-8bf4-d23f372a1bfc.png?v=1788590707',
+      'https://cdn.shopify.com/s/files/1/1031/9364/1282/files/03671b94-4c80-43ea-bf2e-400a4feaa839.png?v=1788590708',
+      'https://cdn.shopify.com/s/files/1/1031/9364/1282/files/b9877952-87d7-4365-bf19-9654613908c1.png?v=1788590708',
+      'https://cdn.shopify.com/s/files/1/1031/9364/1282/files/square_clean_amara-heart-drops-silver-tone-earrings_4.png?v=1788782434',
+      'https://cdn.shopify.com/s/files/1/1031/9364/1282/files/77cf164e-ff07-4bb4-b201-f6351b5af304.png?v=1788590709'
     ],
-    description: 'A classic Figaro link chain reimagined with a lustrous teardrop baroque pearl floating asymmetrically at the collarbone.',
+    description: 'Two hearts, one clean line. A puffed heart stud carries a larger heart below it, both finished in a high-polish silver tone that catches light as you move. The volume gives it presence; the smooth unbroken surface keeps it from tipping into sweet. Romantic without being girlish. Product highlights Double heart drop silhouette Puffed, high-polish silver-tone finish Articulated link so the lower heart moves with you Hollow-formed to stay light on the lobe Materials Durable alloy with an anti-tarnish silver-tone protective coating Nickel-free, lead-free and cadmium-free Surgical steel posts, suitable for sensitive skin This is fashion jewellery. It is not solid gold, gold vermeil or sterling silver, and is not hallmarked to any precious-metal standard. Perfect for Date nights and dinners Birthdays and anniversaries Dresses and western outfits Gifting Care Remove before swimming, bathing or exercise. Apply perfume and lotion before putting them on. Wipe gently with a soft dry cloth after wear and store dry. Tracked express delivery. Free delivery across India. 7-day easy returns on unworn pieces in original packaging.',
     details: [
-      'Durable Figaro chain in 4.5mm width in brass',
-      'Luminous cultured teardrop baroque pearl (18mm)',
-      'Length: 42cm + 5cm extension'
+      'Articulated double puffed heart drop silhouette',
+      'Mirror-polished cool silver-tone protective finish',
+      'Hollow-formed construction for zero lobe fatigue',
+      'Surgical steel hypoallergenic posts for sensitive ears',
+      'Free delivery across India & 7-day easy returns'
     ],
-    materials: 'High-Grade Brass with Anti-Tarnish Gold-Tone Coating, Cultured Baroque Pearl',
-    sizes: ['42 cm', '45 cm'],
+    materials: 'Durable alloy with anti-tarnish silver-tone protective coating (nickel-free, lead-free) and surgical steel posts',
     inStock: true,
     isBestseller: true,
-    isSculptural: true,
-    styledWithIds: ['dome-studs', 'two-pearl-cuff']
+    isSculptural: true
   },
   {
-    id: 'luna-pearl-choker',
-    name: 'Luna Pearl Choker',
-    subtitle: 'Triple-Wire Gold-Tone Choker with Baroque Pearl',
-    category: 'necklaces',
-    metal: 'Gold-Tone Brass',
-    price: 39,
-    originalPrice: 48,
+    id: 'avirena-spiral-earrings-silver-tone',
+    shopifyId: 'gid://shopify/Product/10513953751362',
+    handle: 'avirena-spiral-earrings-silver-tone',
+    name: 'Avirena Spiral Earrings',
+    subtitle: 'Sculptural Continuous Curve Silver-Tone Studs',
+    category: 'earrings',
+    metal: 'Silver-Tone Alloy',
+    price: 6.66,
+    originalPrice: 21.10,
     images: [
-      'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=1200&q=85',
-      'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?auto=format&fit=crop&w=1200&q=85',
-      'https://images.unsplash.com/photo-1602751584552-8ba73aad10e1?auto=format&fit=crop&w=1200&q=85',
+      'https://cdn.shopify.com/s/files/1/1031/9364/1282/files/f58237af-d871-497b-ab88-a544835f938c.png?v=1788590744',
+      'https://cdn.shopify.com/s/files/1/1031/9364/1282/files/6d19c2fb-0a84-4bb0-a8ee-225f025799c4.png?v=1788590746',
+      'https://cdn.shopify.com/s/files/1/1031/9364/1282/files/358ae3eb-06b5-4d3c-bed5-ccf29ed4e771.png?v=1788590747',
+      'https://cdn.shopify.com/s/files/1/1031/9364/1282/files/25d04dc2-dbb0-41c7-8052-5591c7e89e7b.png?v=1788590747',
+      'https://cdn.shopify.com/s/files/1/1031/9364/1282/files/ef9688d8-8f05-4daa-841a-4fdcb08baaca.png?v=1788590748'
     ],
-    description: 'A sculptural layered collar choker featuring three fine fluid gold-tone brass bands crowned with an organic irregular cultured baroque pearl.',
+    description: 'One continuous curve. A single tapered form spirals around itself and comes to a fine point, hugging the lobe rather than hanging from it. The high-polish silver-tone surface reads as one unbroken line from every angle — architectural, and quietly unusual. Product highlights Sculptural spiral silhouette that curves around the lobe Tapered form finishing in a fine point High-polish silver-tone finish Sits close to the ear, so it stays comfortable through the day Materials Durable alloy with an anti-tarnish silver-tone protective coating Nickel-free, lead-free and cadmium-free Surgical steel posts, suitable for sensitive skin This is fashion jewellery. It is not solid gold, gold vermeil or sterling silver, and is not hallmarked to any precious-metal standard. Perfect for Everyday and office wear Minimalist and contemporary outfits Dresses and western wear Gifting Care Remove before swimming, bathing or exercise. Apply perfume and lotion before putting them on. Wipe gently with a soft dry cloth after wear and store dry. Tracked express delivery. Free delivery across India. 7-day easy returns on unworn pieces in original packaging.',
     details: [
-      'Triple layered contour collar in high-grade brass with anti-tarnish protective finish',
-      'Naturally formed organic baroque pearl (approx 16-18mm)',
-      'Hypoallergenic, nickel-free & water-resistant dailywear build',
-      'Custom Avirena ergonomic box clasp with 2-inch micro-extender'
+      'Continuous tapered spiral curving around the lobe',
+      'Architectural unbroken line from every angle',
+      'Sits close to the ear for continuous daily comfort',
+      'Surgical steel hypoallergenic posts for sensitive ears',
+      'Free delivery across India & 7-day easy returns'
     ],
-    materials: 'Premium Brass with Anti-Tarnish Gold-Tone Finish, Cultured Baroque Pearl',
-    sizes: ['38 cm', '40 cm', '42 cm', '45 cm'],
+    materials: 'Durable alloy with anti-tarnish silver-tone protective coating (nickel-free, lead-free) and surgical steel posts',
     inStock: true,
     isBestseller: true,
-    isSculptural: true,
-    styledWithIds: ['dome-studs', 'scalo-bracelet']
+    isSculptural: true
   },
   {
-    id: 'vela-ring',
-    name: 'Vela Dual Wave Ring',
-    subtitle: 'Contoured Sculptural Double Band',
-    category: 'rings',
+    id: 'avirena-crystal-hoops-gold-tone-earrings',
+    shopifyId: 'gid://shopify/Product/10513953784130',
+    handle: 'avirena-crystal-hoops-gold-tone-earrings',
+    name: 'Avirena Crystal Hoops — Gold',
+    subtitle: 'Chunky Domed Hoop with Prong-Set Oval Crystal',
+    category: 'earrings',
     metal: 'Gold-Tone Brass',
-    price: 24,
+    price: 6.66,
+    originalPrice: 24.43,
     images: [
-      'https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&w=1200&q=85',
-      'https://images.unsplash.com/photo-1603561591411-07134e71a2a9?auto=format&fit=crop&w=1200&q=85',
+      'https://cdn.shopify.com/s/files/1/1031/9364/1282/files/1779ca2c-3943-43e1-b94b-054e4fb9da4e.png?v=1788590763',
+      'https://cdn.shopify.com/s/files/1/1031/9364/1282/files/f95f087e-282f-495b-b543-bada0813d93c_1.png?v=1788590763',
+      'https://cdn.shopify.com/s/files/1/1031/9364/1282/files/f7c43b57-ea2d-4f32-bfdd-3fce051f57d0.png?v=1788590764',
+      'https://cdn.shopify.com/s/files/1/1031/9364/1282/files/4a6593d0-5428-46d6-93f8-b0ceb75f6266.png?v=1788590765',
+      'https://cdn.shopify.com/s/files/1/1031/9364/1282/files/ee1faa67-d9f8-4fad-847b-6c57285b8525.png?v=1788590765'
     ],
-    description: 'Two parallel organic ripples of gold-tone brass create an illusion of floating layers on the finger. Sculpted with generous curves and ergonomic tapering.',
+    description: 'Weight below, light above. A chunky domed hoop anchors a prong-set oval crystal, so the eye catches the sparkle first and the solid gold-tone curve second. The proportion is what makes it work — substantial enough to read as a statement, contained enough to wear with a saree or a shirt. Product highlights Chunky domed hoop with a prong-set oval crystal Polished gold-tone finish Hollow-formed hoop, so the scale does not weigh on the lobe Secure post and back fitting Materials High-grade brass with an anti-tarnish gold-tone protective coating Faceted glass crystal stone Nickel-free, lead-free and cadmium-free Surgical steel posts, suitable for sensitive skin This is fashion jewellery. The stone is a faceted crystal, not a diamond or precious gemstone. The metal is not solid gold, gold vermeil or sterling silver, and is not hallmarked to any precious-metal standard. Perfect for Festive and occasion wear Sarees and ethnic outfits Weddings and celebrations Evening looks Gifting Care Remove before swimming, bathing or exercise. Apply perfume and lotion before putting them on. Wipe gently with a soft dry cloth after wear and store dry. Tracked express delivery. Free delivery across India. 7-day easy returns on unworn pieces in original packaging.',
     details: [
-      'Organic double-tier open contour architecture in durable brass',
-      'Comfort-fit tapered inner profile for everyday wear',
-      'Width: 9mm at apex, tapering to 4mm base'
+      'Chunky domed hoop anchoring a brilliant prong-set oval crystal',
+      'Polished gold-tone finish with high light-refraction stone',
+      'Hollow-formed hoop so scale does not weigh down the lobe',
+      'Surgical steel hypoallergenic posts for sensitive ears',
+      'Free delivery across India & 7-day easy returns'
     ],
-    materials: 'High-Grade Brass with Anti-Tarnish Gold-Tone Coating',
-    sizes: ['US 5', 'US 6', 'US 7', 'US 8'],
+    materials: 'High-grade brass with anti-tarnish gold-tone coating & faceted glass crystal stone',
     inStock: true,
     isBestseller: true,
-    styledWithIds: ['scalo-bracelet', 'luna-pearl-choker']
+    isSculptural: true
   },
   {
-    id: 'veda-ring',
-    name: 'Veda Woven Ring',
-    subtitle: 'Braided Molten Gold-Tone Band',
-    category: 'rings',
-    metal: 'Gold-Tone Brass',
-    price: 22,
+    id: 'avirena-crystal-hoops-silver-tone-earrings',
+    shopifyId: 'gid://shopify/Product/10513953849666',
+    handle: 'avirena-crystal-hoops-silver-tone-earrings',
+    name: 'Avirena Crystal Hoops — Silver',
+    subtitle: 'Chunky Domed Hoop with Prong-Set Oval Crystal',
+    category: 'earrings',
+    metal: 'Silver-Tone Alloy',
+    price: 6.66,
+    originalPrice: 24.43,
     images: [
-      'https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&w=1200&q=85',
-      'https://images.unsplash.com/photo-1603561591411-07134e71a2a9?auto=format&fit=crop&w=1200&q=85'
+      'https://cdn.shopify.com/s/files/1/1031/9364/1282/files/9e4d8963-b26d-4e81-bcba-8b9bcd3abd1e.png?v=1788590783',
+      'https://cdn.shopify.com/s/files/1/1031/9364/1282/files/square_clean_solene-crystal-hoops-silver-tone-earrings_2.png?v=1788783306',
+      'https://cdn.shopify.com/s/files/1/1031/9364/1282/files/c30137bc-944e-471c-a6a8-c79d5c51adad.png?v=1788590785',
+      'https://cdn.shopify.com/s/files/1/1031/9364/1282/files/42f9b9e3-ac6d-4bc9-9545-99ce1268621b.png?v=1788590785',
+      'https://cdn.shopify.com/s/files/1/1031/9364/1282/files/6343dbee-940f-45a1-9bd8-16a4960909bc.png?v=1788590785'
     ],
-    description: 'Three intertwined golden strands woven seamlessly into a continuous infinity loop, signifying eternal poise.',
+    description: 'Weight below, light above. A chunky domed hoop anchors a prong-set oval crystal, finished in a cool silver tone that plays the sparkle down rather than up. The proportion is what makes it work — substantial enough to read as a statement, contained enough to wear with a saree or a shirt. Product highlights Chunky domed hoop with a prong-set oval crystal Polished silver-tone finish Hollow-formed hoop, so the scale does not weigh on the lobe Secure post and back fitting Materials Durable alloy with an anti-tarnish silver-tone protective coating Faceted glass crystal stone Nickel-free, lead-free and cadmium-free Surgical steel posts, suitable for sensitive skin This is fashion jewellery. The stone is a faceted crystal, not a diamond or precious gemstone. The metal is not solid gold, gold vermeil or sterling silver, and is not hallmarked to any precious-metal standard. Perfect for Festive and occasion wear Sarees and ethnic outfits Weddings and celebrations Evening looks Gifting Care Remove before swimming, bathing or exercise. Apply perfume and lotion before putting them on. Wipe gently with a soft dry cloth after wear and store dry. Tracked express delivery. Free delivery across India. 7-day easy returns on unworn pieces in original packaging.',
     details: [
-      'Intricate triple-strand hand braid in brass',
-      'Width: 5.5mm',
-      'Comfortable lightweight dailywear profile'
+      'Chunky domed hoop anchoring a brilliant prong-set oval crystal',
+      'Polished cool silver-tone finish with crisp sparkle',
+      'Hollow-formed hoop so scale does not weigh down the lobe',
+      'Surgical steel hypoallergenic posts for sensitive ears',
+      'Free delivery across India & 7-day easy returns'
     ],
-    materials: 'Durable Brass with Anti-Tarnish Gold-Tone Finish',
-    sizes: ['US 5', 'US 6', 'US 7', 'US 8', 'US 9'],
+    materials: 'Durable alloy with anti-tarnish silver-tone coating & faceted glass crystal stone',
     inStock: true,
     isBestseller: true,
-    styledWithIds: ['papette-gem-ring', 'luna-pearl-choker']
+    isSculptural: true
   },
   {
-    id: 'papette-gem-ring',
-    name: 'Papette Pavé Cigar Ring',
-    subtitle: 'Encrusted Micro-Crystal Wide Statement Band',
-    category: 'rings',
+    id: 'avirena-pebble-studs-gold-tone-earrings',
+    shopifyId: 'gid://shopify/Product/10513953915202',
+    handle: 'avirena-pebble-studs-gold-tone-earrings',
+    name: 'Avirena Pebble Studs',
+    subtitle: 'Organic Faceted Dome Gold-Tone Studs',
+    category: 'earrings',
     metal: 'Gold-Tone Brass',
-    price: 26,
-    originalPrice: 32,
+    price: 7.77,
+    originalPrice: 24.43,
     images: [
-      'https://images.unsplash.com/photo-1603561591411-07134e71a2a9?auto=format&fit=crop&w=1200&q=85',
-      'https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&w=1200&q=85'
+      'https://cdn.shopify.com/s/files/1/1031/9364/1282/files/6310d2a5-36df-496b-a2e5-abff46b9ab15.png?v=1788590806',
+      'https://cdn.shopify.com/s/files/1/1031/9364/1282/files/491a899d-7408-4df8-96ab-29e285ac024a.png?v=1788590808',
+      'https://cdn.shopify.com/s/files/1/1031/9364/1282/files/000ab104-805e-4ddd-b825-00679e71a54e.png?v=1788590809',
+      'https://cdn.shopify.com/s/files/1/1031/9364/1282/files/ChatGPT_Image_Sep_5_2026_11_49_10_AM.png?v=1788590809',
+      'https://cdn.shopify.com/s/files/1/1031/9364/1282/files/db5a9d8b-88dc-4043-b0f5-d25e69d7f1a6.png?v=1788590809'
     ],
-    description: 'A substantial domed cigar band encrusted with flush-set sparkling crystals in an organic celestial constellation.',
+    description: 'Shaped like something the sea finished. An oval dome broken into smooth pebble-like facets, each catching light at a slightly different angle. The surface is what carries this piece — nothing is symmetrical, so it reads as organic rather than manufactured, and it holds attention without needing scale. Product highlights Organic pebble-faceted dome silhouette Polished gold-tone finish with soft shadowed recesses Hugs the lobe, so there is no swing or snagging Hollow-formed to stay comfortable for all-day wear Materials High-grade brass with an anti-tarnish gold-tone protective coating Nickel-free, lead-free and cadmium-free Surgical steel posts, suitable for sensitive skin This is fashion jewellery. It is not solid gold, gold vermeil or sterling silver, and is not hallmarked to any precious-metal standard. Perfect for Everyday and office wear Sarees and ethnic outfits Shirts and smart-casual looks Gifting Care Remove before swimming, bathing or exercise. Apply perfume and lotion before putting them on. Wipe gently with a soft dry cloth after wear and store dry. Tracked express delivery. Free delivery across India. 7-day easy returns on unworn pieces in original packaging.',
     details: [
-      'Flush-set brilliant cubic zirconia crystals',
-      'Substantial 10mm width tapering to 5mm base',
-      'Durable dailywear finish'
+      'Organic pebble-faceted dome silhouette inspired by sea-worn stone',
+      'Natural asymmetrical light-catching contours',
+      'Snug fit to the lobe with zero swing or snagging',
+      'Surgical steel hypoallergenic posts for sensitive ears',
+      'Free delivery across India & 7-day easy returns'
     ],
-    materials: 'High-Grade Brass with Anti-Tarnish Gold-Tone Finish, Brilliant Zirconia Crystals',
-    sizes: ['US 6', 'US 7', 'US 8'],
+    materials: 'High-grade brass with anti-tarnish gold-tone protective coating (nickel-free, lead-free) and surgical steel posts',
     inStock: true,
-    styledWithIds: ['veda-ring', 'scalo-bracelet']
+    isBestseller: true,
+    isSculptural: true
+  },
+  {
+    id: 'avirena-leaf-studs-gold-tone-earrings',
+    shopifyId: 'gid://shopify/Product/10513954013506',
+    handle: 'avirena-leaf-studs-gold-tone-earrings',
+    name: 'Avirena Leaf Studs',
+    subtitle: 'Sculptural Folded Leaf Gold-Tone Earrings',
+    category: 'earrings',
+    metal: 'Gold-Tone Brass',
+    price: 7.77,
+    originalPrice: 27.77,
+    images: [
+      'https://cdn.shopify.com/s/files/1/1031/9364/1282/files/4d4af4c2-5be2-47f5-9785-f20644f3285f.png?v=1788590830',
+      'https://cdn.shopify.com/s/files/1/1031/9364/1282/files/1cf7a837-5d3f-4f05-964a-0e81d5b80002.png?v=1788590832',
+      'https://cdn.shopify.com/s/files/1/1031/9364/1282/files/43ed091e-3ca2-43c8-9303-a3a247ef30ad.png?v=1788590833',
+      'https://cdn.shopify.com/s/files/1/1031/9364/1282/files/ChatGPT_Image_Sep_5_2026_11_49_25_AM.png?v=1788590833',
+      'https://cdn.shopify.com/s/files/1/1031/9364/1282/files/d8d64cdf-978d-4286-b058-6df9d32972df.png?v=1788590834'
+    ],
+    description: 'A leaf caught mid-fold. A tapered petal form with a soft twist through the centre, so the polished gold-tone surface bends light down its length instead of flashing flat. It sits upward along the lobe rather than hanging, which gives it presence while staying easy to wear. Product highlights Sculptural folded leaf silhouette High-polish gold-tone finish with a soft central twist Sits upward on the lobe for an elongating line Hollow-formed to stay light through a full day Materials High-grade brass with an anti-tarnish gold-tone protective coating Nickel-free, lead-free and cadmium-free Surgical steel posts, suitable for sensitive skin This is fashion jewellery. It is not solid gold, gold vermeil or sterling silver, and is not hallmarked to any precious-metal standard. Perfect for Everyday and office wear Sarees and ethnic outfits Evening and occasion looks Gifting Care Remove before swimming, bathing or exercise. Apply perfume and lotion before putting them on. Wipe gently with a soft dry cloth after wear and store dry. Tracked express delivery. Free delivery across India. 7-day easy returns on unworn pieces in original packaging.',
+    details: [
+      'Sculptural folded leaf silhouette with gentle central twist',
+      'Sits upward along the earlobe creating an elongating line',
+      'High-polish gold-tone luster reflecting light continuously',
+      'Surgical steel hypoallergenic posts for sensitive ears',
+      'Free delivery across India & 7-day easy returns'
+    ],
+    materials: 'High-grade brass with anti-tarnish gold-tone protective coating (nickel-free, lead-free) and surgical steel posts',
+    inStock: true,
+    isBestseller: true,
+    isSculptural: true
   }
 ];

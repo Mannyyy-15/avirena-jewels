@@ -85,7 +85,7 @@ export const GET_PRODUCTS_QUERY = `
               currencyCode
             }
           }
-          images(first: 6) {
+          images(first: 10) {
             edges {
               node {
                 url

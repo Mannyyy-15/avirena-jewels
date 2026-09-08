@@ -52,7 +52,7 @@ export const SeoMeta: React.FC<SeoMetaProps> = ({
       canonical = 'https://avirenajewels.com/collections';
     } else if (currentPage === 'pdp' && selectedProduct) {
       title = `${selectedProduct.name} — ${selectedProduct.metal} | AVIRENA`;
-      description = `${selectedProduct.description} Handcrafted in ${selectedProduct.metal} with anti-tarnish protective coating. 7-day exchanges & free delivery.`;
+      description = `${selectedProduct.description} Handcrafted in ${selectedProduct.metal} with anti-tarnish protective coating. Free delivery across India & 7-day easy returns.`;
       // Real product URLs are singular /product/{handle} (see scripts/prerender.ts
       // and the sitemap). shopify.ts sets id = handle for live products, so prefer
       // handle and fall back to id — the same value the router resolves by.

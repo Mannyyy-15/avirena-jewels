@@ -117,7 +117,7 @@ async function fetchShopifyProducts(): Promise<any[]> {
                   currencyCode
                 }
               }
-              images(first: 6) {
+              images(first: 10) {
                 edges {
                   node {
                     url
@@ -222,7 +222,7 @@ function getGlobalSchema() {
 /** Google truncates around here; longer titles are cut off in every SERP surface. */
 const MAX_TITLE_LENGTH = 60;
 /** Meta descriptions are truncated around here too. */
-const MAX_DESCRIPTION_LENGTH = 155;
+const MAX_DESCRIPTION_LENGTH = 160;
 
 /**
  * Build a SERP-safe <title> from a raw Shopify product title.
@@ -278,8 +278,8 @@ function buildProductMetaDescription(
 
   const priceSuffix = ` ₹${priceInr}.`;
   const cleaned = authored
-    // Drop any rupee amount that is not the shipping threshold.
-    .replace(/₹\s?(?!1,?999)[0-9][0-9,]*\.?/g, '')
+    .replace(/Free delivery over (₹|Rs\.?)\s*1,?999\.?/gi, 'Free delivery across India.')
+    .replace(/₹\s?[0-9][0-9,]*\.?/g, '')
     .replace(/\s{2,}/g, ' ')
     .trim();
 
@@ -290,7 +290,7 @@ function buildProductMetaDescription(
 
 function buildProductDescription(rawDescription: string): string {
   const body = rawDescription.replace(/\s+/g, ' ').trim();
-  const suffix = ' Anti-tarnish brass. 7-day exchanges.';
+  const suffix = ' Free delivery across India. 7-day easy returns.';
 
   if (body.length + suffix.length <= MAX_DESCRIPTION_LENGTH) {
     return `${body}${suffix}`;
