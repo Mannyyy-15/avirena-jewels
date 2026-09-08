@@ -496,7 +496,7 @@ export const GUIDES: Guide[] = [
       },
       {
         type: 'paragraph',
-        text: 'Avirena offers a 14-day return and exchange window from delivery for unworn pieces in their original packaging, so a size exchange is straightforward if your measurement was off. Full details are on our policies page.',
+        text: 'Avirena offers a 7-day return and exchange window from delivery for unworn pieces in their original packaging, so a size exchange is straightforward if your measurement was off. Full details are on our policies page.',
       },
     ],
     faqs: [

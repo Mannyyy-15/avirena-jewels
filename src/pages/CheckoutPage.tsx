@@ -120,7 +120,7 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
             <p><strong className="text-[#2C2C2A]">Shipping to:</strong> {formData.streetAddress}, {formData.city}, {formData.zipCode}, {formData.country}</p>
             <p><strong className="text-[#2C2C2A]">Payment Method:</strong> {formData.paymentMethod.toUpperCase()} (Total paid: {formatPrice(total, currency)})</p>
             <p className="text-[#9A9886] pt-2">
-              ✓ Each piece is individually inspected, placed inside an anti-tarnish velvet travel pouch, and packaged in our luxury keepsake box.
+              ✓ Each piece is individually inspected and packaged in our luxury presentation box with an anti-tarnish polishing cloth.
             </p>
           </div>
         </div>
@@ -643,7 +643,7 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
             <button
               type="submit"
               id="place-order-btn"
-              className="w-full py-4 bg-[#9A9886] hover:bg-[#858372] text-white text-xs uppercase tracking-[0.25em] font-medium rounded-xs flex items-center justify-center gap-2 shadow-md hover:shadow-lg transition-all duration-200 active:scale-98"
+              className="w-full py-4 bg-black hover:bg-neutral-800 text-white text-xs uppercase tracking-[0.25em] font-semibold rounded-xs flex items-center justify-center gap-2 shadow-md hover:shadow-lg transition-all duration-200 active:scale-98"
             >
               <Lock className="w-3.5 h-3.5" />
               <span>Pay and Place Order</span>

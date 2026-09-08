@@ -6,7 +6,7 @@ import {
   ArrowLeft,
   ShoppingBag,
   ShieldCheck,
-  Check,
+  Truck,
   Lock,
 } from 'lucide-react';
 import { CartItem, Currency, Product } from '../types';
@@ -23,7 +23,7 @@ interface CartPageProps {
   onSelectProduct: (product: Product) => void;
 }
 
-const FREE_SHIPPING_THRESHOLD_INR = 1999;
+
 
 export const CartPage: React.FC<CartPageProps> = ({
   items,
@@ -39,9 +39,7 @@ export const CartPage: React.FC<CartPageProps> = ({
   const subtotal = items.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
   const totalCount = items.reduce((total, i) => total + i.quantity, 0);
 
-  const subtotalINR = subtotal < 500 ? Math.round(subtotal * 90) : Math.round(subtotal);
-  const progressPercent = Math.min(100, (subtotalINR / FREE_SHIPPING_THRESHOLD_INR) * 100);
-  const remainingForFreeShipping = Math.max(0, FREE_SHIPPING_THRESHOLD_INR - subtotalINR);
+
 
   const handleCheckout = async () => {
     if (isConfigured && items.length > 0) {
@@ -107,28 +105,14 @@ export const CartPage: React.FC<CartPageProps> = ({
         </button>
       </div>
 
-      {/* 2. FREE SHIPPING BANNER */}
-      <div className="mt-6 bg-[#F2EFDB] border border-[#D8D2C2] p-4 rounded-xs space-y-2">
-        <div className="flex items-center justify-between text-xs text-[#413C23] font-semibold">
-          {remainingForFreeShipping === 0 ? (
-            <span className="flex items-center gap-1.5 text-[#413C23]">
-              <Check className="w-4 h-4 stroke-[2.5]" />
-              <span>Complimentary Insured Express Shipping Unlocked!</span>
-            </span>
-          ) : (
-            <span>
-              Add ₹{remainingForFreeShipping.toLocaleString('en-IN')} more for Complimentary Express Shipping
-            </span>
-          )}
-          <span className="font-mono text-xs font-bold text-[#8F896D]">
-            {Math.round(progressPercent)}%
-          </span>
+      {/* 2. FREE DELIVERY BANNER */}
+      <div className="mt-6 bg-[#F2EFDB] border border-[#D8D2C2] p-4 rounded-xs flex items-center gap-3">
+        <div className="w-10 h-10 rounded-full bg-[#FAF8F5] border border-[#D8D2C2] flex items-center justify-center text-[#413C23] shrink-0">
+          <Truck className="w-4.5 h-4.5" />
         </div>
-        <div className="w-full h-2 bg-[#D8D2C2] rounded-full overflow-hidden">
-          <div
-            className="h-full bg-[#413C23] transition-all duration-500 rounded-full"
-            style={{ width: `${progressPercent}%` }}
-          />
+        <div>
+          <span className="block text-sm font-semibold text-[#413C23]">Free Delivery on All Orders</span>
+          <span className="text-[11px] text-[#8F896D]">Express insured courier • 2–5 business days across India</span>
         </div>
       </div>
 
@@ -238,10 +222,8 @@ export const CartPage: React.FC<CartPageProps> = ({
             </div>
 
             <div className="flex justify-between items-center">
-              <span className="text-[#8F896D] uppercase tracking-wider font-semibold">Insured Delivery</span>
-              <span className="font-semibold text-[#413C23]">
-                {remainingForFreeShipping === 0 ? 'Complimentary' : 'Calculated at checkout'}
-              </span>
+              <span className="text-[#8F896D] uppercase tracking-wider font-semibold">Delivery</span>
+              <span className="font-semibold text-[#413C23]">Free</span>
             </div>
 
             <div className="border-t border-[#D8D2C2] pt-4 flex justify-between items-baseline">
@@ -256,7 +238,7 @@ export const CartPage: React.FC<CartPageProps> = ({
             id="cart-page-checkout-btn"
             onClick={handleCheckout}
             disabled={isRedirecting}
-            className="w-full py-4 bg-[#413C23] hover:bg-[#8F896D] text-[#FAF8F5] text-xs sm:text-sm uppercase tracking-[0.2em] font-semibold rounded-xs transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer active:scale-98 disabled:opacity-60"
+            className="w-full py-4 bg-black hover:bg-neutral-800 text-white text-xs sm:text-sm uppercase tracking-[0.2em] font-semibold rounded-xs transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer active:scale-98 disabled:opacity-60"
           >
             {isRedirecting ? (
               <span>Redirecting to Checkout...</span>

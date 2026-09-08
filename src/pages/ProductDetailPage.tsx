@@ -484,15 +484,15 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                   title={isGoldAvailable ? 'Select Gold Tone Brass' : 'Unavailable in Silver/Gold Tone Brass'}
                   className={`px-5 py-2.5 rounded-xs border text-xs font-semibold transition-all ${
                     selectedFinish === 'Gold Tone Brass'
-                      ? 'border-[#413C23] bg-[#413C23] text-[#FAF8F5] shadow-xs cursor-default'
+                      ? 'border-black bg-black text-white shadow-xs cursor-default'
                       : isGoldAvailable
-                      ? 'border-[#D8D2C2] text-[#413C23] bg-[#F2EFDB] hover:border-[#413C23] cursor-pointer'
-                      : 'border-dashed border-[#D8D2C2] text-[#8F896D]/50 bg-[#E7E4D5]/40 cursor-not-allowed opacity-50'
+                      ? 'border-[#D8D2C2] text-black bg-[#F2EFDB] hover:border-black cursor-pointer'
+                      : 'border-dashed border-[#D8D2C2] text-neutral-400 bg-[#E7E4D5]/40 cursor-not-allowed opacity-50'
                   }`}
                 >
                   <span>Gold Tone Brass</span>
                   {!isGoldAvailable && (
-                    <span className="ml-1.5 text-[10px] uppercase font-normal tracking-wide text-[#8F896D]/70">
+                    <span className="ml-1.5 text-[10px] uppercase font-normal tracking-wide text-neutral-500">
                       (N/A)
                     </span>
                   )}
@@ -506,15 +506,15 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                   title={isSilverAvailable ? 'Select Silver Tone Brass' : 'Unavailable in Silver Tone Brass'}
                   className={`px-5 py-2.5 rounded-xs border text-xs font-semibold transition-all ${
                     selectedFinish === 'Silver Tone Brass'
-                      ? 'border-[#413C23] bg-[#413C23] text-[#FAF8F5] shadow-xs cursor-default'
+                      ? 'border-black bg-black text-white shadow-xs cursor-default'
                       : isSilverAvailable
-                      ? 'border-[#D8D2C2] text-[#413C23] bg-[#F2EFDB] hover:border-[#413C23] cursor-pointer'
-                      : 'border-dashed border-[#D8D2C2] text-[#8F896D]/50 bg-[#E7E4D5]/40 cursor-not-allowed opacity-50'
+                      ? 'border-[#D8D2C2] text-black bg-[#F2EFDB] hover:border-black cursor-pointer'
+                      : 'border-dashed border-[#D8D2C2] text-neutral-400 bg-[#E7E4D5]/40 cursor-not-allowed opacity-50'
                   }`}
                 >
                   <span>Silver Tone Brass</span>
                   {!isSilverAvailable && (
-                    <span className="ml-1.5 text-[10px] uppercase font-normal tracking-wide text-[#8F896D]/70">
+                    <span className="ml-1.5 text-[10px] uppercase font-normal tracking-wide text-neutral-500">
                       (N/A)
                     </span>
                   )}
@@ -532,7 +532,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                   id="pdp-buy-now-cta"
                   onClick={handleBuyNow}
                   disabled={isBuyingNow}
-                  className="w-full sm:w-auto sm:min-w-[190px] py-4 px-8 bg-[#413C23] hover:bg-[#8F896D] disabled:opacity-60 disabled:cursor-wait text-[#FAF8F5] text-xs uppercase tracking-[0.2em] font-semibold rounded-xs transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer active:scale-98"
+                  className="w-full sm:w-auto sm:min-w-[190px] py-4 px-8 bg-black hover:bg-neutral-800 disabled:opacity-60 disabled:cursor-wait text-white text-xs uppercase tracking-[0.2em] font-semibold rounded-xs transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer active:scale-98"
                 >
                   {isBuyingNow ? 'Taking you to checkout…' : 'Buy Now'}
                 </button>
@@ -540,7 +540,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                 <button
                   id="pdp-add-to-bag-cta"
                   onClick={handleAddToCart}
-                  className="w-full sm:w-auto sm:min-w-[190px] py-4 px-8 bg-transparent border border-[#413C23] hover:bg-[#413C23] hover:text-[#FAF8F5] text-[#413C23] text-xs uppercase tracking-[0.2em] font-semibold rounded-xs transition-all flex items-center justify-center cursor-pointer active:scale-98"
+                  className="w-full sm:w-auto sm:min-w-[190px] py-4 px-8 bg-transparent border border-black hover:bg-black hover:text-white text-black text-xs uppercase tracking-[0.2em] font-semibold rounded-xs transition-all flex items-center justify-center cursor-pointer active:scale-98"
                 >
                   Add to Bag
                 </button>
@@ -636,7 +636,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                 </button>
                 {openAccordion === 'care' && (
                   <div className="pt-3 text-xs text-[#413C23]/80 leading-relaxed font-normal space-y-1 w-full">
-                    <p>• Store in your provided AVIRENA signature keepsake pouch when not in use.</p>
+                    <p>• Store in a cool, dry place away from direct sunlight when not in use.</p>
                     <p>• Gently buff with a soft microfiber cloth to preserve its mirror polish.</p>
                     <p>• Avoid direct contact with harsh chlorine bleach or acetone.</p>
                   </div>
@@ -762,13 +762,13 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                   onClick={() => setActiveTab('overview')}
                   className={`pb-3 transition-colors cursor-pointer relative uppercase tracking-wider ${
                     activeTab === 'overview'
-                      ? 'text-[#413C23]'
-                      : 'text-[#8F896D] hover:text-[#413C23]'
+                      ? 'text-black font-bold'
+                      : 'text-neutral-500 hover:text-black'
                   }`}
                 >
                   <span>Product Overview</span>
                   {activeTab === 'overview' && (
-                    <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#413C23]" />
+                    <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-black" />
                   )}
                 </button>
 
@@ -776,13 +776,13 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                   onClick={() => setActiveTab('packaging')}
                   className={`pb-3 transition-colors cursor-pointer relative uppercase tracking-wider ${
                     activeTab === 'packaging'
-                      ? 'text-[#413C23]'
-                      : 'text-[#8F896D] hover:text-[#413C23]'
+                      ? 'text-black font-bold'
+                      : 'text-neutral-500 hover:text-black'
                   }`}
                 >
                   <span>Packaging</span>
                   {activeTab === 'packaging' && (
-                    <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#413C23]" />
+                    <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-black" />
                   )}
                 </button>
 
@@ -790,13 +790,13 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                   onClick={() => setActiveTab('shipping')}
                   className={`pb-3 transition-colors cursor-pointer relative uppercase tracking-wider ${
                     activeTab === 'shipping'
-                      ? 'text-[#413C23]'
-                      : 'text-[#8F896D] hover:text-[#413C23]'
+                      ? 'text-black font-bold'
+                      : 'text-neutral-500 hover:text-black'
                   }`}
                 >
                   <span>Shipping &amp; Returns</span>
                   {activeTab === 'shipping' && (
-                    <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#413C23]" />
+                    <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-black" />
                   )}
                 </button>
               </div>
@@ -811,13 +811,13 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
 
                 {activeTab === 'packaging' && (
                   <p>
-                    Every AVIRENA piece arrives nestled in our signature travel keepsake pouch, accompanied by a luxury presentation box, anti-tarnish polishing cloth, and certificate of authenticity. Crafted sustainably using recycled fiber packaging.
+                    Every AVIRENA piece arrives in a luxury presentation box, accompanied by an anti-tarnish polishing cloth and certificate of authenticity. Crafted sustainably using recycled fiber packaging.
                   </p>
                 )}
 
                 {activeTab === 'shipping' && (
                   <p>
-                    Complimentary express courier shipping with full transit insurance across all orders in India. Dispatched within 24–48 hours with real-time tracking updates sent directly via WhatsApp and email. Easy 30-day doorstep returns and exchanges.
+                    Free express courier delivery with full transit insurance on all orders across India. Dispatched within 24–48 hours with real-time tracking updates sent directly via WhatsApp and email. Easy 7-day returns and exchanges.
                   </p>
                 )}
               </div>

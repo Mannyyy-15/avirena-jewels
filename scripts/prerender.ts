@@ -266,8 +266,7 @@ function buildProductTitle(rawTitle: string): string {
  * Shopify copy was authored before a repricing and several entries advertised
  * a price below what the product now costs.
  *
- * The free-shipping threshold (₹1,999) is a fixed policy figure, not a product
- * price, so it is preserved.
+ * Any price figures that are not the product price itself are stripped.
  */
 function buildProductMetaDescription(
   seoDescription: string | undefined,
@@ -291,7 +290,7 @@ function buildProductMetaDescription(
 
 function buildProductDescription(rawDescription: string): string {
   const body = rawDescription.replace(/\s+/g, ' ').trim();
-  const suffix = ' Anti-tarnish brass. 14-day exchanges.';
+  const suffix = ' Anti-tarnish brass. 7-day exchanges.';
 
   if (body.length + suffix.length <= MAX_DESCRIPTION_LENGTH) {
     return `${body}${suffix}`;
@@ -755,7 +754,7 @@ async function main() {
         <section class="categories-section">
           <h2>What we make, stated plainly</h2>
           <p>This is fashion jewellery. It is not solid gold, not gold vermeil and not sterling silver, and it is not hallmarked to any precious-metal standard. Gold-tone and silver-tone describe the colour of the finish, not the metal underneath. Where a piece has pearls they are cultured freshwater pearls, and where it has a stone it is faceted glass rather than a diamond. We would rather tell you that up front than have you find out after it arrives.</p>
-          <p>Free delivery on orders over ₹1,999 and 14-day exchanges on unworn pieces across India.</p>
+          <p>Free delivery on all orders and 7-day exchanges on unworn pieces across India.</p>
         </section>
 
         <section class="categories-section">
@@ -860,7 +859,7 @@ async function main() {
     title: 'Anti-Tarnish Jewellery Online India | AVIRENA',
     description: `Shop anti-tarnish gold-tone brass jewellery for daily wear. Nickel-free, skin-safe${
       lowestPrice ? `, from ₹${lowestPrice}` : ''
-    }. Free delivery over ₹1,999 and 14-day exchanges across India.`,
+    }. Free delivery on all orders and 7-day exchanges across India.`,
     canonical: `${SITE_URL}/shop`,
     ogImage: shopifyProducts[0]?.images?.edges?.[0]?.node?.url || `${SITE_URL}/logo.png`,
     ogType: 'website',
@@ -1117,7 +1116,7 @@ async function main() {
         <p>Brass has the density and edge definition that make a sculptural shape read properly. Thin, hollow alternatives lose the line. Brass holds it. The protective coating is what keeps the finish stable through daily wear, and it is a finish, so it wears with time and use rather than lasting forever. Careful habits extend it meaningfully; nothing makes it permanent, and we would rather tell you that than promise otherwise.</p>
 
         <h2>Who we are</h2>
-        <p>Avirena Jewels is a sole proprietorship operating online from Mumbai. We do not have a walk-in store. Orders ship tracked across India, and unworn pieces can be exchanged within 14 days in their original packaging. If something is wrong with an order, one person reads that email and replies.</p>
+        <p>Avirena Jewels is a sole proprietorship operating online from Mumbai. We do not have a walk-in store. Orders ship tracked across India with free delivery, and unworn pieces can be exchanged within 7 days in their original packaging. If something is wrong with an order, one person reads that email and replies.</p>
 
         <h2>Honest answers, not marketing</h2>
         <p>We publish guides on the questions people actually ask before buying brass jewellery, including whether it can turn skin green. It can, for some people, in some conditions, and our guide explains the chemistry and how to avoid it rather than dodging the question. You can read those in our jewellery guides.</p>
@@ -1179,7 +1178,7 @@ async function main() {
         </ul>
 
         <h2>Returns and exchanges</h2>
-        <p>Unworn pieces can be exchanged within 14 days of delivery in their original packaging. Email us with your order number and the reason, and we will arrange a courier pickup from your address. Full terms are on our <a href="/policies">policies page</a>.</p>
+        <p>Unworn pieces can be exchanged within 7 days of delivery in their original packaging. Email us with your order number and the reason, and we will arrange a courier pickup from your address. Full terms are on our <a href="/policies">policies page</a>.</p>
       </main>
     `,
   });
@@ -1303,9 +1302,9 @@ async function main() {
   // 2. Return & Refund Policy (/refund-policy)
   routes.push({
     path: 'refund-policy',
-    title: 'Return and Refund Policy (14-Day Exchanges) | AVIRENA Jewels',
+    title: 'Return and Refund Policy (7-Day Exchanges) | AVIRENA Jewels',
     description:
-      'Avirena Jewels 14-day return and exchange policy. Easy doorstep courier pickup across India, zero-fee transit defect replacements, and prompt refunds.',
+      'Avirena Jewels 7-day return and exchange policy. Easy doorstep courier pickup across India, zero-fee transit defect replacements, and prompt refunds.',
     canonical: `${SITE_URL}/refund-policy`,
     ogImage: `${SITE_URL}/logo.png`,
     ogType: 'website',
@@ -1326,12 +1325,12 @@ async function main() {
           <a href="/">Home</a> / <span>Return &amp; Refund Policy</span>
         </nav>
         <h1>Return and Refund Policy</h1>
-        <p>At Avirena Jewels, we take immense pride in the craftsmanship and finish quality of our pieces. If you are not completely enamored with your selection, we offer a straightforward <strong>14-Day Return &amp; Exchange window</strong> from the date of package delivery.</p>
+        <p>At Avirena Jewels, we take immense pride in the craftsmanship and finish quality of our pieces. If you are not completely enamored with your selection, we offer a straightforward <strong>7-Day Return &amp; Exchange window</strong> from the date of package delivery.</p>
 
         <h2>1. Eligibility for Returns &amp; Exchanges</h2>
         <ul>
           <li>Items must be in their original, unworn, and unblemished condition.</li>
-          <li>The piece must be returned with its original pouch and packaging.</li>
+          <li>The piece must be returned with its original packaging.</li>
           <li>Custom bespoke commissions, personalized engravings, and gift cards are final sale unless a structural defect is verified.</li>
         </ul>
 
@@ -1367,7 +1366,7 @@ async function main() {
     path: 'shipping-policy',
     title: 'Shipping Policy & Express Delivery | AVIRENA Jewels',
     description:
-      'Official shipping policy of Avirena Jewels. Complimentary insured express delivery on orders over ₹1,999, 1-2 day dispatch, and 2-4 day doorstep arrival across India.',
+      'Official shipping policy of Avirena Jewels. Free insured express delivery on all orders, 1-2 day dispatch, and 2-4 day doorstep arrival across India.',
     canonical: `${SITE_URL}/shipping-policy`,
     ogImage: `${SITE_URL}/logo.png`,
     ogType: 'website',
@@ -1388,7 +1387,7 @@ async function main() {
           <a href="/">Home</a> / <span>Shipping Policy</span>
         </nav>
         <h1>Shipping &amp; Transit Policy</h1>
-        <p>Every Avirena order is carefully packaged in a protective keepsake travel pouch and presentation box for transit.</p>
+        <p>Every Avirena order is carefully packaged in a presentation box for safe transit.</p>
 
         <h2>1. Order Processing Timelines</h2>
         <ul>
@@ -1399,7 +1398,7 @@ async function main() {
         <h2>2. Domestic Delivery (India)</h2>
         <ul>
           <li><strong>Timeline:</strong> 2 to 4 business days via Express Tracked Courier.</li>
-          <li><strong>Shipping Cost:</strong> Complimentary Express Insured Delivery on all orders above ₹1,999. A flat shipping fee of ₹99 applies to orders below this threshold.</li>
+          <li><strong>Shipping Cost:</strong> Free Express Insured Delivery on all orders. No minimum order value required.</li>
           <li>Prepaid options and verified COD are supported nationwide.</li>
         </ul>
 
@@ -1547,7 +1546,7 @@ async function main() {
     path: 'policies',
     title: 'Policies, Shipping & Returns | AVIRENA',
     description:
-      'Official client policies of Avirena Jewels covering tracked courier delivery, 14-day hassle-free returns, material assurance, and customer privacy.',
+      'Official client policies of Avirena Jewels covering free delivery, 7-day hassle-free returns, material assurance, and customer privacy.',
     canonical: `${SITE_URL}/policies`,
     ogImage: `${SITE_URL}/logo.png`,
     ogType: 'website',
@@ -1558,7 +1557,7 @@ async function main() {
         <p>The terms below are the ones we hold ourselves to. Dedicated policy documents are accessible below:</p>
 
         <ul>
-          <li><a href="/refund-policy">Return &amp; Refund Policy (14-Day Exchanges)</a></li>
+          <li><a href="/refund-policy">Return &amp; Refund Policy (7-Day Exchanges)</a></li>
           <li><a href="/shipping-policy">Shipping Policy &amp; Express Delivery</a></li>
           <li><a href="/privacy-policy">Privacy Policy &amp; Data Protection</a></li>
           <li><a href="/terms-of-service">Terms of Service</a></li>
@@ -1566,10 +1565,10 @@ async function main() {
         </ul>
 
         <h2>Returns and exchanges summary</h2>
-        <p>Unworn pieces can be returned or exchanged within <strong>14 days of delivery</strong>, in their original condition and packaging. Email <a href="mailto:avirenajewels@gmail.com">avirenajewels@gmail.com</a> with your order number and the reason, and we will arrange a courier pickup from your address.</p>
+        <p>Unworn pieces can be returned or exchanged within <strong>7 days of delivery</strong>, in their original condition and packaging. Email <a href="mailto:avirenajewels@gmail.com">avirenajewels@gmail.com</a> with your order number and the reason, and we will arrange a courier pickup from your address.</p>
 
         <h2>Shipping summary</h2>
-        <p>In-stock pieces are dispatched within 1-2 business days, Monday to Saturday excluding public holidays. Delivery within India typically takes 2-4 business days. Shipping is free on orders above ₹1,999; a flat ₹99 applies below that.</p>
+        <p>In-stock pieces are dispatched within 1-2 business days, Monday to Saturday excluding public holidays. Delivery within India typically takes 2-4 business days. Free delivery on all orders — no minimum required.</p>
 
         <h2>Privacy summary</h2>
         <p>We collect only what is needed to fulfil an order. Payments are processed by PCI-DSS certified gateways and we never store card numbers or CVV codes.</p>
@@ -1826,7 +1825,7 @@ async function main() {
             '@type': 'MerchantReturnPolicy',
             applicableCountry: ['IN', 'US', 'GB', 'EU'],
             returnPolicyCategory: 'https://schema.org/MerchantReturnFiniteReturnWindow',
-            merchantReturnDays: 14,
+            merchantReturnDays: 7,
             returnMethod: 'https://schema.org/ReturnByMail',
             returnFees: 'https://schema.org/FreeReturn',
           },

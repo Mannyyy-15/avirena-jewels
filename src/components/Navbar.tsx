@@ -20,10 +20,10 @@ interface NavbarProps {
 }
 
 const ANNOUNCEMENTS = [
-  'COMPLIMENTARY EXPRESS SHIPPING ON ORDERS OVER ₹1,999',
+  'FREE DELIVERY ON ALL ORDERS ACROSS INDIA',
   'PREMIUM ANTI-TARNISH BRASS & ORGANIC FRESHWATER PEARLS',
   'HOMEGROWN HANDCRAFTED DAILYWEAR JEWELS',
-  'COMPLIMENTARY KEEPSAKE TRAVEL POUCH WITH EVERY ORDER',
+  '7-DAY EASY RETURNS & EXCHANGES',
   'ZERO ALLERGY SURGICAL STEEL POSTS & HYPOALLERGENIC FINISHES',
   'HANDCRAFTED BY SKILLED ARTISANS ACROSS INDIA',
 ];
@@ -109,25 +109,25 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   return (
     <header className="sticky top-0 z-40 bg-[#E7E4D5]/98 backdrop-blur-md border-b border-[#D8D2C2] transition-all duration-200 w-full">
-      <div className="w-full bg-[#413C23] text-[#FAF8F5] py-2 sm:py-2.5 overflow-hidden border-b border-[#35311B] marquee-pause select-none">
+      <div className="w-full bg-black text-white py-2 sm:py-2.5 overflow-hidden border-b border-black marquee-pause select-none">
         <div className="flex animate-infinite-marquee">
           <div className="flex items-center shrink-0">
             {ANNOUNCEMENTS.map((text, idx) => (
               <div key={`ann-track1-${idx}`} className="flex items-center shrink-0 px-6 sm:px-10">
-                <span className="text-[10px] sm:text-[11px] font-medium tracking-[0.22em] uppercase text-[#F2EFDB]/95 whitespace-nowrap">
+                <span className="text-[10px] sm:text-[11px] font-semibold tracking-[0.22em] uppercase text-white whitespace-nowrap">
                   {text}
                 </span>
-                <span className="ml-6 sm:ml-10 text-[#8F896D] text-xs select-none">✦</span>
+                <span className="ml-6 sm:ml-10 text-white/60 text-xs select-none">✦</span>
               </div>
             ))}
           </div>
           <div className="flex items-center shrink-0" aria-hidden="true">
             {ANNOUNCEMENTS.map((text, idx) => (
               <div key={`ann-track2-${idx}`} className="flex items-center shrink-0 px-6 sm:px-10">
-                <span className="text-[10px] sm:text-[11px] font-medium tracking-[0.22em] uppercase text-[#F2EFDB]/95 whitespace-nowrap">
+                <span className="text-[10px] sm:text-[11px] font-semibold tracking-[0.22em] uppercase text-white whitespace-nowrap">
                   {text}
                 </span>
-                <span className="ml-6 sm:ml-10 text-[#8F896D] text-xs select-none">✦</span>
+                <span className="ml-6 sm:ml-10 text-white/60 text-xs select-none">✦</span>
               </div>
             ))}
           </div>
@@ -368,7 +368,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           <button
             id="nav-cart-bag-btn"
             onClick={openCartDrawer}
-            className="relative p-2 bg-[#413C23] text-[#E7E4D5] rounded-xs hover:bg-[#8F896D] transition-colors focus:outline-none flex items-center gap-2 cursor-pointer shadow-xs"
+            className="relative p-2 bg-black text-white rounded-xs hover:bg-neutral-800 transition-colors focus:outline-none flex items-center gap-2 cursor-pointer shadow-xs"
             aria-label="Shopping Bag"
             title="View Shopping Bag"
           >

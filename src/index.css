@@ -30,7 +30,7 @@
   body {
     font-family: 'Plus Jakarta Sans', 'Montserrat', -apple-system, BlinkMacSystemFont, sans-serif;
     background-color: #E7E4D5;
-    color: #413C23;
+    color: #000000;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     font-weight: 400;
@@ -39,8 +39,8 @@
   }
 
   ::selection {
-    background-color: rgba(143, 137, 109, 0.35);
-    color: #413C23;
+    background-color: rgba(0, 0, 0, 0.15);
+    color: #000000;
   }
 }
 
@@ -241,5 +241,59 @@ html.lenis, html.lenis body {
   background: radial-gradient(circle at 50% 0%, var(--bg-start, #bdccff) 0%, var(--bg-end, #ffffff) 75%);
 }
 
+/* =========================================================================
+   HIGH-CONTRAST ACCESSIBILITY OVERRIDES (USER REQUEST)
+   - "the text which has the light green or the other green color, use proper black"
+   - "and text which has white or cream etc, do proper white"
+   ========================================================================= */
 
+/* 1. All dark olive (#413C23) and sage/light-green (#8F896D) text -> Proper Black */
+.text-\[\#413C23\],
+[class*="text-[#413C23]"] {
+  color: #000000;
+}
+.text-\[\#413C23\]\/95, [class*="text-[#413C23]/95"] { color: rgba(0, 0, 0, 0.95); }
+.text-\[\#413C23\]\/90, [class*="text-[#413C23]/90"] { color: rgba(0, 0, 0, 0.90); }
+.text-\[\#413C23\]\/85, [class*="text-[#413C23]/85"] { color: rgba(0, 0, 0, 0.85); }
+.text-\[\#413C23\]\/80, [class*="text-[#413C23]/80"] { color: rgba(0, 0, 0, 0.80); }
+.text-\[\#413C23\]\/75, [class*="text-[#413C23]/75"] { color: rgba(0, 0, 0, 0.75); }
+.text-\[\#413C23\]\/70, [class*="text-[#413C23]/70"] { color: rgba(0, 0, 0, 0.70); }
+.text-\[\#413C23\]\/60, [class*="text-[#413C23]/60"] { color: rgba(0, 0, 0, 0.60); }
+.text-\[\#413C23\]\/50, [class*="text-[#413C23]/50"] { color: rgba(0, 0, 0, 0.50); }
+.text-\[\#413C23\]\/45, [class*="text-[#413C23]/45"] { color: rgba(0, 0, 0, 0.45); }
+.text-\[\#413C23\]\/40, [class*="text-[#413C23]/40"] { color: rgba(0, 0, 0, 0.40); }
 
+.text-\[\#8F896D\],
+[class*="text-[#8F896D]"] {
+  color: #000000;
+}
+.text-\[\#8F896D\]\/90, [class*="text-[#8F896D]/90"] { color: rgba(0, 0, 0, 0.90); }
+.text-\[\#8F896D\]\/80, [class*="text-[#8F896D]/80"] { color: rgba(0, 0, 0, 0.80); }
+.text-\[\#8F896D\]\/70, [class*="text-[#8F896D]/70"] { color: rgba(0, 0, 0, 0.70); }
+
+.text-\[\#878266\],
+[class*="text-[#878266]"] {
+  color: #000000;
+}
+.text-\[\#5C5638\],
+[class*="text-[#5C5638]"] {
+  color: #000000;
+}
+
+/* 2. All cream/ivory text (#E7E4D5, #F2EFDB, #FAF8F5) on dark surfaces -> Proper Pure White */
+.text-\[\#E7E4D5\],
+[class*="text-[#E7E4D5]"],
+.text-\[\#F2EFDB\],
+[class*="text-[#F2EFDB]"],
+.text-\[\#FAF8F5\],
+[class*="text-[#FAF8F5]"] {
+  color: #FFFFFF;
+}
+.text-\[\#E7E4D5\]\/95, [class*="text-[#E7E4D5]/95"] { color: rgba(255, 255, 255, 0.95); }
+.text-\[\#E7E4D5\]\/90, [class*="text-[#E7E4D5]/90"] { color: rgba(255, 255, 255, 0.90); }
+.text-\[\#E7E4D5\]\/85, [class*="text-[#E7E4D5]/85"] { color: rgba(255, 255, 255, 0.85); }
+.text-\[\#E7E4D5\]\/80, [class*="text-[#E7E4D5]/80"] { color: rgba(255, 255, 255, 0.80); }
+.text-\[\#E7E4D5\]\/75, [class*="text-[#E7E4D5]/75"] { color: rgba(255, 255, 255, 0.75); }
+.text-\[\#E7E4D5\]\/60, [class*="text-[#E7E4D5]/60"] { color: rgba(255, 255, 255, 0.75); }
+.text-\[\#F2EFDB\]\/95, [class*="text-[#F2EFDB]/95"] { color: rgba(255, 255, 255, 0.95); }
+.text-\[\#F2EFDB\]\/90, [class*="text-[#F2EFDB]/90"] { color: rgba(255, 255, 255, 0.90); }

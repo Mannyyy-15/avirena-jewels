@@ -100,8 +100,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             onClick={handleQuickAdd}
             className={`w-full py-2.5 px-3 text-[10px] sm:text-[11px] uppercase tracking-widest font-semibold rounded-xs flex items-center justify-center gap-2 transition-all duration-200 shadow-md cursor-pointer ${
               addedAnimation
-                ? 'bg-[#8F896D] text-[#FAF8F5]'
-                : 'bg-[#413C23] hover:bg-[#8F896D] text-[#E7E4D5] active:scale-98'
+                ? 'bg-black text-white'
+                : 'bg-black hover:bg-neutral-800 text-white active:scale-98'
             }`}
           >
             {addedAnimation ? (
@@ -122,12 +122,12 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       {/* Product Details - Prominent Price & Clean Typography */}
       <div className="mt-3 flex flex-col space-y-1">
         <div className="flex items-center justify-between text-[11px]">
-          <span className="text-[#8F896D] uppercase tracking-[0.18em] font-semibold text-[10px]">
+          <span className="text-black uppercase tracking-[0.18em] font-semibold text-[10px]">
             {product.metal}
           </span>
         </div>
 
-        <h3 className="font-serif-display text-base sm:text-lg font-normal text-[#413C23] group-hover:text-[#8F896D] transition-colors leading-snug truncate">
+        <h3 className="font-serif-display text-base sm:text-lg font-normal text-black group-hover:text-neutral-700 transition-colors leading-snug truncate">
           {product.name}
         </h3>
 
@@ -137,7 +137,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           const discount = getDiscountPercentage(product.price, comparePrice);
           return (
             <div className="flex items-baseline gap-2 pt-0.5 flex-wrap">
-              <span className="text-base sm:text-lg font-bold text-[#413C23] tracking-tight">
+              <span className="text-base sm:text-lg font-bold text-black tracking-tight">
                 {formatPrice(product.price, currency)}
               </span>
               {comparePrice > product.price && (

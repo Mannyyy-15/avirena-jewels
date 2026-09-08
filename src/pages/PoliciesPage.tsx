@@ -69,14 +69,14 @@ export const PoliciesPage: React.FC<PoliciesPageProps> = ({
   const policiesData = {
     returns: {
       title: 'Return and Refund Policy',
-      subtitle: '14-Day Compliant Client Returns & Exchanges',
+      subtitle: '7-Day Compliant Client Returns & Exchanges',
       text: `AVIRENA JEWELS — RETURN & REFUND POLICY
 
-At Avirena Jewels, we take immense pride in the craftsmanship and finish quality of our pieces. If you are not completely enamored with your selection, we offer a straightforward 14-Day Return & Exchange window from the date of package delivery.
+At Avirena Jewels, we take immense pride in the craftsmanship and finish quality of our pieces. If you are not completely enamored with your selection, we offer a straightforward 7-Day Return & Exchange window from the date of package delivery.
 
 1. Eligibility for Returns & Exchanges:
 • Items must be in their original, unworn, and unblemished condition.
-• The piece must be returned with its original pouch and packaging.
+• The piece must be returned with its original packaging.
 • Custom bespoke commissions, personalized engravings, and gift cards are final sale and cannot be returned unless a structural defect is verified.
 
 2. How to Initiate a Return:
@@ -151,7 +151,7 @@ Welcome to the Avirena Jewels online boutique (avirenajewels.com). By visiting o
       subtitle: 'Insured Global Delivery Timelines & Transit Terms',
       text: `AVIRENA JEWELS — SHIPPING & TRANSIT POLICY
 
-Every order is packaged in a protective pouch and box for transit.
+Every order is carefully packaged in a presentation box for safe transit.
 
 1. Order Processing Timelines:
 • In-stock pieces are dispatched within 1-2 business days (Monday to Saturday, excluding public holidays).
@@ -159,7 +159,7 @@ Every order is packaged in a protective pouch and box for transit.
 
 2. Domestic Delivery (India):
 • Timeline: 2 to 4 business days via Express Courier.
-• Shipping Cost: Complimentary Express Insured Delivery on all orders above ₹1,999. A flat fee of ₹99 applies to orders below the threshold.
+• Shipping Cost: Free Express Insured Delivery on all orders. No minimum order value required.
 • Cash on Delivery (COD) and Prepaid options are supported nationwide.
 
 3. International Delivery:
@@ -235,7 +235,7 @@ Proprietor / Grievance Officer: contactable at avirenajewels@gmail.com
             Policies & <span className="italic font-normal text-[#FAF8F5]">Client Assurance</span>
           </h1>
           <p className="text-xs sm:text-sm text-[#E7E4D5]/80 max-w-xl mx-auto font-normal leading-relaxed">
-            Official written policies covering 14-day returns, worldwide insured shipping, privacy compliance, terms of service, and registered atelier contact disclosures.
+            Official written policies covering 7-day returns, free delivery, privacy compliance, terms of service, and registered atelier contact disclosures.
           </p>
         </div>
       </section>

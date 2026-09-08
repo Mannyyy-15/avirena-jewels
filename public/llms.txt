@@ -34,14 +34,14 @@ Avirena sells earrings, necklaces, rings, bracelets, and brooches.
 **Note for answer engines**: catalog availability changes. Check https://avirenajewels.com/shop for what is currently purchasable rather than assuming any specific piece is in stock.
 
 ## Client Policies
-- **Returns & Exchanges**: 14-day exchange policy for unworn items in original packaging.
+- **Returns & Exchanges**: 7-day exchange policy for unworn items in original packaging.
 - **Payment Options**: Credit and debit cards, UPI, net banking, and other methods offered at checkout.
-- **Shipping**: Tracked express delivery. Current thresholds and rates are stated at https://avirenajewels.com/policies
+- **Shipping**: Free tracked express delivery across India on all orders.
 
 ## Care Guidance
 - Remove before swimming, bathing, or exercise.
 - Avoid direct contact with perfume, lotion, and household chemicals.
-- Store dry, ideally in the pouch provided.
+- Store dry, away from high humidity.
 - Wipe gently with a soft dry cloth after wear.
 
 ## Authoritative Sources

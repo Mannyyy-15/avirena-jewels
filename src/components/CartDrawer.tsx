@@ -7,7 +7,7 @@ import {
   ArrowRight,
   ShoppingBag,
   ShieldCheck,
-  Check,
+  Truck,
   Lock,
 } from 'lucide-react';
 import { CartItem, Currency, Product } from '../types';
@@ -26,7 +26,7 @@ interface CartDrawerProps {
   onViewCartPage?: () => void;
 }
 
-const FREE_SHIPPING_THRESHOLD_INR = 1999;
+
 
 export const CartDrawer: React.FC<CartDrawerProps> = ({
   isOpen,
@@ -46,11 +46,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
 
   const subtotal = items.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
   const totalCount = items.reduce((total, i) => total + i.quantity, 0);
-  
-  // Calculate INR equivalent for free shipping progress
-  const subtotalINR = subtotal < 500 ? Math.round(subtotal * 90) : Math.round(subtotal);
-  const progressPercent = Math.min(100, (subtotalINR / FREE_SHIPPING_THRESHOLD_INR) * 100);
-  const remainingForFreeShipping = Math.max(0, FREE_SHIPPING_THRESHOLD_INR - subtotalINR);
+
 
   const handleCheckoutClick = async () => {
     if (isConfigured && items.length > 0) {
@@ -106,29 +102,10 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
               </button>
             </div>
 
-            {/* Free Shipping Progress Indicator */}
-            <div className="pt-1 space-y-1.5">
-              <div className="flex items-center justify-between text-xs text-[#413C23] font-semibold">
-                {remainingForFreeShipping === 0 ? (
-                  <span className="flex items-center gap-1.5 text-[#413C23]">
-                    <Check className="w-3.5 h-3.5 stroke-[2.5]" />
-                    <span>Complimentary Express Shipping Unlocked!</span>
-                  </span>
-                ) : (
-                  <span>
-                    Add ₹{remainingForFreeShipping.toLocaleString('en-IN')} more for Free Shipping
-                  </span>
-                )}
-                <span className="text-[11px] font-mono text-[#8F896D] font-bold">
-                  {Math.round(progressPercent)}%
-                </span>
-              </div>
-              <div className="w-full h-1.5 bg-[#D8D2C2] rounded-full overflow-hidden">
-                <div
-                  className="h-full bg-[#413C23] transition-all duration-500 rounded-full"
-                  style={{ width: `${progressPercent}%` }}
-                />
-              </div>
+            {/* Free Delivery Badge */}
+            <div className="pt-1 flex items-center gap-1.5 text-xs text-[#413C23] font-semibold">
+              <Truck className="w-3.5 h-3.5 stroke-[2]" />
+              <span>Free Delivery on All Orders</span>
             </div>
           </div>
 
@@ -251,10 +228,8 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                   </span>
                 </div>
                 <div className="flex justify-between text-xs text-[#8F896D]">
-                  <span>Shipping &amp; Taxes</span>
-                  <span className="font-medium text-[#413C23]">
-                    {remainingForFreeShipping === 0 ? 'Free Express Shipping' : 'Calculated at checkout'}
-                  </span>
+                  <span>Shipping</span>
+                  <span className="font-medium text-[#413C23]">Free Delivery</span>
                 </div>
               </div>
 
@@ -263,7 +238,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                 id="cart-drawer-checkout-btn"
                 onClick={handleCheckoutClick}
                 disabled={isRedirectingToShopify}
-                className="w-full py-4 bg-[#413C23] hover:bg-[#8F896D] text-[#FAF8F5] text-xs sm:text-sm uppercase tracking-[0.2em] font-semibold rounded-xs transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer active:scale-98 disabled:opacity-60"
+                className="w-full py-4 bg-black hover:bg-neutral-800 text-white text-xs sm:text-sm uppercase tracking-[0.2em] font-semibold rounded-xs transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer active:scale-98 disabled:opacity-60"
               >
                 {isRedirectingToShopify ? (
                   <span>Redirecting to Checkout...</span>

@@ -53,12 +53,12 @@ export const CatalogItemCard: React.FC<CatalogItemCardProps> = ({
         {/* Badges */}
         <div className="absolute top-2.5 left-2.5 flex flex-col gap-1 z-10">
           {product.isBestseller && (
-            <span className="bg-[#413C23] text-[#E7E4D5] text-[9px] tracking-[0.16em] uppercase font-bold px-2 py-0.5 rounded-xs shadow-xs">
+            <span className="bg-black text-white text-[9px] tracking-[0.16em] uppercase font-bold px-2 py-0.5 rounded-xs shadow-xs">
               Bestseller
             </span>
           )}
           {product.isSculptural && !product.isBestseller && (
-            <span className="bg-[#E7E4D5]/95 text-[#413C23] text-[9px] tracking-[0.16em] uppercase font-semibold px-2 py-0.5 border border-[#D8D2C2] rounded-xs shadow-xs">
+            <span className="bg-[#E7E4D5]/95 text-black text-[9px] tracking-[0.16em] uppercase font-semibold px-2 py-0.5 border border-[#D8D2C2] rounded-xs shadow-xs">
               Sculptural
             </span>
           )}
@@ -70,7 +70,7 @@ export const CatalogItemCard: React.FC<CatalogItemCardProps> = ({
           {onToggleWishlist && (
             <button
               onClick={handleToggleWishlist}
-              className="p-1.5 rounded-full bg-[#E7E4D5]/95 hover:bg-[#FAF8F5] text-[#8F896D] hover:text-[#413C23] transition-all shadow-xs cursor-pointer focus:outline-none border border-[#D8D2C2]"
+              className="p-1.5 rounded-full bg-[#E7E4D5]/95 hover:bg-[#FAF8F5] text-black hover:text-black transition-all shadow-xs cursor-pointer focus:outline-none border border-[#D8D2C2]"
               title={isWishlisted ? 'Remove from saved' : 'Save to wishlist'}
               aria-label={isWishlisted ? 'Remove from saved' : 'Save to wishlist'}
             >
@@ -102,8 +102,8 @@ export const CatalogItemCard: React.FC<CatalogItemCardProps> = ({
               onClick={handleQuickAdd}
               className={`w-full py-2.5 px-3 text-[10px] sm:text-[11px] uppercase tracking-widest font-semibold rounded-xs flex items-center justify-center gap-2 transition-all duration-200 shadow-md cursor-pointer ${
                 isAdded
-                  ? 'bg-[#8F896D] text-[#FAF8F5]'
-                  : 'bg-[#413C23] hover:bg-[#8F896D] text-[#E7E4D5] active:scale-98'
+                  ? 'bg-black text-white'
+                  : 'bg-black hover:bg-neutral-800 text-white active:scale-98'
               }`}
             >
               {isAdded ? (
@@ -125,12 +125,12 @@ export const CatalogItemCard: React.FC<CatalogItemCardProps> = ({
       {/* Meta details with prominent price */}
       <div className="mt-3 flex flex-col space-y-1">
         <div className="flex items-center justify-between text-[11px]">
-          <span className="text-[#8F896D] uppercase tracking-[0.18em] font-semibold text-[10px]">
+          <span className="text-black uppercase tracking-[0.18em] font-semibold text-[10px]">
             {product.metal}
           </span>
         </div>
 
-        <h3 className="font-serif-display text-base sm:text-lg font-normal text-[#413C23] group-hover:text-[#8F896D] transition-colors leading-snug truncate">
+        <h3 className="font-serif-display text-base sm:text-lg font-normal text-black group-hover:text-neutral-700 transition-colors leading-snug truncate">
           {product.name}
         </h3>
 
@@ -140,7 +140,7 @@ export const CatalogItemCard: React.FC<CatalogItemCardProps> = ({
           const discount = getDiscountPercentage(product.price, comparePrice);
           return (
             <div className="flex items-baseline gap-2 pt-0.5 flex-wrap">
-              <span className="text-base sm:text-lg font-bold text-[#413C23] tracking-tight">
+              <span className="text-base sm:text-lg font-bold text-black tracking-tight">
                 {formatPrice(product.price, currency)}
               </span>
               {comparePrice > product.price && (

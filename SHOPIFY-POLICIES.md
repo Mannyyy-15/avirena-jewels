@@ -14,11 +14,11 @@ Contact used throughout: **avirenajewels@gmail.com** · **+91 78238 89290**
 
 ## 1. Return and refund policy
 
-If a piece is not right for you, we offer a **14-day return and exchange window** from the date of delivery.
+If a piece is not right for you, we offer a **7-day return and exchange window** from the date of delivery.
 
 **1. Eligibility**
 - Items must be unworn and in their original condition.
-- The piece must be returned with its original pouch and packaging.
+- The piece must be returned with its original packaging.
 - Personalised or made-to-order items are final sale unless there is a manufacturing defect.
 
 **2. How to start a return**
@@ -48,7 +48,7 @@ Questions? Contact avirenajewels@gmail.com.
 
 **2. Delivery within India**
 - Estimated delivery: 2–5 business days after dispatch, depending on your location.
-- Shipping is free on orders above ₹1,999. A flat ₹99 applies below that.
+- Shipping is free on all orders across India, with no minimum spend required.
 - Delivery timelines are estimates, not guarantees; couriers can be delayed by weather, strikes or regional restrictions.
 
 **3. International delivery**
@@ -134,7 +134,7 @@ _[If you have a GSTIN or CIN, add them here. Do not invent them.]_
 **Return and cancellation rules → "No rules set"**
 Separate from the written policy above: this drives Shopify's self-serve returns.
 Suggested settings, consistent with the wording above:
-- Return window: **14 days**
+- Return window: **7 days**
 - Return shipping cost: **free** (you arrange pickup)
 - Restocking fee: **none**
 - Final sale items: personalised / made-to-order

@@ -116,7 +116,7 @@ export const CareModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
                 </div>
                 <div className="p-3.5 bg-[#F2EFDB] border border-[#D8D2C2] rounded-xs">
                   <strong className="block text-[#413C23] mb-1 font-semibold">2. Keep Dry &amp; Stored</strong>
-                  Store separately in your complimentary pouch away from high humidity when not in use.
+                  Store separately in a dry place away from high humidity when not in use.
                 </div>
                 <div className="p-3.5 bg-[#F2EFDB] border border-[#D8D2C2] rounded-xs">
                   <strong className="block text-[#413C23] mb-1 font-semibold">3. Gentle Wipe</strong>

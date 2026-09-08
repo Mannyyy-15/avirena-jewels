@@ -199,7 +199,7 @@ const buildTitle = (
     case 'privacy-policy':
       return 'Privacy Policy | AVIRENA Jewels';
     case 'refund-policy':
-      return 'Return and Refund Policy (14-Day Exchanges) | AVIRENA Jewels';
+      return 'Return and Refund Policy (7-Day Exchanges) | AVIRENA Jewels';
     case 'shipping-policy':
       return 'Shipping Policy & Express Delivery | AVIRENA Jewels';
     case 'terms-of-service':

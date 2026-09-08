@@ -44,7 +44,7 @@ export const SeoMeta: React.FC<SeoMetaProps> = ({
     if (currentPage === 'collection' || currentPage === 'shop') {
       const catLabel = selectedCategory && selectedCategory !== 'all' ? `${selectedCategory.toUpperCase()} | ` : '';
       title = `${catLabel}Shop Dailywear Jewelry | AVIRENA`;
-      description = `Discover our curated collection of ${selectedCategory || 'dailywear'} jewelry in premium anti-tarnish brass. Complimentary express shipping over ₹1,999.`;
+      description = `Discover our curated collection of ${selectedCategory || 'dailywear'} jewelry in premium anti-tarnish brass. Free delivery on all orders.`;
       canonical = `https://avirenajewels.com/shop${selectedCategory && selectedCategory !== 'all' ? `/${selectedCategory}` : ''}`;
     } else if (currentPage === 'collections') {
       title = 'Signature Jewelry Design Suites | AVIRENA';
@@ -52,7 +52,7 @@ export const SeoMeta: React.FC<SeoMetaProps> = ({
       canonical = 'https://avirenajewels.com/collections';
     } else if (currentPage === 'pdp' && selectedProduct) {
       title = `${selectedProduct.name} — ${selectedProduct.metal} | AVIRENA`;
-      description = `${selectedProduct.description} Handcrafted in ${selectedProduct.metal} with anti-tarnish protective coating. 14-day exchanges & express delivery.`;
+      description = `${selectedProduct.description} Handcrafted in ${selectedProduct.metal} with anti-tarnish protective coating. 7-day exchanges & free delivery.`;
       // Real product URLs are singular /product/{handle} (see scripts/prerender.ts
       // and the sitemap). shopify.ts sets id = handle for live products, so prefer
       // handle and fall back to id — the same value the router resolves by.
@@ -67,19 +67,19 @@ export const SeoMeta: React.FC<SeoMetaProps> = ({
       canonical = 'https://avirenajewels.com/contact';
     } else if (currentPage === 'policies') {
       title = 'Policies, Shipping & Returns | AVIRENA';
-      description = 'Avirena Jewels policies covering tracked delivery, 14-day exchanges, material disclosures and data privacy.';
+      description = 'Avirena Jewels policies covering free delivery, 7-day exchanges, material disclosures and data privacy.';
       canonical = 'https://avirenajewels.com/policies';
     } else if (currentPage === 'privacy-policy') {
       title = 'Privacy Policy | AVIRENA Jewels';
       description = 'Read the official Avirena Jewels Privacy Policy. Information security, data protection, PCI-DSS compliant checkout, and customer privacy standards.';
       canonical = 'https://avirenajewels.com/privacy-policy';
     } else if (currentPage === 'refund-policy') {
-      title = 'Return and Refund Policy (14-Day Exchanges) | AVIRENA Jewels';
-      description = 'Avirena Jewels 14-day hassle-free return and exchange policy. Easy door-step courier pickup across India, zero fee replacements, and prompt refunds.';
+      title = 'Return and Refund Policy (7-Day Exchanges) | AVIRENA Jewels';
+      description = 'Avirena Jewels 7-day hassle-free return and exchange policy. Easy door-step courier pickup across India, zero fee replacements, and prompt refunds.';
       canonical = 'https://avirenajewels.com/refund-policy';
     } else if (currentPage === 'shipping-policy') {
       title = 'Shipping Policy & Express Delivery | AVIRENA Jewels';
-      description = 'Official shipping policy of Avirena Jewels. Free shipping on orders over ₹1,999, 1-2 day dispatch, tracked express courier delivery across India in 2-5 days.';
+      description = 'Official shipping policy of Avirena Jewels. Free delivery on all orders, 1-2 day dispatch, tracked express courier delivery across India in 2-5 days.';
       canonical = 'https://avirenajewels.com/shipping-policy';
     } else if (currentPage === 'terms-of-service') {
       title = 'Terms of Service | AVIRENA Jewels';
@@ -339,7 +339,7 @@ export const SeoMeta: React.FC<SeoMetaProps> = ({
             '@type': 'MerchantReturnPolicy',
             applicableCountry: ['IN', 'US', 'GB', 'EU'],
             returnPolicyCategory: 'https://schema.org/MerchantReturnFiniteReturnWindow',
-            merchantReturnDays: 14,
+            merchantReturnDays: 7,
             returnMethod: 'https://schema.org/ReturnByMail',
             returnFees: 'https://schema.org/FreeReturn',
           },
@@ -416,7 +416,7 @@ export const SeoMeta: React.FC<SeoMetaProps> = ({
             name: 'What is Avirena’s shipping and returns policy?',
             acceptedAnswer: {
               '@type': 'Answer',
-              text: 'We offer complimentary express shipping on all orders over ₹1,999. We also provide a 14-day return and size exchange window.',
+              text: 'We offer free delivery on all orders across India. We also provide a 7-day return and size exchange window.',
             },
           },
         ],

@@ -309,7 +309,7 @@ export const HomePage: React.FC<HomePageProps> = ({
           <button
             id="hero-shop-all-btn"
             onClick={() => onNavigateToCollection('all')}
-            className="px-7 py-3.5 bg-[#413C23] hover:bg-[#8F896D] text-[#E7E4D5] text-xs uppercase tracking-[0.2em] font-semibold rounded-xs transition-all shadow-md flex items-center gap-2.5 cursor-pointer active:scale-98"
+            className="px-7 py-3.5 bg-black hover:bg-neutral-800 text-white text-xs uppercase tracking-[0.2em] font-semibold rounded-xs transition-all shadow-md flex items-center gap-2.5 cursor-pointer active:scale-98"
           >
             <span>Explore Collection</span>
             <ArrowRight className="w-4 h-4" />
@@ -400,7 +400,7 @@ export const HomePage: React.FC<HomePageProps> = ({
                         e.stopPropagation();
                         onQuickAdd(product);
                       }}
-                      className="absolute bottom-2.5 right-2.5 p-2 bg-[#413C23] hover:bg-[#8F896D] text-[#E7E4D5] rounded-xs opacity-0 group-hover:opacity-100 transition-opacity shadow-sm cursor-pointer z-10"
+                      className="absolute bottom-2.5 right-2.5 p-2 bg-black hover:bg-neutral-800 text-white rounded-xs opacity-0 group-hover:opacity-100 transition-opacity shadow-sm cursor-pointer z-10"
                       title="Quick Add"
                     >
                       <ShoppingBag className="w-3.5 h-3.5" />
@@ -509,7 +509,7 @@ export const HomePage: React.FC<HomePageProps> = ({
                         e.stopPropagation();
                         onQuickAdd(product);
                       }}
-                      className="absolute bottom-2.5 right-2.5 p-2 bg-[#413C23] hover:bg-[#8F896D] text-[#E7E4D5] rounded-xs opacity-0 group-hover:opacity-100 transition-opacity shadow-sm cursor-pointer z-10"
+                      className="absolute bottom-2.5 right-2.5 p-2 bg-black hover:bg-neutral-800 text-white rounded-xs opacity-0 group-hover:opacity-100 transition-opacity shadow-sm cursor-pointer z-10"
                       title="Quick Add"
                     >
                       <ShoppingBag className="w-3.5 h-3.5" />
@@ -659,7 +659,7 @@ export const HomePage: React.FC<HomePageProps> = ({
                           e.stopPropagation();
                           onQuickAdd(product);
                         }}
-                        className="absolute bottom-1 right-1 p-2.5 bg-[#413C23] hover:bg-[#8F896D] text-[#E7E4D5] rounded-xs opacity-0 group-hover:opacity-100 transition-opacity shadow-md cursor-pointer z-10"
+                        className="absolute bottom-1 right-1 p-2.5 bg-black hover:bg-neutral-800 text-white rounded-xs opacity-0 group-hover:opacity-100 transition-opacity shadow-md cursor-pointer z-10"
                         title="Quick Add"
                       >
                         <ShoppingBag className="w-3.5 h-3.5" />
@@ -831,7 +831,7 @@ export const HomePage: React.FC<HomePageProps> = ({
                           e.stopPropagation();
                           onQuickAdd(product);
                         }}
-                        className="absolute bottom-1 right-1 p-2.5 bg-[#413C23] hover:bg-[#8F896D] text-[#E7E4D5] rounded-xs opacity-0 group-hover:opacity-100 transition-opacity shadow-md cursor-pointer z-10"
+                        className="absolute bottom-1 right-1 p-2.5 bg-black hover:bg-neutral-800 text-white rounded-xs opacity-0 group-hover:opacity-100 transition-opacity shadow-md cursor-pointer z-10"
                         title="Quick Add"
                       >
                         <ShoppingBag className="w-3.5 h-3.5" />
@@ -1004,8 +1004,8 @@ export const HomePage: React.FC<HomePageProps> = ({
                     onClick={() => setActiveGiftTier(tier.id as any)}
                     className={`text-xs px-3.5 py-1.5 rounded-xs uppercase tracking-wider font-medium transition-all cursor-pointer shrink-0 ${
                       isActive
-                        ? 'bg-[#413C23] text-[#E7E4D5] shadow-xs'
-                        : 'bg-[#E7E4D5] text-[#413C23] border border-[#D8D2C2] hover:border-[#8F896D]'
+                        ? 'bg-black text-white shadow-xs'
+                        : 'bg-[#E7E4D5] text-black border border-[#D8D2C2] hover:border-black'
                     }`}
                   >
                     {tier.label}
@@ -1061,7 +1061,7 @@ export const HomePage: React.FC<HomePageProps> = ({
                         e.stopPropagation();
                         onQuickAdd(product);
                       }}
-                      className="absolute bottom-3 right-3 p-2.5 bg-[#413C23] hover:bg-[#8F896D] text-[#E7E4D5] rounded-xs opacity-0 group-hover:opacity-100 transition-opacity shadow-md cursor-pointer z-10"
+                      className="absolute bottom-3 right-3 p-2.5 bg-black hover:bg-neutral-800 text-white rounded-xs opacity-0 group-hover:opacity-100 transition-opacity shadow-md cursor-pointer z-10"
                       title="Quick Add to Bag"
                     >
                       <ShoppingBag className="w-4 h-4" />
@@ -1113,8 +1113,8 @@ export const HomePage: React.FC<HomePageProps> = ({
               <Truck className="w-4 h-4" />
             </div>
             <div>
-              <span className="block font-semibold">Complimentary Shipping</span>
-              <span className="text-[10px] text-[#8F896D]">On orders over ₹1,999</span>
+              <span className="block font-semibold">Free Delivery</span>
+              <span className="text-[10px] text-[#8F896D]">On all orders across India</span>
             </div>
           </div>
 
@@ -1124,7 +1124,7 @@ export const HomePage: React.FC<HomePageProps> = ({
             </div>
             <div>
               <span className="block font-semibold">Signature Packaging</span>
-              <span className="text-[10px] text-[#8F896D]">Velvet keepsake pouch</span>
+              <span className="text-[10px] text-[#8F896D]">Premium eco-friendly box</span>
             </div>
           </div>
 
@@ -1143,8 +1143,8 @@ export const HomePage: React.FC<HomePageProps> = ({
               <RotateCcw className="w-4 h-4" />
             </div>
             <div>
-              <span className="block font-semibold">30-Day Easy Returns</span>
-              <span className="text-[10px] text-[#8F896D]">Doorstep insured pickup</span>
+              <span className="block font-semibold">7-Day Easy Returns</span>
+              <span className="text-[10px] text-[#8F896D]">Hassle-free exchanges</span>
             </div>
           </div>
         </div>

@@ -47,7 +47,7 @@ export const FaqPage: React.FC<FaqPageProps> = ({ onNavigateToContact, onNavigat
     },
     {
       q: 'How do I care for my brass & anti-tarnish jewelry?',
-      a: 'To maintain the radiant shine of your jewelry for years, we recommend putting on your jewelry after applying perfumes, hairsprays, and lotions. Remove pieces before swimming, intense workouts, or showering, and wipe gently with a soft dry cloth after wearing before storing in your pouch.',
+      a: 'To maintain the radiant shine of your jewelry for years, we recommend putting on your jewelry after applying perfumes, hairsprays, and lotions. Remove pieces before swimming, intense workouts, or showering, and wipe gently with a soft dry cloth after wearing before storing safely.',
     },
     {
       q: 'How do I determine my ring or bracelet size?',
@@ -59,7 +59,7 @@ export const FaqPage: React.FC<FaqPageProps> = ({ onNavigateToContact, onNavigat
     },
     {
       q: 'What is your return and exchange policy?',
-      a: 'We provide a 14-day hassle-free return and exchange window. If a size is not right or you desire a different piece, simply contact our support team to arrange an exchange.',
+      a: 'We provide a 7-day hassle-free return and exchange window. If a size is not right or you desire a different piece, simply contact our support team to arrange an exchange.',
     },
   ];
 
@@ -257,7 +257,7 @@ export const FaqPage: React.FC<FaqPageProps> = ({ onNavigateToContact, onNavigat
                   <h3 className="font-serif-display text-xl text-[#413C23]">Daily Care Rituals</h3>
                 </div>
                 <p className="text-xs sm:text-sm text-[#413C23]/80 font-light leading-relaxed">
-                  Apply perfumes, sanitizers, and lotions before wearing your jewelry. Store in your pouch when not in use to preserve the luster.
+                  Apply perfumes, sanitizers, and lotions before wearing your jewelry. Store in a dry place when not in use to preserve the luster.
                 </p>
                 <div className="space-y-2 pt-2 border-t border-[#D8D2C2] text-xs text-[#413C23]">
                   <div className="flex items-center gap-2"><CheckCircle2 className="w-3.5 h-3.5 text-[#8F896D]" /> Buff gently with a dry microfiber cloth</div>
@@ -271,7 +271,7 @@ export const FaqPage: React.FC<FaqPageProps> = ({ onNavigateToContact, onNavigat
         {/* TAB 4: Shipping & Returns */}
         {activeTab === 'shipping' && (
           <div className="bg-[#E7E4D5] border border-[#D8D2C2] rounded-xs p-6 sm:p-10 space-y-6">
-            <h2 className="font-serif-display text-2xl sm:text-3xl text-[#413C23]">Express Shipping &amp; 14-Day Returns</h2>
+            <h2 className="font-serif-display text-2xl sm:text-3xl text-[#413C23]">Free Delivery &amp; 7-Day Returns</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-2">
               <div className="p-4 bg-[#E7E4D5] border border-[#D8D2C2] rounded-xs space-y-2">
                 <Truck className="w-5 h-5 text-[#8F896D]" />
@@ -284,12 +284,12 @@ export const FaqPage: React.FC<FaqPageProps> = ({ onNavigateToContact, onNavigat
                 <ShieldCheck className="w-5 h-5 text-[#8F896D]" />
                 <h4 className="text-xs uppercase tracking-wider font-semibold text-[#413C23]">Safe Delivery</h4>
                 <p className="text-xs text-[#413C23]/80 font-light leading-relaxed">
-                  Every order is securely packaged in our signature keepsake pouch and crush-proof box.
+                  Every order is securely packaged in our signature crush-proof presentation box.
                 </p>
               </div>
               <div className="p-4 bg-[#E7E4D5] border border-[#D8D2C2] rounded-xs space-y-2">
                 <RotateCcw className="w-5 h-5 text-[#8F896D]" />
-                <h4 className="text-xs uppercase tracking-wider font-semibold text-[#413C23]">14-Day Exchanges</h4>
+                <h4 className="text-xs uppercase tracking-wider font-semibold text-[#413C23]">7-Day Exchanges</h4>
                 <p className="text-xs text-[#413C23]/80 font-light leading-relaxed">
                   Need a different size or style? We make exchanges quick and easy.
                 </p>
