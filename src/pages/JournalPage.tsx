@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ArrowRight, Clock, BookOpen, Share2, ChevronRight, Check } from 'lucide-react';
-import blogHeroImg from '../assets/blog-hero-editorial.jpg';
+import blogHeroImg from '../assets/blog-hero-editorial.webp';
 import { Product, Currency } from '../types';
 import { formatPrice } from '../data/products';
 

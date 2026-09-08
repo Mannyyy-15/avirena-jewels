@@ -1,9 +1,9 @@
 import React from 'react';
 import heroArchImg from '../assets/about/about-hero-arch.jpg';
-import vignette1Img from '../assets/about/about-vignette-1.jpg';
-import vignette2Img from '../assets/about/about-vignette-2.jpg';
-import vignette3Img from '../assets/about/about-vignette-3.jpg';
-import vignette4Img from '../assets/about/about-vignette-4.jpg';
+import vignette1Img from '../assets/about/about-vignette-1.webp';
+import vignette2Img from '../assets/about/about-vignette-2.webp';
+import vignette3Img from '../assets/about/about-vignette-3.webp';
+import vignette4Img from '../assets/about/about-vignette-4.webp';
 
 interface AboutUsEditorialSectionProps {
   onNavigateToAbout?: () => void;

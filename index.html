@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en-IN">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -48,8 +48,8 @@
     <meta property="og:image" content="https://avirenajewels.com/og-banner.jpg" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:locale" content="en_US" />
-    <meta property="og:locale:alternate" content="en_IN" />
+    <meta property="og:locale" content="en_IN" />
+    <meta property="og:locale:alternate" content="en_US" />
     <meta property="og:locale:alternate" content="en_GB" />
 
     <!-- Twitter Card -->
@@ -59,13 +59,22 @@
     <meta name="twitter:description" content="Sculptural dailywear jewelry in durable brass, anti-tarnish protective coatings, and natural cultured pearls." />
     <meta name="twitter:image" content="https://avirenajewels.com/og-banner.jpg" />
 
-    <!-- LCP hero image preload (homepage hero wordmark) -->
+    <!-- LCP preload. Measurement (throttled mobile) showed the real LCP element
+         is the hero pearl-ring art, not the wordmark: hero.png alone accounted
+         for ~5s of resource load time. Both are preloaded as WebP, hero first
+         because it is the element that decides LCP. -->
+    <link
+      rel="preload"
+      as="image"
+      href="/hero.webp"
+      type="image/webp"
+      fetchpriority="high"
+    />
     <link
       rel="preload"
       as="image"
       href="/logo.webp"
       type="image/webp"
-      fetchpriority="high"
     />
 
     <!-- Fonts & Performance Preconnects -->

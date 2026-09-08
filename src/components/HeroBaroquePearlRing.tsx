@@ -38,12 +38,23 @@ export const HeroBaroquePearlRing: React.FC<HeroBaroquePearlRingProps> = ({
         }}
         className="w-full relative flex items-center justify-center"
       >
-        <img
-          src="/hero.png"
-          alt="Avirena Signature Baroque Pearl Ring"
-          loading="eager"
-          className="w-full h-auto object-contain max-h-[36vh] sm:max-h-[42vh] md:max-h-[46vh] pointer-events-none drop-shadow-md select-none"
-        />
+        {/* Measured as the real mobile LCP element. The PNG is 1.29MB and cost
+            ~5s of resource load under throttled mobile; the WebP is 109KB, a
+            92% saving. PNG stays as the fallback source. Explicit dimensions
+            reserve layout space so the swap cannot shift the page. */}
+        <picture>
+          <source srcSet="/hero.webp" type="image/webp" />
+          <img
+            src="/hero.png"
+            alt="Avirena Signature Baroque Pearl Ring"
+            width={1024}
+            height={1024}
+            loading="eager"
+            fetchPriority="high"
+            decoding="sync"
+            className="w-full h-auto object-contain max-h-[36vh] sm:max-h-[42vh] md:max-h-[46vh] pointer-events-none drop-shadow-md select-none"
+          />
+        </picture>
       </motion.div>
     </motion.div>
   );

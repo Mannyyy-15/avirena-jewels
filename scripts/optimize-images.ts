@@ -29,7 +29,35 @@ interface Target {
   quality: number;
 }
 
-const TARGETS: Target[] = [{ src: 'public/logo.png', out: 'public/logo.webp', quality: 82 }];
+const TARGETS: Target[] = [
+  { src: 'public/logo.png', out: 'public/logo.webp', quality: 82 },
+  // hero.png is 1.29MB and is the REAL mobile LCP element (measured), not the
+  // logo. Under throttled mobile it accounted for ~5s of resource load time on
+  // its own, which dominates every other performance cost on the site.
+  { src: 'public/hero.png', out: 'public/hero.webp', quality: 80 },
+];
+
+/**
+ * Photographic JPEGs imported through Vite from src/assets.
+ *
+ * These are 600KB-1MB each and lazy-loaded below the fold, so they do not hit
+ * LCP — but they are still ~3MB of avoidable transfer for anyone who scrolls.
+ * Vite fingerprints and copies them at build time, so converting the SOURCE is
+ * what changes what ships.
+ */
+const PHOTO_TARGETS: Target[] = [
+  'about/about-vignette-1',
+  'about/about-vignette-2',
+  'about/about-vignette-3',
+  'about/about-vignette-4',
+  'about/about-banner-book',
+  'blog-hero-editorial',
+  'shop-hero-editorial',
+].map((name) => ({
+  src: `src/assets/${name}.jpg`,
+  out: `src/assets/${name}.webp`,
+  quality: 78,
+}));
 
 function ffmpegAvailable(): boolean {
   try {
@@ -50,7 +78,7 @@ function main(): void {
     return;
   }
 
-  for (const { src, out, quality } of TARGETS) {
+  for (const { src, out, quality } of [...TARGETS, ...PHOTO_TARGETS]) {
     const srcPath = path.join(ROOT, src);
     const outPath = path.join(ROOT, out);
 

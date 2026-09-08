@@ -559,8 +559,11 @@ function renderPageHtml(template: string, route: RouteData): string {
     <meta property="og:title" content="${escapeHtml(route.title)}" />
     <meta property="og:description" content="${escapeHtml(route.description)}" />
     <meta property="og:image" content="${route.ogImage}" />
-    <meta property="og:locale" content="en_US" />
-    <meta property="og:locale:alternate" content="en_IN" />
+    <!-- Primary locale is en_IN: the store prices in INR, ships from Mumbai and
+         targets Indian search. en_US as primary told social platforms and
+         crawlers the opposite. -->
+    <meta property="og:locale" content="en_IN" />
+    <meta property="og:locale:alternate" content="en_US" />
     <meta property="og:locale:alternate" content="en_GB" />
 
     <!-- Twitter Card -->
@@ -625,6 +628,19 @@ async function main() {
     sitemapUrls.push({ loc, lastmod: today, changefreq, priority, images });
   };
 
+  // Lowest live catalog price, derived once and reused by the homepage and
+  // /shop copy. Never hardcode a price in copy: the previous hardcoded "₹499"
+  // survived a repricing and advertised a figure that no longer existed.
+  const lowestPriceForHome = shopifyProducts.length
+    ? Math.round(
+        Math.min(
+          ...shopifyProducts.map((p: any) =>
+            parseFloat(p.priceRange?.minVariantPrice?.amount || '0')
+          )
+        )
+      )
+    : 0;
+
   // ---------------- ROUTE 1: Home Page (/) ----------------
   routes.push({
     path: '',
@@ -667,21 +683,30 @@ async function main() {
           <a href="/">AVIRENA</a>
           <a href="/shop">Shop All Jewelry</a>
           <a href="/collections">Collections</a>
-          <a href="/about">About Atelier</a>
-          <a href="/guides">Jewelry Guides</a>
-          <a href="/contact">Concierge</a>
+          <a href="/about">About</a>
+          <a href="/guides">Jewellery Guides</a>
+          <a href="/contact">Contact</a>
         </nav>
       </header>
       <main>
         <section class="hero-section">
-          <h1>Timeless Beauty • Uniquely Yours</h1>
-          <p>Handcrafted homegrown dailywear jewelry in durable brass, anti-tarnish protective coatings & natural pearls.</p>
+          <h1>Anti-Tarnish Brass Jewellery for Daily Wear</h1>
+          <p>Sculptural earrings in high-grade brass and durable alloys, sealed with a protective anti-tarnish coating. Nickel-free, lead-free and cadmium-free, with surgical steel posts, so they suit sensitive skin. Made in India for everyday wear${
+            lowestPriceForHome ? `, from ₹${lowestPriceForHome}` : ''
+          }.</p>
           <a href="/shop" class="cta-btn">Explore Collection</a>
         </section>
+
         <section class="categories-section">
-          <h2>Jewelry Categories</h2>
+          <h2>What we make, stated plainly</h2>
+          <p>This is fashion jewellery. It is not solid gold, not gold vermeil and not sterling silver, and it is not hallmarked to any precious-metal standard. Gold-tone and silver-tone describe the colour of the finish, not the metal underneath. Where a piece has pearls they are cultured freshwater pearls, and where it has a stone it is faceted glass rather than a diamond. We would rather tell you that up front than have you find out after it arrives.</p>
+          <p>Free delivery on orders over ₹1,999 and 14-day exchanges on unworn pieces across India.</p>
+        </section>
+
+        <section class="categories-section">
+          <h2>Jewellery Categories</h2>
           <ul>
-            <li><a href="/shop/earrings">Earrings</a></li>
+            <li><a href="/shop/earrings">Earrings</a> — studs, drops and hoops in gold tone and silver tone</li>
             <li><a href="/shop/necklaces">Necklaces</a></li>
             <li><a href="/shop/rings">Rings</a></li>
             <li><a href="/shop/bracelets">Bracelets</a></li>
@@ -746,15 +771,7 @@ async function main() {
   // Derived from the live catalog, never hardcoded: the meta description
   // previously advertised "from ₹499" long after the cheapest SKU had been
   // repriced to ₹599, promising a price that did not exist.
-  const lowestPrice = shopifyProducts.length
-    ? Math.round(
-        Math.min(
-          ...shopifyProducts.map((p: any) =>
-            parseFloat(p.priceRange?.minVariantPrice?.amount || '0')
-          )
-        )
-      )
-    : 0;
+  const lowestPrice = lowestPriceForHome;
 
   routes.push({
     path: 'shop',

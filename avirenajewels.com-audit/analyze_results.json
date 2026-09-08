@@ -1,0 +1,697 @@
+{
+  "broken_images_settled_home": [
+    "https://cdn.shopify.com/s/files/1/1031/9364/1282/files/square_nadir-square-studs-gold-tone-brass-earrings_1.png?v=1788779598",
+    "https://cdn.shopify.com/s/files/1/1031/9364/1282/files/square_lume-drop-earrings-gold-tone-brass_1.png?v=1788779533",
+    "https://cdn.shopify.com/s/files/1/1031/9364/1282/files/square_forma-statement-drops-geometric-brass-earrings_1.png?v=1788779456",
+    "https://cdn.shopify.com/s/files/1/1031/9364/1282/files/1779ca2c-3943-43e1-b94b-054e4fb9da4e.png?v=1788590763",
+    "https://avirenajewels.com/assets/editorial/silver-edit-campaign-banner.jpg",
+    "https://cdn.shopify.com/s/files/1/1031/9364/1282/files/460a6da3-5131-4cc4-8bf4-d23f372a1bfc.png?v=1788590707",
+    "https://cdn.shopify.com/s/files/1/1031/9364/1282/files/f58237af-d871-497b-ab88-a544835f938c.png?v=1788590744",
+    "https://cdn.shopify.com/s/files/1/1031/9364/1282/files/9e4d8963-b26d-4e81-bcba-8b9bcd3abd1e.png?v=1788590783",
+    "https://cdn.shopify.com/s/files/1/1031/9364/1282/files/square_clean_nadir-square-studs-gold-tone-brass-earrings_6.png?v=1788783055",
+    "https://cdn.shopify.com/s/files/1/1031/9364/1282/files/square_nadir-square-studs-gold-tone-brass-earrings_1.png?v=1788779598",
+    "https://avirenajewels.com/assets/about-vignette-1-BxhD_dhf.jpg",
+    "https://avirenajewels.com/assets/about-vignette-2-jSsrxDfH.jpg",
+    "https://avirenajewels.com/assets/about-vignette-3-C2j3ily2.jpg",
+    "https://avirenajewels.com/assets/about-vignette-4-B9otUQse.jpg",
+    "https://cdn.shopify.com/s/files/1/1031/9364/1282/files/square_nadir-square-studs-gold-tone-brass-earrings_1.png?v=1788779598",
+    "https://cdn.shopify.com/s/files/1/1031/9364/1282/files/square_lume-drop-earrings-gold-tone-brass_1.png?v=1788779533",
+    "https://cdn.shopify.com/s/files/1/1031/9364/1282/files/square_forma-statement-drops-geometric-brass-earrings_1.png?v=1788779456",
+    "https://cdn.shopify.com/s/files/1/1031/9364/1282/files/460a6da3-5131-4cc4-8bf4-d23f372a1bfc.png?v=1788590707",
+    "https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&w=800&q=90",
+    "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=800&q=90",
+    "https://images.unsplash.com/photo-1602751584552-8ba73aad10e1?auto=format&fit=crop&w=800&q=90",
+    "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=800&q=90",
+    "https://avirenajewels.com/logo-white.png"
+  ],
+  "broken_images_settled_shop": [],
+  "broken_images_settled_shop-necklaces": [],
+  "broken_images_settled_product-crystal-hoops": [
+    "https://cdn.shopify.com/s/files/1/1031/9364/1282/files/1779ca2c-3943-43e1-b94b-054e4fb9da4e.png?v=1788590763",
+    "https://cdn.shopify.com/s/files/1/1031/9364/1282/files/f95f087e-282f-495b-b543-bada0813d93c_1.png?v=1788590763",
+    "https://cdn.shopify.com/s/files/1/1031/9364/1282/files/f7c43b57-ea2d-4f32-bfdd-3fce051f57d0.png?v=1788590764",
+    "https://cdn.shopify.com/s/files/1/1031/9364/1282/files/4a6593d0-5428-46d6-93f8-b0ceb75f6266.png?v=1788590765",
+    "https://cdn.shopify.com/s/files/1/1031/9364/1282/files/ee1faa67-d9f8-4fad-847b-6c57285b8525.png?v=1788590765"
+  ],
+  "broken_images_settled_guide-brass-green": [],
+  "product_mobile_button_position": {
+    "viewportHeight": 844,
+    "buttons": [
+      {
+        "text": "Buy Now",
+        "top": 1019.984375,
+        "bottom": 1067.984375,
+        "left": 16,
+        "width": 358,
+        "height": 48,
+        "visible": false
+      },
+      {
+        "text": "Add to Bag",
+        "top": 1077.984375,
+        "bottom": 1127.984375,
+        "left": 16,
+        "width": 358,
+        "height": 50,
+        "visible": false
+      },
+      {
+        "text": "Add to cart",
+        "top": 1792.765625,
+        "bottom": 1808.765625,
+        "left": 288.921875,
+        "width": 85.078125,
+        "height": 16,
+        "visible": false
+      },
+      {
+        "text": "Add to cart",
+        "top": 1889.765625,
+        "bottom": 1905.765625,
+        "left": 288.921875,
+        "width": 85.078125,
+        "height": 16,
+        "visible": false
+      },
+      {
+        "text": "Add to cart",
+        "top": 1986.765625,
+        "bottom": 2002.765625,
+        "left": 288.921875,
+        "width": 85.078125,
+        "height": 16,
+        "visible": false
+      }
+    ]
+  },
+  "product_mobile_fold_check": {
+    "viewportHeight": 844,
+    "price": {
+      "text": "COMPLIMENTARY EXPRESS SHIPPING ON ORDERS OVER \u20b91,9",
+      "top": 8.5,
+      "bottom": 23.5,
+      "aboveFold": true
+    },
+    "firstImage": {
+      "top": 51,
+      "bottom": 79,
+      "aboveFold": true
+    },
+    "h1": {
+      "text": "Avirena Crystal Hoops \u2014 Gold",
+      "top": 637,
+      "bottom": 674.5,
+      "aboveFold": true
+    }
+  },
+  "hamburger_candidates": [
+    {
+      "label": "Open menu",
+      "rect": {
+        "x": 8,
+        "y": 45,
+        "width": 40,
+        "height": 40,
+        "top": 45,
+        "right": 48,
+        "bottom": 85,
+        "left": 8
+      }
+    }
+  ],
+  "nav_drawer_clicked": true,
+  "nav_drawer_info": [],
+  "shop_mobile_tap_targets_total": 47,
+  "shop_mobile_tap_targets_small": [
+    {
+      "text": "Open menu",
+      "width": 40,
+      "height": 40,
+      "tag": "BUTTON"
+    },
+    {
+      "text": "Avirena Home",
+      "width": 80.625,
+      "height": 36,
+      "tag": "BUTTON"
+    },
+    {
+      "text": "Search",
+      "width": 30,
+      "height": 30,
+      "tag": "BUTTON"
+    },
+    {
+      "text": "0",
+      "width": 46.3125,
+      "height": 32,
+      "tag": "BUTTON"
+    },
+    {
+      "text": "Category",
+      "width": 112.875,
+      "height": 28.5,
+      "tag": "BUTTON"
+    },
+    {
+      "text": "Metal",
+      "width": 85.296875,
+      "height": 28.5,
+      "tag": "BUTTON"
+    },
+    {
+      "text": "Sort: Featured",
+      "width": 147.890625,
+      "height": 30.5,
+      "tag": "BUTTON"
+    },
+    {
+      "text": "Wishlist",
+      "width": 32,
+      "height": 32,
+      "tag": "BUTTON"
+    },
+    {
+      "text": "Add to Bag",
+      "width": 130.265625,
+      "height": 36,
+      "tag": "BUTTON"
+    },
+    {
+      "text": "Wishlist",
+      "width": 28,
+      "height": 28,
+      "tag": "BUTTON"
+    },
+    {
+      "text": "",
+      "width": 30,
+      "height": 30,
+      "tag": "BUTTON"
+    },
+    {
+      "text": "Wishlist",
+      "width": 28,
+      "height": 28,
+      "tag": "BUTTON"
+    },
+    {
+      "text": "",
+      "width": 30,
+      "height": 30,
+      "tag": "BUTTON"
+    },
+    {
+      "text": "Wishlist",
+      "width": 28,
+      "height": 28,
+      "tag": "BUTTON"
+    },
+    {
+      "text": "",
+      "width": 30,
+      "height": 30,
+      "tag": "BUTTON"
+    },
+    {
+      "text": "Wishlist",
+      "width": 28,
+      "height": 28,
+      "tag": "BUTTON"
+    },
+    {
+      "text": "",
+      "width": 30,
+      "height": 30,
+      "tag": "BUTTON"
+    },
+    {
+      "text": "Wishlist",
+      "width": 28,
+      "height": 28,
+      "tag": "BUTTON"
+    },
+    {
+      "text": "",
+      "width": 30,
+      "height": 30,
+      "tag": "BUTTON"
+    },
+    {
+      "text": "Wishlist",
+      "width": 28,
+      "height": 28,
+      "tag": "BUTTON"
+    },
+    {
+      "text": "",
+      "width": 30,
+      "height": 30,
+      "tag": "BUTTON"
+    },
+    {
+      "text": "Wishlist",
+      "width": 28,
+      "height": 28,
+      "tag": "BUTTON"
+    },
+    {
+      "text": "",
+      "width": 30,
+      "height": 30,
+      "tag": "BUTTON"
+    },
+    {
+      "text": "Wishlist",
+      "width": 28,
+      "height": 28,
+      "tag": "BUTTON"
+    },
+    {
+      "text": "",
+      "width": 30,
+      "height": 30,
+      "tag": "BUTTON"
+    },
+    {
+      "text": "Explore atelier stories @avire",
+      "width": 230.5,
+      "height": 19,
+      "tag": "A"
+    },
+    {
+      "text": "Rings",
+      "width": 43.625,
+      "height": 16,
+      "tag": "BUTTON"
+    },
+    {
+      "text": "Earrings",
+      "width": 65.625,
+      "height": 16,
+      "tag": "BUTTON"
+    },
+    {
+      "text": "Necklaces",
+      "width": 82.25,
+      "height": 16,
+      "tag": "BUTTON"
+    },
+    {
+      "text": "Bracelets",
+      "width": 76.71875,
+      "height": 16,
+      "tag": "BUTTON"
+    },
+    {
+      "text": "Facebook",
+      "width": 28,
+      "height": 28,
+      "tag": "A"
+    },
+    {
+      "text": "Instagram",
+      "width": 28,
+      "height": 28,
+      "tag": "A"
+    },
+    {
+      "text": "Pinterest",
+      "width": 28,
+      "height": 28,
+      "tag": "A"
+    },
+    {
+      "text": "Our Story",
+      "width": 54.03125,
+      "height": 16,
+      "tag": "BUTTON"
+    },
+    {
+      "text": "Materials & Care",
+      "width": 91.546875,
+      "height": 16,
+      "tag": "BUTTON"
+    },
+    {
+      "text": "Shipping & Returns",
+      "width": 107.125,
+      "height": 16,
+      "tag": "BUTTON"
+    },
+    {
+      "text": "FAQs",
+      "width": 30.484375,
+      "height": 16,
+      "tag": "BUTTON"
+    },
+    {
+      "text": "Jewelry Guides",
+      "width": 85.046875,
+      "height": 16,
+      "tag": "BUTTON"
+    },
+    {
+      "text": "Contact",
+      "width": 47.25,
+      "height": 16,
+      "tag": "BUTTON"
+    },
+    {
+      "text": "Privacy Policy",
+      "width": 77.484375,
+      "height": 16,
+      "tag": "BUTTON"
+    },
+    {
+      "text": "Terms of Service",
+      "width": 92.890625,
+      "height": 16,
+      "tag": "BUTTON"
+    },
+    {
+      "text": "The PieCraft Marketing",
+      "width": 191.40625,
+      "height": 34.796875,
+      "tag": "A"
+    }
+  ],
+  "shop_mobile_overflow": {
+    "docWidth": 390,
+    "viewportWidth": 390,
+    "bodyWidth": 390
+  },
+  "overflow_all_mobile": {
+    "home": {
+      "docWidth": 390,
+      "viewportWidth": 390
+    },
+    "shop": {
+      "docWidth": 390,
+      "viewportWidth": 390
+    },
+    "shop-necklaces": {
+      "docWidth": 390,
+      "viewportWidth": 390
+    },
+    "product-crystal-hoops": {
+      "docWidth": 390,
+      "viewportWidth": 390
+    },
+    "guide-brass-green": {
+      "docWidth": 390,
+      "viewportWidth": 390
+    }
+  },
+  "header_sticky_before": {
+    "position": "sticky",
+    "top": 0,
+    "height": 98
+  },
+  "header_sticky_after_scroll": {
+    "position": "sticky",
+    "top": -592,
+    "height": 98
+  },
+  "cart_add_clicked": true,
+  "font_early": null,
+  "font_settled": null,
+  "fonts_loaded": [
+    {
+      "family": "Cormorant Garamond",
+      "status": "unloaded"
+    },
+    {
+      "family": "Cormorant Garamond",
+      "status": "unloaded"
+    },
+    {
+      "family": "Cormorant Garamond",
+      "status": "unloaded"
+    },
+    {
+      "family": "Cormorant Garamond",
+      "status": "unloaded"
+    },
+    {
+      "family": "Cormorant Garamond",
+      "status": "loaded"
+    },
+    {
+      "family": "Cormorant Garamond",
+      "status": "unloaded"
+    },
+    {
+      "family": "Cormorant Garamond",
+      "status": "unloaded"
+    },
+    {
+      "family": "Cormorant Garamond",
+      "status": "unloaded"
+    },
+    {
+      "family": "Cormorant Garamond",
+      "status": "unloaded"
+    },
+    {
+      "family": "Cormorant Garamond",
+      "status": "loaded"
+    },
+    {
+      "family": "Cormorant Garamond",
+      "status": "unloaded"
+    },
+    {
+      "family": "Cormorant Garamond",
+      "status": "unloaded"
+    },
+    {
+      "family": "Cormorant Garamond",
+      "status": "unloaded"
+    },
+    {
+      "family": "Cormorant Garamond",
+      "status": "unloaded"
+    },
+    {
+      "family": "Cormorant Garamond",
+      "status": "unloaded"
+    },
+    {
+      "family": "Cormorant Garamond",
+      "status": "unloaded"
+    },
+    {
+      "family": "Cormorant Garamond",
+      "status": "unloaded"
+    },
+    {
+      "family": "Cormorant Garamond",
+      "status": "unloaded"
+    },
+    {
+      "family": "Cormorant Garamond",
+      "status": "unloaded"
+    },
+    {
+      "family": "Cormorant Garamond",
+      "status": "unloaded"
+    },
+    {
+      "family": "Cormorant Garamond",
+      "status": "unloaded"
+    },
+    {
+      "family": "Cormorant Garamond",
+      "status": "unloaded"
+    },
+    {
+      "family": "Cormorant Garamond",
+      "status": "unloaded"
+    },
+    {
+      "family": "Cormorant Garamond",
+      "status": "unloaded"
+    },
+    {
+      "family": "Cormorant Garamond",
+      "status": "loaded"
+    },
+    {
+      "family": "Cormorant Garamond",
+      "status": "unloaded"
+    },
+    {
+      "family": "Cormorant Garamond",
+      "status": "unloaded"
+    },
+    {
+      "family": "Cormorant Garamond",
+      "status": "unloaded"
+    },
+    {
+      "family": "Cormorant Garamond",
+      "status": "unloaded"
+    },
+    {
+      "family": "Cormorant Garamond",
+      "status": "loaded"
+    },
+    {
+      "family": "Cormorant Garamond",
+      "status": "unloaded"
+    },
+    {
+      "family": "Cormorant Garamond",
+      "status": "unloaded"
+    },
+    {
+      "family": "Cormorant Garamond",
+      "status": "unloaded"
+    },
+    {
+      "family": "Cormorant Garamond",
+      "status": "unloaded"
+    },
+    {
+      "family": "Cormorant Garamond",
+      "status": "loaded"
+    },
+    {
+      "family": "Cormorant Garamond",
+      "status": "unloaded"
+    },
+    {
+      "family": "Cormorant Garamond",
+      "status": "unloaded"
+    },
+    {
+      "family": "Cormorant Garamond",
+      "status": "unloaded"
+    },
+    {
+      "family": "Cormorant Garamond",
+      "status": "unloaded"
+    },
+    {
+      "family": "Cormorant Garamond",
+      "status": "unloaded"
+    },
+    {
+      "family": "Cormorant Garamond",
+      "status": "unloaded"
+    },
+    {
+      "family": "Cormorant Garamond",
+      "status": "unloaded"
+    },
+    {
+      "family": "Cormorant Garamond",
+      "status": "unloaded"
+    },
+    {
+      "family": "Cormorant Garamond",
+      "status": "unloaded"
+    },
+    {
+      "family": "Cormorant Garamond",
+      "status": "unloaded"
+    },
+    {
+      "family": "Plus Jakarta Sans",
+      "status": "unloaded"
+    },
+    {
+      "family": "Plus Jakarta Sans",
+      "status": "unloaded"
+    },
+    {
+      "family": "Plus Jakarta Sans",
+      "status": "unloaded"
+    },
+    {
+      "family": "Plus Jakarta Sans",
+      "status": "unloaded"
+    },
+    {
+      "family": "Plus Jakarta Sans",
+      "status": "unloaded"
+    },
+    {
+      "family": "Plus Jakarta Sans",
+      "status": "unloaded"
+    },
+    {
+      "family": "Plus Jakarta Sans",
+      "status": "loaded"
+    },
+    {
+      "family": "Plus Jakarta Sans",
+      "status": "loaded"
+    },
+    {
+      "family": "Plus Jakarta Sans",
+      "status": "unloaded"
+    },
+    {
+      "family": "Plus Jakarta Sans",
+      "status": "unloaded"
+    },
+    {
+      "family": "Plus Jakarta Sans",
+      "status": "loaded"
+    },
+    {
+      "family": "Plus Jakarta Sans",
+      "status": "loaded"
+    },
+    {
+      "family": "Plus Jakarta Sans",
+      "status": "unloaded"
+    },
+    {
+      "family": "Plus Jakarta Sans",
+      "status": "unloaded"
+    },
+    {
+      "family": "Plus Jakarta Sans",
+      "status": "loaded"
+    },
+    {
+      "family": "Plus Jakarta Sans",
+      "status": "loaded"
+    },
+    {
+      "family": "Plus Jakarta Sans",
+      "status": "unloaded"
+    },
+    {
+      "family": "Plus Jakarta Sans",
+      "status": "unloaded"
+    },
+    {
+      "family": "Plus Jakarta Sans",
+      "status": "loaded"
+    },
+    {
+      "family": "Plus Jakarta Sans",
+      "status": "loaded"
+    },
+    {
+      "family": "Plus Jakarta Sans",
+      "status": "unloaded"
+    },
+    {
+      "family": "Plus Jakarta Sans",
+      "status": "unloaded"
+    },
+    {
+      "family": "Plus Jakarta Sans",
+      "status": "loaded"
+    },
+    {
+      "family": "Plus Jakarta Sans",
+      "status": "loaded"
+    }
+  ]
+}

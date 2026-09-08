@@ -4,7 +4,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { AboutUsEditorialSection } from '../components/AboutUsEditorialSection';
 
 // Image imports for Section 2: Editorial Banner
-import bannerBookImg from '../assets/about/about-banner-book.jpg';
+import bannerBookImg from '../assets/about/about-banner-book.webp';
 
 // Image imports for Section 3: Bestsellers
 import bestsellerSignetsImg from '../assets/about/about-bestseller-signets.jpg';

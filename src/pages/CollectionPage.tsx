@@ -3,7 +3,7 @@ import gsap from 'gsap';
 import { Product, Currency, Category, Metal } from '../types';
 import { formatPrice, getCompareAtPrice, getDiscountPercentage } from '../data/products';
 import { ChevronDown, Heart, Check, ShoppingBag } from 'lucide-react';
-import shopHeroImg from '../assets/shop-hero-editorial.jpg';
+import shopHeroImg from '../assets/shop-hero-editorial.webp';
 
 interface CollectionPageProps {
   products: Product[];
