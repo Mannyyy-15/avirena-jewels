@@ -56,21 +56,21 @@ export const PoliciesPage: React.FC<PoliciesPageProps> = ({
       subtitle: '14-Day Compliant Client Returns & Exchanges',
       text: `AVIRENA JEWELS — RETURN & REFUND POLICY
 
-At Avirena Jewels, we take immense pride in the artisanal craftsmanship and metallurgical integrity of our demi-fine creations. If you are not completely enamored with your selection, we offer a straightforward 14-Day Return & Exchange window from the date of package delivery.
+At Avirena Jewels, we take immense pride in the craftsmanship and finish quality of our pieces. If you are not completely enamored with your selection, we offer a straightforward 14-Day Return & Exchange window from the date of package delivery.
 
 1. Eligibility for Returns & Exchanges:
 • Items must be in their original, unworn, and unblemished condition.
-• The piece must be accompanied by the original velvet keepsake pouch, presentation box, and certificate of authenticity.
+• The piece must be returned with its original pouch and packaging.
 • Custom bespoke commissions, personalized engravings, and gift cards are final sale and cannot be returned unless a structural defect is verified.
 
 2. How to Initiate a Return:
 • Email our concierge team at avirenajewels@gmail.com or WhatsApp us with your Order ID (#AV-XXXXX) and reason for return/exchange.
-• Our atelier will schedule an insured doorstep courier pickup at your designated address.
+• We will arrange a courier pickup from your address.
 
 3. Refunds & Processing:
-• Once received at our studio, your piece undergoes a gemological and physical inspection within 2 business days.
+• Once your return reaches us, we inspect it within 2 business days.
 • Approved refunds are credited directly to your original payment method within 3–5 business days, depending on your financial institution.
-• Alternatively, you may choose Instant Atelier Store Credit with zero deductions.
+• Alternatively, you may choose store credit for the full value with no deduction.
 
 4. Damaged or Defective Items:
 • If an item arrives damaged during transit, please notify avirenajewels@gmail.com within 48 hours of receipt with clear photographs. We will immediately dispatch a priority replacement at zero additional charge.`,
@@ -82,7 +82,7 @@ At Avirena Jewels, we take immense pride in the artisanal craftsmanship and meta
       text: `AVIRENA JEWELS — PRIVACY POLICY
 Last Updated: September 2026
 
-Studio Avirena ("we", "our", or "us") is dedicated to safeguarding your personal data and ensuring transparent privacy practices in compliance with global data privacy regulations (including GDPR, CCPA, and the Indian Digital Personal Data Protection Act).
+Avirena Jewels ("we", "our", or "us") is dedicated to safeguarding your personal data and ensuring transparent privacy practices in compliance with global data privacy regulations (including GDPR, CCPA, and the Indian Digital Personal Data Protection Act).
 
 1. Information We Collect:
 • Personal Information: Name, billing address, shipping address, email address, and telephone number provided during checkout or account creation.
@@ -100,7 +100,7 @@ Studio Avirena ("we", "our", or "us") is dedicated to safeguarding your personal
 • Information is shared strictly with essential service providers: express logistics carriers (Bluedart, DHL, FedEx) and secure payment processors.
 
 4. Your Rights & Data Deletion:
-• You hold the right to access, rectify, or request permanent deletion of your personal records at any time by emailing privacy@avirena.com.`,
+• You hold the right to access, rectify, or request permanent deletion of your personal records at any time by emailing avirenajewels@gmail.com.`,
     },
 
     terms: {
@@ -109,7 +109,7 @@ Studio Avirena ("we", "our", or "us") is dedicated to safeguarding your personal
       text: `AVIRENA JEWELS — TERMS OF SERVICE
 Last Updated: September 2026
 
-Welcome to the Avirena Jewels online boutique (avirena.com). By visiting our website or purchasing our creations, you agree to be bound by the following terms and conditions.
+Welcome to the Avirena Jewels online boutique (avirenajewels.com). By visiting our website or purchasing our creations, you agree to be bound by the following terms and conditions.
 
 1. General Conditions:
 • We reserve the right to refuse service, terminate accounts, or cancel orders at our discretion if fraud or violation of terms is suspected.
@@ -135,11 +135,11 @@ Welcome to the Avirena Jewels online boutique (avirena.com). By visiting our web
       subtitle: 'Insured Global Delivery Timelines & Transit Terms',
       text: `AVIRENA JEWELS — SHIPPING & TRANSIT POLICY
 
-Every Avirena creation is carefully packaged in our signature velvet travel pouch and protective presentation box, fully insured against transit loss or damage.
+Every order is packaged in a protective pouch and box for transit.
 
 1. Order Processing Timelines:
-• In-stock pieces are dispatched within 24 to 48 business hours from our atelier (Monday through Saturday, excluding national holidays).
-• Made-to-order custom sizes or bespoke commissions require 7–10 business days for master artisan casting.
+• In-stock pieces are dispatched within 1-2 business days (Monday to Saturday, excluding public holidays).
+• Made-to-order pieces require 7-10 business days.
 
 2. Domestic Delivery (India):
 • Timeline: 2 to 4 business days via Express Courier.
@@ -160,27 +160,26 @@ Every Avirena creation is carefully packaged in our signature velvet travel pouc
       subtitle: 'Official Atelier & Customer Concierge Registry',
       text: `AVIRENA JEWELS — CONTACT INFORMATION
 
-Legal Business Entity:
-Avirena Jewels
+Business Name:
+Avirena Jewels (sole proprietorship)
 
-Registered Atelier & Studio Office:
-Studio Avirena, Suite 402, Heritage Craft Enclave,
-Bandra West, Mumbai, Maharashtra 400050, India
+Based in:
+Mumbai, Maharashtra, India
+Online only — we do not operate a walk-in store.
 
-Customer Concierge Email:
-avirenajewels@gmail.com
+Email:
 avirenajewels@gmail.com
 
 Telephone & WhatsApp Support:
-+91 98200 12345 / +91 80505 56004
++91 78238 89290
 
-Atelier Operational Hours:
-Monday – Saturday: 10:00 AM – 7:00 PM IST (06:30 – 15:30 CET)
-Sunday: Closed (Concierge tickets monitored for urgent inquiries)
+Support Hours:
+Monday – Saturday: 10:00 AM – 7:00 PM IST
+Sunday: Closed
 
-Grievance & Legal Officer:
-Attn: Legal & Compliance Officer
-Email: legal@avirena.com`,
+Grievance Officer:
+Email: avirenajewels@gmail.com
+We acknowledge complaints within 48 hours and resolve them within one month of receipt.`,
     },
 
     legal: {
@@ -188,11 +187,11 @@ Email: legal@avirena.com`,
       subtitle: 'Company Registration, Tax Identification & Hallmarking',
       text: `AVIRENA JEWELS — LEGAL NOTICE (IMPRESSUM)
 
-1. Company Information:
+1. Business Information:
 Trade Name: Avirena Jewels
-Corporate Identity Number (CIN): U36999MH2024PTC123456
-GSTIN / Tax ID: 27AAAAA0000A1Z5
-Director / Representative: Avirena Atelier Management Board
+Business Type: Sole proprietorship
+Based in: Mumbai, Maharashtra, India
+Proprietor / Grievance Officer: contactable at avirenajewels@gmail.com
 
 2. Material Disclosures:
 • Avirena jewelry is fashion jewelry crafted from high-density brass and durable alloys. It does not contain precious metal and is not sold as, or hallmarked to, any precious-metal fineness standard.
@@ -202,7 +201,7 @@ Director / Representative: Avirena Atelier Management Board
 
 3. Dispute Resolution:
 • The European Commission provides an online dispute resolution platform: https://ec.europa.eu/consumers/odr
-• For Indian consumers, grievances are handled per Consumer Protection (E-Commerce) Rules, 2020 via legal@avirena.com.`,
+• For Indian consumers, grievances are handled per Consumer Protection (E-Commerce) Rules, 2020 via avirenajewels@gmail.com.`,
     },
   };
 
