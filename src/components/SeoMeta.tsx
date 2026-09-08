@@ -2,6 +2,17 @@ import React, { useEffect } from 'react';
 import { PageView, Product, Currency, Category } from '../types';
 import { GUIDES } from '../data/guides';
 
+/**
+ * The INR amount a shopper actually pays, as a number for schema.
+ *
+ * Mirrors formatPrice() in src/data/products.ts exactly: live Shopify prices
+ * already arrive in rupees, while legacy/local entries use a small base figure
+ * that needs the 90x conversion. Schema must publish the same number the page
+ * displays and the same one scripts/prerender.ts emits.
+ */
+const toInrAmount = (price: number): number =>
+  price < 500 ? Math.round(price * 90) : Math.round(price);
+
 interface SeoMetaProps {
   currentPage: PageView;
   selectedProduct?: Product;
@@ -190,8 +201,13 @@ export const SeoMeta: React.FC<SeoMetaProps> = ({
         offers: {
           '@type': 'Offer',
           url: `https://avirenajewels.com/product/${selectedProduct.handle || selectedProduct.id}`,
-          priceCurrency: currency,
-          price: selectedProduct.price,
+          priceCurrency: 'INR',
+          // Must match scripts/prerender.ts, which emits the real INR amount.
+          // selectedProduct.price is an internal base figure that formatPrice()
+          // converts for display; assigning it raw published price 7.77 with
+          // priceCurrency INR on a 699 rupee product, which is both a
+          // prerender/hydration divergence and a Merchant Center violation.
+          price: toInrAmount(selectedProduct.price),
           priceValidUntil: '2027-12-31',
           itemCondition: 'https://schema.org/NewCondition',
           availability: selectedProduct.inStock
@@ -206,7 +222,9 @@ export const SeoMeta: React.FC<SeoMetaProps> = ({
             shippingRate: {
               '@type': 'MonetaryAmount',
               value: '0',
-              currency: currency,
+              // The store transacts in INR; `currency` is a display toggle and
+              // must not leak into schema, which has to match prerender.ts.
+              currency: 'INR',
             },
             deliveryTime: {
               '@type': 'ShippingDeliveryTime',
@@ -214,13 +232,13 @@ export const SeoMeta: React.FC<SeoMetaProps> = ({
                 '@type': 'QuantitativeValue',
                 minValue: 1,
                 maxValue: 2,
-                unitCode: 'd',
+                unitCode: 'DAY',
               },
               transitTime: {
                 '@type': 'QuantitativeValue',
                 minValue: 2,
                 maxValue: 4,
-                unitCode: 'd',
+                unitCode: 'DAY',
               },
             },
           },

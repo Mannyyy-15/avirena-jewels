@@ -7,17 +7,62 @@
   "redirects": [
     {
       "source": "/product/geometric-gold-tone-statement-earrings-for-women-modern-square-earrings",
-      "destination": "/product/nadir-square-studs-gold-tone-brass-earrings",
+      "destination": "/product/avirena-square-studs-gold-tone-brass-earrings",
       "permanent": true
     },
     {
       "source": "/product/gold-tone-drop-earrings-for-women-minimalist-long-dangle-earrings",
-      "destination": "/product/lume-drop-earrings-gold-tone-brass",
+      "destination": "/product/avirena-drop-earrings-gold-tone-brass",
       "permanent": true
     },
     {
       "source": "/product/gold-tone-statement-drop-earrings-for-women-geometric-dangle-earrings",
-      "destination": "/product/forma-statement-drops-geometric-brass-earrings",
+      "destination": "/product/avirena-statement-drops-geometric-brass-earrings",
+      "permanent": true
+    },
+    {
+      "source": "/product/nadir-square-studs-gold-tone-brass-earrings",
+      "destination": "/product/avirena-square-studs-gold-tone-brass-earrings",
+      "permanent": true
+    },
+    {
+      "source": "/product/lume-drop-earrings-gold-tone-brass",
+      "destination": "/product/avirena-drop-earrings-gold-tone-brass",
+      "permanent": true
+    },
+    {
+      "source": "/product/forma-statement-drops-geometric-brass-earrings",
+      "destination": "/product/avirena-statement-drops-geometric-brass-earrings",
+      "permanent": true
+    },
+    {
+      "source": "/product/amara-heart-drops-silver-tone-earrings",
+      "destination": "/product/avirena-heart-drops-silver-tone-earrings",
+      "permanent": true
+    },
+    {
+      "source": "/product/volute-spiral-earrings-silver-tone",
+      "destination": "/product/avirena-spiral-earrings-silver-tone",
+      "permanent": true
+    },
+    {
+      "source": "/product/solene-crystal-hoops-gold-tone-earrings",
+      "destination": "/product/avirena-crystal-hoops-gold-tone-earrings",
+      "permanent": true
+    },
+    {
+      "source": "/product/solene-crystal-hoops-silver-tone-earrings",
+      "destination": "/product/avirena-crystal-hoops-silver-tone-earrings",
+      "permanent": true
+    },
+    {
+      "source": "/product/petra-pebble-studs-gold-tone-earrings",
+      "destination": "/product/avirena-pebble-studs-gold-tone-earrings",
+      "permanent": true
+    },
+    {
+      "source": "/product/foglia-leaf-studs-gold-tone-earrings",
+      "destination": "/product/avirena-leaf-studs-gold-tone-earrings",
       "permanent": true
     }
   ],

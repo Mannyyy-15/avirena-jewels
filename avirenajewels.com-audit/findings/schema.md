@@ -1,263 +1,272 @@
-# Schema.org / Structured Data Audit — avirenajewels.com
+# Schema.org Audit — avirenajewels.com
 
-Audit date: 2026-09-04
-Scope: Homepage, 3 live product pages, category/collection pages, source of truth `scripts/prerender.ts` (static prerender) and `src/components/SeoMeta.tsx` (client-side hydration overwrite).
-
-Note on methodology: this site ships **two independent JSON-LD generators that write to the same `<script id="dynamic-jsonld-schema">` tag**. `scripts/prerender.ts` bakes correct static JSON-LD into the HTML at build time. `src/components/SeoMeta.tsx` then **overwrites that same tag at runtime** via `document.getElementById('dynamic-jsonld-schema').textContent = ...` once React hydrates. Any consumer that only fetches raw HTML (curl, some crawlers) sees the prerendered version; any consumer that executes JavaScript (Google's rendering pipeline, Playwright, real browsers) sees whatever `SeoMeta.tsx` produces after `App.tsx` finishes routing. These two outputs are **inconsistent with each other**, and on product pages the runtime version is currently broken (Finding 1).
+Scope: homepage, /shop, /shop/earrings, /product/avirena-crystal-hoops-gold-tone-earrings, /guides, one guide article.
+Sources: `scripts/prerender.ts` (`getGlobalSchema()` + per-route `jsonLd`), `src/components/SeoMeta.tsx` (hydration rewrite of `#dynamic-jsonld-schema`), live fetches (raw HTML and Playwright-rendered DOM) of the PDP.
 
 ---
 
-## Finding 1 — CRITICAL: Client-side hydration destroys Product/BreadcrumbList schema on every PDP
+## 1. CRITICAL — Hydrated Product `offers.price` is wrong currency-unit, live on production
 
-**Evidence:**
-- Raw HTML (curl, no JS) at `https://avirenajewels.com/product/geometric-gold-tone-statement-earrings-for-women-modern-square-earrings` contains correct types: `Product, Offer, Brand, AggregateRating, MerchantReturnPolicy, BreadcrumbList` (5,684 bytes), sourced from `scripts/prerender.ts` lines 588-654.
-- The same URL rendered with a full headless-browser pass (Playwright, 13.2s render time, zero console errors, `render_diagnostics: []`) drops all of that and instead emits only `Organization, JewelryStore, WebSite, FAQPage` — i.e. **the homepage schema set**. Confirmed reproducible, not a timing fluke (retested with 30s navigation timeout).
-- Root cause is in `src/App.tsx`, `handleLocationChange()` (~lines 116-178): it parses the URL, does `storeProducts.find(p => p.id === parts[1])`, and only calls `setCurrentPage('pdp')` if a match is found; otherwise it falls through to `default: setCurrentPage('home')` (line 170). `storeProducts` comes from `useShopify()` (`src/context/ShopifyContext.tsx` / `src/lib/shopify.ts`), an async Storefront API fetch. When resolution of `currentPage` is captured as `'home'` (as observed), `src/components/SeoMeta.tsx`'s FAQPage condition `currentPage === 'faq' || currentPage === 'home'` (line 227) fires, and the `currentPage === 'pdp' && selectedProduct` branch (line 159) that builds Product/Offer/AggregateRating never runs. `SeoMeta.tsx` then calls `scriptTag.textContent = JSON.stringify(schemas)` (line 276), unconditionally clobbering the good prerendered markup with the wrong set.
-- Google indexes based on the **rendered DOM**, not raw HTML, for JS-driven sites — meaning the Product rich result eligibility, Merchant Center feed potential, and correct canonical (`offers.url`) for all 3 live products are at risk of being invisible to Google despite the prerendered HTML looking correct in view-source.
+**Evidence**: Live raw HTML for `/product/avirena-crystal-hoops-gold-tone-earrings` (`--mode never`) emits:
+```json
+"offers": { "priceCurrency": "INR", "price": 699, ... }
+```
+Live Playwright-rendered DOM (`--mode always`, same URL, immediately after) emits:
+```json
+"offers": { "priceCurrency": "INR", "price": 7.766666666666667, ... }
+```
+`src/components/SeoMeta.tsx:194` does `price: selectedProduct.price` while `src/lib/shopify.ts:441` stores `Product.price` as a **base-EUR-normalized** value (`rawAmount / 90.0` for INR-priced items — this is the currency-switcher's internal base unit, not a displayable price in any currency). Every UI price display (`CartDrawer.tsx:231`, `CartPage.tsx:212`, `CheckoutPage.tsx:546`, `QuickViewModal.tsx:265`) correctly runs this through `formatPrice(price, currency)` before rendering. `SeoMeta.tsx` is the only price consumer in the codebase that skips that conversion.
 
-**Fix:**
-1. In `src/App.tsx`, `handleLocationChange()`: do not fall through to `'home'` when `root === 'product'` but the product isn't found yet (e.g., because `storeProducts` hasn't loaded). Add a distinct `'pdp-loading'` state, or gate routing on `isConfigured`/a loaded flag from `useShopify()`, so the app never mis-resolves a product route as the homepage.
-2. In `src/components/SeoMeta.tsx`, stop having client JS overwrite JSON-LD that was already correctly prerendered. Either (a) remove `SeoMeta.tsx`'s JSON-LD injection entirely and rely solely on `scripts/prerender.ts` output (recommended — single source of truth), or (b) if client-side re-rendering must stay for SPA navigation, make it byte-compatible with the prerender source (same address, same phone, same URL pattern, same FAQ set) and add a guard so it never emits `FAQPage`-as-fallback for an unresolved PDP route.
+**Impact**: any crawler or bot that executes JS (Googlebot's rendering pass, Merchant Center's live crawl, any AI agent that renders the page) sees a ₹699 item declared as **₹7.77** (or whatever the active `currency` context happens to be at hydration). This is a direct violation of Google's structured-data price-accuracy policy and is grounds for Merchant Center suspension / manual action, not just a warning. It also fails prerendered-vs-hydrated parity outright — the two blocks materially disagree on price, and per the standing instruction, the hydrated version wins for JS-executing crawlers.
 
-**Falsifiability:** Re-run `render_page.py --mode always --timeout-ms 30000 --json` (or Google's Rich Results Test / URL Inspection "Tested page > View Crawled Page > Screenshot/HTML") against any of the 3 product URls below. If the rendered DOM's `#dynamic-jsonld-schema` contains `Product`/`Offer`/`BreadcrumbList`, this finding is resolved; if it contains `FAQPage`/`JewelryStore` instead, it reproduces.
+**Fix** — `src/components/SeoMeta.tsx`, replace line 194:
+```diff
+-          price: selectedProduct.price,
++          price: formatPriceForSchema(selectedProduct.price, currency),
+```
+Add a small helper near the top of the file (schema.org `Offer.price` wants a bare number, not a formatted string with currency symbol/commas):
+```ts
+// EUR→display-currency conversion factors, mirrored from src/lib/shopify.ts.
+// Keep these two files' rates identical or PDP schema price will drift from the UI price again.
+const CURRENCY_RATES: Record<string, number> = { EUR: 1, INR: 90.0, USD: 1.08, GBP: 0.85 };
 
----
+function formatPriceForSchema(basePriceEur: number, currency: string): number {
+  const rate = CURRENCY_RATES[currency] ?? CURRENCY_RATES.EUR;
+  return Math.round(basePriceEur * rate * 100) / 100;
+}
+```
+Better long-term fix: don't duplicate the conversion table in two files — export the existing rate table/function from `src/lib/shopify.ts` (or wherever `formatPrice` lives) and import it into `SeoMeta.tsx` so there is exactly one source of truth.
 
-## Finding 2 — CRITICAL: Fabricated `aggregateRating` on every product (identical values, no review system exists)
-
-**Evidence:**
-- `scripts/prerender.ts` ~line 624-628 hardcodes the exact same block on **every** Shopify product with no per-product variance:
-  ```js
-  aggregateRating: { '@type': 'AggregateRating', ratingValue: '4.9', reviewCount: '38' }
-  ```
-  All 3 live products (`geometric-gold-tone-statement-earrings...`, `gold-tone-drop-earrings...`, `gold-tone-statement-drop-earrings...`) get identical `4.9` / `38` — confirmed in the fetched raw JSON-LD for all three (5,684 / 5,663 / 5,671 byte blocks all containing `AggregateRating`).
-- Separately, `src/data/products.ts` (unused mock data — the live store's 3 real products come from Shopify, not this file) hardcodes per-product `rating` (4.7–5.0) and `reviewsCount` (19–62) literals, and `src/components/SeoMeta.tsx` line 220 falls back to `selectedProduct.rating || '4.9'` / `selectedProduct.reviewsCount || '38'` — same fabricated pattern carried into the client-side generator.
-- These numbers are displayed to shoppers as if real: `src/pages/ProductDetailPage.tsx:220` renders `({product.reviewsCount} reviews)`, and `src/components/ProductCard.tsx:142` does the same on listing cards.
-- There is no review collection, submission, or moderation system anywhere in the codebase. No `Review` objects exist to back the `AggregateRating`.
-
-**Why Critical:** This is fabricated review data, not a missing-property gap. Google's structured data policies explicitly prohibit review/rating markup that doesn't reflect genuine user-submitted reviews and carry manual-action risk (loss of all rich results, and in repeat cases, broader Search visibility penalties on the domain). In India this also carries CCPA-adjacent/ASCI consumer-deception exposure for advertising a review count/score no customer ever produced.
-
-**Fix — do not seed or fabricate reviews to "back" this markup.** Remove the block and the on-page counts until a genuine review pipeline exists:
-1. `scripts/prerender.ts`: delete the `aggregateRating` key entirely from the `Product` object (lines 624-628).
-2. `src/components/SeoMeta.tsx`: delete the `aggregateRating` key from the PDP schema (lines 218-223).
-3. `src/pages/ProductDetailPage.tsx:220` and `src/components/ProductCard.tsx:142`: remove or replace the `({product.reviewsCount} reviews)` UI display, since it's sourced from the same non-existent data.
-4. If/when a real review system (verified purchases, e.g. via Shopify Product Reviews, Judge.me, Yotpo, or a custom pipeline) is implemented, re-add `aggregateRating`/`review` populated from real data only.
-
-**Falsifiability:** Compare `ratingValue`/`reviewCount` across the 3 live product JSON-LD blocks — if all three still read `4.9`/`38` identically with no backing review store, the finding stands. Search the codebase for any `Review`-writing code path (`grep -r "type.*Review\|submitReview\|POST.*review"`) — none currently exists.
+**Falsifiability**: Run `claude-seo run render_page.py https://avirenajewels.com/product/avirena-crystal-hoops-gold-tone-earrings --mode always --json-ld-output out.json` and check `data[].offers.price` for the `Product` block equals `699` (the on-page `₹699` price), not `7.77`. Repeat with `--mode never` — both must show `699` after the fix.
 
 ---
 
-## Finding 3 — HIGH: Placeholder/fabricated NAP (phone) in Organization and JewelryStore schema
+## 2. HIGH — BreadcrumbList silently disappears after hydration on PDP
 
-**Evidence:**
-- `telephone: '+91-98200-12345'` appears in `scripts/prerender.ts` lines 101 and 114 (Organization `contactPoint` and JewelryStore), duplicated in `src/components/SeoMeta.tsx` lines 103 and 118, and also used as the WhatsApp deep link on `src/pages/ContactPage.tsx` line 143 (`https://wa.me/919820012345`).
-- Despite being used consistently across the codebase, this is a placeholder-pattern number (`98200-12345` — a sequential/dummy-looking number, not a real assigned Indian mobile line), confirmed against `public/llms.txt`, which describes an entirely different brand contact model (`concierge@avirena.com`, domain `avirena.com`, no phone number listed at all) — i.e. the authoritative brand-facts manifest doesn't corroborate this number as real.
-- Publishing a non-working or placeholder phone number in `Organization.contactPoint` and `LocalBusiness.telephone` is a NAP (Name/Address/Phone) integrity problem: it can suppress or misrepresent local-pack/knowledge-panel eligibility and directly harms customer trust if dialed.
+**Evidence**: Raw HTML `structured_data.blocks[0].types` for the PDP includes `BreadcrumbList` and `ListItem`. The Playwright-rendered version's `types` list does **not** contain `BreadcrumbList` or `ListItem` at all — `SeoMeta.tsx` never pushes a `BreadcrumbList` schema for any page (grep confirms: only `Organization`, `OnlineStore`, `WebSite`, `Product`, and conditionally `Article`/`FAQPage` are pushed in `SeoMeta.tsx`'s `schemas` array).
 
-**Fix:** Replace `+91-98200-12345` with the atelier's real, currently-monitored support/WhatsApp number in both `scripts/prerender.ts` (2 occurrences) and `src/components/SeoMeta.tsx` (2 occurrences), and update the WhatsApp link on `ContactPage.tsx` to match. Do not publish any telephone value in schema that isn't answered/monitored.
+**Impact**: For any JS-executing crawler, the prerendered `BreadcrumbList` is emitted into the DOM once at load, then **overwritten and removed** the moment `SeoMeta.tsx`'s `useEffect` fires and replaces `#dynamic-jsonld-schema`'s `textContent` wholesale. Google explicitly documents that it uses the post-render DOM; the breadcrumb rich-result eligibility this page currently has in raw HTML is lost the instant hydration completes. Same applies to every route's `BreadcrumbList` (category pages, guide pages, shop), not just the PDP — `SeoMeta.tsx` has no `BreadcrumbList` branch anywhere.
 
-**Falsifiability:** Call or WhatsApp-message +91 98200 12345 during India business hours; if unanswered/unmonitored/non-existent, the finding is confirmed. Cross-check against `public/llms.txt` and any real business registration/GST document for the actual support line.
+**Fix**: `SeoMeta.tsx` must push a `BreadcrumbList` matching whatever `scripts/prerender.ts` emits for that route (home has none; shop has Home→Shop; category has Home→Shop→Category; PDP has Home→Shop→Product; guides hub has Home→Guides; guide article has Home→Guides→Article). Minimal PDP-only patch inside the `if (currentPage === 'pdp' && selectedProduct)` block in `SeoMeta.tsx`:
+```ts
+schemas.push({
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://avirenajewels.com' },
+    { '@type': 'ListItem', position: 2, name: 'Shop', item: 'https://avirenajewels.com/shop' },
+    {
+      '@type': 'ListItem',
+      position: 3,
+      name: selectedProduct.name,
+      item: `https://avirenajewels.com/product/${selectedProduct.handle || selectedProduct.id}`,
+    },
+  ],
+});
+```
+Recommend the same pattern for `shop`/`collection` and `guides` branches so parity holds sitewide, not just on PDP.
+
+**Falsifiability**: `render_page.py <url> --mode always --json-ld-output out.json`, check `types` includes `BreadcrumbList`. Currently fails on every route type checked (PDP confirmed directly; other routes inferred from reading `SeoMeta.tsx` in full — it has zero `BreadcrumbList` pushes for any branch, so this is a codebase-wide gap, not PDP-specific).
 
 ---
 
-## Finding 4 — HIGH: NAP address mismatch between schema and visible Contact page (two different street addresses for the same location)
+## 3. HIGH — `Offer.shippingDetails` diverges between prerender and hydration (missing field + wrong unit code + currency risk)
 
-**Evidence:**
-- `scripts/prerender.ts` line 120: `streetAddress: 'Heritage Craft Enclave, Bandra West'`.
-- `src/components/SeoMeta.tsx` line 124: `streetAddress: 'Suite 402, Heritage Craft Enclave, Bandra West'` (the client-side generator, which — per Finding 1 — is what a JS-executing crawler actually loads on non-home pages).
-- `src/pages/ContactPage.tsx` line 341 (visible on-page text): `"Waterfield Road, Bandra West, Mumbai 400050, India"`.
-- Three different street-address strings for the same claimed physical location, same postal code (400050). This is a textbook NAP-inconsistency problem: Google cross-references the schema address against on-page text and other citations (GMB/Maps, directories) — inconsistent NAP data suppresses local ranking confidence and can prevent Knowledge Panel address matching entirely.
-- Additionally, `public/llms.txt` lists atelier locations as "Mumbai (India), Jaipur (India), Vicenza (Italy)" with no Bandra West detail at all, and a different domain/contact entirely — this file is stale/unreconciled with the live site and should not be treated as corroborating evidence either way, but its divergence is itself worth flagging separately from schema (see Finding 8).
+**Evidence**, `scripts/prerender.ts:1165-1191` vs `src/components/SeoMeta.tsx:204-226`:
 
-**Fix:** Pick one authoritative address (matching whatever is on the Google Business Profile / legal registration) and make `scripts/prerender.ts`, `SeoMeta.tsx`, and `ContactPage.tsx` all use the identical string, including suite/unit if applicable.
+| Field | prerender.ts | SeoMeta.tsx |
+|---|---|---|
+| `shippingDestination` | `{ "@type": "DefinedRegion", "addressCountry": "IN" }` | **absent** |
+| `deliveryTime.handlingTime.unitCode` | `"DAY"` | `"d"` |
+| `deliveryTime.transitTime.unitCode` | `"DAY"` | `"d"` |
+| `shippingRate.currency` | hardcoded `"INR"` | `currency` (the active display-currency variable) |
 
-**Falsifiability:** Diff the `streetAddress` value across the three files/URLs above; if they don't match verbatim, the finding reproduces. Cross-check against Google Business Profile listing for "Studio Avirena Atelier" if one exists.
+Confirmed live on the rendered PDP: hydrated JSON-LD has no `shippingDestination` key under `shippingDetails`, and both `unitCode` values are `"d"`.
+
+**Impact**: `"d"` is not a valid UN/CEFACT Common Code for `QuantitativeValue.unitCode` (the correct value is `"DAY"`, same as prerender.ts already uses) — this fails Google's Merchant Center shipping schema validation on the hydrated version. Losing `shippingDestination` makes the shipping declaration incomplete for crawlers that only see the hydrated DOM. `shippingRate.currency` tracking the currency-switcher variable instead of the actual settlement currency (shipping is charged in INR regardless of display currency) is a latent correctness bug if/when the currency switcher is used.
+
+**Fix**, `src/components/SeoMeta.tsx` shippingDetails block:
+```diff
+           shippingDetails: {
+             '@type': 'OfferShippingDetails',
+             shippingRate: {
+               '@type': 'MonetaryAmount',
+               value: '0',
+-              currency: currency,
++              currency: 'INR',
+             },
++            shippingDestination: {
++              '@type': 'DefinedRegion',
++              addressCountry: 'IN',
++            },
+             deliveryTime: {
+               '@type': 'ShippingDeliveryTime',
+               handlingTime: {
+                 '@type': 'QuantitativeValue',
+-                minValue: 1,
+-                maxValue: 2,
+-                unitCode: 'd',
++                minValue: 0,
++                maxValue: 1,
++                unitCode: 'DAY',
+               },
+               transitTime: {
+                 '@type': 'QuantitativeValue',
+                 minValue: 2,
+                 maxValue: 4,
+-                unitCode: 'd',
++                unitCode: 'DAY',
+               },
+             },
+           },
+```
+(Also aligns `handlingTime` min/max with prerender.ts's `0–1`, currently `1–2` in SeoMeta — pick one and make both files match; prerender's `0-1` is likely correct since same-day dispatch is common for a small catalog.)
+
+**Falsifiability**: Diff the two `data[].offers.shippingDetails` objects from `--mode never` and `--mode always` fetches of the same PDP URL — must be byte-identical (aside from irrelevant key order) after the fix.
 
 ---
 
-## Finding 5 — MEDIUM: BreadcrumbList missing on category pages and most static pages
+## 4. HIGH — Product schema missing `material` in prerendered HTML (present only after hydration)
 
-**Evidence:**
-- BreadcrumbList **is present and correct** on: `/shop` (`scripts/prerender.ts` lines 333-350), `/collections` (lines 415-431), and every `/product/:handle` page (lines 630-654) — confirmed live via raw fetch for `/collections` (`BreadcrumbList` present) and product pages.
-- BreadcrumbList **is absent** on the 5 category routes generated in the `for (const cat of categories)` loop (`scripts/prerender.ts` lines 375-401, covering `/shop/earrings`, `/shop/necklaces`, `/shop/rings`, `/shop/bracelets`, `/shop/brooches`) — confirmed live: raw fetch of `/shop/earrings` returns only `CollectionPage, JewelryStore, Organization, WebSite` types, no `BreadcrumbList`.
-- Also absent on `/about`, `/contact`, `/faq`, `/policies`, `/journal` (routes at lines 442-576 only push `AboutPage`/`ContactPage`/`FAQPage`/nothing extra — no `BreadcrumbList` object added).
+**Evidence**: `scripts/prerender.ts`'s `productJsonLd` (lines 1138–1201) has no `material` key anywhere in the `Product` object. `src/components/SeoMeta.tsx:189` does have `material: selectedProduct.materials || selectedProduct.metal`, sourced from `METAL_MATERIALS` in `src/lib/shopify.ts:11-19`, e.g. for this PDP: `"High-grade brass with an anti-tarnish gold-tone e-coating (hypoallergenic, nickel-free)"`. Confirmed on live fetches: raw HTML has no `material` field; hydrated DOM has it.
 
-**Impact:** Breadcrumb rich results are a real, still-active Google SERP feature (unlike FAQPage) and directly aid category-page CTR for an e-commerce site with 5 distinct jewelry categories.
+**Why this matters for this brand specifically**: `material` is a Google-recommended `Product` field, and this brand's core trust proposition is material honesty — the PDP's own visible copy states explicitly "This is fashion jewellery... not solid gold... not hallmarked." A crawler that only reads server HTML (not all do JS rendering, and AI answer engines frequently don't) currently gets zero material disclosure in structured data even though the brand goes out of its way to state it in prose. This is a **parity gap that removes a compliant, wanted field** — the fix is to add it to prerender.ts, matching SeoMeta.tsx's existing (correct) value, not to touch SeoMeta.tsx.
 
-**Fix:** Add a `BreadcrumbList` object to each category route inside the `categories.map`/`for` loop and to the remaining static routes. Ready-to-paste addition for the category loop in `scripts/prerender.ts` (insert into the `jsonLd` array alongside the existing `CollectionPage`):
+**Fix** — add to `scripts/prerender.ts` inside the `Product` object (after `brand`, before `offers`), sourced from the same `product` data available in that loop. Since `prerender.ts` builds from raw Shopify GraphQL nodes rather than the transformed `Product` type, mirror `METAL_MATERIALS` logic or, cleaner, import the same map:
+```ts
+// near the top of scripts/prerender.ts, alongside other shared constants
+const METAL_MATERIALS_BY_KEYWORD: { match: RegExp; material: string }[] = [
+  { match: /rose.?gold/i, material: 'High-grade brass with anti-tarnish rose gold-tone e-coating (hypoallergenic, nickel-free)' },
+  { match: /silver/i, material: 'Durable silver-tone alloy with protective anti-tarnish coating (hypoallergenic, nickel-free)' },
+  { match: /gold/i, material: 'High-grade brass with anti-tarnish gold-tone e-coating (hypoallergenic, nickel-free)' },
+];
+function deriveMaterial(product: any): string {
+  const hay = `${product.title} ${product.productType} ${(product.tags || []).join(' ')}`;
+  return (
+    METAL_MATERIALS_BY_KEYWORD.find((r) => r.match.test(hay))?.material ||
+    'High-grade brass with protective anti-tarnish e-coating (hypoallergenic, nickel-free)'
+  );
+}
+```
+Then in the `Product` object literal:
+```diff
+         brand: {
+           '@type': 'Brand',
+           name: 'Avirena Jewels',
+         },
++        material: deriveMaterial(product),
+         offers: {
+```
+**Strongly preferred alternative**: don't reinvent keyword-matching in two files — this is exactly the kind of drift the `deriveCategory()` comment at the top of `prerender.ts` warns about. If `src/lib/shopify.ts`'s `METAL_MATERIALS` map and its `metal` derivation logic can be extracted to a shared `.ts` module importable from both the Node prerender script and the browser bundle, do that instead and have both call the same function.
 
+**Guardrail**: whatever value ends up in `material`, it must never say "gold", "silver", "sterling", "vermeil", or "diamond" without the "-tone"/"faceted crystal, not diamond" qualifiers already used in `METAL_MATERIALS` — confirmed the existing copy already respects this; just don't let a future edit drop the qualifiers.
+
+**Falsifiability**: `render_page.py <product-url> --mode never --json-ld-output out.json` — `data[].material` must be present and must not contain the bare words "gold"/"silver" without "-tone" adjacent, or "diamond".
+
+---
+
+## 5. INFO — Home page FAQPage content diverges between prerender and hydration (not a regression, but inconsistent)
+
+**Evidence**: `scripts/prerender.ts:558-579` (home route) emits a 2-question `FAQPage` (materials, pearls). `src/components/SeoMeta.tsx:274-313` emits a 4-question `FAQPage` for `currentPage === 'faq' || currentPage === 'home'` (materials, hypoallergenic, pearls, shipping) with reworded answer text even for the two overlapping questions.
+
+**Impact**: Since Google retired FAQ rich results for all sites (2026-05-07), there is no SERP consequence. Flagging as Info per standing instruction — no removal recommended. The only reason to fix this is internal consistency (same reasoning as the `guideFaqEntries()` helper already used elsewhere in `prerender.ts` to prevent exactly this kind of drift) and because if AI/GEO citation of FAQ content ever matters, a crawler landing pre-hydration vs post-hydration would get two different answer sets for the same two questions, which looks inconsistent if a user compares "page source" answers to on-screen answers.
+
+**Fix (optional, low priority)**: make `SeoMeta.tsx`'s home-page FAQ block reuse the exact same 2 entries as `prerender.ts`, or vice versa — pick one list as source of truth. Not urgent; do not spend engineering time here before items 1–4.
+
+---
+
+## 6. INFO — Existing FAQPage markup sitewide
+
+Present on: homepage, `/faq`, every `/guides/:slug` article. Per standing guidance: Google retired FAQ rich results for all sites (2026-05-07). This is Info-severity, not a defect — no SERP benefit remains, any AI/GEO citation benefit is unconfirmed. **No removal recommended.** No new FAQPage should be added elsewhere on the strength of expected SERP gain.
+
+---
+
+## 7. PASS — Product `offers.url` and `BreadcrumbList` item URLs use current `/product/avirena-*` handles
+
+**Evidence**: Live raw-HTML fetch of `/product/avirena-crystal-hoops-gold-tone-earrings` confirms:
+```json
+"offers": { "url": "https://avirenajewels.com/product/avirena-crystal-hoops-gold-tone-earrings", ... }
+"BreadcrumbList" item 3: "item": "https://avirenajewels.com/product/avirena-crystal-hoops-gold-tone-earrings"
+```
+Both match the canonical URL and the current page's own URL exactly — no stale pre-rename handle (`solene-crystal-hoops-...`) leaked into schema. This is because `scripts/prerender.ts` builds `handle` from the live Shopify GraphQL response (`product.handle`) each build, not from any hardcoded list, and `vercel.json` separately 301-redirects the 12 old handles. **No fix needed.** Spot-check the other 8 products' PDPs before considering this fully closed sitewide — only the crystal-hoops-gold PDP was fetched live for this audit.
+
+**Falsifiability**: For each of the 9 live product handles, `offers.url` and the final `BreadcrumbList` item's `item` must equal `https://avirenajewels.com/product/<handle>` with no `vercel.json`-listed old handle appearing anywhere in the JSON-LD.
+
+---
+
+## 8. PASS (confirmed absent) — No `aggregateRating`/`Review` markup found
+
+**Evidence**: `grep -n "aggregateRating\|Review" scripts/prerender.ts src/components/SeoMeta.tsx` returns no matches in either file. Live raw and hydrated JSON-LD `types` arrays for the PDP contain no `AggregateRating` or `Review` type. Per the standing hard rule (no review system exists sitewide), this is correct and must stay this way — **any reappearance of this markup is Critical.**
+
+**Falsifiability**: `grep -rn "aggregateRating\|AggregateRating\|\"Review\"" scripts/prerender.ts src/components/SeoMeta.tsx` must return nothing, on every future change to these two files.
+
+---
+
+## 9. PASS (confirmed absent) — No precious-metal or diamond claims in Product schema
+
+**Evidence**: PDP `Product.description` (both raw and hydrated) explicitly states "The stone is a faceted crystal, not a diamond or precious gemstone. The metal is not solid gold, gold vermeil or sterling silver, and is not hallmarked to any precious-metal standard." `SeoMeta.tsx`'s `material` field sources from `METAL_MATERIALS` in `src/lib/shopify.ts`, all four entries use "-tone" qualifiers and never claim solid precious metal. No `material` field exists yet in prerender.ts (see Finding 4) so there is nothing to check there, but nothing incorrect either.
+
+**Falsifiability**: any future `material`/`description` change must not introduce "18k", "sterling silver" (unqualified), "solid gold", or "diamond" without an explicit "-tone"/"not a diamond" qualifier in the same field.
+
+---
+
+## 10. Category pages — ItemList/CollectionPage assessment (confirmed correct behavior)
+
+**Evidence**, `scripts/prerender.ts:716-800`: every `/shop/:category` route always emits a `CollectionPage` (name/url/description). Only non-empty categories additionally get `mainEntity: { '@type': 'ItemList', ... }` populated with the category's products; empty categories get `CollectionPage` with no `mainEntity` at all, and the route also gets `robots: 'noindex, follow'` plus exclusion from the sitemap (`isEmpty` branch).
+
+**Assessment**: this is the right call and needs no change. Emitting `ItemList` on an empty, noindexed category would be actively misleading (a rich-result-eligible list of zero items, or worse, a list schema for a page Google is told not to index). Keeping the bare `CollectionPage` (no `ItemList`) on noindexed categories is harmless — it's not indexed anyway — and the moment inventory lands the same code path automatically promotes it to a populated `ItemList` with no manual schema work. **No fix required.** Only earrings currently has stock; necklaces, rings, bracelets, brooches are correctly noindexed and correctly schema-thin.
+
+**Falsifiability**: for any category with `productsByCategory.get(cat.id).length === 0`, the emitted `CollectionPage` must have no `mainEntity` key, and the route's meta robots must be `noindex, follow`. For any category with stock, `mainEntity.itemListElement.length` must equal the live product count in that category.
+
+---
+
+## 11. Prerendered vs hydrated parity — verified on PDP, NOT verified on guide page
+
+**PDP**: fully verified live (see Findings 1–4, 7 above). Confirmed divergences: `Offer.price` unit (Critical), missing `BreadcrumbList` (High), `shippingDetails` field/unit differences (High), missing `material` in prerendered-only (High).
+
+**Guide page**: **not verified** — I read both code paths (`scripts/prerender.ts:1076-1122` and `SeoMeta.tsx:242-271`) and they appear structurally aligned (same `Article` fields, same `FAQPage` mapping from `guide.faqs`), but I did not fetch a live guide URL in both raw and rendered modes to confirm actual runtime parity. Given the PDP had a real, non-obvious divergence despite looking correct in an isolated code read, do not assume the guide page is clean without checking.
+
+**Recommended manual test** (exact steps):
+1. `"$HOME/.claude/skills/seo/bin/claude-seo" run render_page.py https://avirenajewels.com/guides/<any-slug> --mode never --json-ld-output raw.json`
+2. `"$HOME/.claude/skills/seo/bin/claude-seo" run render_page.py https://avirenajewels.com/guides/<any-slug> --mode always --json-ld-output hydrated.json`
+3. Diff the `Article`, `FAQPage`, and `BreadcrumbList` blocks between the two files. Given Finding 2 (SeoMeta.tsx never pushes `BreadcrumbList` for any route), expect the guide page's `BreadcrumbList` to also disappear after hydration — treat that as a very likely High finding pending confirmation, not yet confirmed.
+4. Also diff `/guides` hub itself the same way (has `CollectionPage` + `BreadcrumbList` in prerender.ts; `SeoMeta.tsx` has no `guides`-hub-specific branch for either, only the `activeGuide` branch for individual articles) — the hub page's `CollectionPage`/`hasPart`/`BreadcrumbList` are likely lost entirely after hydration on `/guides` itself, since `SeoMeta.tsx` has no code path that emits them. This should also be confirmed with the same two-fetch diff before treating it as settled.
+
+---
+
+## 12. Missing high-value opportunities, ranked by impact
+
+1. **Fix Finding 1 (price unit bug) immediately** — this is a live data-integrity/policy-compliance issue, not an "opportunity," but it is the single highest-impact item on this list by a wide margin (risk of Merchant Center suspension).
+2. **Fix Finding 2 (BreadcrumbList lost on hydration, sitewide)** — cheap fix, restores an already-earned rich-result eligibility across every route type.
+3. **Fix Finding 4 (material missing from prerendered Product)** — cheap, reinforces the brand's material-honesty positioning in a machine-readable field, not just prose.
+4. **`WebPage`/`ItemPage` wrapper on PDP** — currently the PDP has `Product` + `BreadcrumbList` but no `WebPage`/`ItemPage` node with `@id` tying the page URL to the product entity. Not required for Merchant/Product rich results, but recommended for entity clarity if the site ever wants `mainEntityOfPage` cross-linking (as guide articles already do via `mainEntityOfPage`). Low priority.
+5. **`VideoObject` — not applicable.** No product videos found in the codebase (`grep -rn "VideoObject\|\.mp4\|video" scripts/prerender.ts` returns nothing relevant); skip unless the catalog adds video assets. See `schema/templates.json` if that changes.
+6. **Do not add `AggregateRating`/`Review`** — reiterating the hard rule as a standing "do not build" item, since it is the single most commonly-recommended e-commerce schema addition industry-wide and the one this site must never accept.
+7. **Do not reintroduce `HowTo`** for the ring-sizing guide content, even though "measure your ring size at home" (`src/data/guides.ts:408`) reads like classic HowTo copy — deprecated, no rich result. `Article` + `FAQPage` (current treatment) is correct.
+
+---
+
+## Ready-to-paste JSON-LD summary
+
+**Add to `scripts/prerender.ts` Product object** (Finding 4):
+```json
+"material": "High-grade brass with anti-tarnish gold-tone e-coating (hypoallergenic, nickel-free)"
+```
+(value must be derived per-product from the existing `METAL_MATERIALS`-equivalent logic — do not hardcode one value for all 9 SKUs; gold-tone vs silver-tone vs rose-gold-tone pieces need their matching string.)
+
+**Add to `SeoMeta.tsx` PDP branch** (Finding 2):
 ```json
 {
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
   "itemListElement": [
-    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://avirenajewels.com/" },
-    { "@type": "ListItem", "position": 2, "name": "Shop All Jewelry", "item": "https://avirenajewels.com/shop" },
-    { "@type": "ListItem", "position": 3, "name": "{{cat.title}}", "item": "https://avirenajewels.com/shop/{{cat.id}}" }
+    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://avirenajewels.com" },
+    { "@type": "ListItem", "position": 2, "name": "Shop", "item": "https://avirenajewels.com/shop" },
+    { "@type": "ListItem", "position": 3, "name": "<selectedProduct.name>", "item": "https://avirenajewels.com/product/<handle>" }
   ]
 }
 ```
-(substitute `{{cat.title}}` / `{{cat.id}}` with the loop variable, matching the existing template-literal style already used for `/shop` and `/collections` breadcrumbs in the same file).
 
-**Falsifiability:** Fetch raw HTML for `/shop/earrings`, `/about`, `/contact`, `/faq`, `/policies`, `/journal` and check `structured_data.blocks[].types` for `BreadcrumbList`; absence reproduces the finding.
+**Fix in `SeoMeta.tsx` `shippingDetails`** (Finding 3) — add `shippingDestination`, change both `unitCode` values from `"d"` to `"DAY"`, and hardcode `shippingRate.currency` to `"INR"` — see full diff in Finding 3.
 
----
-
-## Finding 6 — MEDIUM: Category pages have no `ItemList`/product inventory signal, despite only 3 real products existing
-
-**Evidence:**
-- The live Shopify store (queried via the Storefront API endpoint the site itself uses, `m5yhxq-gb.myshopify.com`, per `scripts/prerender.ts` line 12) currently has only **3 products, all earrings**. `src/data/products.ts` (19 mock products across rings/necklaces/bracelets/brooches) is dead mock data never surfaced to the live site — `scripts/prerender.ts` only ever prerenders `shopifyProducts` fetched live (line 216 `fetchShopifyProducts()`).
-- Consequently, `/shop/necklaces`, `/shop/rings`, `/shop/bracelets`, `/shop/brooches` are `CollectionPage` schema blocks describing categories that **currently contain zero real products** — a content/schema mismatch, not just a missing-opportunity gap. `CollectionPage` schema implies there's a page-relevant list of items; there isn't one behind 4 of the 5 categories today.
-- `/shop` and the category pages also lack `ItemList` (`mainEntity`/`hasPart`) tying the `CollectionPage` to actual product URLs, which is a genuine missed opportunity for the one category (`/shop/earrings`) that does have inventory.
-
-**Fix:**
-1. Short-term: for the 4 empty categories, either noindex them or remove `CollectionPage` schema until they have inventory (schema describing an empty category can look thin/misleading to Google).
-2. For `/shop/earrings` (and any category once populated), add an `ItemList` referencing the real product URLs, e.g.:
-
-```json
-{
-  "@context": "https://schema.org",
-  "@type": "CollectionPage",
-  "name": "Earrings Collection | AVIRENA",
-  "url": "https://avirenajewels.com/shop/earrings",
-  "description": "Sculptural molten studs, organic drop earrings, and huggies in anti-tarnish brass.",
-  "mainEntity": {
-    "@type": "ItemList",
-    "itemListElement": [
-      { "@type": "ListItem", "position": 1, "url": "https://avirenajewels.com/product/geometric-gold-tone-statement-earrings-for-women-modern-square-earrings" },
-      { "@type": "ListItem", "position": 2, "url": "https://avirenajewels.com/product/gold-tone-drop-earrings-for-women-minimalist-long-dangle-earrings" },
-      { "@type": "ListItem", "position": 3, "url": "https://avirenajewels.com/product/gold-tone-statement-drop-earrings-for-women-geometric-dangle-earrings" }
-    ]
-  }
-}
-```
-This should be generated dynamically in `scripts/prerender.ts`'s category loop by filtering `shopifyProducts` by `productType`/tag matching `cat.id`, not hardcoded.
-
-**Falsifiability:** Query the Shopify Storefront API product count/types directly, or view `/shop/necklaces` etc. live — if product grids are empty while `CollectionPage` schema is present, this reproduces.
-
----
-
-## Finding 7 — LOW/INFO: FAQPage present (no Google SERP benefit as of the 2026-05-07 retirement)
-
-**Evidence:** `FAQPage` schema present on homepage (`scripts/prerender.ts` lines 244-263, 2 questions) and on `/faq` (lines 510-529, 2 different questions), plus a third, non-matching 4-question variant in `src/components/SeoMeta.tsx` lines 227-266 that fires for `currentPage === 'home'` — meaning even the FAQPage content itself is inconsistent between prerendered and client-rendered output (materials/pearls questions on the static home page vs. gold-vermeil/hypoallergenic/pearls/shipping questions client-side — note this content also factually conflicts with the live site's brass/anti-tarnish positioning, describing "18k gold vermeil" and "925 sterling silver," which matches `llms.txt`'s outdated brand description, not the current brass-based site copy).
-
-**Severity: Info only**, per current guidance — Google retired FAQ rich results for all sites on 2026-05-07; this markup carries no confirmed Google SERP benefit today, and any AI/LLM citation benefit is unconfirmed. **Do not remove for that reason alone**, and do not add new FAQPage instances expecting a SERP feature.
-
-**Separate, real issue worth fixing independent of FAQPage's SERP status:** the FAQ *content itself* is self-contradictory across the three copies (brass vs. 18k gold vermeil/sterling silver) and should be reconciled to whatever the current product material actually is, since factually wrong Q&A content is a trust problem regardless of rich-result eligibility.
-
-**Falsifiability:** Compare the 3 FAQPage question sets (prerender home, prerender /faq, SeoMeta.tsx) — divergent content confirms the inconsistency claim independent of the SERP-retirement severity call.
-
----
-
-## Finding 8 — INFO: `public/llms.txt` brand-facts manifest is stale and contradicts the live site and schema
-
-**Evidence:** `public/llms.txt` states website `https://avirena.com` (not `avirenajewels.com`), contact `concierge@avirena.com` (no phone), atelier locations "Mumbai (India), Jaipur (India), Vicenza (Italy)" (no Bandra West), and material claims of "3.0-Micron 18k Heavy Gold Vermeil" / "100% recycled solid 925 sterling silver" — none of which match the live site's brass/anti-tarnish-coating positioning or the JewelryStore schema's Bandra West address.
-
-**Impact:** Not itself Schema.org markup, but since AI answer engines and LLM crawlers are explicitly invited to read this file (per its own header and the site's `robots.txt` GPTBot/ClaudeBot/PerplexityBot allowances), a stale manifest actively feeds wrong brand facts to exactly the audience it's meant to serve, and undermines the "AEO" intent it's clearly designed for.
-
-**Fix:** Regenerate `public/llms.txt` from the same source of truth as `scripts/prerender.ts` (domain, materials, address, contact) so it can't drift independently again — ideally generate it programmatically in the same build step.
-
-**Falsifiability:** Diff `public/llms.txt` claims against `scripts/prerender.ts`/live site copy; divergence as listed confirms this.
-
----
-
-## Ready-to-paste corrected Product JSON-LD (Findings 1 + 2 combined fix)
-
-Replace the `Product` object in `scripts/prerender.ts` (~lines 590-629) and the equivalent block in `src/components/SeoMeta.tsx` (~lines 160-223) with:
-
-```json
-{
-  "@context": "https://schema.org",
-  "@type": "Product",
-  "name": "Geometric Gold-Tone Statement Earrings for Women | Modern Square Earrings",
-  "image": [
-    "https://cdn.shopify.com/REPLACE_WITH_REAL_IMAGE_1.jpg",
-    "https://cdn.shopify.com/REPLACE_WITH_REAL_IMAGE_2.jpg"
-  ],
-  "description": "REPLACE_WITH_REAL_SHOPIFY_DESCRIPTION",
-  "sku": "geometric-gold-tone-statement-earrings-for-women-modern-square-earrings",
-  "brand": {
-    "@type": "Brand",
-    "name": "Avirena Jewels"
-  },
-  "offers": {
-    "@type": "Offer",
-    "url": "https://avirenajewels.com/product/geometric-gold-tone-statement-earrings-for-women-modern-square-earrings",
-    "priceCurrency": "INR",
-    "price": "REPLACE_WITH_REAL_PRICE",
-    "priceValidUntil": "2027-12-31",
-    "itemCondition": "https://schema.org/NewCondition",
-    "availability": "https://schema.org/InStock",
-    "seller": {
-      "@type": "Organization",
-      "name": "Avirena Jewels"
-    },
-    "hasMerchantReturnPolicy": {
-      "@type": "MerchantReturnPolicy",
-      "applicableCountry": ["IN", "US", "GB", "EU"],
-      "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
-      "merchantReturnDays": 14,
-      "returnMethod": "https://schema.org/ReturnByMail",
-      "returnFees": "https://schema.org/FreeReturn"
-    }
-  }
-}
-```
-
-Notes on this replacement:
-- `aggregateRating` is deliberately omitted — do not reintroduce it until real, verified customer reviews exist.
-- Keep the existing `BreadcrumbList` sibling object from `scripts/prerender.ts` lines 630-654 as-is; it is correctly formed. Just ensure `src/components/SeoMeta.tsx` also emits it on `pdp` (it currently does not emit any `BreadcrumbList` at all).
-- Once `App.tsx`'s routing bug (Finding 1) is fixed so `currentPage === 'pdp'` reliably resolves, `SeoMeta.tsx` should build this same object from `selectedProduct` fields, not divergent ones — recommend deleting `SeoMeta.tsx`'s JSON-LD injection entirely and trusting only the prerendered markup, since SPA client-side re-injection provides no benefit once prerendering already covers this correctly for the bots that matter.
-
-## Ready-to-paste corrected Category page JSON-LD (Findings 5 + 6 combined fix)
-
-For `/shop/earrings` (the only category with real inventory today):
-
-```json
-[
-  {
-    "@context": "https://schema.org",
-    "@type": "CollectionPage",
-    "name": "Earrings Collection | AVIRENA",
-    "url": "https://avirenajewels.com/shop/earrings",
-    "description": "Sculptural molten studs, organic drop earrings, and huggies in anti-tarnish brass."
-  },
-  {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    "itemListElement": [
-      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://avirenajewels.com/" },
-      { "@type": "ListItem", "position": 2, "name": "Shop All Jewelry", "item": "https://avirenajewels.com/shop" },
-      { "@type": "ListItem", "position": 3, "name": "Earrings", "item": "https://avirenajewels.com/shop/earrings" }
-    ]
-  },
-  {
-    "@context": "https://schema.org",
-    "@type": "ItemList",
-    "itemListElement": [
-      { "@type": "ListItem", "position": 1, "url": "https://avirenajewels.com/product/geometric-gold-tone-statement-earrings-for-women-modern-square-earrings" },
-      { "@type": "ListItem", "position": 2, "url": "https://avirenajewels.com/product/gold-tone-drop-earrings-for-women-minimalist-long-dangle-earrings" },
-      { "@type": "ListItem", "position": 3, "url": "https://avirenajewels.com/product/gold-tone-statement-drop-earrings-for-women-geometric-dangle-earrings" }
-    ]
-  }
-]
-```
-
-For the other 4 categories (`necklaces`, `rings`, `bracelets`, `brooches`), add only the `BreadcrumbList` (matching pattern, swapping name/URL) until real inventory exists; withhold `CollectionPage`/`ItemList` until products are behind them.
-
----
-
-## Summary Table
-
-| # | Finding | Severity | Location |
-|---|---|---|---|
-| 1 | Client-side hydration overwrites correct Product/BreadcrumbList schema with homepage schema on every PDP | Critical | `src/App.tsx` (`handleLocationChange`), `src/components/SeoMeta.tsx` |
-| 2 | Fabricated identical `aggregateRating` (4.9/38) on every product, no review system exists | Critical | `scripts/prerender.ts` L624-628, `src/components/SeoMeta.tsx` L218-223, `src/data/products.ts`, `ProductDetailPage.tsx` L220, `ProductCard.tsx` L142 |
-| 3 | Placeholder/unverified phone number in Organization + JewelryStore schema | High | `scripts/prerender.ts` L101, L114; `src/components/SeoMeta.tsx` L103, L118; `ContactPage.tsx` L143 |
-| 4 | Three conflicting street addresses for the same claimed location (NAP inconsistency) | High | `scripts/prerender.ts` L120; `src/components/SeoMeta.tsx` L124; `ContactPage.tsx` L341 |
-| 5 | BreadcrumbList missing on 5 category pages + 5 static pages | Medium | `scripts/prerender.ts` category loop L375-401, and About/Contact/FAQ/Policies/Journal routes |
-| 6 | CollectionPage schema on 4 categories with zero real inventory; no ItemList anywhere | Medium | `scripts/prerender.ts` L366-401 |
-| 7 | FAQPage present, content inconsistent across 3 copies, factually stale (gold vermeil vs. brass) | Info | `scripts/prerender.ts` L244-263, L510-529; `src/components/SeoMeta.tsx` L227-266 |
-| 8 | `llms.txt` brand manifest stale/contradicts live site and schema | Info | `public/llms.txt` |
-
-What is correct and should be preserved as-is: `@context` uses `https://schema.org` throughout; no deprecated types (`HowTo`, `SpecialAnnouncement`, `CourseInfo`) present anywhere; JSON-LD format used exclusively (no Microdata/RDFa); dates are ISO 8601 (`priceValidUntil: "2027-12-31"`); `Offer.availability`/`itemCondition` use correct full schema.org URLs; `MerchantReturnPolicy` structure on all 3 product pages is complete and correctly typed; prerendered `BreadcrumbList` on `/shop`, `/collections`, and product pages is correctly formed with absolute URLs.
+**Fix in `SeoMeta.tsx` `offers.price`** (Finding 1) — convert `selectedProduct.price` (base EUR) through the same rate table `formatPrice()` already uses before assigning to `Offer.price` — see full code in Finding 1.

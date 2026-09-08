@@ -1148,6 +1148,13 @@ async function main() {
           '@type': 'Brand',
           name: 'Avirena Jewels',
         },
+        // Material disclosure, derived from the same tags that drive the
+        // finish. Stated in schema because material honesty is the brand's
+        // whole position: never emit a precious-metal or hallmarking claim
+        // here. SeoMeta.tsx sets the same field after hydration.
+        material: /\bsilver\b/i.test(`${prodTitle} ${(product.tags || []).join(' ')}`)
+          ? 'Durable alloy with anti-tarnish silver-tone protective coating; nickel-free, surgical steel posts'
+          : 'High-grade brass with anti-tarnish gold-tone protective coating; nickel-free, surgical steel posts',
         offers: {
           '@type': 'Offer',
           url: `${SITE_URL}/product/${handle}`,

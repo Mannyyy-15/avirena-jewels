@@ -1,226 +1,117 @@
-# E-commerce SEO Findings — avirenajewels.com
+# E-commerce SEO Audit — avirenajewels.com
 
-Scope: product catalog integrity, category page architecture, product page SEO,
-commerce schema consequences, image pipeline, and Merchant Center readiness.
-Data sources: live Shopify Storefront API query (3 products confirmed), rendered
-and raw HTML pulls via `render_page.py` against the production site, and direct
-repo inspection. No DataForSEO/Google API data used — no search volume, SERP
-position, or competitor pricing is claimed anywhere below.
+Scope: 9-product live catalog (all earrings), headless React/Vercel storefront, Shopify Storefront API backend, static prerender via `scripts/prerender.ts`. All findings below are from direct code inspection (`d:/ThePieCraft Marketing/Web Development/avirena-jewels`) and live fetches of `https://avirenajewels.com` (raw/pre-JS HTML, mode=never). No DataForSEO or Google API data used — no search volume, SERP position, or competitor pricing is asserted anywhere in this report.
 
----
+Live catalog verified (coordinator-supplied, from a fresh Shopify pull — supersedes the ₹499–779 range in the original brief):
 
-## Finding 1 — CRITICAL: Real catalog is 3 SKUs (all earrings); site markets 5 categories
+| Product | Handle | Price |
+|---|---|---|
+| Avirena Square Studs | avirena-square-studs-gold-tone-brass-earrings | ₹799 |
+| Avirena Drop Earrings | avirena-drop-earrings-gold-tone-brass | ₹699 |
+| Avirena Statement Drops | avirena-statement-drops-geometric-brass-earrings | ₹1199 |
+| Avirena Heart Drops | avirena-heart-drops-silver-tone-earrings | ₹799 |
+| Avirena Spiral Earrings | avirena-spiral-earrings-silver-tone | ₹599 |
+| Avirena Crystal Hoops — Gold | avirena-crystal-hoops-gold-tone-earrings | ₹699 |
+| Avirena Crystal Hoops — Silver | avirena-crystal-hoops-silver-tone-earrings | ₹649 |
+| Avirena Pebble Studs | avirena-pebble-studs-gold-tone-earrings | ₹699 |
+| Avirena Leaf Studs | avirena-leaf-studs-gold-tone-earrings | ₹749 |
 
-**Evidence**
-- Direct Shopify Storefront API query against the store configured in
-  `scripts/prerender.ts:12-13` (`m5yhxq-gb.myshopify.com`) returns exactly
-  **3 products, all category "earrings"**:
-  - `/product/geometric-gold-tone-statement-earrings-for-women-modern-square-earrings`
-  - `/product/gold-tone-drop-earrings-for-women-minimalist-long-dangle-earrings`
-  - `/product/gold-tone-statement-drop-earrings-for-women-geometric-dangle-earrings`
-- `public/sitemap.xml` / `dist/sitemap.xml` lists these same 3 product URLs — sitemap is accurate to the live backend.
-- Yet the site publishes and internally promotes 5 shop categories: `/shop/earrings`, `/shop/necklaces`, `/shop/rings`, `/shop/bracelets`, `/shop/brooches` (`scripts/prerender.ts` categories array, ~line 232), each submitted in the sitemap at priority 0.8.
-- `src/data/products.ts` contains 19 hardcoded fallback products spanning all 5 categories (5 necklaces, 5 earrings, 5 rings, 3 bracelets, 1 brooch — `grep -c "id: '" src/data/products.ts` = 19), but **`scripts/prerender.ts` never imports or reads this file** — it is invisible to the sitemap and to prerendered HTML.
-
-**Commerce consequence**
-This is the binding constraint on organic revenue: 4 of 5 advertised product lines (necklaces, rings, bracelets, brooches) have **zero purchasable inventory**. Any ranking or click earned by a necklace/ring/bracelet/brooch query lands a visitor on a page with nothing to buy in that category — pure bounce, zero conversion. Google Merchant Center / free product listings are only possible for the 3 earring SKUs; there is no feed-eligible inventory for 80% of the taxonomy the site presents.
-
-**Fix**
-Either (a) load real inventory for necklaces/rings/bracelets/brooches into Shopify before continuing to promote those categories, or (b) immediately reduce the public taxonomy to match reality (remove the 4 empty categories from nav, sitemap, and prerendering) until stock exists. Do not leave 5 categories live against 1 stocked category.
-
-**Falsifiable**
-Query the Shopify Storefront API `products(first:100)` for the configured store domain — count by `productType`/category. If categories other than earrings return >0 products, this finding is stale and should be re-scored.
+All 9 confirmed `availableForSale=true` and all 9 confirmed present as real `<a href="/product/...">` links in the prerendered `/shop` HTML (raw fetch, mode=never — no JS executed).
 
 ---
 
-## Finding 2 — CRITICAL: `/shop/:category` URLs do not filter and serve duplicate/mock content
+## Critical
 
-**Evidence — root cause in code**
-- `src/App.tsx` location-parsing effect (~line 115-170): the switch statement branches only on `parts[0]` (`root === 'shop'`) and calls `setCurrentPage('collection')`. It never reads `parts[1]` (the category slug) and never calls `setSelectedCategory(...)`. Visiting `/shop/bracelets` therefore renders the exact same view as `/shop`.
-- `src/pages/CollectionPage.tsx:47` (`filteredProducts` `useMemo`) correctly filters by `selectedCategory` — the filtering logic itself is fine. The defect is entirely upstream: the URL never populates that prop.
-- A second effect in `src/App.tsx` (~line 178-232) derives `targetPath` from `currentPage` only (`case 'collection': targetPath = '/shop'`) and calls `window.history.pushState(null, '', targetPath)`. Net effect: loading `/shop/earrings` gets silently rewritten to `/shop` in the address bar after hydration, and pushes a spurious history entry (breaks back-button UX). It also overwrites the server-rendered `<title>` — a visitor/crawler that executes JS sees `document.title` flip from the prerendered `"Earrings — Dailywear Jewelry | AVIRENA"` to `"All Jewellery Collection | AVIRENA"`.
-- Directly observed on the live rendered page for `/shop/necklaces`: masthead reads **"ALL JEWELRY (19)"** with a mixed grid including rings, brooches, bracelets, and earrings drawn from the `src/data/products.ts` mock catalog (Unsplash-hosted images) — i.e., visitors briefly see 19 non-purchasable mock SKUs (see Finding 3) before/if the Shopify swap ever occurs, because `CollectionPage.tsx` imports `PRODUCTS` (the mock array) as its initial state.
-- Net result across all 5 category URLs: **duplicate content** (same unfiltered listing served at 5 distinct canonical URLs) compounded by a **client-side URL collapse** back to `/shop`.
-
-**Commerce consequence**
-Google has no reliable way to associate `/shop/rings` with ring-specific intent — it either sees the identical `/shop` grid or a URL that self-corrects away from the one Google indexed. This actively damages topical relevance signals for every non-earring category page (Finding 1 already established there's no inventory to show).
-
-**Fix**
-1. Read `parts[1]` in the location effect and call `setSelectedCategory(parts[1])`.
-2. Fix the reverse effect to preserve the category segment in `targetPath` (e.g. `/shop/${selectedCategory}` when `selectedCategory !== 'all'`) instead of collapsing to `/shop`.
-3. Do not initialize `CollectionPage` state from the mock `PRODUCTS` array in production — gate it behind a dev-only flag or remove entirely once Shopify is the sole source of truth (see Finding 3).
-
-**Falsifiable**
-Load `/shop/bracelets` in a browser with JS enabled, wait for hydration, and inspect `window.location.pathname` and the rendered product grid. If the URL stays `/shop/bracelets` and only bracelet SKUs render, this finding is resolved.
+### C1. "Under ₹999" smart collection is now mis-titled for its own member
+**Evidence:** Every product carries the tag `under-999` (per coordinator's live Shopify verification), applied when all 9 products were priced ₹499–779. "Avirena Statement Drops" has since been repriced to ₹1199. The Shopify smart collection "Under ₹999" is rule-based on that tag (per task brief: "Shopify smart collections exist... Under ₹999 — all rule-based on tags"), so a ₹1199 product now appears inside a collection whose name promises sub-₹999 pricing.
+**Impact:** This is a shopper-trust problem (bait-and-switch perception, refund/chargeback risk) as much as an SEO one — if that collection is indexed/linked (e.g. via a promo page, category nav, or a future Merchant Center promotion feed built off the collection), it actively misleads both users and any crawler/feed reading collection-level price claims.
+**Fix:** Either (a) remove the `under-999` tag from Statement Drops now, or (b) convert the "Under ₹999" collection from a tag condition to a **price** condition (`Price < 999`) in Shopify's smart collection rule builder. Option (b) is strictly better: it self-corrects on every future repricing with zero manual tagging, which matters because this exact drift will recur every time a price changes and someone forgets the tag.
+**Falsifiable:** Open Shopify Admin → Products → Avirena Statement Drops → confirm tag `under-999` present and price ₹1199. Open Collections → "Under ₹999" → confirm its condition type is `tag` not `price`, and confirm Statement Drops appears in the collection's product list.
 
 ---
 
-## Finding 3 — HIGH: Unused 19-product mock catalog with 41 stock Unsplash images creates flash-of-fake-content risk
+## High
 
-**Evidence**
-- `src/data/products.ts` defines 19 products (`square-form-necklace`, `lucid-studs`, `solid-wave-brooch`, etc.) with prices, ratings, and review counts that do not correspond to any real inventory.
-- All 41 image URLs referenced in this file resolve to `images.unsplash.com` (`grep -c "unsplash.com" src/data/products.ts` = 41; zero self-hosted or Shopify-hosted images in this file).
-- `src/context/ShopifyContext.tsx:6,35` imports this array as `FALLBACK_PRODUCTS` and sets it as initial React state before the Shopify fetch resolves; `src/pages/CollectionPage.tsx` and `src/pages/ProductDetailPage.tsx` both default their `catalogProducts`/`products` props to this same array.
-- Because `scripts/prerender.ts` never touches `products.ts`, none of this reaches the static/crawlable HTML — the risk is confined to the client-rendered flash between page load and Shopify data arriving, and to any crawler variant that executes JS but samples the DOM before the async fetch resolves (this is plausible: Googlebot's rendering queue can snapshot at various points, and third-party bots/AI crawlers frequently do not wait for async fetches at all).
+### H1. Buy Now bypasses the cart and loses the ₹1,999 free-shipping nudge entirely
+**Evidence:** `src/pages/ProductDetailPage.tsx:233-256` — `handleBuyNow()` calls `syncLocalCartToShopify([{ ...single item... }])` and immediately does `window.location.href = checkoutUrl` (line 244), sending the shopper straight to Shopify's hosted checkout. It deliberately "does NOT touch the local bag" (comment at line 224-228). The free-shipping progress bar exists only in `src/components/CartDrawer.tsx:29,52-53` (`FREE_SHIPPING_THRESHOLD_INR = 1999`) and `src/pages/CartPage.tsx:26,43-44` — both are cart-only UI. There is no free-shipping messaging anywhere on the product detail page itself (confirmed by reading the full PDP render tree, and by the prerendered PDP HTML, which contains only `<p class="price">` and the description — no shipping-threshold copy).
+**Impact:** At the verified per-unit prices (₹599–1199), a single Buy Now purchase is always below ₹1,999 and always incurs the flat ₹99 shipping fee stated in `src/pages/PoliciesPage.tsx:146`. Buy Now shoppers never see the "add ₹X more for free shipping" nudge that could have pushed them to add a second item (raising AOV and clearing the threshold) because they never enter the cart drawer or cart page at all. This is a conversion/AOV issue with an SEO-adjacent dimension: it undermines the value proposition ("Free delivery over ₹1,999") stated in the very meta description Google indexes for `/shop` (`scripts/prerender.ts` ~line 618: *"Free delivery over ₹1,999 and 14-day exchanges across India"*) — a shopper who lands from that snippet and clicks Buy Now will be charged shipping despite what the SERP snippet implied, unless they cross the threshold another way.
+**Fix:** Surface the free-shipping threshold inline near the Buy Now / Add to Bag buttons on the PDP (e.g. "Add ₹1,300 more to unlock free shipping" or "Buy 2+ pieces for free delivery"), and/or offer a lightweight upsell ("Perfect match with" — see C-adjacent finding L1 below) before Buy Now fires, since that section already exists on the page but currently has no cart-value awareness. Do not silently remove the ₹99 fallback fee; make it visible pre-checkout instead of only in policies.
+**Falsifiable:** Visit any `/product/avirena-*` page, click Buy Now with no other cart activity — confirm no free-shipping copy is shown at any point before Shopify's hosted checkout, and confirm Shopify checkout charges ₹99 shipping on a sub-₹1,999 single-item order.
 
-**Commerce consequence**
-If a rendering crawler samples the page during the fallback window, it indexes fictitious products (wrong prices, stock photography, invented review counts) attributed to the Avirena brand — a data-integrity risk for both SEO and any AI/LLM answer engine that snapshots the page.
+### H2. Zero cross-sell links exist in prerendered HTML; the hydrated "Perfect match with" section uses JS click-handlers, not real links
+**Evidence:**
+- `scripts/prerender.ts` product-route `htmlContent` (~lines 1236-1263) contains only breadcrumb nav, `<h1>`, gallery images, price, and description — no related-product markup of any kind. Confirmed live: fetching `https://avirenajewels.com/product/avirena-crystal-hoops-gold-tone-earrings` and `.../avirena-crystal-hoops-silver-tone-earrings` with `render_page.py --mode never` (no JS executed) returns **zero** `/product/` links on either page (`PRODUCT LINKS ON PAGE: []` for both).
+- The hydrated, client-side-only "Perfect match with" block does exist (`src/pages/ProductDetailPage.tsx:828-877`) and lists up to 3 `complementaryItems` (line 274-276, simply `activeProducts` minus the current product, no relevance logic). But its click targets are not anchors: the product-preview `<div>` uses `onClick={() => onSelectProduct(item)}` (line 843) and the "Add to cart" control is a `<button onClick={() => handleQuickAddRecommendation(item)}>` (lines 869-874). `onSelectProduct` resolves to `handleSelectProduct` in `src/App.tsx:504-510`, which only calls `setSelectedProduct`/`setCurrentPage` (React state) — the URL is patched afterward via `pushState` in a `useEffect` (App.tsx:495-500), not via a native `<a href>`. There is no `href` attribute anywhere in that block.
+**Impact:** Internal PageRank/link-equity flow between the 9 product pages is effectively zero from a crawler's perspective — both in the static HTML Googlebot sees on first pass and in the hydrated DOM, since the "links" are synthetic JS click targets rather than crawlable anchors. This also means Googlebot's second-wave (JS) rendering pass gets no additional internal links either, only interaction handlers it won't invoke. For a 9-SKU catalog, product-to-product linking is one of the few internal-linking levers available (no blog/category depth to lean on), and it's currently unused.
+**Fix:** Two changes, not one — (1) add real crawlable cross-sell links to the prerendered PDP `htmlContent` in `scripts/prerender.ts` (simple: reuse `renderProductCards()`, excluding the current handle, same pattern already used on `/shop` and category pages); (2) change the hydrated "Perfect match with" tile from `<div onClick>` to a proper `<Link>`/`<a href="/product/{handle}">` wrapping the clickable area (client-side router can still intercept the click for SPA navigation, but the anchor tag itself must be present so both crawlers and users get a real href, e.g. for open-in-new-tab / view-source consistency).
+**Falsifiable:** `render_page.py <product-url> --mode never` on any of the 9 product pages and grep for `/product/` — currently returns none. After a fix, expect 2–3 real anchor-tag links per product page pointing at other in-stock products.
 
-**Fix**
-Remove `products.ts` from all production code paths once the Shopify catalog is the single source of truth, or gate its use strictly behind `import.meta.env.DEV`. At minimum, replace the Unsplash placeholders with real product photography (or an explicit loading skeleton with no fabricated product data) so nothing resembling a real SKU can ever paint before live data arrives.
+### H3. Merchant Center / Google Shopping free-listing feed is not buildable today — three concrete blockers
+Assessed against Google Merchant Center's minimum required product-data fields (id, title, description, link, image_link, price, availability, condition, shipping — brand/GTIN/MPN required where applicable for most categories, plus a valid returns/shipping policy for India).
 
-**Falsifiable**
-Throttle network in devtools, load `/shop`, and screenshot the DOM within the first 1-2 seconds. If mock Unsplash-image products with prices/ratings are visible, the finding stands; if a neutral loading state renders instead, it's resolved.
+- **B1 — No product feed exists.** No `merchant_center` feed file, no `google_product_feed` script, and no reference to Content API / Merchant Center in `package.json`, `scripts/`, or `.env.example` (grep across the repo found nothing). Shopify's native "Google & YouTube" sales channel app is the fastest path (auto-generates a feed from the same Storefront/Admin data already in use) but there is no evidence it is installed — **not verified** from this repo alone; requires checking the live Shopify Admin's installed-apps list, which is outside this audit's access.
+- **B2 — GTIN/brand/identifier gap.** The `Product` JSON-LD emitted per product (`scripts/prerender.ts` ~lines 1153-1225) sets `brand.name: "Avirena Jewels"` but has no `gtin`, `mpn`, or `identifier_exists: false` fallback. Google Shopping requires either a GTIN/MPN pair or an explicit `identifier_exists=false` declaration for private-label goods; without it, Merchant Center will flag every item under "missing required unique product identifiers" and can suppress the listing. Fix is low-cost: add `"identifier_exists": false` to the Product schema now that no GTINs exist, and set it to true once real GTINs are assigned.
+- **B3 — New India merchant account has zero trust signals to submit alongside the feed.** No review/rating markup exists anywhere by explicit design (per project memory — `aggregateRating` was removed deliberately, no review system exists). This isn't a schema bug, but it does mean Merchant Center's product-rating richness and Google's "Reviewed by" trust badges are unavailable at launch, and a brand-new India Merchant Center account with no order history, no verified business identity badge, and no reviews will likely face a manual review / phone-verification step before shopping ads or the free listings surface in Search — this is a Google Merchant Center account-standing process, not something fixable in code. **Not verified**: current Merchant Center account status, since no credentials were provided for this audit.
+- **B4 (minor, confirmed) — currency/shipping consistency is actually fine.** `priceCurrency: currency` where `currency = product.priceRange.minVariantPrice.currencyCode` (confirmed `INR` in the live fetch), and `shippingDetails`/`hasMerchantReturnPolicy` blocks are present with concrete values (free shipping to IN, 14-day returns) — this part of Merchant Center's required-fields checklist is already satisfied at the schema level, once a feed is actually built from it.
 
----
-
-## Finding 4 — HIGH: Category pages prerender with zero product links (thin content, orphaned products)
-
-**Evidence**
-- Raw (pre-JS) HTML for every `/shop/:category` route, generated by `scripts/prerender.ts` (~line 260-280), is a two-line stub. Directly fetched for `/shop/rings`:
-  ```html
-  <div id="root">
-    <main class="category-page">
-      <h1>Rings Collection</h1>
-      <p>Ergonomic statement bands, wave rings, and baroque pearl solitaire rings.</p>
-    </main>
-  </div>
-  ```
-  No product cards, no `<a href="/product/...">` links, no images — identical stub pattern confirmed for `/faq` (interactive Ring Size Finder is entirely absent from static HTML; only appears after client JS runs).
-- The `/shop` (all-jewelry) route's static HTML does include product cards built from live Shopify data (`productCardsHtml` in `scripts/prerender.ts`), but the 5 individual category routes do not reuse this — they were built with a static description string only.
-- Consequence: the only path a non-JS-executing crawler has to discover any `/product/*` URL is the sitemap itself; there is no on-page internal link from a category page to a product page in the raw HTML at all.
-
-**Commerce consequence**
-Thin/near-duplicate content signals across 5 indexed URLs (see Finding 2) plus zero crawlable internal links to product pages meaningfully weakens PageRank flow to the 3 product pages that do have inventory, and gives Google grounds to treat the category pages as low-value crawl targets.
-
-**Fix**
-Extend the category-route generation in `scripts/prerender.ts` to filter `shopifyProducts` by category/`productType` and render the same `productCardsHtml` markup used for `/shop`, with real `<a href="/product/:handle">` links, into each category stub.
-
-**Falsifiable**
-Fetch `/shop/earrings` with a plain HTTP client (no JS execution) and count `<a href="/product/`ent occurrences in the response body. Currently 0; fix is verified when it matches the live earring count in Shopify.
+**Fix priority:** Install/configure Shopify's Google & YouTube channel (fastest, reuses existing catalog data) → add `identifier_exists: false` to Product schema → expect an account-verification delay before free listings go live, independent of code.
+**Falsifiable:** Log into Merchant Center for this domain (or Shopify Admin → Sales Channels) and confirm whether "Google & YouTube" is installed; if it is, this entire H3 section's B1 claim is wrong and should be struck. Check any product's JSON-LD via `view-source:` or the browser console for the absence of `gtin`/`mpn`/`identifier_exists`.
 
 ---
 
-## Finding 5 — HIGH: Keyword-stuffed, 101-character product titles will truncate in every SERP surface
+## Medium
 
-**Evidence**
-- Live product page `<title>` (raw HTML, `/product/geometric-gold-tone-statement-earrings-for-women-modern-square-earrings`):
-  `"Geometric Gold-Tone Statement Earrings for Women | Modern Square Earrings | AVIRENA Dailywear Jewelry"` — measured **101 characters**.
-- The identical 101-character string is reused verbatim as: the `<h1>`, the breadcrumb leaf node, and the `alt` text on every one of the 6 gallery images (`grep` on the raw HTML shows the same `alt="Geometric Gold-Tone Statement Earrings for Women | Modern Square Earrings"` repeated 6 times) — image alt text carries zero differentiating information (no "front view", "detail", "worn", etc.).
-- Google typically renders ~580px of title in desktop SERPs (roughly 55-65 characters depending on character width) before truncating with an ellipsis or rewriting the title entirely from on-page content.
+### M1. Every image in a product's gallery shares identical alt text — no per-image differentiation
+**Evidence:** `scripts/prerender.ts` product-route gallery renderer (~lines 1246-1254) sets `alt="${escapeHtml(prodTitle)}"` on **every** image in the loop, with no index-based or angle-based variation. Confirmed live on `avirena-crystal-hoops-gold-tone-earrings`: all 5 gallery `<img>` tags have the exact same `alt="Avirena Crystal Hoops — Gold"` string, differing only in `src`/`loading`/`fetchpriority`.
+**Impact:** Google Images can't differentiate "front view" vs "worn on ear" vs "packaging" vs "size reference" shots from alt text alone, losing potential long-tail Image Search visibility (e.g. "earrings on ear model" queries) and reducing accessibility quality for screen-reader users navigating the gallery (identical announcements for 5 different images).
+**Fix:** Either pull per-image alt text from Shopify's native image `altText` field (already fetched in the GraphQL query — `images.edges.node.altText` per the task brief's "5 images with alt text" — but the prerender's `fetchShopifyProducts()` GraphQL query at the top of `scripts/prerender.ts` (~lines 100-125) only selects `url`, not `altText`, so it's being discarded even though Shopify has it), or synthesize positional variants (`"${prodTitle} — front view"`, `"${prodTitle} — detail"`, etc.) as a fallback.
+**Falsifiable:** Diff the `images(first: 6) { edges { node { url altText } } }` GraphQL selection in `scripts/prerender.ts` against what's actually used in `renderProductCards`/product gallery rendering — `altText` is fetched nowhere in the current query, confirming it's unused, not just unused in output.
 
-**Commerce consequence**
-At this length Google will very likely algorithmically rewrite the SERP title rather than display the merchant-authored one, meaning none of the keyword stuffing has the intended effect, brand name (`AVIRENA`) is the single most likely truncated element, and click-through-rate signal is being left to Google's discretion rather than being controlled by the merchant.
-
-**Fix**
-Shorten titles to ≤ 60 characters, front-load the distinguishing product attribute, and move brand to the end only if space allows, e.g. `"Geometric Square Statement Earrings | AVIRENA"`. Differentiate image alt text per image (angle/context) instead of repeating the full title string.
-
-**Falsifiable**
-Character-count the rendered `<title>` and each `<img alt>` for all 3 live product pages; pass when title ≤ 60 chars and no two alt attributes on the same page are identical.
+### M2. "Statement Drops" price (₹1199) sits well outside the site's advertised entry price and the free-shipping/₹999 messaging band
+**Evidence:** `/shop` meta description (`scripts/prerender.ts` ~line 618): *"Shop anti-tarnish gold-tone brass jewellery for daily wear. Nickel-free, skin-safe, from ₹499."* Live catalog has no ₹499 item — cheapest is Spiral Earrings at ₹599. This is a stale "from ₹499" price-floor claim now off by ₹100, independent of the C1 tag issue.
+**Impact:** Minor but real — a "from ₹X" claim in an indexed meta description that no longer matches any live SKU is a small trust/accuracy gap, and if this copy is reused verbatim in a future Merchant Center promotional feed or ad copy, it compounds C1's mis-titled-collection problem.
+**Fix:** Derive the "from ₹X" floor dynamically from `Math.min(...shopifyProducts.map(p => price))` at prerender time instead of a hardcoded literal, so it self-corrects the same way the empty-category noindex logic already does.
+**Falsifiable:** Compare the hardcoded `'from ₹499'` string in `scripts/prerender.ts`'s `/shop` route description against `Math.min()` of the 9 live `priceRange.minVariantPrice.amount` values (currently 599).
 
 ---
 
-## Finding 6 — MEDIUM: Duplicate/conflicting canonical tags on every prerendered page
+## Low / Informational
 
-**Evidence**
-- Base template `index.html:24` bakes in `<link rel="canonical" href="https://avirenajewels.com" />`.
-- `scripts/prerender.ts`'s `renderPageHtml()` injects a second canonical tag via string concatenation before `</head>` (metaTags block) without removing the first. Confirmed by direct fetch: raw HTML for `/shop/rings` contains **two** `<link rel="canonical">` tags — one pointing to `https://avirenajewels.com`, one to `https://avirenajewels.com/shop/rings`. Same pattern reproduced on `/cart` (both canonicals present, page returns 200 with `robots: index, follow`).
-- Client-side, `src/components/SeoMeta.tsx` (~line 73-79) further rewrites the canonical post-hydration, and for product pages it targets `https://avirenajewels.com/products/{id}` (**plural** "products") while `scripts/prerender.ts` and the sitemap both use `https://avirenajewels.com/product/{id}` (**singular**) — a self-contradictory canonical target between the static and client-injected values.
+### L1. Crystal Hoops gold/silver pair — cannibalization risk is low, differentiation is adequate but not maximized
+**Evidence (live, prerendered, pre-JS):**
+| | Gold | Silver |
+|---|---|---|
+| `<title>` | Avirena Crystal Hoops — Gold \| AVIRENA | Avirena Crystal Hoops — Silver \| AVIRENA |
+| `<h1>` | Avirena Crystal Hoops — Gold | Avirena Crystal Hoops — Silver |
+| Meta description opening | "...anchors a prong-set oval crystal, **so the eye catches the sparkle**…" | "...anchors a prong-set oval crystal, **finished in a cool silver tone**…" |
+| Canonical | `/product/avirena-crystal-hoops-gold-tone-earrings` | `/product/avirena-crystal-hoops-silver-tone-earrings` |
 
-**Commerce consequence**
-Multiple/conflicting canonical signals on the same document are explicitly called out by Google as unreliable; in practice Google picks one signal (often the first, or its own inferred URL) and effects can be inconsistent, diluting consolidation of ranking signals precisely on the pages meant to carry commercial intent.
+Both are genuinely distinct URLs, titles, H1s, and canonicals — this is not a duplicate-content setup, and each is self-canonical (no cross-canonicalization forcing one to defer to the other). They will not directly cannibalize each other's rankings for their own exact-match title strings ("crystal hoops gold" vs "crystal hoops silver").
+**Where the real risk is:** for a generic, non-color query like "crystal hoop earrings" or "anti tarnish crystal hoops," both pages are legitimate candidates and Google will pick one (likely whichever has more engagement/links), which is normal same-family variant competition, not a bug — but there is currently no shared "choose your finish" hub page or on-page cross-link between the two variants (confirmed: `PRODUCT LINKS ON PAGE: []` for both, same as H2), so a shopper or crawler landing on one has no path to discover the other exists.
+**Fix (low priority, ties into H2):** Once cross-sell links are added (H2 fix), explicitly ensure each Crystal Hoops page links to its color counterpart with descriptive anchor text ("Also available in silver") rather than relying on the generic "Perfect match with" random-3 selection, so the two variant pages reinforce rather than silently compete for the shared query space.
+**Falsifiable:** Search-console query-level data would confirm actual cannibalization (impressions/clicks split or self-competition) — **not verified**, no Search Console access in this audit. This finding is based solely on on-page differentiation, not ranking behavior.
 
-**Fix**
-Remove the static canonical from `index.html`'s `<head>` (or make prerender.ts replace it via regex the same way it replaces `<title>`, rather than appending a second tag). Align `SeoMeta.tsx` to the singular `/product/{id}` path used everywhere else.
+### L2. Faceted navigation / query-parameter bloat: not currently a risk, but the search feature writes an unhandled `?q=` parameter
+**Evidence:** `scripts/prerender.ts` WebSite schema's `SearchAction` (~line 210) targets `${SITE_URL}/shop?q={search_term_string}`, confirming the site intends to support `/shop?q=...` search URLs. `/shop` itself has no filter UI in the prerendered HTML (no color/price/size facet links — the category split is by path (`/shop/earrings`) not by query string). Confirmed no `?` parameter links appear anywhere in the prerendered `/shop` or category HTML.
+**Impact:** Currently low risk — there's no crawlable facet permutation generator, so no parameter-bloat crisis exists today. But the `SearchAction` schema advertises a `?q=` pattern that, if the in-app search component ever generates crawlable/linkable search-result URLs (as opposed to a client-only modal — `src/components/SearchModal.tsx` exists, suggesting search is currently a modal, not a URL-driven page), could start generating indexable thin-content permutations later.
+**Fix:** No immediate action required. When/if `/shop?q=` becomes a real crawlable route, add `<link rel="canonical" href="/shop">` (or noindex) on all query-parameter variants preemptively, and keep an eye on Search Console's "Page indexing" report for a sudden spike in `?q=` URLs.
+**Falsifiable:** `SearchModal.tsx` behavior (does it navigate to `/shop?q=...` and change the URL, or stay client-only with no URL change?) — **not verified** in this pass; would need to read that component and/or test the live search UI to confirm whether this is purely theoretical or already live.
 
-**Falsifiable**
-`grep -c 'rel="canonical"'` on any prerendered `dist/**/index.html` should return 1, not 2.
-
----
-
-## Finding 7 — MEDIUM: Product images are uncompressed PNGs on Shopify CDN, no WebP/AVIF
-
-**Evidence**
-- All product gallery images for the 3 live products are `.png` (raw HTML: `grep -oE '\.png|\.webp|\.jpg'` on the product page response → 40 `.png` matches, 0 `.webp`, 0 `.jpg`).
-- Filenames indicate AI-generated source assets uploaded directly to Shopify Files (`ChatGPTImageSep3_2026_03_18_11PM.png`, etc.) rather than a processed/optimized image pipeline.
-- Images are served from `cdn.shopify.com` (confirmed headless Shopify backend, consistent with the `preconnect` hint in `index.html` and the Storefront API calls in `scripts/prerender.ts`).
-
-**Commerce consequence**
-PNG at full resolution for photographic/rendered product imagery is typically 2-5x larger than an equivalent WebP/AVIF, directly hurting LCP on product pages — a ranking factor and, more directly, a conversion-rate factor for mobile shoppers on Indian mobile networks.
-
-**Fix**
-Use Shopify's built-in image CDN transform parameters (e.g. `?width=1200&format=webp`) when generating `<img>` `src` values in `scripts/prerender.ts` and client components, rather than passing through the raw uploaded file URL.
-
-**Falsifiable**
-Request the `Content-Type` header of any product image URL currently in the sitemap; pass when `image/webp` or `image/avif` is returned instead of `image/png`.
+### L3. Missing commercial-intent pages typical for a jewelry store
+Confirmed absent from the full prerendered route list in `scripts/prerender.ts` (Home, /shop, 5x /shop/:category, /collections, /about, /contact, /faq, /policies, /journal, /guides + guide articles, /product/:handle × 9, /404 — that is the complete route set, no others exist):
+- **No gifting/occasion landing pages** (e.g. "Gifts under ₹1,000", "Everyday Office Jewelry") despite Shopify smart collections "Gifting Edit" and "Office & Everyday" already existing per the task brief — these collections have no corresponding frontend route/page at all, so they're invisible to both users and crawlers even though the merchandising work to create them in Shopify has already been done.
+- **No size/fit guide specific to earrings** (the existing `/guides/ring-size-guide` is ring-only; the entire 9-SKU catalog is earrings, yet there's no earring-specific buying guide — e.g. hoop diameter, stud backing type, weight/comfort for daily wear).
+- **No dedicated "New Arrivals" or "Bestsellers" page** — common jewelry-store commercial-intent landing pages, useful for a launch-day site with only one real category.
+- **No Journal/blog articles yet** — `/journal` route exists (`scripts/prerender.ts` ~ROUTE 8) but its `htmlContent` is a single static intro paragraph with no article listing or links; it's a stub page, not populated content.
+**Fix:** Highest-leverage first: build `/shop/gifting-edit` and `/shop/office-everyday` (or similar) routes wired to the already-existing Shopify smart collections — this is pure frontend work with zero new merchandising effort since the collections and their tag rules already exist. Populate `/journal` or remove it from the sitemap until it has content (currently it's a thin stub included in the sitemap — worth checking whether it should be noindexed like the empty categories are).
+**Falsifiable:** Full route enumeration is in `scripts/prerender.ts`'s `routes.push(...)` calls — grep for `routes.push` to get the authoritative list; cross-check against Shopify Admin's collection list for "Gifting Edit" / "Office & Everyday" to confirm they exist with no matching frontend route.
 
 ---
 
-## Finding 8 — MEDIUM: Google Merchant Center / free listings readiness is capped at 3 SKUs, and structured data claims don't match brand facts
-
-**Evidence**
-- Product schema emitted by `scripts/prerender.ts` (Offer, priceCurrency, availability, hasMerchantReturnPolicy, brand, sku, images) is structurally reasonable for the 3 real products — commerce eligibility mechanics are not the blocker (a separate schema-focused audit is covering syntax depth).
-- The blocker is inventory breadth (Finding 1): Merchant Center free listings and Shopping ads both operate on a per-product feed — with only 3 earring SKUs, there is no feed presence possible for necklaces/rings/bracelets/brooches regardless of how well schema is authored.
-- Separately, `src/components/SeoMeta.tsx` injects client-side Product/Organization schema and FAQ copy that **contradicts the brand's actual materials**: "18k Gold Vermeil", "925 sterling silver", "titanium-reinforced earring posts", "Jaipur and Vicenza ateliers", "100% recycled precious metals" (SeoMeta.tsx FAQ block, ~lines 245-275) — versus the brand's real positioning of brass with anti-tarnish e-coating and cultured baroque pearls, which is what `scripts/prerender.ts`'s server-rendered Organization schema correctly states ("durable brass, anti-tarnish protective coatings, and natural cultured pearls"). Two structured-data systems on the same site assert factually different material composition for the same brand.
-
-**Commerce consequence**
-If Google or any downstream shopping surface ingests the client-injected vermeil/sterling-silver claims (via rendered DOM sampling) instead of the server-rendered brass claims, it creates a materially false product representation — a Merchant Center policy risk (misrepresentation) independent of the schema-syntax review being done elsewhere.
-
-**Fix**
-Delete the contradictory FAQ/material copy from `src/components/SeoMeta.tsx` entirely; treat `scripts/prerender.ts`'s server-rendered schema as the single source of truth and stop double-injecting schema client-side.
-
-**Falsifiable**
-Diff the `material`/FAQ text in the server-rendered JSON-LD (`view-source` on any page) against the JSON-LD present in the live DOM after hydration (devtools Elements panel). Pass when they are identical or the client-side injection is removed.
-
----
-
-## Finding 9 — MEDIUM: No commercial-intent content pages despite having the raw material for them
-
-**Evidence**
-- `src/components/RingSizerModal.tsx` exists and `src/pages/FaqPage.tsx` contains a working "Interactive Ring Size Finder" (mm-to-size slider, ~lines 171-198), but per Finding 4 this entire page prerenders to a 2-line stub with no ring-sizing content — the tool is invisible to any non-JS-executing crawler and has no dedicated indexable URL of its own (it's a modal/section, not a page).
-- No dedicated jewelry-care / anti-tarnish-care guide page exists as a standalone URL — care content is confined to short accordion copy inside `ProductDetailPage.tsx` (~lines 429-445) and a FAQ answer, both client-rendered only.
-- No dedicated materials/education page (explaining brass + e-coating + cultured baroque pearls as a category, independent of any single product) exists.
-- No gifting/occasion collection pages exist in the sitemap or routing.
-
-**Commerce consequence**
-Ring sizing, jewelry care, and materials education are classic high-intent, top-of-funnel queries for a jewelry brand and are typically strong link-acquisition and topical-authority assets — currently none of this is capturable because the only page that touches these topics (`/faq`) is functionally empty to crawlers.
-
-**Fix**
-Once category filtering (Finding 2) and category inventory (Finding 1) are fixed, prioritize giving `/faq`'s ring-sizing tool, a `/care` (anti-tarnish care) guide, and a `/materials` guide each real prerendered, crawlable content — not just client-rendered widgets.
-
-**Falsifiable**
-Fetch `/faq` without JS execution; pass when the ring-sizing content and conversion table appear in the raw response body.
-
----
-
-## Summary table
-
-| # | Finding | Severity | Category |
-|---|---|---|---|
-| 1 | Real catalog = 3 SKUs (earrings only) vs 5 marketed categories | Critical | Catalog/inventory |
-| 2 | Category URLs don't filter; client-side URL collapse to `/shop` | Critical | Routing/duplicate content |
-| 3 | Unused 19-product mock catalog (41 Unsplash images) can flash on load | High | Data integrity |
-| 4 | Category pages prerender with zero product links | High | Internal linking/thin content |
-| 5 | 101-character keyword-stuffed titles, non-differentiated alt text | High | On-page SEO |
-| 6 | Duplicate/conflicting canonical tags; `/product/` vs `/products/` mismatch | Medium | Technical SEO |
-| 7 | Uncompressed PNG product images, no WebP/AVIF | Medium | Performance/images |
-| 8 | Merchant Center capped at 3 SKUs; conflicting material claims in schema | Medium | Structured data/commerce risk |
-| 9 | No indexable ring-sizing, care, or materials pages | Medium | Content gap |
-
-Note: sitemap `lastmod` dates are uniform across all URLs (single build-time stamp, `scripts/prerender.ts:222`) — flagged only in passing here as it is covered in the dedicated sitemap/technical-SEO audit.
-
-## Files referenced
-- `d:/ThePieCraft Marketing/Web Development/avirena-jewels/scripts/prerender.ts`
-- `d:/ThePieCraft Marketing/Web Development/avirena-jewels/src/App.tsx`
-- `d:/ThePieCraft Marketing/Web Development/avirena-jewels/src/pages/CollectionPage.tsx`
-- `d:/ThePieCraft Marketing/Web Development/avirena-jewels/src/pages/ProductDetailPage.tsx`
-- `d:/ThePieCraft Marketing/Web Development/avirena-jewels/src/components/ProductCard.tsx`
-- `d:/ThePieCraft Marketing/Web Development/avirena-jewels/src/components/SeoMeta.tsx`
-- `d:/ThePieCraft Marketing/Web Development/avirena-jewels/src/context/ShopifyContext.tsx`
-- `d:/ThePieCraft Marketing/Web Development/avirena-jewels/src/data/products.ts`
-- `d:/ThePieCraft Marketing/Web Development/avirena-jewels/src/pages/FaqPage.tsx`
-- `d:/ThePieCraft Marketing/Web Development/avirena-jewels/src/components/RingSizerModal.tsx`
-- `d:/ThePieCraft Marketing/Web Development/avirena-jewels/public/sitemap.xml`
-- `d:/ThePieCraft Marketing/Web Development/avirena-jewels/public/robots.txt`
-- `d:/ThePieCraft Marketing/Web Development/avirena-jewels/index.html`
-- `d:/ThePieCraft Marketing/Web Development/avirena-jewels/vercel.json`
+## Not Verified (explicitly out of scope for this pass — do not treat as confirmed either way)
+- Actual Merchant Center account status/history (no credentials).
+- Whether Shopify's "Google & YouTube" sales channel app is installed (Shopify Admin access, not repo-visible).
+- `SearchModal.tsx` internal behavior re: `?q=` URL generation (code not read this pass).
+- Any Search Console impression/click data for the crystal-hoops gold/silver pair (no GSC access; L1's cannibalization risk is inferred from on-page structure only, not ranking data).
+- Whether `/journal`'s thin-content status is currently suppressing it in Google's index (would require a `site:` search or GSC coverage report, neither performed).
+- Live rendering with JS enabled (`--mode always`) was not run in this pass; all "prerendered HTML" claims above are from `--mode never` (raw, pre-JS) fetches only, which is the more conservative/relevant test for crawler-visible content but does not describe what a JS-executing renderer (Googlebot's second wave) additionally sees beyond what hydration adds — for the specific claim in H2 (that hydrated cross-sell "links" are non-anchor JS handlers), that was confirmed by direct source code read of `ProductDetailPage.tsx`/`App.tsx`, not by a rendered-DOM fetch.
