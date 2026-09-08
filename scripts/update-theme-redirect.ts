@@ -19,6 +19,11 @@ const CLIENT_SECRET = process.env.SHOPIFY_CLIENT_SECRET;
 const API_VERSION = process.env.VITE_SHOPIFY_API_VERSION || '2025-01';
 
 const HEADLESS_REDIRECT_SNIPPET = `
+    <!-- Official Avirena Jewels Favicon Suite -->
+    <link rel="icon" type="image/png" sizes="48x48" href="https://avirenajewels.com/favicon-48x48.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="https://avirenajewels.com/favicon-192x192.png">
+    <link rel="apple-touch-icon" href="https://avirenajewels.com/apple-touch-icon.png">
+
     {%- unless request.design_mode -%}
       <!-- Headless Storefront Redirect: Avirena Jewels -->
       <script>
@@ -96,22 +101,36 @@ async function main() {
     throw new Error('Could not retrieve layout/theme.liquid content!');
   }
 
-  // Check if snippet is already present
+  // Check if snippet is already present, update it cleanly
+  let updatedLiquid: string;
   if (themeLiquid.includes('Headless Storefront Redirect: Avirena Jewels')) {
-    console.log('ℹ️ Headless redirect snippet is already present in layout/theme.liquid.');
-    return;
-  }
+    console.log('🔄 Replacing existing snippet with updated version including favicon links...');
+    // Match from <!-- Headless or <!-- Official to </script>\n    {%- endunless -%}
+    const regex = /([\s\S]*?)<head>([\s\S]*?)({%- unless request\.design_mode -%}[\s\S]*?{%- endunless -%})([\s\S]*)/;
+    if (regex.test(themeLiquid)) {
+      updatedLiquid = themeLiquid.replace(
+        /({%- unless request\.design_mode -%}[\s\S]*?{%- endunless -%})/,
+        HEADLESS_REDIRECT_SNIPPET.trim()
+      );
+    } else {
+      const headIndex = themeLiquid.indexOf('<head>');
+      updatedLiquid =
+        themeLiquid.slice(0, headIndex + '<head>'.length) +
+        HEADLESS_REDIRECT_SNIPPET +
+        themeLiquid.slice(headIndex + '<head>'.length);
+    }
+  } else {
+    // 3. Inject snippet right after <head>
+    const headIndex = themeLiquid.indexOf('<head>');
+    if (headIndex === -1) {
+      throw new Error('Could not locate <head> tag in theme.liquid');
+    }
 
-  // 3. Inject snippet right after <head>
-  const headIndex = themeLiquid.indexOf('<head>');
-  if (headIndex === -1) {
-    throw new Error('Could not locate <head> tag in theme.liquid');
+    updatedLiquid =
+      themeLiquid.slice(0, headIndex + '<head>'.length) +
+      HEADLESS_REDIRECT_SNIPPET +
+      themeLiquid.slice(headIndex + '<head>'.length);
   }
-
-  const updatedLiquid =
-    themeLiquid.slice(0, headIndex + '<head>'.length) +
-    HEADLESS_REDIRECT_SNIPPET +
-    themeLiquid.slice(headIndex + '<head>'.length);
 
   // 4. Save updated asset back to Shopify
   console.log('🚀 Uploading updated layout/theme.liquid to Shopify...');
