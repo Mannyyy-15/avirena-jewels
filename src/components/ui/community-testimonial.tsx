@@ -83,11 +83,11 @@ export const HorizontalScroller: React.FC<HorizontalScrollerProps> = ({
   return (
     <div className="w-full overflow-hidden group relative mask-fade">
       <div
-        className={`flex ${animationClass}`}
+        className={`flex w-max ${animationClass}`}
         style={{ ["--scroll-duration" as string]: speed } as React.CSSProperties}
       >
-        <div className="flex items-stretch justify-center gap-8 px-4">{children}</div>
-        <div className="flex items-stretch justify-center gap-8 px-4" aria-hidden="true">
+        <div className="flex shrink-0 items-stretch justify-center gap-8 px-4">{children}</div>
+        <div className="flex shrink-0 items-stretch justify-center gap-8 px-4" aria-hidden="true">
           {children}
         </div>
       </div>

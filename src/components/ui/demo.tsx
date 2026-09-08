@@ -114,7 +114,7 @@ export default function DemoOne() {
 
   return (
     <div
-      className="app-root bg-radial min-h-screen flex items-center justify-center py-20 px-4"
+      className="app-root bg-radial w-full flex items-center justify-center py-16 sm:py-24 px-4 overflow-hidden border-t border-[#8F896D]/15"
       aria-label="Testimonials showcase"
     >
       <TestimonialsSection data={testimonialsData} />

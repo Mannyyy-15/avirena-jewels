@@ -4,6 +4,7 @@ import { GUIDES } from './data/guides';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
 import { InstagramFeedSection } from './components/InstagramFeedSection';
+import DemoOne from './components/ui/demo';
 import { CartDrawer } from './components/CartDrawer';
 
 import { ToastContainer, ToastMessage } from './components/Toast';
@@ -779,6 +780,9 @@ function AppContent() {
 
       {/* Instagram Feed Gallery Section */}
       <InstagramFeedSection />
+
+      {/* Community Testimonials Showcase */}
+      <DemoOne />
 
       {/* Footer */}
       <Footer
