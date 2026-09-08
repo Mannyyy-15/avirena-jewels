@@ -15,7 +15,6 @@ import {
 import { Product, Currency, Category } from '../types';
 import { formatPrice, getCompareAtPrice, getDiscountPercentage } from '../data/products';
 import { HeroBaroquePearlRing } from '../components/HeroBaroquePearlRing';
-import { AboutUsEditorialSection } from '../components/AboutUsEditorialSection';
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
@@ -976,10 +975,7 @@ export const HomePage: React.FC<HomePageProps> = ({
       </section>
       )}
 
-      {/* 4. SECTION 4: EDITORIAL ABOUT US (Roman Arch & Cascading Vignettes) */}
-      <AboutUsEditorialSection onNavigateToAbout={onNavigateToAbout} />
-
-      {/* 5. SECTION 5: CURATED GIFTING & OCCASION HUB */}
+      {/* 4. SECTION 4: CURATED GIFTING & OCCASION HUB */}
       <section className="w-full bg-[#E7E4D5] py-16 sm:py-24 border-b border-[#D8D2C2] px-4 sm:px-8 lg:px-12 xl:px-16 2xl:px-20">
         <div className="w-full space-y-10 sm:space-y-12">
           
