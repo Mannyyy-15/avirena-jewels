@@ -578,6 +578,7 @@ export function transformShopifyProduct(node: any): Product {
     isBestseller: tagsLower.includes('bestseller') || tagsLower.includes('featured') || true,
     isNew: tagsLower.includes('new'),
     isSculptural: true,
+    tags: (node.tags || []).map((t: string) => t.trim()),
     variants,
   };
 }

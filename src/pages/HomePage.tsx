@@ -144,7 +144,7 @@ export const HomePage: React.FC<HomePageProps> = ({
     if (!safeProducts || safeProducts.length === 0) return [];
     const filtered = safeProducts.filter((p) => {
       if (!p || !p.id) return false;
-      const text = `${p.name} ${p.subtitle || ''} ${p.description || ''} ${p.category} ${p.metal}`.toLowerCase();
+      const text = `${p.name} ${p.subtitle || ''} ${p.description || ''} ${p.category} ${p.metal} ${(p.tags || []).join(' ')}`.toLowerCase();
       if (activeGiftTier === 'daily') {
         return text.includes('stud') || text.includes('minimal') || text.includes('hoop') || text.includes('daily') || p.price <= 2000;
       }

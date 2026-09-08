@@ -86,7 +86,8 @@ export const PRODUCTS: Product[] = [
     materials: 'High-grade brass with anti-tarnish gold-tone protective coating (nickel-free, lead-free) and surgical steel posts',
     inStock: true,
     isBestseller: true,
-    isSculptural: true
+    isSculptural: true,
+    tags: ["anti-tarnish","brass","dailywear","earrings","ethnic-wear","geometric","gifting","gold-tone","nickel-free","office-wear","statement","studs","under-999"],
   },
   {
     id: 'avirena-drop-earrings-gold-tone-brass',
@@ -117,7 +118,8 @@ export const PRODUCTS: Product[] = [
     materials: 'High-grade brass with anti-tarnish gold-tone protective coating (nickel-free, lead-free) and surgical steel posts',
     inStock: true,
     isBestseller: true,
-    isSculptural: true
+    isSculptural: true,
+    tags: ["anti-tarnish","brass","dailywear","dangle","drop-earrings","earrings","gifting","gold-tone","minimalist","nickel-free","occasion-wear","office-wear","under-999"],
   },
   {
     id: 'avirena-statement-drops-geometric-brass-earrings',
@@ -148,7 +150,8 @@ export const PRODUCTS: Product[] = [
     materials: 'High-grade brass with anti-tarnish gold-tone protective coating (nickel-free, lead-free) and surgical steel posts',
     inStock: true,
     isBestseller: true,
-    isSculptural: true
+    isSculptural: true,
+    tags: ["anti-tarnish","brass","dangle","drop-earrings","earrings","ethnic-wear","festive","geometric","gifting","gold-tone","nickel-free","occasion-wear","statement","under-999"],
   },
   {
     id: 'avirena-heart-drops-silver-tone-earrings',
@@ -178,7 +181,8 @@ export const PRODUCTS: Product[] = [
     materials: 'Durable alloy with anti-tarnish silver-tone protective coating (nickel-free, lead-free) and surgical steel posts',
     inStock: true,
     isBestseller: true,
-    isSculptural: true
+    isSculptural: true,
+    tags: ["anti-tarnish","dailywear","dangle","drop-earrings","earrings","gifting","hearts","nickel-free","occasion-wear","silver-tone","statement","under-999"],
   },
   {
     id: 'avirena-spiral-earrings-silver-tone',
@@ -208,7 +212,8 @@ export const PRODUCTS: Product[] = [
     materials: 'Durable alloy with anti-tarnish silver-tone protective coating (nickel-free, lead-free) and surgical steel posts',
     inStock: true,
     isBestseller: true,
-    isSculptural: true
+    isSculptural: true,
+    tags: ["anti-tarnish","dailywear","earrings","gifting","minimalist","nickel-free","occasion-wear","office-wear","sculptural","silver-tone","statement","studs","under-999"],
   },
   {
     id: 'avirena-crystal-hoops-gold-tone-earrings',
@@ -238,7 +243,8 @@ export const PRODUCTS: Product[] = [
     materials: 'High-grade brass with anti-tarnish gold-tone coating & faceted glass crystal stone',
     inStock: true,
     isBestseller: true,
-    isSculptural: true
+    isSculptural: true,
+    tags: ["anti-tarnish","brass","crystal","earrings","ethnic-wear","festive","gifting","gold-tone","hoops","nickel-free","occasion-wear","statement","under-999"],
   },
   {
     id: 'avirena-crystal-hoops-silver-tone-earrings',
@@ -268,7 +274,8 @@ export const PRODUCTS: Product[] = [
     materials: 'Durable alloy with anti-tarnish silver-tone coating & faceted glass crystal stone',
     inStock: true,
     isBestseller: true,
-    isSculptural: true
+    isSculptural: true,
+    tags: ["anti-tarnish","crystal","earrings","ethnic-wear","festive","gifting","hoops","nickel-free","occasion-wear","silver-tone","statement","under-999"],
   },
   {
     id: 'avirena-pebble-studs-gold-tone-earrings',
@@ -298,7 +305,8 @@ export const PRODUCTS: Product[] = [
     materials: 'High-grade brass with anti-tarnish gold-tone protective coating (nickel-free, lead-free) and surgical steel posts',
     inStock: true,
     isBestseller: true,
-    isSculptural: true
+    isSculptural: true,
+    tags: ["anti-tarnish","brass","dailywear","earrings","gifting","gold-tone","nickel-free","office-wear","organic","sculptural","statement","studs","under-999"],
   },
   {
     id: 'avirena-leaf-studs-gold-tone-earrings',
@@ -328,7 +336,8 @@ export const PRODUCTS: Product[] = [
     materials: 'High-grade brass with anti-tarnish gold-tone protective coating (nickel-free, lead-free) and surgical steel posts',
     inStock: true,
     isBestseller: true,
-    isSculptural: true
+    isSculptural: true,
+    tags: ["anti-tarnish","brass","dailywear","earrings","gifting","gold-tone","leaf","nickel-free","occasion-wear","office-wear","sculptural","statement","studs","under-999"],
   },
   {
     id: 'avirena-duo-curve-hoops-gold-tone-brass',
@@ -358,7 +367,9 @@ export const PRODUCTS: Product[] = [
     materials: 'High-grade brass with anti-tarnish gold-tone protective e-coating (nickel-free, lead-free) and surgical steel posts',
     inStock: true,
     isBestseller: true,
-    isSculptural: true
+    isSculptural: true,
+    isNew: true,
+    tags: ["anti-tarnish","bestseller","brass","dailywear","earrings","featured","gifting","gold-tone","hoops","huggie","minimalist","new","nickel-free","office-wear","statement","under-999"],
   },
   {
     id: 'avirena-tiered-pebble-drops-gold-tone-earrings',
@@ -388,7 +399,9 @@ export const PRODUCTS: Product[] = [
     materials: 'High-grade brass with anti-tarnish gold-tone protective e-coating (nickel-free, lead-free) and surgical steel posts',
     inStock: true,
     isBestseller: true,
-    isSculptural: true
+    isSculptural: true,
+    isNew: true,
+    tags: ["anti-tarnish","bestseller","brass","dailywear","dangle","drop-earrings","earrings","ethnic-wear","featured","festive","gifting","gold-tone","new","nickel-free","occasion-wear","organic","sculptural","statement","under-999"],
   },
   {
     id: 'avirena-granulated-dome-studs-gold-tone',
@@ -418,7 +431,9 @@ export const PRODUCTS: Product[] = [
     materials: 'High-grade brass with anti-tarnish gold-tone protective e-coating (nickel-free, lead-free) and surgical steel posts',
     inStock: true,
     isBestseller: true,
-    isSculptural: true
+    isSculptural: true,
+    isNew: true,
+    tags: ["anti-tarnish","bestseller","brass","dailywear","earrings","ethnic-wear","featured","gifting","gold-tone","new","nickel-free","office-wear","sculptural","statement","studs","textured","under-999"],
   },
   {
     id: 'avirena-brushed-orb-drops-gold-tone-earrings',
@@ -449,7 +464,9 @@ export const PRODUCTS: Product[] = [
     materials: 'High-grade brass with anti-tarnish gold-tone protective e-coating (nickel-free, lead-free) and surgical steel posts',
     inStock: true,
     isBestseller: true,
-    isSculptural: true
+    isSculptural: true,
+    isNew: true,
+    tags: ["anti-tarnish","ball-earrings","bestseller","brass","dailywear","dangle","drop-earrings","earrings","featured","gifting","gold-tone","minimalist","new","nickel-free","occasion-wear","office-wear","sculptural","statement","under-999"],
   },
   {
     id: 'avirena-cascade-statement-drops-gold-tone',
@@ -480,6 +497,8 @@ export const PRODUCTS: Product[] = [
     materials: 'High-grade brass with anti-tarnish gold-tone protective e-coating (nickel-free, lead-free) and surgical steel posts',
     inStock: true,
     isBestseller: true,
-    isSculptural: true
+    isSculptural: true,
+    isNew: true,
+    tags: ["anti-tarnish","bestseller","brass","dangle","drop-earrings","earrings","ethnic-wear","featured","festive","gifting","gold-tone","new","nickel-free","occasion-wear","organic","sculptural","statement"],
   }
 ];
