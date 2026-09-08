@@ -75,12 +75,32 @@ const isCategorySlug = (value: string): value is Exclude<Category, 'all'> =>
   (CATEGORY_SLUGS as readonly string[]).includes(value);
 
 /**
+ * Maps legacy arbitrary product handles (pre-rebrand) to new official Avirena handles
+ * for zero-downtime backward compatibility with bookmarks and external links.
+ */
+const LEGACY_SLUG_MAP: Record<string, string> = {
+  'nadir-square-studs-gold-tone-brass-earrings': 'avirena-square-studs-gold-tone-brass-earrings',
+  'lume-drop-earrings-gold-tone-brass': 'avirena-drop-earrings-gold-tone-brass',
+  'forma-statement-drops-geometric-brass-earrings': 'avirena-statement-drops-geometric-brass-earrings',
+  'amara-heart-drops-silver-tone-earrings': 'avirena-heart-drops-silver-tone-earrings',
+  'volute-spiral-earrings-silver-tone': 'avirena-spiral-earrings-silver-tone',
+  'solene-crystal-hoops-gold-tone-earrings': 'avirena-crystal-hoops-gold-tone-earrings',
+  'solene-crystal-hoops-silver-tone-earrings': 'avirena-crystal-hoops-silver-tone-earrings',
+  'petra-pebble-studs-gold-tone-earrings': 'avirena-pebble-studs-gold-tone-earrings',
+  'foglia-leaf-studs-gold-tone-earrings': 'avirena-leaf-studs-gold-tone-earrings',
+};
+
+/**
  * Resolve a URL segment to a product. Live URLs use the Shopify handle
  * (src/lib/shopify.ts sets `id: node.handle || node.id` and also keeps `handle`),
  * but local/mock products are keyed by `id`. Match on both, in both catalogs.
  */
-const findProductBySlug = (catalog: Product[], slug: string): Product | undefined =>
-  catalog.find((p) => p.handle === slug || p.id === slug || p.shopifyId === slug);
+const findProductBySlug = (catalog: Product[], slug: string): Product | undefined => {
+  const targetSlug = LEGACY_SLUG_MAP[slug] || slug;
+  return catalog.find(
+    (p) => p.handle === targetSlug || p.id === targetSlug || p.handle === slug || p.id === slug || p.shopifyId === slug
+  );
+};
 
 /**
  * Guide slugs that map to real, prerendered /guides/:slug routes.
