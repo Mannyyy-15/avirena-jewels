@@ -325,6 +325,52 @@ function renderGuideBlock(block: GuideBlock): string {
   }
 }
 
+/**
+ * Per-position alt-text suffixes for the product gallery.
+ *
+ * Shopify's own altText is empty on the current uploads, and emitting the
+ * product name five times gives a screen reader and Google Images no way to
+ * tell the views apart. Indexed by gallery position.
+ */
+const GALLERY_ALT_SUFFIX = [
+  '',
+  ' — detail view',
+  ' — side profile',
+  ' — close-up of the finish',
+  ' — worn on model',
+  ' — styled look',
+];
+
+/**
+ * Related-product links for a product page, in PRERENDERED html.
+ *
+ * The hydrated app has a "Perfect match with" block, but it is built from
+ * onClick handlers on divs rather than anchors, so no crawler ever sees a link
+ * between two products. Without this, the only path to a product page is the
+ * sitemap and no internal link equity flows through the catalog at all.
+ */
+function renderRelatedProducts(all: any[], currentHandle: string): string {
+  const others = all.filter((p) => (p.handle || p.id) !== currentHandle).slice(0, 4);
+  if (others.length === 0) return '';
+
+  return `
+          <nav class="related-products" aria-label="More pieces">
+            <h2>More Pieces</h2>
+            <ul>
+              ${others
+                .map((p: any) => {
+                  const h = p.handle || p.id;
+                  const amt = Math.round(
+                    parseFloat(p.priceRange?.minVariantPrice?.amount || '0')
+                  );
+                  return `<li><a href="/product/${h}">${escapeHtml(p.title)}</a> — ₹${amt}</li>`;
+                })
+                .join('\n              ')}
+            </ul>
+            <p><a href="/shop">View all jewellery</a></p>
+          </nav>`;
+}
+
 /** Full prerendered article body for one guide, including its on-page Q&A. */
 function renderGuideHtml(guide: Guide): string {
   return `
@@ -660,11 +706,25 @@ async function main() {
   // ---------------- ROUTE 2: Shop Catalog (/shop) ----------------
   const productCardsHtml = renderProductCards(shopifyProducts);
 
+  // Derived from the live catalog, never hardcoded: the meta description
+  // previously advertised "from ₹499" long after the cheapest SKU had been
+  // repriced to ₹599, promising a price that did not exist.
+  const lowestPrice = shopifyProducts.length
+    ? Math.round(
+        Math.min(
+          ...shopifyProducts.map((p: any) =>
+            parseFloat(p.priceRange?.minVariantPrice?.amount || '0')
+          )
+        )
+      )
+    : 0;
+
   routes.push({
     path: 'shop',
     title: 'Anti-Tarnish Jewellery Online India | AVIRENA',
-    description:
-      'Shop anti-tarnish gold-tone brass jewellery for daily wear. Nickel-free, skin-safe, from ₹499. Free delivery over ₹1,999 and 14-day exchanges across India.',
+    description: `Shop anti-tarnish gold-tone brass jewellery for daily wear. Nickel-free, skin-safe${
+      lowestPrice ? `, from ₹${lowestPrice}` : ''
+    }. Free delivery over ₹1,999 and 14-day exchanges across India.`,
     canonical: `${SITE_URL}/shop`,
     ogImage: shopifyProducts[0]?.images?.edges?.[0]?.node?.url || `${SITE_URL}/logo.png`,
     ogType: 'website',
@@ -856,8 +916,34 @@ async function main() {
     ],
     htmlContent: `
       <main class="collections-page">
-        <h1>Signature Design Suites</h1>
-        <p>Explore cohesive sculptural narratives crafted to stack harmoniously.</p>
+        <h1>Collections</h1>
+        <p>Sculptural dailywear jewellery in anti-tarnish brass and durable alloys, grouped by the way people actually shop: by category, by occasion, and by budget. Every piece is nickel-free with surgical steel posts.</p>
+
+        <h2>Shop by category</h2>
+        <ul>
+          <li><a href="/shop/earrings">Earrings</a> — studs, drops, hoops and sculptural forms in gold tone and silver tone.</li>
+          <li><a href="/shop/necklaces">Necklaces</a> — chains, chokers and pendants.</li>
+          <li><a href="/shop/rings">Rings</a> — sculptural bands and stacking rings.</li>
+          <li><a href="/shop/bracelets">Bracelets</a> — cuffs, bangles and chain bracelets.</li>
+          <li><a href="/shop/brooches">Brooches</a> — sculptural pins for scarves, lapels and knitwear.</li>
+        </ul>
+        <p>Categories beyond earrings are still being stocked. <a href="/shop">Browse everything available now</a>.</p>
+
+        <h2>Shop by occasion</h2>
+        <ul>
+          <li><strong>Office and everyday</strong> — understated pieces light enough to forget you have them on.</li>
+          <li><strong>Festive and occasion wear</strong> — statement drops and crystal hoops that carry a saree or an evening outfit.</li>
+          <li><strong>Gifting</strong> — earrings need no sizing, which makes them the safest jewellery gift. Our <a href="/guides/jewellery-gifting-guide-india">gifting guide</a> explains what else to consider.</li>
+        </ul>
+
+        <h2>Before you choose</h2>
+        <p>If you have reacted to jewellery before, or you are wondering whether brass marks skin, these answer it honestly rather than selling around it:</p>
+        <ul>
+          <li><a href="/guides/does-brass-jewelry-turn-skin-green">Does brass jewellery turn skin green?</a></li>
+          <li><a href="/guides/jewellery-for-sensitive-skin-india">Jewellery for sensitive skin</a></li>
+          <li><a href="/guides/jewelry-materials-guide">Brass vs plated vs vermeil vs solid gold</a></li>
+          <li><a href="/guides/anti-tarnish-jewelry-care">Anti-tarnish care guide</a></li>
+        </ul>
       </main>
     `,
   });
@@ -884,8 +970,29 @@ async function main() {
     ],
     htmlContent: `
       <main class="about-page">
-        <h1>Our Story & Philosophy</h1>
-        <p>Handcrafted homegrown dailywear jewelry sculpted for everyday confidence.</p>
+        <h1>Our Story &amp; Philosophy</h1>
+        <p>Avirena Jewels is a homegrown Indian jewellery label based in Mumbai, making sculptural pieces for everyday wear. We began in 2020, hand-assembling jewellery at a kitchen table during lockdown, and we still design for the same thing we did then: pieces substantial enough to feel considered, priced so you can actually wear them on an ordinary Tuesday.</p>
+
+        <h2>What we make, stated plainly</h2>
+        <p>Our jewellery is made from high-grade brass and durable alloys, finished with a protective anti-tarnish coating in gold tone, silver tone and rose gold tone. Every piece is nickel-free, lead-free and cadmium-free, and every earring post is surgical steel, so the pieces suit sensitive skin.</p>
+        <p>This is fashion jewellery. It is not solid gold, not gold vermeil and not sterling silver, and it is not hallmarked to any precious-metal standard. We say so on every product page, because a shopper deciding between a ₹699 pair of earrings and a ₹30,000 one deserves to know exactly which they are looking at. Where we use pearls they are cultured freshwater pearls, and where a piece has a stone it is faceted glass, not a diamond.</p>
+
+        <h2>Why brass</h2>
+        <p>Brass has the density and edge definition that make a sculptural shape read properly. Thin, hollow alternatives lose the line. Brass holds it. The protective coating is what keeps the finish stable through daily wear, and it is a finish, so it wears with time and use rather than lasting forever. Careful habits extend it meaningfully; nothing makes it permanent, and we would rather tell you that than promise otherwise.</p>
+
+        <h2>Who we are</h2>
+        <p>Avirena Jewels is a sole proprietorship operating online from Mumbai. We do not have a walk-in store. Orders ship tracked across India, and unworn pieces can be exchanged within 14 days in their original packaging. If something is wrong with an order, one person reads that email and replies.</p>
+
+        <h2>Honest answers, not marketing</h2>
+        <p>We publish guides on the questions people actually ask before buying brass jewellery, including whether it can turn skin green. It can, for some people, in some conditions, and our guide explains the chemistry and how to avoid it rather than dodging the question. You can read those in our jewellery guides.</p>
+
+        <nav aria-label="Related pages">
+          <a href="/shop">Shop all jewellery</a> ·
+          <a href="/guides">Jewellery guides</a> ·
+          <a href="/guides/jewelry-materials-guide">Brass vs plated vs vermeil vs solid gold</a> ·
+          <a href="/policies">Policies</a> ·
+          <a href="/contact">Contact us</a>
+        </nav>
       </main>
     `,
   });
@@ -894,9 +1001,9 @@ async function main() {
   // ---------------- ROUTE 5: Contact Page (/contact) ----------------
   routes.push({
     path: 'contact',
-    title: 'Contact Concierge & Support | AVIRENA',
+    title: 'Contact Avirena | Support & Order Help',
     description:
-      'Contact Avirena concierge for order tracking, styling advice, ring sizing assistance, and gift curation.',
+      'Contact Avirena Jewels for order help, exchanges, ring sizing and product questions. Email or WhatsApp +91 78238 89290, replies in 1-2 business days.',
     canonical: `${SITE_URL}/contact`,
     ogImage: `${SITE_URL}/logo.png`,
     ogType: 'website',
@@ -905,14 +1012,38 @@ async function main() {
       {
         '@context': 'https://schema.org',
         '@type': 'ContactPage',
-        name: 'Contact AVIRENA Atelier',
+        name: 'Contact Avirena Jewels',
         url: `${SITE_URL}/contact`,
       },
     ],
     htmlContent: `
       <main class="contact-page">
-        <h1>Atelier Concierge</h1>
-        <p>Connect with our jewelry specialists for styling, sizing, and order assistance.</p>
+        <h1>Contact Us</h1>
+        <p>One person reads this inbox and replies. If something is wrong with an order, say so directly and we will sort it out.</p>
+
+        <h2>How to reach us</h2>
+        <ul>
+          <li><strong>Email:</strong> <a href="mailto:avirenajewels@gmail.com">avirenajewels@gmail.com</a></li>
+          <li><strong>WhatsApp / Phone:</strong> <a href="https://wa.me/917823889290">+91 78238 89290</a></li>
+          <li><strong>Hours:</strong> Monday to Saturday, 10:00 AM - 7:00 PM IST. Closed Sunday.</li>
+          <li><strong>Response time:</strong> 1-2 business days.</li>
+        </ul>
+        <p>Avirena Jewels is an online-only business based in Mumbai, Maharashtra. We do not operate a walk-in store.</p>
+
+        <h2>What to include</h2>
+        <p>For anything about an existing order, please include your order number. For a size or fit question, tell us which piece you are looking at and we will give you a straight answer rather than a sales pitch.</p>
+
+        <h2>Questions we can usually answer faster than email</h2>
+        <ul>
+          <li><a href="/guides/ring-size-guide">How do I measure my ring size at home?</a></li>
+          <li><a href="/guides/does-brass-jewelry-turn-skin-green">Does brass jewellery turn skin green?</a></li>
+          <li><a href="/guides/jewellery-for-sensitive-skin-india">Is this suitable for sensitive skin?</a></li>
+          <li><a href="/guides/anti-tarnish-jewelry-care">How do I care for anti-tarnish jewellery?</a></li>
+          <li><a href="/policies">Shipping, returns and exchange policy</a></li>
+        </ul>
+
+        <h2>Returns and exchanges</h2>
+        <p>Unworn pieces can be exchanged within 14 days of delivery in their original packaging. Email us with your order number and the reason, and we will arrange a courier pickup from your address. Full terms are on our <a href="/policies">policies page</a>.</p>
       </main>
     `,
   });
@@ -979,8 +1110,31 @@ async function main() {
     jsonLd: [...getGlobalSchema()],
     htmlContent: `
       <main class="policies-page">
-        <h1>Client Policies & Assurance</h1>
-        <p>14-Day Exchanges • Tracked Express Shipping • Hypoallergenic Materials</p>
+        <h1>Policies, Shipping &amp; Returns</h1>
+        <p>The terms below are the ones we hold ourselves to. They are deliberately plain: a policy you need a lawyer to read is not a policy that protects you.</p>
+
+        <h2>Returns and exchanges</h2>
+        <p>Unworn pieces can be returned or exchanged within <strong>14 days of delivery</strong>, in their original condition and packaging. Email <a href="mailto:avirenajewels@gmail.com">avirenajewels@gmail.com</a> with your order number and the reason, and we will arrange a courier pickup from your address. Once the return reaches us we inspect it within 2 business days, and approved refunds go back to your original payment method within 5-7 business days depending on your bank. You may instead take store credit for the full value with no deduction. Personalised or made-to-order items are final sale unless there is a manufacturing defect.</p>
+        <p>This is in addition to your rights under the Consumer Protection Act 2019 and the Consumer Protection (E-Commerce) Rules 2020. Nothing here limits those rights.</p>
+
+        <h2>Damaged or faulty items</h2>
+        <p>If an order arrives damaged, email us within 48 hours of delivery with photographs. We will send a replacement at no additional cost, or refund you in full.</p>
+
+        <h2>Shipping</h2>
+        <p>In-stock pieces are dispatched within 1-2 business days, Monday to Saturday excluding public holidays, and you receive tracking by email once the order ships. Delivery within India typically takes 2-5 business days after dispatch depending on your location. Shipping is free on orders above ₹1,999; a flat ₹99 applies below that. Delivery timelines are estimates rather than guarantees, since couriers can be delayed by weather, strikes or regional restrictions. If tracking has not updated for 7 business days, contact us and we will open an investigation with the courier.</p>
+
+        <h2>What our jewellery is made of</h2>
+        <p>Avirena jewellery is <strong>fashion jewellery</strong>, made from high-grade brass and durable alloys with a protective anti-tarnish coating. It contains no precious metal, is not sold as gold, gold vermeil or sterling silver, and is not hallmarked to any precious-metal fineness standard. Gold-tone, silver-tone and rose gold-tone describe the colour of the finish, not its composition. Pearls are cultured freshwater pearls, and stones are faceted glass rather than diamonds or precious gemstones. Every piece is nickel-free, lead-free and cadmium-free, with surgical steel earring posts.</p>
+        <p>The coating is designed for everyday wear, but it is a finish and its life depends on how a piece is worn and stored. Change to the finish through normal wear over time is not a manufacturing defect. Our <a href="/guides/anti-tarnish-jewelry-care">care guide</a> explains how to make it last.</p>
+
+        <h2>Pricing and cancellations</h2>
+        <p>All prices are in Indian Rupees and include applicable taxes unless stated otherwise. We may correct pricing errors and cancel affected orders, refunding you in full. Orders can be cancelled within 4 hours of placement, before dispatch, by emailing us.</p>
+
+        <h2>Privacy</h2>
+        <p>We collect only what is needed to fulfil an order: name, contact details and delivery address, plus basic analytics. Payments are processed by our payment provider and we never store complete card numbers or CVV codes. We do not sell or trade personal information. You can request access to, correction of, or deletion of your data at any time by emailing us.</p>
+
+        <h2>Business information</h2>
+        <p>Avirena Jewels is a sole proprietorship based in Mumbai, Maharashtra, India, trading online only. Contact and grievance queries both go to <a href="mailto:avirenajewels@gmail.com">avirenajewels@gmail.com</a> or WhatsApp <a href="https://wa.me/917823889290">+91 78238 89290</a>. We acknowledge complaints within 48 hours and resolve them within one month of receipt. These terms are governed by the laws of India, with jurisdiction in the courts of Mumbai, Maharashtra.</p>
       </main>
     `,
   });
@@ -989,17 +1143,35 @@ async function main() {
   // ---------------- ROUTE 8: Journal Page (/journal) ----------------
   routes.push({
     path: 'journal',
-    title: 'Journal & Styling Lookbook | AVIRENA',
+    title: 'Journal | Styling Notes & Brand Story | AVIRENA',
     description:
-      'Explore the Avirena Journal. Dailywear jewelry styling notes, layer stacking guides, and craftsmanship chronicles.',
+      'The Avirena journal: how the brand started in 2020, why we choose brass over precious metal, and how to stack dailywear jewellery without overdoing it.',
     canonical: `${SITE_URL}/journal`,
     ogImage: `${SITE_URL}/logo.png`,
     ogType: 'website',
     jsonLd: [...getGlobalSchema()],
     htmlContent: `
       <main class="journal-page">
-        <h1>Atelier Journal & Lookbook</h1>
-        <p>Discover dailywear styling notes, craftsmanship chronicles, and jewelry care tips.</p>
+        <h1>Journal</h1>
+        <p>Notes on how we make things, why we make them from what we do, and how to wear them. For the practical questions about materials, care and sizing, see our <a href="/guides">jewellery guides</a>.</p>
+
+        <h2>Born in Quarantine: How a 2020 Lockdown Passion Project Built Avirena</h2>
+        <p>Avirena started at a kitchen table during the 2020 lockdown, hand-assembling pieces for friends and neighbours. What people responded to was that the jewellery felt substantial and considered without the price or fragility of solid gold, and could be worn working from home, running errands, or dressing up a simple outfit. That is still what we design for.</p>
+
+        <h2>The Brass Alloy Standard: Why We Choose Brass Over Precious Metals</h2>
+        <p>The market pushes you toward two extremes: cheap metals that mark your skin after two wears, or solid gold you are afraid to wear outside. We take a third path. Brass is dense and ductile, so it holds architectural curves and crisp edges that thin hollow alternatives lose. We use lead-free and nickel-free brass, sealed with a protective anti-tarnish coating, with surgical steel posts. It is fashion jewellery and we say so plainly — no precious metal, no hallmarking claim. Our <a href="/guides/jewelry-materials-guide">materials guide</a> compares brass, plated, vermeil and solid gold honestly.</p>
+
+        <h2>The Everyday Stacking Blueprint</h2>
+        <p>An intentional ear stack starts with one anchor: a bold stud on the primary lobe. Contrast comes next — pair a high-polish dome against grooved or textured pieces so the combination reads as considered rather than cluttered. When layering necklaces, vary the chain weights rather than repeating them.</p>
+
+        <h2>Care and Longevity</h2>
+        <p>Apply perfume and lotion first and let them settle before putting jewellery on. Take pieces off before swimming, bathing and workouts. Wipe with a soft dry cloth after wear and store dry, ideally in a pouch with a silica sachet — which matters more in Indian humidity than most care advice written abroad admits. Full detail in the <a href="/guides/anti-tarnish-jewelry-care">care guide</a> and the <a href="/guides/jewellery-care-monsoon-humidity-india">monsoon guide</a>.</p>
+
+        <nav aria-label="Related pages">
+          <a href="/shop">Shop all jewellery</a> ·
+          <a href="/guides">Jewellery guides</a> ·
+          <a href="/about">About Avirena</a>
+        </nav>
       </main>
     `,
   });
@@ -1252,13 +1424,20 @@ async function main() {
             <h1 itemprop="name">${escapeHtml(prodTitle)}</h1>
             <div class="product-gallery">
               ${prodImages
-                .map((src: string, i: number) =>
+                .map((src: string, i: number) => {
+                  // Alt text differentiates each gallery image. Shopify's own
+                  // altText is empty on these uploads, and repeating the product
+                  // name five times tells a screen reader (and Google Images)
+                  // nothing about which view it is looking at.
+                  const alt = escapeHtml(
+                    `${prodTitle}${GALLERY_ALT_SUFFIX[i] || ` — view ${i + 1}`}`
+                  );
                   // First gallery image is the LCP candidate on /product/*: eager +
                   // high priority. Everything after it is lazy.
-                  i === 0
-                    ? `<img src="${shopifyImage(src, 1000)}" alt="${escapeHtml(prodTitle)}" itemprop="image" width="1000" height="1250" loading="eager" fetchpriority="high" decoding="sync" />`
-                    : `<img src="${shopifyImage(src, 600)}" alt="${escapeHtml(prodTitle)}" itemprop="image" width="600" height="750" loading="lazy" decoding="async" />`
-                )
+                  return i === 0
+                    ? `<img src="${shopifyImage(src, 1000)}" alt="${alt}" itemprop="image" width="1000" height="1250" loading="eager" fetchpriority="high" decoding="sync" />`
+                    : `<img src="${shopifyImage(src, 600)}" alt="${alt}" itemprop="image" width="600" height="750" loading="lazy" decoding="async" />`;
+                })
                 .join('')}
             </div>
             <div class="product-info">
@@ -1266,6 +1445,7 @@ async function main() {
               <div itemprop="description">${escapeHtml(prodDesc)}</div>
             </div>
           </article>
+          ${renderRelatedProducts(shopifyProducts, handle)}
         </main>
       `,
     });
