@@ -167,14 +167,13 @@ function getGlobalSchema() {
       },
     },
     {
-      // OnlineStore, not JewelryStore/LocalBusiness: Avirena sells online and has
-      // no walk-in storefront. A LocalBusiness type with a street address and geo
-      // coordinates asserts a physical location customers can visit, and the
-      // address previously stated here was not a real one.
+      // OnlineStore schema with Google Site Name & Organization attributes
       '@context': 'https://schema.org',
       '@type': 'OnlineStore',
       name: 'Avirena Jewels',
-      image: `${SITE_URL}/logo.png`,
+      alternateName: ['Avirena', 'AVIRENA', 'AVIRENA Jewels'],
+      image: `${SITE_URL}/og-banner.jpg`,
+      logo: `${SITE_URL}/logo.png`,
       '@id': `${SITE_URL}/#store`,
       url: SITE_URL,
       email: 'avirenajewels@gmail.com',
@@ -198,6 +197,7 @@ function getGlobalSchema() {
       '@context': 'https://schema.org',
       '@type': 'WebSite',
       name: 'Avirena Jewels',
+      alternateName: ['Avirena', 'AVIRENA', 'AVIRENA Jewels'],
       url: SITE_URL,
       potentialAction: {
         '@type': 'SearchAction',
@@ -549,7 +549,7 @@ async function main() {
     description:
       'Explore AVIRENA Jewels. Homegrown dailywear jewelry handcrafted in durable brass, anti-tarnish protective coatings, and natural cultured pearls. Timeless beauty, uniquely yours.',
     canonical: SITE_URL,
-    ogImage: `${SITE_URL}/logo.png`,
+    ogImage: `${SITE_URL}/og-banner.jpg`,
     ogType: 'website',
     keywords:
       'dailywear jewelry, anti tarnish brass jewelry, baroque pearls, sculptural rings, molten earrings, statement necklace, luxury jewelry India, aesthetic dailywear',
@@ -1162,6 +1162,33 @@ async function main() {
             '@type': 'Organization',
             name: 'Avirena Jewels',
           },
+          shippingDetails: {
+            '@type': 'OfferShippingDetails',
+            shippingRate: {
+              '@type': 'MonetaryAmount',
+              value: '0',
+              currency: 'INR',
+            },
+            shippingDestination: {
+              '@type': 'DefinedRegion',
+              addressCountry: 'IN',
+            },
+            deliveryTime: {
+              '@type': 'ShippingDeliveryTime',
+              handlingTime: {
+                '@type': 'QuantitativeValue',
+                minValue: 0,
+                maxValue: 1,
+                unitCode: 'DAY',
+              },
+              transitTime: {
+                '@type': 'QuantitativeValue',
+                minValue: 2,
+                maxValue: 4,
+                unitCode: 'DAY',
+              },
+            },
+          },
           hasMerchantReturnPolicy: {
             '@type': 'MerchantReturnPolicy',
             applicableCountry: ['IN', 'US', 'GB', 'EU'],
@@ -1334,6 +1361,12 @@ Allow: /
 Disallow: /checkout
 Disallow: /cart
 Disallow: /api/
+
+User-agent: Googlebot
+Allow: /
+
+User-agent: Googlebot-Image
+Allow: /
 
 # AI Search & Answer Engine Crawlers (AEO / LLM indexing)
 User-agent: GPTBot

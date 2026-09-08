@@ -5,6 +5,12 @@ Disallow: /checkout
 Disallow: /cart
 Disallow: /api/
 
+User-agent: Googlebot
+Allow: /
+
+User-agent: Googlebot-Image
+Allow: /
+
 # AI Search & Answer Engine Crawlers (AEO / LLM indexing)
 User-agent: GPTBot
 Allow: /

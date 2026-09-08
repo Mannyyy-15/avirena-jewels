@@ -132,13 +132,13 @@ export const SeoMeta: React.FC<SeoMetaProps> = ({
     });
 
     // 2. OnlineStore — must mirror scripts/prerender.ts getGlobalSchema() exactly.
-    // Not JewelryStore/LocalBusiness: that type asserts a walk-in storefront with
-    // a street address, coordinates and opening hours, none of which exist.
     schemas.push({
       '@context': 'https://schema.org',
       '@type': 'OnlineStore',
       name: 'Avirena Jewels',
-      image: 'https://avirenajewels.com/logo.png',
+      alternateName: ['Avirena', 'AVIRENA', 'AVIRENA Jewels'],
+      image: 'https://avirenajewels.com/og-banner.jpg',
+      logo: 'https://avirenajewels.com/logo.png',
       '@id': 'https://avirenajewels.com/#store',
       url: 'https://avirenajewels.com',
       email: 'avirenajewels@gmail.com',
@@ -164,6 +164,7 @@ export const SeoMeta: React.FC<SeoMetaProps> = ({
       '@context': 'https://schema.org',
       '@type': 'WebSite',
       name: 'Avirena Jewels',
+      alternateName: ['Avirena', 'AVIRENA', 'AVIRENA Jewels'],
       url: 'https://avirenajewels.com',
       potentialAction: {
         '@type': 'SearchAction',
