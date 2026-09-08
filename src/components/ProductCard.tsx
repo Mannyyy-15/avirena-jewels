@@ -48,16 +48,16 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       className="group cursor-pointer flex flex-col transition-all duration-300 relative text-left font-sans-body w-full"
     >
       {/* Product Image Canvas Container */}
-      <div className="relative aspect-square w-full bg-[#F2EFDB] border border-[#D8D2C2] rounded-xs overflow-hidden flex items-center justify-center p-4 sm:p-6 transition-all duration-300 group-hover:border-[#8F896D] group-hover:shadow-[0_8px_20px_rgba(65,60,35,0.08)]">
+      <div className="relative aspect-square w-full bg-[#FAF8F5] border border-[#D8D2C2] rounded-xs overflow-hidden flex items-center justify-center p-4 sm:p-6 transition-all duration-300 group-hover:border-[#8F896D] group-hover:shadow-[0_8px_20px_rgba(65,60,35,0.08)]">
         {/* Badges */}
         <div className="absolute top-2.5 left-2.5 flex flex-col gap-1 z-10">
           {product.isBestseller && (
-            <span className="bg-[#413C23] text-[#F2EFDB] text-[9px] tracking-[0.16em] uppercase font-bold px-2 py-0.5 rounded-xs shadow-xs">
+            <span className="bg-[#413C23] text-[#FAF8F5] text-[9px] tracking-[0.16em] uppercase font-bold px-2 py-0.5 rounded-xs shadow-xs">
               Bestseller
             </span>
           )}
           {product.isSculptural && !product.isBestseller && (
-            <span className="bg-[#F2EFDB]/95 text-[#413C23] text-[9px] tracking-[0.16em] uppercase font-semibold px-2 py-0.5 border border-[#D8D2C2] rounded-xs shadow-xs">
+            <span className="bg-[#FAF8F5]/95 text-[#413C23] text-[9px] tracking-[0.16em] uppercase font-semibold px-2 py-0.5 border border-[#D8D2C2] rounded-xs shadow-xs">
               Sculptural
             </span>
           )}
@@ -69,7 +69,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           <button
             id={`wishlist-btn-${product.id}`}
             onClick={handleToggleWishlist}
-            className="p-1.5 rounded-full bg-[#F2EFDB]/95 hover:bg-[#FAF8F5] text-[#8F896D] hover:text-[#413C23] transition-all shadow-xs cursor-pointer focus:outline-none border border-[#D8D2C2]"
+            className="p-1.5 rounded-full bg-[#FAF8F5]/95 hover:bg-white text-[#8F896D] hover:text-[#413C23] transition-all shadow-xs cursor-pointer focus:outline-none border border-[#D8D2C2]"
             title={isWishlisted ? 'Remove from saved' : 'Save to wishlist'}
             aria-label={isWishlisted ? 'Remove from saved' : 'Save to wishlist'}
           >

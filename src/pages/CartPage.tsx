@@ -151,7 +151,7 @@ export const CartPage: React.FC<CartPageProps> = ({
               >
                 {/* Product Column */}
                 <div className="w-full sm:col-span-6 flex items-center gap-4">
-                  <div className="w-20 h-20 bg-[#F2EFDB] border border-[#D8D2C2] rounded-xs flex items-center justify-center p-2 shrink-0 overflow-hidden">
+                  <div className="w-20 h-20 bg-[#FAF8F5] border border-[#D8D2C2] rounded-xs flex items-center justify-center p-2 shrink-0 overflow-hidden">
                     <img
                       src={item.product.images[0]}
                       alt={item.product.name}

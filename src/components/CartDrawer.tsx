@@ -160,7 +160,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                 {items.map((item) => (
                   <div
                     key={item.id}
-                    className="flex gap-4 p-4 bg-[#F2EFDB] border border-[#D8D2C2] rounded-xs transition-all hover:border-[#8F896D]"
+                    className="flex gap-4 p-4 bg-[#FAF8F5] border border-[#D8D2C2] rounded-xs transition-all hover:border-[#8F896D]"
                   >
                     {/* Square thumbnail. Larger and less padded than before:
                         at 80px with 8px inset the piece was too small to

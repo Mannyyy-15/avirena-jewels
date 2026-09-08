@@ -315,7 +315,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
               onMouseEnter={() => setIsZoomed(true)}
               onMouseLeave={() => setIsZoomed(false)}
               onMouseMove={handleMouseMove}
-              className="relative w-full aspect-square max-h-[calc(100vh-140px)] bg-[#F2EFDB] border border-[#D8D2C2] rounded-xs overflow-hidden flex items-center justify-center cursor-pointer sm:cursor-crosshair shadow-xs select-none group/canvas"
+              className="relative w-full aspect-square max-h-[calc(100vh-140px)] bg-[#FAF8F5] border border-[#D8D2C2] rounded-xs overflow-hidden flex items-center justify-center cursor-pointer sm:cursor-crosshair shadow-xs select-none group/canvas"
             >
               <img
                 src={imagesList[activeImageIndex] || imagesList[0]}
@@ -666,7 +666,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                     <button
                       key={idx}
                       onClick={() => setActiveImageIndex(idx)}
-                      className={`w-full aspect-square rounded-xs border overflow-hidden transition-all cursor-pointer bg-[#F2EFDB] ${
+                      className={`w-full aspect-square rounded-xs border overflow-hidden transition-all cursor-pointer bg-[#FAF8F5] ${
                         activeImageIndex === idx
                           ? 'border-[#413C23] ring-2 ring-[#413C23]/25 shadow-xs'
                           : 'border-[#D8D2C2] opacity-80 hover:opacity-100 hover:border-[#8F896D]'
@@ -712,7 +712,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                       <button
                         key={idx}
                         onClick={() => setActiveImageIndex(idx)}
-                        className={`w-[calc((100%-12px*4)/5)] sm:w-[calc((100%-16px*4)/5)] min-w-[calc((100%-12px*4)/5)] sm:min-w-[calc((100%-16px*4)/5)] shrink-0 aspect-square rounded-xs border overflow-hidden transition-all cursor-pointer bg-[#F2EFDB] ${
+                        className={`w-[calc((100%-12px*4)/5)] sm:w-[calc((100%-16px*4)/5)] min-w-[calc((100%-12px*4)/5)] sm:min-w-[calc((100%-16px*4)/5)] shrink-0 aspect-square rounded-xs border overflow-hidden transition-all cursor-pointer bg-[#FAF8F5] ${
                           activeImageIndex === idx
                             ? 'border-[#413C23] ring-2 ring-[#413C23]/25 shadow-xs'
                             : 'border-[#D8D2C2] opacity-80 hover:opacity-100 hover:border-[#8F896D]'
@@ -843,7 +843,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                     onClick={() => onSelectProduct(item)}
                     className="flex items-center gap-4 cursor-pointer flex-1"
                   >
-                    <div className="w-16 h-16 sm:w-20 sm:h-20 bg-[#F2EFDB] border border-[#D8D2C2] rounded-xs overflow-hidden shrink-0 flex items-center justify-center p-2 group-hover:border-[#413C23] transition-colors">
+                    <div className="w-16 h-16 sm:w-20 sm:h-20 bg-[#FAF8F5] border border-[#D8D2C2] rounded-xs overflow-hidden shrink-0 flex items-center justify-center p-2 group-hover:border-[#413C23] transition-colors">
                       <img
                         src={item.images?.[0] || '/logo.png'}
                         alt={item.name}

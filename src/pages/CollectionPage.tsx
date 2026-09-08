@@ -104,7 +104,7 @@ export const CollectionPage: React.FC<CollectionPageProps> = ({
       <div
         key={product.id}
         onClick={() => onSelectProduct(product)}
-        className="collection-page-card group relative flex h-full flex-col justify-between bg-[#F2EFDB] border border-[#D8D2C2] rounded-xs hover:border-[#8F896D] hover:shadow-[0_8px_20px_rgba(65,60,35,0.08)] transition-all duration-300 cursor-pointer p-4 sm:p-5 select-none text-left overflow-hidden"
+        className="collection-page-card group relative flex h-full flex-col justify-between bg-[#FAF8F5] border border-[#D8D2C2] rounded-xs hover:border-[#8F896D] hover:shadow-[0_8px_20px_rgba(65,60,35,0.08)] transition-all duration-300 cursor-pointer p-4 sm:p-5 select-none text-left overflow-hidden"
       >
         <button
           type="button"
@@ -115,7 +115,7 @@ export const CollectionPage: React.FC<CollectionPageProps> = ({
           className={`absolute top-3.5 right-3.5 z-10 w-7 h-7 rounded-full flex items-center justify-center transition-all duration-200 ${
             wishlisted
               ? 'bg-[#413C23] text-white opacity-100 shadow-xs'
-              : 'bg-[#F2EFDB]/90 text-[#413C23] opacity-0 group-hover:opacity-100 hover:bg-[#FAF8F5] border border-[#D8D2C2] shadow-xs'
+              : 'bg-[#FAF8F5]/90 text-[#413C23] opacity-0 group-hover:opacity-100 hover:bg-white border border-[#D8D2C2] shadow-xs'
           }`}
           aria-label="Wishlist"
         >
@@ -198,7 +198,7 @@ export const CollectionPage: React.FC<CollectionPageProps> = ({
     <div
       key={key}
       aria-hidden="true"
-      className={`relative flex flex-col justify-between bg-[#F2EFDB] border border-[#D8D2C2] rounded-xs p-4 sm:p-5 ${
+      className={`relative flex flex-col justify-between bg-[#FAF8F5] border border-[#D8D2C2] rounded-xs p-4 sm:p-5 ${
         featured
           ? 'col-span-1 sm:col-span-2 lg:col-span-2 lg:row-span-2 min-h-[380px] lg:min-h-0 p-5 sm:p-7'
           : ''
@@ -224,7 +224,7 @@ export const CollectionPage: React.FC<CollectionPageProps> = ({
       <div
         key={`bento-${product.id}`}
         onClick={() => onSelectProduct(product)}
-        className="collection-page-card group relative flex flex-col justify-between bg-[#F2EFDB] border border-[#D8D2C2] rounded-xs hover:border-[#8F896D] hover:shadow-[0_8px_20px_rgba(65,60,35,0.08)] transition-all duration-300 cursor-pointer col-span-2 row-span-2 h-full p-4 sm:p-6 select-none text-left overflow-hidden"
+        className="collection-page-card group relative flex flex-col justify-between bg-[#FAF8F5] border border-[#D8D2C2] rounded-xs hover:border-[#8F896D] hover:shadow-[0_8px_20px_rgba(65,60,35,0.08)] transition-all duration-300 cursor-pointer col-span-2 row-span-2 h-full p-4 sm:p-6 select-none text-left overflow-hidden"
       >
         <div className="flex items-center justify-between w-full z-10 mb-2">
           <span className="inline-flex items-center px-2.5 py-1 rounded-2xs bg-[#413C23] text-[#FAF8F5] text-[10px] uppercase tracking-widest font-medium">
@@ -240,7 +240,7 @@ export const CollectionPage: React.FC<CollectionPageProps> = ({
               className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-200 ${
                 wishlisted
                   ? 'bg-[#413C23] text-white opacity-100 shadow-xs'
-                  : 'bg-[#F2EFDB]/90 text-[#413C23] hover:bg-[#FAF8F5] border border-[#D8D2C2] shadow-xs'
+                  : 'bg-[#FAF8F5]/90 text-[#413C23] hover:bg-white border border-[#D8D2C2] shadow-xs'
               }`}
               aria-label="Wishlist"
             >

@@ -383,7 +383,7 @@ export const HomePage: React.FC<HomePageProps> = ({
                   className="collection-card group cursor-pointer flex flex-col space-y-2 text-left w-full"
                 >
                   {/* Fixed Uniform Square Box Container */}
-                  <div className="relative aspect-square w-full bg-[#F2EFDB] border border-[#D8D2C2] rounded-xs flex items-center justify-center p-6 transition-all duration-300 group-hover:border-[#8F896D] group-hover:shadow-[0_8px_20px_rgba(65,60,35,0.08)] overflow-hidden">
+                  <div className="relative aspect-square w-full bg-[#FAF8F5] border border-[#D8D2C2] rounded-xs flex items-center justify-center p-6 transition-all duration-300 group-hover:border-[#8F896D] group-hover:shadow-[0_8px_20px_rgba(65,60,35,0.08)] overflow-hidden">
                     <div className="w-full h-full flex items-center justify-center">
                       <img
                         src={imageSrc}
@@ -492,7 +492,7 @@ export const HomePage: React.FC<HomePageProps> = ({
                   className="popular-card group cursor-pointer flex flex-col space-y-2 text-left w-full"
                 >
                   {/* Fixed Uniform Square Box Container */}
-                  <div className="relative aspect-square w-full bg-[#F2EFDB] border border-[#D8D2C2] rounded-xs flex items-center justify-center p-6 transition-all duration-300 group-hover:border-[#8F896D] group-hover:shadow-[0_8px_20px_rgba(65,60,35,0.08)] overflow-hidden">
+                  <div className="relative aspect-square w-full bg-[#FAF8F5] border border-[#D8D2C2] rounded-xs flex items-center justify-center p-6 transition-all duration-300 group-hover:border-[#8F896D] group-hover:shadow-[0_8px_20px_rgba(65,60,35,0.08)] overflow-hidden">
                     <div className="w-full h-full flex items-center justify-center">
                       <img
                         src={imageSrc}
@@ -602,7 +602,7 @@ export const HomePage: React.FC<HomePageProps> = ({
               Array.from({ length: 4 }).map((_, idx) => (
                 <div
                   key={`gold-skeleton-${idx}`}
-                  className="flex flex-col justify-between bg-[#F2EFDB] border border-[#D8D2C2] rounded-xs overflow-hidden animate-pulse p-4"
+                  className="flex flex-col justify-between bg-[#FAF8F5] border border-[#D8D2C2] rounded-xs overflow-hidden animate-pulse p-4"
                 >
                   <div className="aspect-square w-full bg-[#E7E4D5] rounded-xs mb-3" />
                   <div className="h-4 bg-[#E7E4D5] rounded w-3/4 mb-2" />
@@ -619,7 +619,7 @@ export const HomePage: React.FC<HomePageProps> = ({
                   <div
                     key={product.id}
                     onClick={() => onSelectProduct(product)}
-                    className="gold-card group cursor-pointer flex flex-col justify-between bg-[#F2EFDB] border border-[#D8D2C2] rounded-xs p-3.5 sm:p-5 transition-all duration-300 hover:border-[#8F896D] hover:shadow-[0_10px_25px_rgba(65,60,35,0.08)] relative text-left"
+                    className="gold-card group cursor-pointer flex flex-col justify-between bg-[#FAF8F5] border border-[#D8D2C2] rounded-xs p-3.5 sm:p-5 transition-all duration-300 hover:border-[#8F896D] hover:shadow-[0_10px_25px_rgba(65,60,35,0.08)] relative text-left"
                   >
                     {/* Top Bar: Metal Finish Badge & Wishlist Heart */}
                     <div className="flex items-center justify-between w-full z-10">
@@ -635,7 +635,7 @@ export const HomePage: React.FC<HomePageProps> = ({
                         className={`w-7 h-7 rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer ${
                           wishlisted
                             ? 'bg-[#413C23] text-white opacity-100 shadow-xs'
-                            : 'bg-[#F2EFDB]/90 text-[#413C23] opacity-80 sm:opacity-0 group-hover:opacity-100 hover:bg-[#FAF8F5] border border-[#D8D2C2] shadow-xs'
+                            : 'bg-[#FAF8F5]/90 text-[#413C23] opacity-80 sm:opacity-0 group-hover:opacity-100 hover:bg-white border border-[#D8D2C2] shadow-xs'
                         }`}
                         aria-label="Wishlist"
                       >
@@ -774,7 +774,7 @@ export const HomePage: React.FC<HomePageProps> = ({
               Array.from({ length: 4 }).map((_, idx) => (
                 <div
                   key={`silver-skeleton-${idx}`}
-                  className="flex flex-col justify-between bg-[#F2EFDB] border border-[#D8D2C2] rounded-xs overflow-hidden animate-pulse p-4"
+                  className="flex flex-col justify-between bg-[#FAF8F5] border border-[#D8D2C2] rounded-xs overflow-hidden animate-pulse p-4"
                 >
                   <div className="aspect-square w-full bg-[#E7E4D5] rounded-xs mb-3" />
                   <div className="h-4 bg-[#E7E4D5] rounded w-3/4 mb-2" />
@@ -791,7 +791,7 @@ export const HomePage: React.FC<HomePageProps> = ({
                   <div
                     key={product.id}
                     onClick={() => onSelectProduct(product)}
-                    className="silver-card group cursor-pointer flex flex-col justify-between bg-[#F2EFDB] border border-[#D8D2C2] rounded-xs p-3.5 sm:p-5 transition-all duration-300 hover:border-[#8F896D] hover:shadow-[0_10px_25px_rgba(65,60,35,0.08)] relative text-left"
+                    className="silver-card group cursor-pointer flex flex-col justify-between bg-[#FAF8F5] border border-[#D8D2C2] rounded-xs p-3.5 sm:p-5 transition-all duration-300 hover:border-[#8F896D] hover:shadow-[0_10px_25px_rgba(65,60,35,0.08)] relative text-left"
                   >
                     {/* Top Bar: Metal Finish Badge & Wishlist Heart */}
                     <div className="flex items-center justify-between w-full z-10">
@@ -807,7 +807,7 @@ export const HomePage: React.FC<HomePageProps> = ({
                         className={`w-7 h-7 rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer ${
                           wishlisted
                             ? 'bg-[#413C23] text-white opacity-100 shadow-xs'
-                            : 'bg-[#F2EFDB]/90 text-[#413C23] opacity-80 sm:opacity-0 group-hover:opacity-100 hover:bg-[#FAF8F5] border border-[#D8D2C2] shadow-xs'
+                            : 'bg-[#FAF8F5]/90 text-[#413C23] opacity-80 sm:opacity-0 group-hover:opacity-100 hover:bg-white border border-[#D8D2C2] shadow-xs'
                         }`}
                         aria-label="Wishlist"
                       >
@@ -1026,7 +1026,7 @@ export const HomePage: React.FC<HomePageProps> = ({
               Array.from({ length: 4 }).map((_, idx) => (
                 <div
                   key={`gifting-skeleton-${idx}`}
-                  className="flex flex-col justify-between bg-[#F2EFDB] border border-[#D8D2C2] rounded-xs overflow-hidden text-left animate-pulse"
+                  className="flex flex-col justify-between bg-[#FAF8F5] border border-[#D8D2C2] rounded-xs overflow-hidden text-left animate-pulse"
                 >
                   <div className="aspect-square w-full bg-[#E7E4D5] opacity-60" />
                   <div className="p-4 space-y-2">
@@ -1044,9 +1044,9 @@ export const HomePage: React.FC<HomePageProps> = ({
                 <div
                   key={product.id}
                   onClick={() => onSelectProduct(product)}
-                  className="gifting-card group cursor-pointer flex flex-col justify-between bg-[#F2EFDB] border border-[#D8D2C2] rounded-xs overflow-hidden transition-all duration-300 hover:shadow-md hover:border-[#8F896D] text-left"
+                  className="gifting-card group cursor-pointer flex flex-col justify-between bg-[#FAF8F5] border border-[#D8D2C2] rounded-xs overflow-hidden transition-all duration-300 hover:shadow-md hover:border-[#8F896D] text-left"
                 >
-                  <div className="relative aspect-square w-full bg-[#F2EFDB] p-6 flex items-center justify-center overflow-hidden">
+                  <div className="relative aspect-square w-full bg-[#FAF8F5] p-6 flex items-center justify-center overflow-hidden">
                     <img
                       src={imageSrc}
                       alt={product.name}
@@ -1057,7 +1057,7 @@ export const HomePage: React.FC<HomePageProps> = ({
                       decoding="async"
                       className="w-full h-full object-contain mix-blend-multiply group-hover:scale-106 transition-transform duration-500"
                     />
-                    <div className="absolute top-3 left-3 bg-[#F2EFDB] text-[#413C23] text-[10px] font-semibold px-2 py-0.5 rounded-xs border border-[#D8D2C2] uppercase tracking-wider">
+                    <div className="absolute top-3 left-3 bg-[#FAF8F5] text-[#413C23] text-[10px] font-semibold px-2 py-0.5 rounded-xs border border-[#D8D2C2] uppercase tracking-wider">
                       {product.metal}
                     </div>
                     <button
