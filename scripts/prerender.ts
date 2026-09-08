@@ -203,7 +203,7 @@ function getGlobalSchema() {
       '@context': 'https://schema.org',
       '@type': 'WebSite',
       name: 'Avirena Jewels',
-      alternateName: ['Avirena', 'AVIRENA', 'AVIRENA Jewels'],
+      alternateName: ['Avirena', 'AVIRENA', 'AVIRENA Jewels', 'Avira Jewels'],
       url: SITE_URL,
       potentialAction: {
         '@type': 'SearchAction',
@@ -644,9 +644,9 @@ async function main() {
   // ---------------- ROUTE 1: Home Page (/) ----------------
   routes.push({
     path: '',
-    title: 'AVIRENA | Anti-Tarnish Brass Jewellery for Daily Wear',
+    title: 'Avirena Jewels – Anti-Tarnish Dailywear Jewelry India',
     description:
-      'Explore AVIRENA Jewels. Homegrown dailywear jewelry handcrafted in durable brass, anti-tarnish protective coatings, and natural cultured pearls. Timeless beauty, uniquely yours.',
+      'At Avirena Jewels, our mission is to create elegant, high-quality dailywear jewellery handcrafted in durable anti-tarnish brass and natural cultured pearls.',
     canonical: SITE_URL,
     ogImage: `${SITE_URL}/og-banner.jpg`,
     ogType: 'website',
@@ -654,6 +654,55 @@ async function main() {
       'dailywear jewelry, anti tarnish brass jewelry, baroque pearls, sculptural rings, molten earrings, statement necklace, luxury jewelry India, aesthetic dailywear',
     jsonLd: [
       ...getGlobalSchema(),
+      {
+        '@context': 'https://schema.org',
+        '@type': 'ItemList',
+        name: 'Avirena Site Navigation',
+        itemListElement: [
+          {
+            '@type': 'SiteNavigationElement',
+            position: 1,
+            name: 'Products',
+            description: 'Anti-tarnish earrings, necklaces, rings, and bracelets crafted for daily wear.',
+            url: `${SITE_URL}/shop`,
+          },
+          {
+            '@type': 'SiteNavigationElement',
+            position: 2,
+            name: 'Earrings',
+            description: 'Sculptural molten studs, organic drop earrings, and crystal huggies in brass.',
+            url: `${SITE_URL}/shop/earrings`,
+          },
+          {
+            '@type': 'SiteNavigationElement',
+            position: 3,
+            name: 'Necklaces',
+            description: 'Layered architectural chains, pearl drop pendants, and statement collars.',
+            url: `${SITE_URL}/shop/necklaces`,
+          },
+          {
+            '@type': 'SiteNavigationElement',
+            position: 4,
+            name: 'Rings',
+            description: 'Ergonomic statement bands, wave rings, and baroque pearl solitaires.',
+            url: `${SITE_URL}/shop/rings`,
+          },
+          {
+            '@type': 'SiteNavigationElement',
+            position: 5,
+            name: 'Signature Suites',
+            description: 'Curated design suites and coordinated sets for daily wear and gifting.',
+            url: `${SITE_URL}/collections`,
+          },
+          {
+            '@type': 'SiteNavigationElement',
+            position: 6,
+            name: 'About Us',
+            description: 'Our homegrown Mumbai atelier, anti-tarnish metal crafting, and dailywear philosophy.',
+            url: `${SITE_URL}/about`,
+          },
+        ],
+      },
       {
         '@context': 'https://schema.org',
         '@type': 'FAQPage',
@@ -682,10 +731,16 @@ async function main() {
         <nav aria-label="Main Navigation">
           <a href="/">AVIRENA</a>
           <a href="/shop">Shop All Jewelry</a>
-          <a href="/collections">Collections</a>
-          <a href="/about">About</a>
+          <a href="/shop/earrings">Earrings</a>
+          <a href="/shop/rings">Rings</a>
+          <a href="/shop/necklaces">Necklaces</a>
+          <a href="/shop/bracelets">Bracelets</a>
+          <a href="/collections">Curated Suites</a>
+          <a href="/about">About Us</a>
           <a href="/guides">Jewellery Guides</a>
-          <a href="/contact">Contact</a>
+          <a href="/faq">FAQ &amp; Sizing</a>
+          <a href="/journal">Styling Journal</a>
+          <a href="/contact">Contact Concierge</a>
         </nav>
       </header>
       <main>
@@ -707,10 +762,10 @@ async function main() {
           <h2>Jewellery Categories</h2>
           <ul>
             <li><a href="/shop/earrings">Earrings</a> — studs, drops and hoops in gold tone and silver tone</li>
-            <li><a href="/shop/necklaces">Necklaces</a></li>
-            <li><a href="/shop/rings">Rings</a></li>
-            <li><a href="/shop/bracelets">Bracelets</a></li>
-            <li><a href="/shop/brooches">Brooches</a></li>
+            <li><a href="/shop/necklaces">Necklaces</a> — architectural chains and pendants</li>
+            <li><a href="/shop/rings">Rings</a> — sculptural bands and wave rings</li>
+            <li><a href="/shop/bracelets">Bracelets</a> — open cuffs and linked wristwear</li>
+            <li><a href="/shop/brooches">Brooches</a> — artisanal sculptural pins</li>
           </ul>
         </section>
         <section class="categories-section">
@@ -722,6 +777,33 @@ async function main() {
           </ul>
         </section>
       </main>
+      <footer class="site-footer">
+        <div>
+          <h3>Navigation</h3>
+          <ul>
+            <li><a href="/shop">Shop All</a></li>
+            <li><a href="/shop/earrings">Earrings</a></li>
+            <li><a href="/shop/rings">Rings</a></li>
+            <li><a href="/shop/necklaces">Necklaces</a></li>
+            <li><a href="/shop/bracelets">Bracelets</a></li>
+            <li><a href="/collections">Curated Suites</a></li>
+            <li><a href="/about">About Us</a></li>
+            <li><a href="/faq">FAQ &amp; Sizing</a></li>
+            <li><a href="/journal">Styling Journal</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Support &amp; Policies</h3>
+          <ul>
+            <li><a href="/contact">Contact Concierge</a></li>
+            <li><a href="/refund-policy">Return &amp; Refund Policy</a></li>
+            <li><a href="/shipping-policy">Shipping Policy</a></li>
+            <li><a href="/privacy-policy">Privacy Policy</a></li>
+            <li><a href="/terms-of-service">Terms of Service</a></li>
+            <li><a href="/legal-notice">Legal Notice</a></li>
+          </ul>
+        </div>
+      </footer>
     `,
   });
   addSitemapUrl(SITE_URL, '1.0', 'daily', [`${SITE_URL}/logo.png`]);
@@ -1152,7 +1234,315 @@ async function main() {
   });
   addSitemapUrl(`${SITE_URL}/faq`, '0.6', 'monthly');
 
-  // ---------------- ROUTE 7: Policies Page (/policies) ----------------
+  // ---------------- DEDICATED POLICY ROUTES ----------------
+  
+  // 1. Privacy Policy (/privacy-policy)
+  routes.push({
+    path: 'privacy-policy',
+    title: 'Privacy Policy | AVIRENA Jewels',
+    description:
+      'Official Privacy Policy of Avirena Jewels. Transparent data protection, PCI-DSS certified payment encryption, zero third-party data broker sales, and client privacy rights.',
+    canonical: `${SITE_URL}/privacy-policy`,
+    ogImage: `${SITE_URL}/logo.png`,
+    ogType: 'website',
+    jsonLd: [
+      ...getGlobalSchema(),
+      {
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: 'Home', item: SITE_URL },
+          { '@type': 'ListItem', position: 2, name: 'Privacy Policy', item: `${SITE_URL}/privacy-policy` },
+        ],
+      },
+    ],
+    htmlContent: `
+      <main class="policies-page">
+        <nav aria-label="Breadcrumb">
+          <a href="/">Home</a> / <span>Privacy Policy</span>
+        </nav>
+        <h1>Privacy Policy</h1>
+        <p><strong>Last Updated: September 2026</strong></p>
+        <p>Avirena Jewels ("we", "our", or "us") is dedicated to safeguarding your personal data and ensuring transparent privacy practices in compliance with global data privacy regulations (including GDPR, CCPA, and the Indian Digital Personal Data Protection Act).</p>
+
+        <h2>1. Information We Collect</h2>
+        <ul>
+          <li><strong>Personal Information:</strong> Name, billing address, shipping address, email address, and telephone number provided during checkout or account creation.</li>
+          <li><strong>Payment Data:</strong> All credit card, UPI, Apple Pay, and digital wallet transactions are encrypted via 256-bit SSL protocols directly through our PCI-DSS Tier 1 certified payment gateway partners (Shopify Payments / Stripe / Razorpay). Avirena never stores complete credit card numbers or security CVV codes.</li>
+          <li><strong>Device &amp; Analytics Information:</strong> IP address, browser type, geographic region, and browsing behavior to optimize page performance and prevent fraudulent transactions.</li>
+        </ul>
+
+        <h2>2. How We Use Your Information</h2>
+        <ul>
+          <li>To process, fulfill, and provide real-time updates for your jewelry orders.</li>
+          <li>To communicate customer concierge support, custom sizing consultations, and order confirmations.</li>
+          <li>To send optional private atelier lookbooks and editorial releases (you may unsubscribe at any time).</li>
+          <li>To detect and prevent fraudulent transactions and unauthorized access.</li>
+        </ul>
+
+        <h2>3. Sharing with Third Parties</h2>
+        <ul>
+          <li>We do NOT sell, rent, or trade your personal information to third-party advertising brokers.</li>
+          <li>Information is shared strictly with essential service providers: express logistics carriers (Bluedart, Delhivery, DTDC, DHL) and secure payment processors.</li>
+        </ul>
+
+        <h2>4. Your Rights &amp; Data Deletion</h2>
+        <p>You hold the right to access, rectify, or request permanent deletion of your personal records at any time by emailing <a href="mailto:avirenajewels@gmail.com">avirenajewels@gmail.com</a>.</p>
+
+        <nav aria-label="Related policies">
+          <a href="/refund-policy">Return &amp; Refund Policy</a> ·
+          <a href="/shipping-policy">Shipping Policy</a> ·
+          <a href="/terms-of-service">Terms of Service</a> ·
+          <a href="/legal-notice">Legal Notice</a>
+        </nav>
+      </main>
+    `,
+  });
+  addSitemapUrl(`${SITE_URL}/privacy-policy`, '0.6', 'monthly');
+
+  // 2. Return & Refund Policy (/refund-policy)
+  routes.push({
+    path: 'refund-policy',
+    title: 'Return and Refund Policy (14-Day Exchanges) | AVIRENA Jewels',
+    description:
+      'Avirena Jewels 14-day return and exchange policy. Easy doorstep courier pickup across India, zero-fee transit defect replacements, and prompt refunds.',
+    canonical: `${SITE_URL}/refund-policy`,
+    ogImage: `${SITE_URL}/logo.png`,
+    ogType: 'website',
+    jsonLd: [
+      ...getGlobalSchema(),
+      {
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: 'Home', item: SITE_URL },
+          { '@type': 'ListItem', position: 2, name: 'Return and Refund Policy', item: `${SITE_URL}/refund-policy` },
+        ],
+      },
+    ],
+    htmlContent: `
+      <main class="policies-page">
+        <nav aria-label="Breadcrumb">
+          <a href="/">Home</a> / <span>Return &amp; Refund Policy</span>
+        </nav>
+        <h1>Return and Refund Policy</h1>
+        <p>At Avirena Jewels, we take immense pride in the craftsmanship and finish quality of our pieces. If you are not completely enamored with your selection, we offer a straightforward <strong>14-Day Return &amp; Exchange window</strong> from the date of package delivery.</p>
+
+        <h2>1. Eligibility for Returns &amp; Exchanges</h2>
+        <ul>
+          <li>Items must be in their original, unworn, and unblemished condition.</li>
+          <li>The piece must be returned with its original pouch and packaging.</li>
+          <li>Custom bespoke commissions, personalized engravings, and gift cards are final sale unless a structural defect is verified.</li>
+        </ul>
+
+        <h2>2. How to Initiate a Return</h2>
+        <ul>
+          <li>Email our concierge team at <a href="mailto:avirenajewels@gmail.com">avirenajewels@gmail.com</a> or WhatsApp us at <a href="https://wa.me/917823889290">+91 78238 89290</a> with your Order ID (#AV-XXXXX) and reason for return/exchange.</li>
+          <li>We will arrange a courier pickup from your address across India.</li>
+        </ul>
+
+        <h2>3. Refunds &amp; Processing</h2>
+        <ul>
+          <li>Once your return reaches us, we inspect it within 2 business days.</li>
+          <li>Approved refunds are credited directly to your original payment method within 3–5 business days, depending on your financial institution.</li>
+          <li>Alternatively, you may choose store credit for the full value with zero deduction.</li>
+        </ul>
+
+        <h2>4. Damaged or Defective Items</h2>
+        <p>If an item arrives damaged during transit, please notify <a href="mailto:avirenajewels@gmail.com">avirenajewels@gmail.com</a> within 48 hours of receipt with clear photographs. We will immediately dispatch a priority replacement at zero additional charge.</p>
+
+        <nav aria-label="Related policies">
+          <a href="/shipping-policy">Shipping Policy</a> ·
+          <a href="/privacy-policy">Privacy Policy</a> ·
+          <a href="/terms-of-service">Terms of Service</a> ·
+          <a href="/contact">Contact Concierge</a>
+        </nav>
+      </main>
+    `,
+  });
+  addSitemapUrl(`${SITE_URL}/refund-policy`, '0.6', 'monthly');
+
+  // 3. Shipping Policy (/shipping-policy)
+  routes.push({
+    path: 'shipping-policy',
+    title: 'Shipping Policy & Express Delivery | AVIRENA Jewels',
+    description:
+      'Official shipping policy of Avirena Jewels. Complimentary insured express delivery on orders over ₹1,999, 1-2 day dispatch, and 2-4 day doorstep arrival across India.',
+    canonical: `${SITE_URL}/shipping-policy`,
+    ogImage: `${SITE_URL}/logo.png`,
+    ogType: 'website',
+    jsonLd: [
+      ...getGlobalSchema(),
+      {
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: 'Home', item: SITE_URL },
+          { '@type': 'ListItem', position: 2, name: 'Shipping Policy', item: `${SITE_URL}/shipping-policy` },
+        ],
+      },
+    ],
+    htmlContent: `
+      <main class="policies-page">
+        <nav aria-label="Breadcrumb">
+          <a href="/">Home</a> / <span>Shipping Policy</span>
+        </nav>
+        <h1>Shipping &amp; Transit Policy</h1>
+        <p>Every Avirena order is carefully packaged in a protective keepsake travel pouch and presentation box for transit.</p>
+
+        <h2>1. Order Processing Timelines</h2>
+        <ul>
+          <li><strong>In-stock pieces:</strong> Dispatched within 1-2 business days (Monday to Saturday, excluding public holidays).</li>
+          <li><strong>Made-to-order pieces:</strong> Handcrafted and dispatched within 7-10 business days.</li>
+        </ul>
+
+        <h2>2. Domestic Delivery (India)</h2>
+        <ul>
+          <li><strong>Timeline:</strong> 2 to 4 business days via Express Tracked Courier.</li>
+          <li><strong>Shipping Cost:</strong> Complimentary Express Insured Delivery on all orders above ₹1,999. A flat shipping fee of ₹99 applies to orders below this threshold.</li>
+          <li>Prepaid options and verified COD are supported nationwide.</li>
+        </ul>
+
+        <h2>3. International Delivery</h2>
+        <ul>
+          <li><strong>Timeline:</strong> 4 to 7 business days via International Express.</li>
+          <li><strong>Shipping Cost:</strong> Calculated at checkout based on destination country and parcel weight.</li>
+        </ul>
+
+        <h2>4. 100% Transit Insurance Guarantee</h2>
+        <p>Every parcel is 100% insured from our Mumbai studio until verified doorstep signature handover. If an order is delayed or misplaced in transit, contact <a href="mailto:avirenajewels@gmail.com">avirenajewels@gmail.com</a> for immediate priority resolution.</p>
+
+        <nav aria-label="Related policies">
+          <a href="/refund-policy">Return &amp; Refund Policy</a> ·
+          <a href="/privacy-policy">Privacy Policy</a> ·
+          <a href="/terms-of-service">Terms of Service</a> ·
+          <a href="/contact">Contact Concierge</a>
+        </nav>
+      </main>
+    `,
+  });
+  addSitemapUrl(`${SITE_URL}/shipping-policy`, '0.6', 'monthly');
+
+  // 4. Terms of Service (/terms-of-service)
+  routes.push({
+    path: 'terms-of-service',
+    title: 'Terms of Service | AVIRENA Jewels',
+    description:
+      'Terms of Service for Avirena Jewels. Online store terms, anti-tarnish brass jewelry material disclosures, pricing, 4-hour cancellation window, and Indian consumer protection.',
+    canonical: `${SITE_URL}/terms-of-service`,
+    ogImage: `${SITE_URL}/logo.png`,
+    ogType: 'website',
+    jsonLd: [
+      ...getGlobalSchema(),
+      {
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: 'Home', item: SITE_URL },
+          { '@type': 'ListItem', position: 2, name: 'Terms of Service', item: `${SITE_URL}/terms-of-service` },
+        ],
+      },
+    ],
+    htmlContent: `
+      <main class="policies-page">
+        <nav aria-label="Breadcrumb">
+          <a href="/">Home</a> / <span>Terms of Service</span>
+        </nav>
+        <h1>Terms of Service</h1>
+        <p><strong>Last Updated: September 2026</strong></p>
+        <p>Welcome to the Avirena Jewels online boutique (avirenajewels.com). By visiting our website or purchasing our creations, you agree to be bound by the following terms and conditions.</p>
+
+        <h2>1. General Conditions</h2>
+        <ul>
+          <li>We reserve the right to refuse service, terminate accounts, or cancel orders if fraud or violation of terms is suspected.</li>
+          <li>You agree not to duplicate, resell, copy, or exploit any portion of our jewelry sculptures, design assets, or website copy without express written consent.</li>
+        </ul>
+
+        <h2>2. Products, Materials &amp; Pricing</h2>
+        <ul>
+          <li>All descriptions, dimensions, and material compositions (high-grade brass, durable alloys, anti-tarnish protective coatings, cultured freshwater baroque pearls) are documented with utmost accuracy. Because our pieces feature cultured baroque pearls, slight organic variations in contour and iridescence celebrate each item's uniqueness.</li>
+          <li>Avirena jewelry is fashion jewelry and contains no solid gold, vermeil, or sterling silver.</li>
+          <li>Prices are subject to change without prior notice. We reserve the right to correct typographical pricing errors and cancel affected orders with a full refund.</li>
+        </ul>
+
+        <h2>3. Order Acceptance &amp; Cancellations</h2>
+        <ul>
+          <li>Orders may be cancelled within 4 hours of placement by contacting <a href="mailto:avirenajewels@gmail.com">avirenajewels@gmail.com</a> prior to dispatch handover.</li>
+        </ul>
+
+        <h2>4. Governing Law</h2>
+        <p>These Terms of Service and any separate agreements shall be governed by and construed in accordance with the laws of India, with jurisdiction in Mumbai courts.</p>
+
+        <nav aria-label="Related policies">
+          <a href="/privacy-policy">Privacy Policy</a> ·
+          <a href="/refund-policy">Return &amp; Refund Policy</a> ·
+          <a href="/legal-notice">Legal Notice</a>
+        </nav>
+      </main>
+    `,
+  });
+  addSitemapUrl(`${SITE_URL}/terms-of-service`, '0.6', 'monthly');
+
+  // 5. Legal Notice (/legal-notice)
+  routes.push({
+    path: 'legal-notice',
+    title: 'Legal Notice & Business Information | AVIRENA Jewels',
+    description:
+      'Legal notice and company registry for Avirena Jewels, based in Mumbai, Maharashtra, India. Registered contact disclosures and grievance redressal officer details.',
+    canonical: `${SITE_URL}/legal-notice`,
+    ogImage: `${SITE_URL}/logo.png`,
+    ogType: 'website',
+    jsonLd: [
+      ...getGlobalSchema(),
+      {
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: 'Home', item: SITE_URL },
+          { '@type': 'ListItem', position: 2, name: 'Legal Notice', item: `${SITE_URL}/legal-notice` },
+        ],
+      },
+    ],
+    htmlContent: `
+      <main class="policies-page">
+        <nav aria-label="Breadcrumb">
+          <a href="/">Home</a> / <span>Legal Notice</span>
+        </nav>
+        <h1>Legal Notice (Impressum)</h1>
+
+        <h2>1. Business Information</h2>
+        <ul>
+          <li><strong>Trade Name:</strong> Avirena Jewels</li>
+          <li><strong>Business Type:</strong> Sole Proprietorship</li>
+          <li><strong>Headquarters:</strong> Mumbai, Maharashtra, India</li>
+          <li><strong>Trading Model:</strong> Online-only boutique</li>
+          <li><strong>Official Email:</strong> <a href="mailto:avirenajewels@gmail.com">avirenajewels@gmail.com</a></li>
+          <li><strong>Support Telephone &amp; WhatsApp:</strong> <a href="https://wa.me/917823889290">+91 78238 89290</a></li>
+        </ul>
+
+        <h2>2. Grievance Redressal Officer</h2>
+        <p>In accordance with the Consumer Protection (E-Commerce) Rules, 2020:</p>
+        <ul>
+          <li><strong>Officer:</strong> Grievance Officer, Avirena Jewels</li>
+          <li><strong>Email:</strong> <a href="mailto:avirenajewels@gmail.com">avirenajewels@gmail.com</a></li>
+          <li><strong>Acknowledgment:</strong> Within 48 hours of ticket receipt</li>
+          <li><strong>Resolution:</strong> Within 30 days from date of receipt</li>
+        </ul>
+
+        <h2>3. Material Assurance Disclosures</h2>
+        <p>Avirena jewelry is fashion jewelry crafted from high-density brass and durable alloys with protective e-coatings and surgical steel posts. It does not contain precious metals and is not hallmarked to any precious-metal fineness standard.</p>
+
+        <nav aria-label="Related policies">
+          <a href="/privacy-policy">Privacy Policy</a> ·
+          <a href="/refund-policy">Return &amp; Refund Policy</a> ·
+          <a href="/terms-of-service">Terms of Service</a>
+        </nav>
+      </main>
+    `,
+  });
+  addSitemapUrl(`${SITE_URL}/legal-notice`, '0.6', 'monthly');
+
+  // 6. Unified Policies Hub (/policies)
   routes.push({
     path: 'policies',
     title: 'Policies, Shipping & Returns | AVIRENA',
@@ -1165,30 +1555,24 @@ async function main() {
     htmlContent: `
       <main class="policies-page">
         <h1>Policies, Shipping &amp; Returns</h1>
-        <p>The terms below are the ones we hold ourselves to. They are deliberately plain: a policy you need a lawyer to read is not a policy that protects you.</p>
+        <p>The terms below are the ones we hold ourselves to. Dedicated policy documents are accessible below:</p>
 
-        <h2>Returns and exchanges</h2>
-        <p>Unworn pieces can be returned or exchanged within <strong>14 days of delivery</strong>, in their original condition and packaging. Email <a href="mailto:avirenajewels@gmail.com">avirenajewels@gmail.com</a> with your order number and the reason, and we will arrange a courier pickup from your address. Once the return reaches us we inspect it within 2 business days, and approved refunds go back to your original payment method within 5-7 business days depending on your bank. You may instead take store credit for the full value with no deduction. Personalised or made-to-order items are final sale unless there is a manufacturing defect.</p>
-        <p>This is in addition to your rights under the Consumer Protection Act 2019 and the Consumer Protection (E-Commerce) Rules 2020. Nothing here limits those rights.</p>
+        <ul>
+          <li><a href="/refund-policy">Return &amp; Refund Policy (14-Day Exchanges)</a></li>
+          <li><a href="/shipping-policy">Shipping Policy &amp; Express Delivery</a></li>
+          <li><a href="/privacy-policy">Privacy Policy &amp; Data Protection</a></li>
+          <li><a href="/terms-of-service">Terms of Service</a></li>
+          <li><a href="/legal-notice">Legal Notice &amp; Business Information</a></li>
+        </ul>
 
-        <h2>Damaged or faulty items</h2>
-        <p>If an order arrives damaged, email us within 48 hours of delivery with photographs. We will send a replacement at no additional cost, or refund you in full.</p>
+        <h2>Returns and exchanges summary</h2>
+        <p>Unworn pieces can be returned or exchanged within <strong>14 days of delivery</strong>, in their original condition and packaging. Email <a href="mailto:avirenajewels@gmail.com">avirenajewels@gmail.com</a> with your order number and the reason, and we will arrange a courier pickup from your address.</p>
 
-        <h2>Shipping</h2>
-        <p>In-stock pieces are dispatched within 1-2 business days, Monday to Saturday excluding public holidays, and you receive tracking by email once the order ships. Delivery within India typically takes 2-5 business days after dispatch depending on your location. Shipping is free on orders above ₹1,999; a flat ₹99 applies below that. Delivery timelines are estimates rather than guarantees, since couriers can be delayed by weather, strikes or regional restrictions. If tracking has not updated for 7 business days, contact us and we will open an investigation with the courier.</p>
+        <h2>Shipping summary</h2>
+        <p>In-stock pieces are dispatched within 1-2 business days, Monday to Saturday excluding public holidays. Delivery within India typically takes 2-4 business days. Shipping is free on orders above ₹1,999; a flat ₹99 applies below that.</p>
 
-        <h2>What our jewellery is made of</h2>
-        <p>Avirena jewellery is <strong>fashion jewellery</strong>, made from high-grade brass and durable alloys with a protective anti-tarnish coating. It contains no precious metal, is not sold as gold, gold vermeil or sterling silver, and is not hallmarked to any precious-metal fineness standard. Gold-tone, silver-tone and rose gold-tone describe the colour of the finish, not its composition. Pearls are cultured freshwater pearls, and stones are faceted glass rather than diamonds or precious gemstones. Every piece is nickel-free, lead-free and cadmium-free, with surgical steel earring posts.</p>
-        <p>The coating is designed for everyday wear, but it is a finish and its life depends on how a piece is worn and stored. Change to the finish through normal wear over time is not a manufacturing defect. Our <a href="/guides/anti-tarnish-jewelry-care">care guide</a> explains how to make it last.</p>
-
-        <h2>Pricing and cancellations</h2>
-        <p>All prices are in Indian Rupees and include applicable taxes unless stated otherwise. We may correct pricing errors and cancel affected orders, refunding you in full. Orders can be cancelled within 4 hours of placement, before dispatch, by emailing us.</p>
-
-        <h2>Privacy</h2>
-        <p>We collect only what is needed to fulfil an order: name, contact details and delivery address, plus basic analytics. Payments are processed by our payment provider and we never store complete card numbers or CVV codes. We do not sell or trade personal information. You can request access to, correction of, or deletion of your data at any time by emailing us.</p>
-
-        <h2>Business information</h2>
-        <p>Avirena Jewels is a sole proprietorship based in Mumbai, Maharashtra, India, trading online only. Contact and grievance queries both go to <a href="mailto:avirenajewels@gmail.com">avirenajewels@gmail.com</a> or WhatsApp <a href="https://wa.me/917823889290">+91 78238 89290</a>. We acknowledge complaints within 48 hours and resolve them within one month of receipt. These terms are governed by the laws of India, with jurisdiction in the courts of Mumbai, Maharashtra.</p>
+        <h2>Privacy summary</h2>
+        <p>We collect only what is needed to fulfil an order. Payments are processed by PCI-DSS certified gateways and we never store card numbers or CVV codes.</p>
       </main>
     `,
   });

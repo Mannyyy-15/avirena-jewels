@@ -102,60 +102,112 @@ export const Footer: React.FC<FooterProps> = ({
           </h4>
           <ul className="space-y-2 text-xs sm:text-[13px] text-white/90 font-light">
             <li>
-              <button
-                onClick={() => handleNavigate('collection', 'all')}
-                className="hover:text-white hover:underline transition-all cursor-pointer text-left"
+              <a
+                href="/shop"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleNavigate('collection', 'all');
+                }}
+                className="hover:text-white hover:underline transition-all cursor-pointer text-left block"
               >
                 Shop All
-              </button>
+              </a>
             </li>
             <li>
-              <button
-                onClick={() => handleNavigate('collection', 'all')}
-                className="hover:text-white hover:underline transition-all cursor-pointer text-left"
+              <a
+                href="/shop/earrings"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleNavigate('collection', 'earrings');
+                }}
+                className="hover:text-white hover:underline transition-all cursor-pointer text-left block"
               >
-                Men's Collection
-              </button>
+                Earrings
+              </a>
             </li>
             <li>
-              <button
-                onClick={() => handleNavigate('collection', 'all')}
-                className="hover:text-white hover:underline transition-all cursor-pointer text-left"
+              <a
+                href="/shop/rings"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleNavigate('collection', 'rings');
+                }}
+                className="hover:text-white hover:underline transition-all cursor-pointer text-left block"
               >
-                Women's Collection
-              </button>
+                Rings
+              </a>
             </li>
             <li>
-              <button
-                onClick={() => handleNavigate('collection', 'all')}
-                className="hover:text-white hover:underline transition-all cursor-pointer text-left"
+              <a
+                href="/shop/necklaces"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleNavigate('collection', 'necklaces');
+                }}
+                className="hover:text-white hover:underline transition-all cursor-pointer text-left block"
               >
-                Mangalsutra Collection
-              </button>
+                Necklaces
+              </a>
             </li>
             <li>
-              <button
-                onClick={() => handleNavigate('faq')}
-                className="hover:text-white hover:underline transition-all cursor-pointer text-left"
+              <a
+                href="/shop/bracelets"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleNavigate('collection', 'bracelets');
+                }}
+                className="hover:text-white hover:underline transition-all cursor-pointer text-left block"
               >
-                FAQ &amp; Sizing
-              </button>
+                Bracelets
+              </a>
             </li>
             <li>
-              <button
-                onClick={() => handleNavigate('about')}
-                className="hover:text-white hover:underline transition-all cursor-pointer text-left"
+              <a
+                href="/collections"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleNavigate('collections');
+                }}
+                className="hover:text-white hover:underline transition-all cursor-pointer text-left block"
+              >
+                Curated Suites
+              </a>
+            </li>
+            <li>
+              <a
+                href="/about"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleNavigate('about');
+                }}
+                className="hover:text-white hover:underline transition-all cursor-pointer text-left block"
               >
                 About Us
-              </button>
+              </a>
             </li>
             <li>
-              <button
-                onClick={() => handleNavigate('journal')}
-                className="hover:text-white hover:underline transition-all cursor-pointer text-left"
+              <a
+                href="/faq"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleNavigate('faq');
+                }}
+                className="hover:text-white hover:underline transition-all cursor-pointer text-left block"
               >
-                Learn &amp; Journal
-              </button>
+                FAQ &amp; Sizing
+              </a>
+            </li>
+            <li>
+              <a
+                href="/journal"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleNavigate('journal');
+                }}
+                className="hover:text-white hover:underline transition-all cursor-pointer text-left block"
+              >
+                Styling Journal
+              </a>
             </li>
           </ul>
         </div>
@@ -167,62 +219,86 @@ export const Footer: React.FC<FooterProps> = ({
           </h4>
           <ul className="space-y-2 text-xs sm:text-[13px] text-white/90 font-light">
             <li>
-              <button
-                onClick={() => handleNavigate('contact')}
-                className="hover:text-white hover:underline transition-all cursor-pointer text-left"
+              <a
+                href="/contact"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleNavigate('contact');
+                }}
+                className="hover:text-white hover:underline transition-all cursor-pointer text-left block"
               >
-                Contact Us
-              </button>
+                Contact Concierge
+              </a>
             </li>
             <li>
-              <button
-                onClick={() => handlePolicyClick('shipping')}
-                className="hover:text-white hover:underline transition-all cursor-pointer text-left"
+              <a
+                href="/refund-policy"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handlePolicyClick('returns');
+                }}
+                className="hover:text-white hover:underline transition-all cursor-pointer text-left block"
               >
-                Shipping &amp; Returns
-              </button>
+                Return &amp; Refund Policy
+              </a>
+            </li>
+            <li>
+              <a
+                href="/shipping-policy"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handlePolicyClick('shipping');
+                }}
+                className="hover:text-white hover:underline transition-all cursor-pointer text-left block"
+              >
+                Shipping Policy
+              </a>
+            </li>
+            <li>
+              <a
+                href="/privacy-policy"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handlePolicyClick('privacy');
+                }}
+                className="hover:text-white hover:underline transition-all cursor-pointer text-left block"
+              >
+                Privacy Policy
+              </a>
+            </li>
+            <li>
+              <a
+                href="/terms-of-service"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handlePolicyClick('terms');
+                }}
+                className="hover:text-white hover:underline transition-all cursor-pointer text-left block"
+              >
+                Terms of Service
+              </a>
+            </li>
+            <li>
+              <a
+                href="/legal-notice"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handlePolicyClick('legal');
+                }}
+                className="hover:text-white hover:underline transition-all cursor-pointer text-left block"
+              >
+                Legal Notice
+              </a>
             </li>
             <li>
               <a
                 href="https://wa.me/917823889290"
                 target="_blank"
-                rel="noreferrer"
+                rel="noopener noreferrer"
                 className="hover:text-white hover:underline transition-all cursor-pointer text-left block"
               >
-                Customer Support
+                WhatsApp Support
               </a>
-            </li>
-            <li>
-              <button
-                onClick={() => handlePolicyClick('returns')}
-                className="hover:text-white hover:underline transition-all cursor-pointer text-left"
-              >
-                Refund Policy
-              </button>
-            </li>
-            <li>
-              <button
-                onClick={() => handlePolicyClick('privacy')}
-                className="hover:text-white hover:underline transition-all cursor-pointer text-left"
-              >
-                Privacy Policy
-              </button>
-            </li>
-            <li>
-              <button
-                onClick={() => handlePolicyClick('terms')}
-                className="hover:text-white hover:underline transition-all cursor-pointer text-left"
-              >
-                Terms of Service
-              </button>
-            </li>
-            <li>
-              <button
-                onClick={() => handlePolicyClick('legal')}
-                className="hover:text-white hover:underline transition-all cursor-pointer text-left"
-              >
-                Legal Notice
-              </button>
             </li>
           </ul>
         </div>

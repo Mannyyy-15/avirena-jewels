@@ -137,6 +137,16 @@ const buildPath = (
       return '/faq';
     case 'policies':
       return '/policies';
+    case 'privacy-policy':
+      return '/privacy-policy';
+    case 'refund-policy':
+      return '/refund-policy';
+    case 'shipping-policy':
+      return '/shipping-policy';
+    case 'terms-of-service':
+      return '/terms-of-service';
+    case 'legal-notice':
+      return '/legal-notice';
     case 'guides':
       return guideSlug ? `/guides/${guideSlug}` : '/guides';
     case 'cart':
@@ -166,7 +176,7 @@ const buildTitle = (
 ): string => {
   switch (page) {
     case 'home':
-      return 'AVIRENA | Anti-Tarnish Brass Jewellery for Daily Wear';
+      return 'Avirena Jewels – Anti-Tarnish Dailywear Jewelry India';
     case 'collection':
     case 'shop':
       return category && category !== 'all'
@@ -186,6 +196,16 @@ const buildTitle = (
       return 'FAQs, Sizing Guide & Jewelry Care | AVIRENA';
     case 'policies':
       return 'Policies, Shipping & Returns | AVIRENA';
+    case 'privacy-policy':
+      return 'Privacy Policy | AVIRENA Jewels';
+    case 'refund-policy':
+      return 'Return and Refund Policy (14-Day Exchanges) | AVIRENA Jewels';
+    case 'shipping-policy':
+      return 'Shipping Policy & Express Delivery | AVIRENA Jewels';
+    case 'terms-of-service':
+      return 'Terms of Service | AVIRENA Jewels';
+    case 'legal-notice':
+      return 'Legal Notice & Business Information | AVIRENA Jewels';
     case 'guides': {
       const guide = guideSlug ? GUIDES.find((g) => g.slug === guideSlug) : undefined;
       return guide ? guide.metaTitle : 'Jewelry Guides: Materials, Care & Fit | AVIRENA';
@@ -195,7 +215,7 @@ const buildTitle = (
     case 'checkout':
       return 'Secure Checkout | AVIRENA';
     default:
-      return 'AVIRENA | Anti-Tarnish Brass Jewellery for Daily Wear';
+      return 'Avirena Jewels – Anti-Tarnish Dailywear Jewelry India';
   }
 };
 
@@ -406,13 +426,60 @@ function AppContent() {
         case 'sizing':
           setCurrentPage('faq');
           break;
+        case 'privacy-policy':
+        case 'privacy':
+          setActivePolicyTab('privacy');
+          setCurrentPage('privacy-policy');
+          break;
+        case 'refund-policy':
+        case 'return-policy':
+        case 'refund':
+        case 'returns':
+          setActivePolicyTab('returns');
+          setCurrentPage('refund-policy');
+          break;
+        case 'shipping-policy':
+        case 'shipping':
+          setActivePolicyTab('shipping');
+          setCurrentPage('shipping-policy');
+          break;
+        case 'terms-of-service':
+        case 'terms-and-conditions':
+        case 'terms':
+          setActivePolicyTab('terms');
+          setCurrentPage('terms-of-service');
+          break;
+        case 'legal-notice':
+        case 'legal':
+        case 'impressum':
+          setActivePolicyTab('legal');
+          setCurrentPage('legal-notice');
+          break;
         case 'policies': {
-          const searchParams = new URLSearchParams(window.location.search);
-          const policyTab = searchParams.get('tab') as 'returns' | 'privacy' | 'terms' | 'shipping' | 'contact' | 'legal' | null;
-          if (policyTab && ['returns', 'privacy', 'terms', 'shipping', 'contact', 'legal'].includes(policyTab)) {
-            setActivePolicyTab(policyTab);
+          const sub = parts[1];
+          if (sub === 'privacy' || sub === 'privacy-policy') {
+            setActivePolicyTab('privacy');
+            setCurrentPage('privacy-policy');
+          } else if (sub === 'returns' || sub === 'refund' || sub === 'refund-policy') {
+            setActivePolicyTab('returns');
+            setCurrentPage('refund-policy');
+          } else if (sub === 'shipping' || sub === 'shipping-policy') {
+            setActivePolicyTab('shipping');
+            setCurrentPage('shipping-policy');
+          } else if (sub === 'terms' || sub === 'terms-of-service') {
+            setActivePolicyTab('terms');
+            setCurrentPage('terms-of-service');
+          } else if (sub === 'legal' || sub === 'legal-notice') {
+            setActivePolicyTab('legal');
+            setCurrentPage('legal-notice');
+          } else {
+            const searchParams = new URLSearchParams(window.location.search);
+            const policyTab = searchParams.get('tab') as 'returns' | 'privacy' | 'terms' | 'shipping' | 'contact' | 'legal' | null;
+            if (policyTab && ['returns', 'privacy', 'terms', 'shipping', 'contact', 'legal'].includes(policyTab)) {
+              setActivePolicyTab(policyTab);
+            }
+            setCurrentPage('policies');
           }
-          setCurrentPage('policies');
           break;
         }
         case 'guides': {
@@ -531,7 +598,29 @@ function AppContent() {
 
   const handleNavigateToPolicy = (tab: 'returns' | 'privacy' | 'terms' | 'shipping' | 'contact' | 'legal') => {
     setActivePolicyTab(tab);
-    setCurrentPage('policies');
+    switch (tab) {
+      case 'privacy':
+        setCurrentPage('privacy-policy');
+        break;
+      case 'returns':
+        setCurrentPage('refund-policy');
+        break;
+      case 'shipping':
+        setCurrentPage('shipping-policy');
+        break;
+      case 'terms':
+        setCurrentPage('terms-of-service');
+        break;
+      case 'legal':
+        setCurrentPage('legal-notice');
+        break;
+      case 'contact':
+        setCurrentPage('contact');
+        break;
+      default:
+        setCurrentPage('policies');
+        break;
+    }
     scrollToTop();
   };
 
@@ -722,10 +811,16 @@ function AppContent() {
           />
         )}
 
-        {currentPage === 'policies' && (
+        {(currentPage === 'policies' ||
+          currentPage === 'privacy-policy' ||
+          currentPage === 'refund-policy' ||
+          currentPage === 'shipping-policy' ||
+          currentPage === 'terms-of-service' ||
+          currentPage === 'legal-notice') && (
           <PoliciesPage
-            key={activePolicyTab}
+            key={currentPage + '-' + activePolicyTab}
             initialTab={activePolicyTab}
+            onTabChange={handleNavigateToPolicy}
             onNavigateToContact={() => handlePageChange('contact')}
             onNavigateToShop={() => handleNavigateToCollection('all')}
           />

@@ -36,9 +36,9 @@ export const SeoMeta: React.FC<SeoMetaProps> = ({
 
   useEffect(() => {
     // Dynamic Title & Description Map
-    let title = 'AVIRENA | Anti-Tarnish Brass Jewellery for Daily Wear';
+    let title = 'Avirena Jewels – Anti-Tarnish Dailywear Jewelry India';
     let description =
-      'Explore Avirena Jewels. Homegrown premium dailywear jewelry handcrafted in durable brass, anti-tarnish protective coatings, and natural cultured pearls.';
+      'At Avirena Jewels, our mission is to create elegant, high-quality dailywear jewellery handcrafted in durable anti-tarnish brass and natural cultured pearls.';
     let canonical = 'https://avirenajewels.com';
 
     if (currentPage === 'collection' || currentPage === 'shop') {
@@ -69,6 +69,26 @@ export const SeoMeta: React.FC<SeoMetaProps> = ({
       title = 'Policies, Shipping & Returns | AVIRENA';
       description = 'Avirena Jewels policies covering tracked delivery, 14-day exchanges, material disclosures and data privacy.';
       canonical = 'https://avirenajewels.com/policies';
+    } else if (currentPage === 'privacy-policy') {
+      title = 'Privacy Policy | AVIRENA Jewels';
+      description = 'Read the official Avirena Jewels Privacy Policy. Information security, data protection, PCI-DSS compliant checkout, and customer privacy standards.';
+      canonical = 'https://avirenajewels.com/privacy-policy';
+    } else if (currentPage === 'refund-policy') {
+      title = 'Return and Refund Policy (14-Day Exchanges) | AVIRENA Jewels';
+      description = 'Avirena Jewels 14-day hassle-free return and exchange policy. Easy door-step courier pickup across India, zero fee replacements, and prompt refunds.';
+      canonical = 'https://avirenajewels.com/refund-policy';
+    } else if (currentPage === 'shipping-policy') {
+      title = 'Shipping Policy & Express Delivery | AVIRENA Jewels';
+      description = 'Official shipping policy of Avirena Jewels. Free shipping on orders over ₹1,999, 1-2 day dispatch, tracked express courier delivery across India in 2-5 days.';
+      canonical = 'https://avirenajewels.com/shipping-policy';
+    } else if (currentPage === 'terms-of-service') {
+      title = 'Terms of Service | AVIRENA Jewels';
+      description = 'Terms of Service for Avirena Jewels. E-commerce store conditions, Indian Consumer Protection Act compliance, jewelry material disclosures, and user terms.';
+      canonical = 'https://avirenajewels.com/terms-of-service';
+    } else if (currentPage === 'legal-notice') {
+      title = 'Legal Notice & Business Information | AVIRENA Jewels';
+      description = 'Avirena Jewels legal notice, registered trade details in Mumbai, Maharashtra, grievance redressal officer, and regulatory compliance disclosures.';
+      canonical = 'https://avirenajewels.com/legal-notice';
     } else if (currentPage === 'guides') {
       // Must mirror scripts/prerender.ts exactly: without this branch, hydrating a
       // /guides/* page would rewrite its canonical back to the homepage.
@@ -175,7 +195,7 @@ export const SeoMeta: React.FC<SeoMetaProps> = ({
       '@context': 'https://schema.org',
       '@type': 'WebSite',
       name: 'Avirena Jewels',
-      alternateName: ['Avirena', 'AVIRENA', 'AVIRENA Jewels'],
+      alternateName: ['Avirena', 'AVIRENA', 'AVIRENA Jewels', 'Avira Jewels'],
       url: 'https://avirenajewels.com',
       potentialAction: {
         '@type': 'SearchAction',
@@ -183,6 +203,79 @@ export const SeoMeta: React.FC<SeoMetaProps> = ({
         'query-input': 'required name=search_term_string',
       },
     });
+
+    // 3b. Google Sitelinks SiteNavigationElement Schema
+    if (currentPage === 'home') {
+      schemas.push({
+        '@context': 'https://schema.org',
+        '@type': 'ItemList',
+        name: 'Avirena Site Navigation',
+        itemListElement: [
+          {
+            '@type': 'SiteNavigationElement',
+            position: 1,
+            name: 'Products',
+            description: 'Anti-tarnish earrings, necklaces, rings, and bracelets crafted for daily wear.',
+            url: 'https://avirenajewels.com/shop',
+          },
+          {
+            '@type': 'SiteNavigationElement',
+            position: 2,
+            name: 'Earrings',
+            description: 'Sculptural molten studs, organic drop earrings, and crystal huggies in brass.',
+            url: 'https://avirenajewels.com/shop/earrings',
+          },
+          {
+            '@type': 'SiteNavigationElement',
+            position: 3,
+            name: 'Necklaces',
+            description: 'Layered architectural chains, pearl drop pendants, and statement collars.',
+            url: 'https://avirenajewels.com/shop/necklaces',
+          },
+          {
+            '@type': 'SiteNavigationElement',
+            position: 4,
+            name: 'Rings',
+            description: 'Ergonomic statement bands, wave rings, and baroque pearl solitaires.',
+            url: 'https://avirenajewels.com/shop/rings',
+          },
+          {
+            '@type': 'SiteNavigationElement',
+            position: 5,
+            name: 'Signature Suites',
+            description: 'Curated design suites and coordinated sets for daily wear and gifting.',
+            url: 'https://avirenajewels.com/collections',
+          },
+          {
+            '@type': 'SiteNavigationElement',
+            position: 6,
+            name: 'About Us',
+            description: 'Our homegrown Mumbai atelier, anti-tarnish metal crafting, and dailywear philosophy.',
+            url: 'https://avirenajewels.com/about',
+          },
+        ],
+      });
+    }
+
+    // 3c. Policy Breadcrumbs
+    if (['privacy-policy', 'refund-policy', 'shipping-policy', 'terms-of-service', 'legal-notice', 'policies'].includes(currentPage)) {
+      const policyNames: Record<string, string> = {
+        'privacy-policy': 'Privacy Policy',
+        'refund-policy': 'Return and Refund Policy',
+        'shipping-policy': 'Shipping Policy',
+        'terms-of-service': 'Terms of Service',
+        'legal-notice': 'Legal Notice',
+        'policies': 'Policies',
+      };
+      schemas.push({
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://avirenajewels.com' },
+          { '@type': 'ListItem', position: 2, name: policyNames[currentPage] || 'Policies', item: canonical },
+        ],
+      });
+    }
 
     // 4. Product Schema (if on PDP)
     if (currentPage === 'pdp' && selectedProduct) {

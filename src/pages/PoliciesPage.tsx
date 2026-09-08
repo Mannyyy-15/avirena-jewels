@@ -20,15 +20,31 @@ interface PoliciesPageProps {
   onNavigateToContact: () => void;
   onNavigateToShop: () => void;
   initialTab?: 'returns' | 'privacy' | 'terms' | 'shipping' | 'contact' | 'legal';
+  onTabChange?: (tab: 'returns' | 'privacy' | 'terms' | 'shipping' | 'contact' | 'legal') => void;
 }
 
 export const PoliciesPage: React.FC<PoliciesPageProps> = ({
   onNavigateToContact,
   onNavigateToShop,
   initialTab = 'returns',
+  onTabChange,
 }) => {
   const [activeTab, setActiveTab] = useState<'returns' | 'privacy' | 'terms' | 'shipping' | 'contact' | 'legal'>(initialTab);
   const [copiedTab, setCopiedTab] = useState<string | null>(null);
+
+  // Keep activeTab in sync with initialTab
+  React.useEffect(() => {
+    if (initialTab) {
+      setActiveTab(initialTab);
+    }
+  }, [initialTab]);
+
+  const handleTabClick = (tab: 'returns' | 'privacy' | 'terms' | 'shipping' | 'contact' | 'legal') => {
+    setActiveTab(tab);
+    if (onTabChange) {
+      onTabChange(tab);
+    }
+  };
 
   // Return request form state
   const [returnForm, setReturnForm] = useState({
@@ -228,19 +244,27 @@ Proprietor / Grievance Officer: contactable at avirenajewels@gmail.com
       <section className="w-full px-4 sm:px-8 lg:px-12 xl:px-16 2xl:px-20 mb-10">
         <div className="flex items-center justify-center gap-2 sm:gap-3 overflow-x-auto pb-2 border-b border-[#D8D2C2] scrollbar-none">
           {[
-            { id: 'returns', label: 'Return & Refund', icon: RotateCcw },
-            { id: 'privacy', label: 'Privacy Policy', icon: Lock },
-            { id: 'terms', label: 'Terms of Service', icon: FileText },
-            { id: 'shipping', label: 'Shipping Policy', icon: Truck },
-            { id: 'contact', label: 'Contact Info', icon: Mail },
-            { id: 'legal', label: 'Legal Notice', icon: Scale },
+            { id: 'returns', path: '/refund-policy', label: 'Return & Refund', icon: RotateCcw },
+            { id: 'privacy', path: '/privacy-policy', label: 'Privacy Policy', icon: Lock },
+            { id: 'terms', path: '/terms-of-service', label: 'Terms of Service', icon: FileText },
+            { id: 'shipping', path: '/shipping-policy', label: 'Shipping Policy', icon: Truck },
+            { id: 'contact', path: '/contact', label: 'Contact Info', icon: Mail },
+            { id: 'legal', path: '/legal-notice', label: 'Legal Notice', icon: Scale },
           ].map((tab) => {
             const Icon = tab.icon;
             const isActive = activeTab === tab.id;
             return (
-              <button
+              <a
                 key={tab.id}
-                onClick={() => setActiveTab(tab.id as any)}
+                href={tab.path}
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (tab.id === 'contact') {
+                    onNavigateToContact();
+                  } else {
+                    handleTabClick(tab.id as any);
+                  }
+                }}
                 className={`px-4 py-2.5 text-xs uppercase tracking-wider rounded-xs flex items-center gap-2 cursor-pointer transition-all shrink-0 font-medium ${
                   isActive
                     ? 'bg-[#413C23] text-[#E7E4D5] shadow-xs'
@@ -249,7 +273,7 @@ Proprietor / Grievance Officer: contactable at avirenajewels@gmail.com
               >
                 <Icon className="w-3.5 h-3.5" />
                 <span>{tab.label}</span>
-              </button>
+              </a>
             );
           })}
         </div>
