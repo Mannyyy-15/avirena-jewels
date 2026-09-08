@@ -244,6 +244,7 @@ function AppContent() {
   const [selectedCategory, setSelectedCategory] = useState<Category>('all');
   const [selectedMetal, setSelectedMetal] = useState<string>('all');
   const [activeGuideSlug, setActiveGuideSlug] = useState<string | null>(null);
+  const [activePolicyTab, setActivePolicyTab] = useState<'returns' | 'privacy' | 'terms' | 'shipping' | 'contact' | 'legal'>('returns');
   const [currency, setCurrency] = useState<Currency>('INR');
 
   // Keep the ref in step with the live catalog, and tell the location effect
@@ -404,9 +405,15 @@ function AppContent() {
         case 'sizing':
           setCurrentPage('faq');
           break;
-        case 'policies':
+        case 'policies': {
+          const searchParams = new URLSearchParams(window.location.search);
+          const policyTab = searchParams.get('tab') as 'returns' | 'privacy' | 'terms' | 'shipping' | 'contact' | 'legal' | null;
+          if (policyTab && ['returns', 'privacy', 'terms', 'shipping', 'contact', 'legal'].includes(policyTab)) {
+            setActivePolicyTab(policyTab);
+          }
           setCurrentPage('policies');
           break;
+        }
         case 'guides': {
           const slug = parts[1];
           if (!slug) {
@@ -518,6 +525,12 @@ function AppContent() {
 
   const handlePageChange = (page: PageView) => {
     setCurrentPage(page);
+    scrollToTop();
+  };
+
+  const handleNavigateToPolicy = (tab: 'returns' | 'privacy' | 'terms' | 'shipping' | 'contact' | 'legal') => {
+    setActivePolicyTab(tab);
+    setCurrentPage('policies');
     scrollToTop();
   };
 
@@ -710,6 +723,8 @@ function AppContent() {
 
         {currentPage === 'policies' && (
           <PoliciesPage
+            key={activePolicyTab}
+            initialTab={activePolicyTab}
             onNavigateToContact={() => handlePageChange('contact')}
             onNavigateToShop={() => handleNavigateToCollection('all')}
           />
@@ -768,6 +783,7 @@ function AppContent() {
       {/* Footer */}
       <Footer
         setCurrentPage={handlePageChange}
+        onNavigateToPolicy={handleNavigateToPolicy}
         openStoryModal={() => handlePageChange('about')}
         openCareModal={() => handlePageChange('faq')}
         setSelectedCategory={setSelectedCategory}

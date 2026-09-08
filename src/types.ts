@@ -38,6 +38,7 @@ export interface Product {
   isNew?: boolean;
   isSculptural?: boolean;
   styledWithIds?: string[];
+  tags?: string[];
   variants?: ProductVariant[];
 }
 
