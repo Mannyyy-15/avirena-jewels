@@ -1,111 +1,112 @@
 import React from "react";
-import TestimonialsSection from "@/components/ui/community-testimonial";
+import TestimonialsSection, { TestimonialsData } from "@/components/ui/community-testimonial";
 
 export default function DemoOne() {
-  const testimonialsData = {
-    title: "Don't just take our word for it",
+  const testimonialsData: TestimonialsData = {
+    eyebrow: "Client Stories & Atelier Reviews",
+    title: "Loved by Modern Women Across India",
     subtitle:
-      "See what our users are saying about how our app has transformed their daily routines and helped them build lasting habits.",
+      "Real impressions from clients who wear AVIRENA anti-tarnish sculptural jewelry every single day.",
     rows: [
       {
         id: "row1",
-        speed: "50s",
-        direction: "left" as const,
+        speed: "45s",
+        direction: "left",
         testimonials: [
           {
             id: "t1",
             quote:
-              "This app completely changed how I approach my goals. The visual feedback is incredibly motivating!",
-            authorName: "Sarah K.",
-            authorTitle: "Productivity Blogger",
+              "I've worn the Avirena Square Studs through Mumbai monsoon humidity and daily gym workouts. Not a single trace of tarnish or skin discoloration.",
+            authorName: "Ananya Sharma",
+            authorTitle: "Verified Buyer • Mumbai, MH",
             avatarUrl:
               "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=150&h=150&q=80",
+            rating: 5,
+            verified: true,
           },
           {
             id: "t2",
             quote:
-              "I've tried countless habit trackers, and this is the first one that actually stuck. It's simple, beautiful, and effective.",
-            authorName: "Michael B.",
-            authorTitle: "Software Engineer",
+              "The gold tone is so rich and authentic — not that fake yellowish finish. Everyone at my office asked if these were solid 18k gold heirloom earrings.",
+            authorName: "Rhea Singhania",
+            authorTitle: "Architect • Bengaluru, KA",
             avatarUrl:
-              "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&h=150&q=80",
+              "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&h=150&q=80",
+            rating: 5,
+            verified: true,
           },
           {
             id: "t3",
             quote:
-              "The team accountability features are a game-changer. Our entire group is more motivated and connected.",
-            authorName: "Emily W.",
-            authorTitle: "Startup Founder",
+              "Sensitive ears approved! Most fashion jewellery makes my lobes burn within 20 minutes. Avirena's hypoallergenic brass is a lifesaver.",
+            authorName: "Devika Mehra",
+            authorTitle: "Verified Buyer • New Delhi, DL",
             avatarUrl:
-              "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&h=150&q=80",
+              "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=150&h=150&q=80",
+            rating: 5,
+            verified: true,
+          },
+          {
+            id: "t4",
+            quote:
+              "The unboxing experience was like opening a Parisian jewellery box. Heavy, sculptural, and feels 5x its price tag. Fast 2-day delivery too!",
+            authorName: "Priya Iyer",
+            authorTitle: "Creative Director • Chennai, TN",
+            avatarUrl:
+              "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=150&h=150&q=80",
+            rating: 5,
+            verified: true,
           },
         ],
       },
       {
         id: "row2",
-        speed: "40s",
-        direction: "right" as const,
+        speed: "42s",
+        direction: "right",
         testimonials: [
-          {
-            id: "t4",
-            quote:
-              "The design is just stunning. It feels less like a chore and more like a game. I'm hooked!",
-            authorName: "David L.",
-            authorTitle: "UX Designer",
-            avatarUrl:
-              "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=150&h=150&q=80",
-          },
           {
             id: "t5",
             quote:
-              "Simple, no clutter, does exactly what it promises. The reminders are gentle but effective.",
-            authorName: "Jessica P.",
-            authorTitle: "Student",
+              "The weight balance is incredible. They look substantial and architectural, yet feel weightless on the ear from morning meetings to dinners.",
+            authorName: "Natasha Kapoor",
+            authorTitle: "Verified Buyer • Gurugram, HR",
             avatarUrl:
-              "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=150&h=150&q=80",
+              "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&h=150&q=80",
+            rating: 5,
+            verified: true,
           },
           {
             id: "t6",
             quote:
-              "Seeing my progress in the analytics section is the best part of my week. It shows my work is paying off.",
-            authorName: "Alex C.",
-            authorTitle: "Data Analyst",
+              "Finally, an Indian jewellery brand that understands modern minimalism! Pure sculptural elegance that pairs seamlessly with both sarees and blazers.",
+            authorName: "Meera Varma",
+            authorTitle: "Brand Strategist • Hyderabad, TG",
             avatarUrl:
-              "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=150&h=150&q=80",
+              "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=150&h=150&q=80",
+            rating: 5,
+            verified: true,
           },
-        ],
-      },
-      {
-        id: "row3",
-        speed: "60s",
-        direction: "left" as const,
-        testimonials: [
           {
             id: "t7",
             quote:
-              "I love that my data is private. In a world where everything is tracked, this feels safe and personal.",
-            authorName: "Kenji T.",
-            authorTitle: "Privacy Advocate",
+              "Ordered for my sister's birthday and she literally teared up. The gift box and concierge WhatsApp assistance were top tier. My new go-to brand!",
+            authorName: "Tanvi Deshmukh",
+            authorTitle: "Verified Buyer • Pune, MH",
             avatarUrl:
               "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=150&h=150&q=80",
+            rating: 5,
+            verified: true,
           },
           {
             id: "t8",
             quote:
-              "Finally, a habit app that isn't bloated with features I don't need. It's focused and powerful.",
-            authorName: "Maria G.",
-            authorTitle: "Writer",
-            avatarUrl:
-              "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=150&h=150&q=80",
-          },
-          {
-            id: "t9",
-            quote:
-              "The community support is surprisingly wholesome. It's a great place for accountability.",
-            authorName: "Chris R.",
-            authorTitle: "Fitness Coach",
+              "Living in Jaipur, I know fine craftsmanship. The finish on the Volute spirals is mirror-like and immaculate. Zero tarnishing after 3 months!",
+            authorName: "Aashi Saxena",
+            authorTitle: "Jewelry Enthusiast • Jaipur, RJ",
             avatarUrl:
               "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=150&h=150&q=80",
+            rating: 5,
+            verified: true,
           },
         ],
       },
@@ -114,8 +115,8 @@ export default function DemoOne() {
 
   return (
     <div
-      className="app-root bg-radial w-full flex items-center justify-center py-16 sm:py-24 px-4 overflow-hidden border-t border-[#8F896D]/15"
-      aria-label="Testimonials showcase"
+      className="app-root w-full bg-gradient-to-b from-[#E7E4D5] via-[#F2EFDB] to-[#E7E4D5] border-t border-b border-[#8F896D]/20 overflow-hidden"
+      aria-label="Avirena Client Testimonials"
     >
       <TestimonialsSection data={testimonialsData} />
     </div>

@@ -1,4 +1,5 @@
 import React from "react";
+import { Star, CheckCircle2 } from "lucide-react";
 
 export interface TestimonialItem {
   id?: string;
@@ -6,6 +7,8 @@ export interface TestimonialItem {
   authorName: string;
   authorTitle: string;
   avatarUrl: string;
+  rating?: number;
+  verified?: boolean;
 }
 
 export interface TestimonialRow {
@@ -16,6 +19,7 @@ export interface TestimonialRow {
 }
 
 export interface TestimonialsData {
+  eyebrow?: string;
   title: string;
   subtitle: string;
   rows: TestimonialRow[];
@@ -26,38 +30,68 @@ export interface TestimonialCardProps {
   authorName: string;
   authorTitle: string;
   avatarUrl: string;
+  rating?: number;
+  verified?: boolean;
 }
 
 /**
- * TestimonialCard
- * Props: quote, authorName, authorTitle, avatarUrl
+ * TestimonialCard — Styled for AVIRENA's warm luxury aesthetic
  */
 export const TestimonialCard: React.FC<TestimonialCardProps> = ({
   quote,
   authorName,
   authorTitle,
   avatarUrl,
+  rating = 5,
+  verified = true,
 }) => {
   return (
-    <div className="testimonial-card flex flex-col items-start gap-4 p-6 bg-white rounded-lg shadow-lg w-96 flex-shrink-0 border border-gray-100/80 hover:shadow-xl transition-shadow duration-300">
-      <p className="text-gray-700 text-lg leading-relaxed">"{quote}"</p>
-      <div className="flex items-center gap-4 mt-auto pt-2">
+    <div className="testimonial-card flex flex-col items-start justify-between p-6 sm:p-7 bg-[#FAF8F5] rounded-xl shadow-[0_4px_20px_rgba(65,60,35,0.06)] hover:shadow-[0_8px_30px_rgba(65,60,35,0.12)] w-[320px] sm:w-[380px] flex-shrink-0 border border-[#8F896D]/20 hover:border-[#D4AF37]/60 transition-all duration-300">
+      
+      <div>
+        {/* Top: 5 Gold Stars & Verified Badge */}
+        <div className="flex items-center justify-between w-full mb-3.5">
+          <div className="flex items-center gap-1 text-[#D4AF37]">
+            {[...Array(rating)].map((_, i) => (
+              <Star key={i} className="w-4 h-4 fill-current text-[#D4AF37]" strokeWidth={0} />
+            ))}
+          </div>
+          {verified && (
+            <span className="inline-flex items-center gap-1 text-[10px] uppercase tracking-wider font-semibold text-[#8F896D] bg-[#E7E4D5]/60 px-2 py-0.5 rounded-full">
+              <CheckCircle2 className="w-3 h-3 text-[#D4AF37]" />
+              Verified Buyer
+            </span>
+          )}
+        </div>
+
+        {/* Quote text */}
+        <p className="text-[#413C23] text-sm sm:text-[15px] leading-relaxed font-sans-body font-normal italic">
+          "{quote}"
+        </p>
+      </div>
+
+      {/* Author Details */}
+      <div className="flex items-center gap-3.5 mt-5 pt-3.5 border-t border-[#8F896D]/15 w-full">
         <img
           src={avatarUrl}
           alt={authorName}
           loading="lazy"
-          className="w-12 h-12 rounded-full bg-gray-200 object-cover ring-2 ring-gray-100"
+          className="w-11 h-11 rounded-full object-cover ring-2 ring-[#D4AF37]/30 shrink-0 bg-[#E7E4D5]"
           onError={(e) => {
-            // Graceful fallback avatar if image fails to load
             const target = e.currentTarget;
             target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(authorName)}&background=8F896D&color=fff&size=96`;
           }}
         />
-        <div>
-          <h4 className="text-lg font-bold text-gray-900 leading-tight">{authorName}</h4>
-          <p className="text-gray-600 text-sm">{authorTitle}</p>
+        <div className="min-w-0">
+          <h4 className="text-sm font-bold text-[#413C23] font-sans-body tracking-tight leading-tight truncate">
+            {authorName}
+          </h4>
+          <p className="text-[#8F896D] text-xs font-light tracking-wide truncate">
+            {authorTitle}
+          </p>
         </div>
       </div>
+
     </div>
   );
 };
@@ -69,8 +103,7 @@ export interface HorizontalScrollerProps {
 }
 
 /**
- * HorizontalScroller
- * Props: children, speed (e.g., "40s"), direction ("left" | "right")
+ * HorizontalScroller with pause-on-hover & smooth continuous loop
  */
 export const HorizontalScroller: React.FC<HorizontalScrollerProps> = ({
   children,
@@ -81,13 +114,15 @@ export const HorizontalScroller: React.FC<HorizontalScrollerProps> = ({
     direction === "right" ? "animate-scroll-horizontal-reverse" : "animate-scroll-horizontal";
 
   return (
-    <div className="w-full overflow-hidden group relative mask-fade">
+    <div className="w-full overflow-hidden group relative mask-fade py-2">
       <div
         className={`flex w-max ${animationClass}`}
         style={{ ["--scroll-duration" as string]: speed } as React.CSSProperties}
       >
-        <div className="flex shrink-0 items-stretch justify-center gap-8 px-4">{children}</div>
-        <div className="flex shrink-0 items-stretch justify-center gap-8 px-4" aria-hidden="true">
+        <div className="flex shrink-0 items-stretch justify-center gap-6 sm:gap-8 px-3 sm:px-4">
+          {children}
+        </div>
+        <div className="flex shrink-0 items-stretch justify-center gap-6 sm:gap-8 px-3 sm:px-4" aria-hidden="true">
           {children}
         </div>
       </div>
@@ -100,28 +135,29 @@ export interface TestimonialsSectionProps {
 }
 
 /**
- * TestimonialsSection
- * Props: data { title, subtitle, rows[] }
+ * TestimonialsSection — Bespoke 2-row luxury showcase
  */
 export default function TestimonialsSection({ data }: TestimonialsSectionProps) {
   return (
-    <section className="testimonials-section relative flex flex-col items-center gap-12 p-6 sm:p-10 w-full max-w-7xl mx-auto overflow-hidden">
-      <div className="flex flex-col items-center gap-4 sm:gap-6 text-center z-10 max-w-2xl px-4">
-        <h2
-          className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-black leading-tight tracking-tight"
-          style={{ opacity: 0, animation: "fadeInUp 0.7s ease-out 0.2s forwards" }}
-        >
+    <section className="testimonials-section relative flex flex-col items-center gap-8 sm:gap-10 py-16 sm:py-20 w-full overflow-hidden">
+      
+      {/* Editorial Header */}
+      <div className="flex flex-col items-center gap-2.5 sm:gap-3 text-center z-10 max-w-2xl px-4">
+        {data.eyebrow && (
+          <span className="text-[11px] sm:text-xs uppercase tracking-[0.25em] font-bold text-[#8F896D]">
+            {data.eyebrow}
+          </span>
+        )}
+        <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-serif text-[#413C23] leading-tight tracking-tight font-normal">
           {data.title}
         </h2>
-        <p
-          className="text-base sm:text-lg text-gray-700 leading-relaxed"
-          style={{ opacity: 0, animation: "fadeInUp 0.7s ease-out 0.4s forwards" }}
-        >
+        <p className="text-xs sm:text-sm md:text-base text-[#8F896D] max-w-xl leading-relaxed font-sans-body">
           {data.subtitle}
         </p>
       </div>
 
-      <div className="flex flex-col gap-6 sm:gap-8 z-10 w-full max-w-6xl">
+      {/* 2-Row Horizontal Scrollers */}
+      <div className="flex flex-col gap-5 sm:gap-6 z-10 w-full">
         {data.rows.map((row) => (
           <HorizontalScroller key={row.id} speed={row.speed} direction={row.direction}>
             {row.testimonials.map((t) => (
@@ -131,21 +167,14 @@ export default function TestimonialsSection({ data }: TestimonialsSectionProps) 
                 authorName={t.authorName}
                 authorTitle={t.authorTitle}
                 avatarUrl={t.avatarUrl}
+                rating={t.rating}
+                verified={t.verified}
               />
             ))}
           </HorizontalScroller>
         ))}
       </div>
 
-      <div
-        className="absolute inset-0 pointer-events-none"
-        aria-hidden="true"
-        style={{
-          background:
-            "radial-gradient(ellipse 85% 67% at 50% 100%, rgba(189,204,255,0.45) 0%, transparent 60%)",
-          zIndex: 0,
-        }}
-      />
     </section>
   );
 }
