@@ -273,7 +273,7 @@ export const HomePage: React.FC<HomePageProps> = ({
         </div>
 
         {/* Center Stage: Large Official Logo with Floating Golden Baroque Pearl Ring Centered */}
-        <div className="relative my-auto py-10 sm:py-16 flex items-center justify-center w-full z-10 overflow-visible">
+        <div className="relative my-auto py-8 sm:py-12 md:py-16 flex items-center justify-center w-full z-10 overflow-visible px-2 sm:px-4">
           {/* Official Brand Logo */}
           <div className="gsap-hero-title w-full flex items-center justify-center select-none pointer-events-none z-0">
             {/* LCP element. WebP (91KB) is served to every modern browser with the
@@ -286,7 +286,7 @@ export const HomePage: React.FC<HomePageProps> = ({
                 alt="AVIRENA"
                 width={2128}
                 height={739}
-                className="w-[98vw] sm:w-[96vw] md:w-[94vw] lg:w-[92vw] xl:w-[90vw] 2xl:w-[88vw] max-w-[1550px] scale-105 sm:scale-110 md:scale-115 lg:scale-120 h-auto object-contain mix-blend-multiply select-none"
+                className="w-full max-w-[1280px] 2xl:max-w-[1440px] px-3 sm:px-6 md:px-8 lg:px-10 h-auto object-contain mix-blend-multiply select-none"
                 loading="eager"
                 fetchPriority="high"
                 decoding="sync"
