@@ -99,6 +99,12 @@ async function fetchShopifyProducts(): Promise<any[]> {
               availableForSale
               productType
               tags
+              # Hand-written per-product SEO copy set in Shopify admin. Preferred
+              # over truncating the body description, which produced meta tags
+              # ending mid-sentence in an ellipsis.
+              seo {
+                description
+              }
               priceRange {
                 minVariantPrice {
                   amount
@@ -252,6 +258,37 @@ function buildProductTitle(rawTitle: string): string {
  * only when text was actually cut. The previous version blindly sliced at 155
  * and then appended more text, guaranteeing an over-length, mid-word result.
  */
+/**
+ * Meta description for a product page.
+ *
+ * Uses the hand-written Shopify SEO description when present, but strips any
+ * rupee figure out of it and appends the CURRENT catalog price instead. The
+ * Shopify copy was authored before a repricing and several entries advertised
+ * a price below what the product now costs.
+ *
+ * The free-shipping threshold (₹1,999) is a fixed policy figure, not a product
+ * price, so it is preserved.
+ */
+function buildProductMetaDescription(
+  seoDescription: string | undefined,
+  rawDescription: string,
+  priceInr: number
+): string {
+  const authored = (seoDescription || '').replace(/\s+/g, ' ').trim();
+  if (!authored) return buildProductDescription(rawDescription);
+
+  const priceSuffix = ` ₹${priceInr}.`;
+  const cleaned = authored
+    // Drop any rupee amount that is not the shipping threshold.
+    .replace(/₹\s?(?!1,?999)[0-9][0-9,]*\.?/g, '')
+    .replace(/\s{2,}/g, ' ')
+    .trim();
+
+  const budget = MAX_DESCRIPTION_LENGTH - priceSuffix.length;
+  const body = cleaned.length > budget ? truncateAtWord(cleaned, budget) : cleaned;
+  return `${body}${priceSuffix}`;
+}
+
 function buildProductDescription(rawDescription: string): string {
   const body = rawDescription.replace(/\s+/g, ' ').trim();
   const suffix = ' Anti-tarnish brass. 14-day exchanges.';
@@ -1327,6 +1364,22 @@ async function main() {
         material: /\bsilver\b/i.test(`${prodTitle} ${(product.tags || []).join(' ')}`)
           ? 'Durable alloy with anti-tarnish silver-tone protective coating; nickel-free, surgical steel posts'
           : 'High-grade brass with anti-tarnish gold-tone protective coating; nickel-free, surgical steel posts',
+        // Finish colour, and Google's product taxonomy code. Both are
+        // recommended for merchant listings and are the cheapest remaining
+        // completeness wins. "Gold-tone"/"Silver-tone" describe the finish
+        // colour only — never the metal.
+        color: /\bsilver\b/i.test(`${prodTitle} ${(product.tags || []).join(' ')}`)
+          ? 'Silver-tone'
+          : 'Gold-tone',
+        category: [
+          product.productType || 'Earrings',
+          {
+            '@type': 'CategoryCode',
+            inCodeSet: 'https://www.google.com/basepages/producttype/taxonomy.en-US.txt',
+            codeValue: '188', // Apparel & Accessories > Jewelry > Earrings
+            name: 'Earrings',
+          },
+        ],
         offers: {
           '@type': 'Offer',
           url: `${SITE_URL}/product/${handle}`,
@@ -1409,7 +1462,19 @@ async function main() {
       // Shopify titles are long and pipe-separated; buildProductTitle keeps the
       // distinctive name and a short brand suffix inside the ~60-char SERP budget.
       title: buildProductTitle(prodTitle),
-      description: buildProductDescription(prodDesc),
+      // Prefer the hand-written Shopify SEO description over truncating the
+      // body copy, which ends mid-sentence in an ellipsis.
+      //
+      // Any price literal is STRIPPED and the live price re-appended: the
+      // Shopify SEO fields were written before a repricing and four of them
+      // advertised a price lower than the product now costs, which is a
+      // Merchant Center violation as well as a broken promise to the shopper.
+      // Prices belong in exactly one place — the catalog.
+      description: buildProductMetaDescription(
+        product.seo?.description,
+        prodDesc,
+        Math.round(priceAmount)
+      ),
       canonical: `${SITE_URL}/product/${handle}`,
       ogImage: mainImage,
       ogType: 'product',
