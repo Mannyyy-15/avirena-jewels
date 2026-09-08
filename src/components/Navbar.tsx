@@ -140,20 +140,20 @@ export const Navbar: React.FC<NavbarProps> = ({
           <button
             id="mobile-menu-toggle-btn"
             onClick={() => setMobileMenuOpen(true)}
-            className="p-2 -ml-2 text-[#413C23] hover:text-[#8F896D] lg:hidden transition-colors cursor-pointer"
+            className="p-2 -ml-2 text-black hover:text-neutral-600 lg:hidden transition-colors cursor-pointer"
             aria-label="Open menu"
           >
             <Menu className="w-6 h-6 stroke-[1.3]" />
           </button>
 
-          <nav className="hidden lg:flex items-center space-x-5 xl:space-x-7 text-[11px] xl:text-xs uppercase tracking-[0.16em] font-medium text-[#413C23]">
+          <nav className="hidden lg:flex items-center space-x-5 xl:space-x-7 text-[11px] xl:text-xs uppercase tracking-[0.16em] font-medium text-black">
             <button
               id="nav-home-btn"
               onClick={() => navigateTo('home')}
-              className={`transition-colors hover:text-[#8F896D] py-1 cursor-pointer relative ${
+              className={`transition-colors hover:text-neutral-600 py-1 cursor-pointer relative ${
                 currentPage === 'home'
-                  ? 'text-[#413C23] font-bold after:absolute after:bottom-0 after:left-0 after:w-full after:h-[1.5px] after:bg-[#8F896D]'
-                  : 'text-[#413C23]/85'
+                  ? 'text-black font-bold after:absolute after:bottom-0 after:left-0 after:w-full after:h-[1.5px] after:bg-black'
+                  : 'text-black'
               }`}
             >
               Home
@@ -162,10 +162,10 @@ export const Navbar: React.FC<NavbarProps> = ({
             <button
               id="nav-shop-btn"
               onClick={() => navigateTo('shop', 'all')}
-              className={`transition-colors hover:text-[#8F896D] py-1 cursor-pointer relative ${
+              className={`transition-colors hover:text-neutral-600 py-1 cursor-pointer relative ${
                 (currentPage === 'collection' || currentPage === 'shop') && !collectionsDropdownOpen
-                  ? 'text-[#413C23] font-bold after:absolute after:bottom-0 after:left-0 after:w-full after:h-[1.5px] after:bg-[#8F896D]'
-                  : 'text-[#413C23]/85'
+                  ? 'text-black font-bold after:absolute after:bottom-0 after:left-0 after:w-full after:h-[1.5px] after:bg-black'
+                  : 'text-black'
               }`}
             >
               Shop
@@ -179,17 +179,17 @@ export const Navbar: React.FC<NavbarProps> = ({
               <button
                 id="nav-collections-dropdown-btn"
                 onClick={() => setCollectionsDropdownOpen((prev) => !prev)}
-                className={`inline-flex items-center gap-1 transition-colors hover:text-[#8F896D] cursor-pointer relative py-1 ${
+                className={`inline-flex items-center gap-1 transition-colors hover:text-neutral-600 cursor-pointer relative py-1 ${
                   collectionsDropdownOpen
-                    ? 'text-[#8F896D] font-semibold'
-                    : 'text-[#413C23]/85'
+                    ? 'text-black font-semibold'
+                    : 'text-black'
                 }`}
                 aria-expanded={collectionsDropdownOpen}
               >
                 <span>Collections</span>
                 <ChevronDown
                   className={`w-3.5 h-3.5 transition-transform duration-200 stroke-[1.5] ${
-                    collectionsDropdownOpen ? 'rotate-180 text-[#8F896D]' : ''
+                    collectionsDropdownOpen ? 'rotate-180 text-black' : ''
                   }`}
                 />
               </button>
@@ -200,20 +200,20 @@ export const Navbar: React.FC<NavbarProps> = ({
                   onMouseEnter={handleCollectionsEnter}
                   onMouseLeave={handleCollectionsLeave}
                 >
-                  <div className="bg-[#FAF8F5] border border-[#D8D2C2] rounded-xs shadow-[0_12px_30px_rgba(65,60,35,0.12)] py-2 px-1 select-none text-left min-w-[200px]">
+                  <div className="bg-[#FAF8F5] border border-[#D8D2C2] rounded-xs shadow-[0_12px_30px_rgba(0,0,0,0.12)] py-2 px-1 select-none text-left min-w-[200px]">
                     {categoryItems.map((cat) => (
                       <button
                         key={cat.id}
                         onClick={() => selectCategory(cat.id)}
                         className={`w-full text-left px-4 py-2.5 text-[11px] uppercase tracking-[0.18em] hover:bg-[#F2EFDB] transition-all font-medium cursor-pointer flex items-center justify-between gap-2 ${
                           cat.isEmpty
-                            ? 'text-[#413C23]/45 hover:text-[#413C23]/70'
-                            : 'text-[#413C23]/85 hover:text-[#413C23]'
+                            ? 'text-neutral-400 hover:text-neutral-600'
+                            : 'text-black hover:text-neutral-700'
                         }`}
                       >
                         <span>{cat.label}</span>
                         {cat.isEmpty && (
-                          <span className="text-[9px] tracking-[0.12em] text-[#8F896D] normal-case">
+                          <span className="text-[9px] tracking-[0.12em] text-neutral-500 normal-case">
                             Soon
                           </span>
                         )}
@@ -223,7 +223,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                     <div className="border-t border-[#E8E2D6]/80 mt-1 pt-1 mx-2">
                       <button
                         onClick={() => selectCategory('all')}
-                        className="w-full text-left px-2 py-2.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#413C23] hover:text-[#8F896D] transition-all cursor-pointer"
+                        className="w-full text-left px-2 py-2.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-black hover:text-neutral-600 transition-all cursor-pointer"
                       >
                         All Jewelry
                       </button>
@@ -236,10 +236,10 @@ export const Navbar: React.FC<NavbarProps> = ({
             <button
               id="nav-blog-btn"
               onClick={() => navigateTo('journal')}
-              className={`transition-colors hover:text-[#8F896D] py-1 cursor-pointer relative ${
+              className={`transition-colors hover:text-neutral-600 py-1 cursor-pointer relative ${
                 currentPage === 'journal'
-                  ? 'text-[#413C23] font-bold after:absolute after:bottom-0 after:left-0 after:w-full after:h-[1.5px] after:bg-[#8F896D]'
-                  : 'text-[#413C23]/85'
+                  ? 'text-black font-bold after:absolute after:bottom-0 after:left-0 after:w-full after:h-[1.5px] after:bg-black'
+                  : 'text-black'
               }`}
             >
               Blog
@@ -248,10 +248,10 @@ export const Navbar: React.FC<NavbarProps> = ({
             <button
               id="nav-about-btn"
               onClick={() => navigateTo('about')}
-              className={`transition-colors hover:text-[#8F896D] py-1 cursor-pointer relative ${
+              className={`transition-colors hover:text-neutral-600 py-1 cursor-pointer relative ${
                 currentPage === 'about'
-                  ? 'text-[#413C23] font-bold after:absolute after:bottom-0 after:left-0 after:w-full after:h-[1.5px] after:bg-[#8F896D]'
-                  : 'text-[#413C23]/85'
+                  ? 'text-black font-bold after:absolute after:bottom-0 after:left-0 after:w-full after:h-[1.5px] after:bg-black'
+                  : 'text-black'
               }`}
             >
               About
@@ -260,10 +260,10 @@ export const Navbar: React.FC<NavbarProps> = ({
             <button
               id="nav-contact-btn"
               onClick={() => navigateTo('contact')}
-              className={`transition-colors hover:text-[#8F896D] py-1 cursor-pointer relative ${
+              className={`transition-colors hover:text-neutral-600 py-1 cursor-pointer relative ${
                 currentPage === 'contact'
-                  ? 'text-[#413C23] font-bold after:absolute after:bottom-0 after:left-0 after:w-full after:h-[1.5px] after:bg-[#8F896D]'
-                  : 'text-[#413C23]/85'
+                  ? 'text-black font-bold after:absolute after:bottom-0 after:left-0 after:w-full after:h-[1.5px] after:bg-black'
+                  : 'text-black'
               }`}
             >
               Contact
@@ -284,11 +284,11 @@ export const Navbar: React.FC<NavbarProps> = ({
         </div>
 
         {/* Right: Actions (Wishlist and Account hidden on mobile, visible on desktop) */}
-        <div className="flex items-center justify-end space-x-2 sm:space-x-4 lg:space-x-5 lg:col-span-5 text-[#413C23] z-20">
+        <div className="flex items-center justify-end space-x-2 sm:space-x-4 lg:space-x-5 lg:col-span-5 text-black z-20">
           <button
             id="nav-search-btn"
             onClick={openSearchModal}
-            className="p-1.5 text-[#413C23] hover:text-[#8F896D] transition-colors focus:outline-none cursor-pointer flex items-center gap-1"
+            className="p-1.5 text-black hover:text-neutral-600 transition-colors focus:outline-none cursor-pointer flex items-center gap-1"
             aria-label="Search"
             title="Search the Collection"
           >
@@ -300,7 +300,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           <button
             id="nav-wishlist-btn"
             onClick={openWishlistModal}
-            className="hidden lg:flex relative p-1.5 text-[#413C23] hover:text-[#8F896D] transition-colors focus:outline-none cursor-pointer"
+            className="hidden lg:flex relative p-1.5 text-black hover:text-neutral-600 transition-colors focus:outline-none cursor-pointer"
             aria-label="Wishlist"
             title="Saved Pieces"
           >
@@ -317,7 +317,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             <button
               id="nav-user-account-btn"
               onClick={() => setUserDropdownOpen(!userDropdownOpen)}
-              className="p-1.5 text-[#413C23] hover:text-[#8F896D] transition-colors focus:outline-none cursor-pointer"
+              className="p-1.5 text-black hover:text-neutral-600 transition-colors focus:outline-none cursor-pointer"
               aria-label="Account"
               title="Account"
             >

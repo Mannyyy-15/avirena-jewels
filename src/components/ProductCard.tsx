@@ -127,7 +127,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           </span>
         </div>
 
-        <h3 className="font-serif-display text-base sm:text-lg font-normal text-black group-hover:text-neutral-700 transition-colors leading-snug truncate">
+        <h3 className="font-serif-display text-lg sm:text-xl font-medium sm:font-semibold text-black group-hover:text-neutral-700 transition-colors leading-snug truncate">
           {product.name}
         </h3>
 
@@ -137,7 +137,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           const discount = getDiscountPercentage(product.price, comparePrice);
           return (
             <div className="flex items-baseline gap-2 pt-0.5 flex-wrap">
-              <span className="text-base sm:text-lg font-bold text-black tracking-tight">
+              <span className="text-lg sm:text-xl font-bold text-black tracking-tight">
                 {formatPrice(product.price, currency)}
               </span>
               {comparePrice > product.price && (
