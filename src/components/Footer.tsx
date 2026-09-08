@@ -49,15 +49,34 @@ export const Footer: React.FC<FooterProps> = ({
   };
 
   return (
-    <footer className="w-full bg-[#8F896D] text-white font-sans-body select-none overflow-hidden pt-12 sm:pt-16 pb-2 sm:pb-4 px-5 sm:px-8 lg:px-12 xl:px-16 2xl:px-20 relative">
+    <footer className="w-full bg-[#8F896D] text-white font-sans-body select-none overflow-hidden pt-8 sm:pt-12 pb-6 sm:pb-8 px-5 sm:px-8 lg:px-12 xl:px-16 2xl:px-20 relative">
       
       {/* =========================================================================
-          TOP SECTION: 4-COLUMN REFERENCE LAYOUT
+          1. LOGO PART FIRST (Prominent, big AVIRENA white logo at top)
+          ========================================================================= */}
+      <div className="w-full pt-2 sm:pt-4 pb-8 sm:pb-12 flex items-center justify-center overflow-hidden select-none border-b border-white/20">
+        <button
+          onClick={() => handleNavigate('home')}
+          className="w-full flex items-center justify-center cursor-pointer focus:outline-none transition-transform duration-300 hover:opacity-95 active:scale-[0.99]"
+          title="AVIRENA Jewels"
+          aria-label="Return to AVIRENA Home"
+        >
+          <img
+            src="/logo-white.png"
+            alt="AVIRENA"
+            className="w-full max-w-[1400px] h-auto object-contain select-none opacity-95 hover:opacity-100 transition-opacity"
+            loading="lazy"
+          />
+        </button>
+      </div>
+
+      {/* =========================================================================
+          2. LINKS PART SECOND (4-Column Reference Grid)
           [Tagline + Copyright] [NAVIGATION] [SUPPORT] [NEWSLETTER + SOCIALS]
           ========================================================================= */}
-      <div className="w-full grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-10 pb-10 sm:pb-14 items-start">
+      <div className="w-full grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-10 py-10 sm:py-14 items-start border-b border-white/20">
         
-        {/* 1. LEFT BRAND TAGLINE & COPYRIGHT (md: 4 cols) */}
+        {/* A. LEFT BRAND TAGLINE & COPYRIGHT (md: 4 cols) */}
         <div className="md:col-span-4 lg:col-span-4 space-y-4 sm:space-y-6">
           <h3 className="text-2xl sm:text-3xl lg:text-[34px] font-bold text-white tracking-tight leading-[1.18] font-sans-body">
             Modern anti-tarnish jewelry. <br />
@@ -76,7 +95,7 @@ export const Footer: React.FC<FooterProps> = ({
           </p>
         </div>
 
-        {/* 2. NAVIGATION COLUMN (md: 2 cols) */}
+        {/* B. NAVIGATION COLUMN (md: 2 cols) */}
         <div className="md:col-span-2 lg:col-span-2 space-y-3 sm:space-y-4">
           <h4 className="text-xs sm:text-[13px] uppercase font-bold tracking-[0.16em] text-white">
             Navigation
@@ -141,7 +160,7 @@ export const Footer: React.FC<FooterProps> = ({
           </ul>
         </div>
 
-        {/* 3. SUPPORT COLUMN (md: 2 cols) */}
+        {/* C. SUPPORT COLUMN (md: 2 cols) */}
         <div className="md:col-span-2 lg:col-span-2 space-y-3 sm:space-y-4">
           <h4 className="text-xs sm:text-[13px] uppercase font-bold tracking-[0.16em] text-white">
             Support
@@ -208,7 +227,7 @@ export const Footer: React.FC<FooterProps> = ({
           </ul>
         </div>
 
-        {/* 4. NEWSLETTER & SOCIALS (md: 4 cols) */}
+        {/* D. NEWSLETTER & SOCIALS (md: 4 cols) */}
         <div className="md:col-span-4 lg:col-span-4 space-y-3 sm:space-y-4 md:pl-2">
           <h4 className="text-xs sm:text-[13px] uppercase font-bold tracking-[0.16em] text-white">
             Get The Latest From Avirena.
@@ -312,33 +331,13 @@ export const Footer: React.FC<FooterProps> = ({
       </div>
 
       {/* =========================================================================
-          PAYMENT METHODS STRIP (Clean divider above the giant logo)
+          3. PAYMENT METHODS STRIP (Clean bottom trust badge row)
           ========================================================================= */}
-      <div className="w-full pt-4 pb-6 border-t border-white/20 flex flex-col sm:flex-row items-center justify-between gap-4">
-        <p className="text-[11px] sm:text-xs uppercase tracking-[0.16em] text-white/75 font-medium text-center sm:text-left">
+      <div className="w-full pt-6 sm:pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <p className="text-[11px] sm:text-xs uppercase tracking-[0.16em] text-white/80 font-medium text-center sm:text-left">
           100% Secure &amp; Verified Checkout • All Major Cards, UPI &amp; Netbanking Accepted
         </p>
         <PaymentBadges />
-      </div>
-
-      {/* =========================================================================
-          BOTTOM SECTION: GIANT HERO BRAND LOGO
-          (Exactly like the reference image with massive logo spanning across)
-          ========================================================================= */}
-      <div className="w-full pt-4 sm:pt-6 pb-2 flex items-center justify-center overflow-hidden select-none">
-        <button
-          onClick={() => handleNavigate('home')}
-          className="w-full flex items-center justify-center cursor-pointer focus:outline-none transition-transform duration-300 hover:opacity-95 active:scale-[0.99]"
-          title="AVIRENA Jewels"
-          aria-label="Return to AVIRENA Home"
-        >
-          <img
-            src="/logo-white.png"
-            alt="AVIRENA"
-            className="w-full max-w-[1400px] h-auto object-contain select-none opacity-95 hover:opacity-100 transition-opacity"
-            loading="lazy"
-          />
-        </button>
       </div>
 
     </footer>
