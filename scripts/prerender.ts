@@ -160,8 +160,8 @@ function getGlobalSchema() {
       description:
         'Homegrown dailywear jewelry atelier crafting sculptural pieces in durable brass, anti-tarnish protective coatings, and natural cultured pearls.',
       sameAs: [
-        'https://www.instagram.com/avirena.jewels',
-        'https://www.facebook.com/avirenajewels',
+        'https://www.instagram.com/avirenajewels/',
+        'https://www.facebook.com/profile.php?id=61594070437997',
         'https://www.pinterest.com/avirenajewels',
       ],
       contactPoint: {

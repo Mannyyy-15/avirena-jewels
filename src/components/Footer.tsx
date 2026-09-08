@@ -235,7 +235,7 @@ export const Footer: React.FC<FooterProps> = ({
 
             {/* 2. Facebook */}
             <a
-              href="https://facebook.com"
+              href="https://www.facebook.com/profile.php?id=61594070437997"
               target="_blank"
               rel="noreferrer"
               aria-label="Facebook"

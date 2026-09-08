@@ -7,8 +7,8 @@ interface InstagramFeedSectionProps {
 }
 
 export const InstagramFeedSection: React.FC<InstagramFeedSectionProps> = ({
-  instagramHandle = '@avirena.jewels',
-  instagramUrl = 'https://instagram.com/avirena.jewels',
+  instagramHandle = '@avirenajewels',
+  instagramUrl = 'https://www.instagram.com/avirenajewels/',
 }) => {
   const images = [
     {
