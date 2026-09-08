@@ -19,6 +19,9 @@ const CLIENT_SECRET = process.env.SHOPIFY_CLIENT_SECRET;
 const API_VERSION = process.env.VITE_SHOPIFY_API_VERSION || '2025-01';
 
 const HEADLESS_REDIRECT_SNIPPET = `
+    <!-- De-index checkout subdomain so ONLY https://avirenajewels.com appears in Google Search -->
+    <meta name="robots" content="noindex, nofollow">
+
     <!-- Official Avirena Jewels Favicon Suite -->
     <link rel="icon" type="image/png" sizes="48x48" href="https://avirenajewels.com/favicon-48x48.png">
     <link rel="icon" type="image/png" sizes="192x192" href="https://avirenajewels.com/favicon-192x192.png">
