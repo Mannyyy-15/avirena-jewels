@@ -74,11 +74,11 @@ export const Footer: React.FC<FooterProps> = ({
           2. LINKS PART SECOND (4-Column Reference Grid)
           [Tagline + Copyright] [NAVIGATION] [SUPPORT] [NEWSLETTER + SOCIALS]
           ========================================================================= */}
-      <div className="w-full grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-10 py-10 sm:py-14 items-start border-b border-white/20">
+      <div className="w-full grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-10 py-8 sm:py-12 md:py-14 items-start border-b border-white/20">
         
         {/* A. LEFT BRAND TAGLINE & COPYRIGHT (md: 4 cols) */}
-        <div className="md:col-span-4 lg:col-span-4 space-y-4 sm:space-y-6">
-          <h3 className="text-2xl sm:text-3xl lg:text-[34px] font-bold text-white tracking-tight leading-[1.18] font-sans-body">
+        <div className="md:col-span-4 lg:col-span-4 space-y-3 sm:space-y-5 text-center md:text-left flex flex-col items-center md:items-start">
+          <h3 className="text-xl sm:text-2xl md:text-3xl lg:text-[32px] font-bold text-white tracking-tight leading-[1.2] font-sans-body">
             Modern anti-tarnish jewelry. <br />
             Crafted for every day!
           </h3>
@@ -95,224 +95,184 @@ export const Footer: React.FC<FooterProps> = ({
           </p>
         </div>
 
-        {/* B. NAVIGATION COLUMN (md: 2 cols) */}
-        <div className="md:col-span-2 lg:col-span-2 space-y-3 sm:space-y-4">
-          <h4 className="text-xs sm:text-[13px] uppercase font-bold tracking-[0.16em] text-white">
-            Navigation
-          </h4>
-          <ul className="space-y-2 text-xs sm:text-[13px] text-white font-light">
-            <li>
-              <a
-                href="/shop"
-                onClick={(e) => {
-                  e.preventDefault();
-                  handleNavigate('collection', 'all');
-                }}
-                className="text-white hover:text-white/80 hover:underline transition-all cursor-pointer text-left block"
-              >
-                Shop All
-              </a>
-            </li>
-            <li>
-              <a
-                href="/shop/earrings"
-                onClick={(e) => {
-                  e.preventDefault();
-                  handleNavigate('collection', 'earrings');
-                }}
-                className="text-white hover:text-white/80 hover:underline transition-all cursor-pointer text-left block"
-              >
-                Earrings
-              </a>
-            </li>
-            <li>
-              <a
-                href="/shop/rings"
-                onClick={(e) => {
-                  e.preventDefault();
-                  handleNavigate('collection', 'rings');
-                }}
-                className="text-white hover:text-white/80 hover:underline transition-all cursor-pointer text-left block"
-              >
-                Rings
-              </a>
-            </li>
-            <li>
-              <a
-                href="/shop/necklaces"
-                onClick={(e) => {
-                  e.preventDefault();
-                  handleNavigate('collection', 'necklaces');
-                }}
-                className="text-white hover:text-white/80 hover:underline transition-all cursor-pointer text-left block"
-              >
-                Necklaces
-              </a>
-            </li>
-            <li>
-              <a
-                href="/shop/bracelets"
-                onClick={(e) => {
-                  e.preventDefault();
-                  handleNavigate('collection', 'bracelets');
-                }}
-                className="text-white hover:text-white/80 hover:underline transition-all cursor-pointer text-left block"
-              >
-                Bracelets
-              </a>
-            </li>
-            <li>
-              <a
-                href="/collections"
-                onClick={(e) => {
-                  e.preventDefault();
-                  handleNavigate('collections');
-                }}
-                className="text-white hover:text-white/80 hover:underline transition-all cursor-pointer text-left block"
-              >
-                Curated Suites
-              </a>
-            </li>
-            <li>
-              <a
-                href="/about"
-                onClick={(e) => {
-                  e.preventDefault();
-                  handleNavigate('about');
-                }}
-                className="text-white hover:text-white/80 hover:underline transition-all cursor-pointer text-left block"
-              >
-                About Us
-              </a>
-            </li>
-            <li>
-              <a
-                href="/faq"
-                onClick={(e) => {
-                  e.preventDefault();
-                  handleNavigate('faq');
-                }}
-                className="text-white hover:text-white/80 hover:underline transition-all cursor-pointer text-left block"
-              >
-                FAQ &amp; Sizing
-              </a>
-            </li>
-            <li>
-              <a
-                href="/journal"
-                onClick={(e) => {
-                  e.preventDefault();
-                  handleNavigate('journal');
-                }}
-                className="text-white hover:text-white/80 hover:underline transition-all cursor-pointer text-left block"
-              >
-                Styling Journal
-              </a>
-            </li>
-          </ul>
-        </div>
+        {/* B & C. LINKS (2 Columns on mobile side-by-side to stay compact; 4 cols on desktop) */}
+        <div className="md:col-span-4 lg:col-span-4 grid grid-cols-2 gap-4 sm:gap-8 w-full">
+          
+          {/* B. NAVIGATION COLUMN */}
+          <div className="space-y-3 sm:space-y-4 text-center md:text-left">
+            <h4 className="text-xs sm:text-[13px] uppercase font-bold tracking-[0.16em] text-white">
+              Navigation
+            </h4>
+            <ul className="space-y-2 text-xs sm:text-[13px] text-white font-light">
+              <li>
+                <a
+                  href="/shop"
+                  onClick={(e) => { e.preventDefault(); handleNavigate('collection', 'all'); }}
+                  className="text-white hover:text-white/80 hover:underline transition-all cursor-pointer text-center md:text-left block py-0.5"
+                >
+                  Shop All
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/shop/earrings"
+                  onClick={(e) => { e.preventDefault(); handleNavigate('collection', 'earrings'); }}
+                  className="text-white hover:text-white/80 hover:underline transition-all cursor-pointer text-center md:text-left block py-0.5"
+                >
+                  Earrings
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/shop/rings"
+                  onClick={(e) => { e.preventDefault(); handleNavigate('collection', 'rings'); }}
+                  className="text-white hover:text-white/80 hover:underline transition-all cursor-pointer text-center md:text-left block py-0.5"
+                >
+                  Rings
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/shop/necklaces"
+                  onClick={(e) => { e.preventDefault(); handleNavigate('collection', 'necklaces'); }}
+                  className="text-white hover:text-white/80 hover:underline transition-all cursor-pointer text-center md:text-left block py-0.5"
+                >
+                  Necklaces
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/shop/bracelets"
+                  onClick={(e) => { e.preventDefault(); handleNavigate('collection', 'bracelets'); }}
+                  className="text-white hover:text-white/80 hover:underline transition-all cursor-pointer text-center md:text-left block py-0.5"
+                >
+                  Bracelets
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/collections"
+                  onClick={(e) => { e.preventDefault(); handleNavigate('collections'); }}
+                  className="text-white hover:text-white/80 hover:underline transition-all cursor-pointer text-center md:text-left block py-0.5"
+                >
+                  Curated Suites
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/about"
+                  onClick={(e) => { e.preventDefault(); handleNavigate('about'); }}
+                  className="text-white hover:text-white/80 hover:underline transition-all cursor-pointer text-center md:text-left block py-0.5"
+                >
+                  About Us
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/faq"
+                  onClick={(e) => { e.preventDefault(); handleNavigate('faq'); }}
+                  className="text-white hover:text-white/80 hover:underline transition-all cursor-pointer text-center md:text-left block py-0.5"
+                >
+                  FAQ &amp; Sizing
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/journal"
+                  onClick={(e) => { e.preventDefault(); handleNavigate('journal'); }}
+                  className="text-white hover:text-white/80 hover:underline transition-all cursor-pointer text-center md:text-left block py-0.5"
+                >
+                  Styling Journal
+                </a>
+              </li>
+            </ul>
+          </div>
 
-        {/* C. SUPPORT COLUMN (md: 2 cols) */}
-        <div className="md:col-span-2 lg:col-span-2 space-y-3 sm:space-y-4">
-          <h4 className="text-xs sm:text-[13px] uppercase font-bold tracking-[0.16em] text-white">
-            Support
-          </h4>
-          <ul className="space-y-2 text-xs sm:text-[13px] text-white font-light">
-            <li>
-              <a
-                href="/contact"
-                onClick={(e) => {
-                  e.preventDefault();
-                  handleNavigate('contact');
-                }}
-                className="text-white hover:text-white/80 hover:underline transition-all cursor-pointer text-left block"
-              >
-                Contact Concierge
-              </a>
-            </li>
-            <li>
-              <a
-                href="/refund-policy"
-                onClick={(e) => {
-                  e.preventDefault();
-                  handlePolicyClick('returns');
-                }}
-                className="text-white hover:text-white/80 hover:underline transition-all cursor-pointer text-left block"
-              >
-                Return &amp; Refund Policy
-              </a>
-            </li>
-            <li>
-              <a
-                href="/shipping-policy"
-                onClick={(e) => {
-                  e.preventDefault();
-                  handlePolicyClick('shipping');
-                }}
-                className="text-white hover:text-white/80 hover:underline transition-all cursor-pointer text-left block"
-              >
-                Shipping Policy
-              </a>
-            </li>
-            <li>
-              <a
-                href="/privacy-policy"
-                onClick={(e) => {
-                  e.preventDefault();
-                  handlePolicyClick('privacy');
-                }}
-                className="text-white hover:text-white/80 hover:underline transition-all cursor-pointer text-left block"
-              >
-                Privacy Policy
-              </a>
-            </li>
-            <li>
-              <a
-                href="/terms-of-service"
-                onClick={(e) => {
-                  e.preventDefault();
-                  handlePolicyClick('terms');
-                }}
-                className="text-white hover:text-white/80 hover:underline transition-all cursor-pointer text-left block"
-              >
-                Terms of Service
-              </a>
-            </li>
-            <li>
-              <a
-                href="/legal-notice"
-                onClick={(e) => {
-                  e.preventDefault();
-                  handlePolicyClick('legal');
-                }}
-                className="text-white hover:text-white/80 hover:underline transition-all cursor-pointer text-left block"
-              >
-                Legal Notice
-              </a>
-            </li>
-            <li>
-              <a
-                href="https://wa.me/917823889290"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-white hover:text-white/80 hover:underline transition-all cursor-pointer text-left block"
-              >
-                WhatsApp Support
-              </a>
-            </li>
-          </ul>
+          {/* C. SUPPORT COLUMN */}
+          <div className="space-y-3 sm:space-y-4 text-center md:text-left">
+            <h4 className="text-xs sm:text-[13px] uppercase font-bold tracking-[0.16em] text-white">
+              Support
+            </h4>
+            <ul className="space-y-2 text-xs sm:text-[13px] text-white font-light">
+              <li>
+                <a
+                  href="/contact"
+                  onClick={(e) => { e.preventDefault(); handleNavigate('contact'); }}
+                  className="text-white hover:text-white/80 hover:underline transition-all cursor-pointer text-center md:text-left block py-0.5"
+                >
+                  Contact Concierge
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/refund-policy"
+                  onClick={(e) => { e.preventDefault(); handlePolicyClick('returns'); }}
+                  className="text-white hover:text-white/80 hover:underline transition-all cursor-pointer text-center md:text-left block py-0.5"
+                >
+                  Return &amp; Refund
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/shipping-policy"
+                  onClick={(e) => { e.preventDefault(); handlePolicyClick('shipping'); }}
+                  className="text-white hover:text-white/80 hover:underline transition-all cursor-pointer text-center md:text-left block py-0.5"
+                >
+                  Shipping Policy
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/privacy-policy"
+                  onClick={(e) => { e.preventDefault(); handlePolicyClick('privacy'); }}
+                  className="text-white hover:text-white/80 hover:underline transition-all cursor-pointer text-center md:text-left block py-0.5"
+                >
+                  Privacy Policy
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/terms-of-service"
+                  onClick={(e) => { e.preventDefault(); handlePolicyClick('terms'); }}
+                  className="text-white hover:text-white/80 hover:underline transition-all cursor-pointer text-center md:text-left block py-0.5"
+                >
+                  Terms of Service
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/legal-notice"
+                  onClick={(e) => { e.preventDefault(); handlePolicyClick('legal'); }}
+                  className="text-white hover:text-white/80 hover:underline transition-all cursor-pointer text-center md:text-left block py-0.5"
+                >
+                  Legal Notice
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://wa.me/917823889290"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-white hover:text-white/80 hover:underline transition-all cursor-pointer text-center md:text-left block py-0.5"
+                >
+                  WhatsApp Support
+                </a>
+              </li>
+            </ul>
+          </div>
+
         </div>
 
         {/* D. NEWSLETTER & SOCIALS (md: 4 cols) */}
-        <div className="md:col-span-4 lg:col-span-4 space-y-3 sm:space-y-4 md:pl-2">
-          <h4 className="text-xs sm:text-[13px] uppercase font-bold tracking-[0.16em] text-white">
+        <div className="md:col-span-4 lg:col-span-4 space-y-3 sm:space-y-4 md:pl-2 text-center md:text-left flex flex-col items-center md:items-start w-full">
+          <h4 className="text-xs sm:text-[13px] uppercase font-bold tracking-[0.16em] text-white text-center md:text-left w-full">
             Get The Latest From Avirena.
           </h4>
 
           {/* Pill Newsletter Input with White Subscribe Button */}
-          <form onSubmit={handleNewsletterSubmit} className="w-full">
+          <form onSubmit={handleNewsletterSubmit} className="w-full max-w-md mx-auto md:mx-0">
             {isSubscribed ? (
-              <div className="flex items-center gap-2 bg-white/20 border border-white/40 rounded-full px-4 py-2.5 text-xs text-white">
+              <div className="flex items-center justify-center gap-2 bg-white/20 border border-white/40 rounded-full px-4 py-2.5 text-xs text-white">
                 <Check className="w-4 h-4 text-white shrink-0" />
                 <span>Thank you for subscribing to Avirena!</span>
               </div>
@@ -325,7 +285,7 @@ export const Footer: React.FC<FooterProps> = ({
                   placeholder="Email Address"
                   required
                   aria-label="Email Address for Avirena newsletter"
-                  className="w-full bg-transparent text-white placeholder-white/70 text-xs sm:text-sm outline-none px-1 py-1"
+                  className="w-full bg-transparent text-white placeholder-white/70 text-xs sm:text-sm outline-none px-1 py-1 text-center sm:text-left"
                 />
                 <button
                   type="submit"
@@ -338,11 +298,11 @@ export const Footer: React.FC<FooterProps> = ({
           </form>
 
           {/* FOLLOW US with circular tinted icons */}
-          <div className="pt-2 sm:pt-3">
-            <h5 className="text-[11px] sm:text-xs uppercase font-bold tracking-[0.16em] text-white mb-3">
+          <div className="pt-2 sm:pt-3 text-center md:text-left w-full">
+            <h5 className="text-[11px] sm:text-xs uppercase font-bold tracking-[0.16em] text-white mb-3 text-center md:text-left">
               Follow Us
             </h5>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center justify-center md:justify-start gap-3">
               {/* 1. Instagram */}
               <a
                 href="https://www.instagram.com/avirenajewels/"
@@ -409,8 +369,8 @@ export const Footer: React.FC<FooterProps> = ({
       {/* =========================================================================
           3. PAYMENT METHODS STRIP (Clean bottom trust badge row)
           ========================================================================= */}
-      <div className="w-full pt-6 sm:pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-        <p className="text-[11px] sm:text-xs uppercase tracking-[0.16em] text-white font-medium text-center sm:text-left">
+      <div className="w-full pt-6 sm:pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
+        <p className="text-[11px] sm:text-xs uppercase tracking-[0.16em] text-white font-medium text-center md:text-left">
           100% Secure &amp; Verified Checkout • All Major Cards, UPI &amp; Netbanking Accepted
         </p>
         <PaymentBadges />

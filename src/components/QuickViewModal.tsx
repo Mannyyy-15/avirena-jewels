@@ -142,10 +142,10 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
                       </span>
                       {comparePrice > product.price && (
                         <>
-                          <span className="text-xs text-[#9A9886] line-through font-normal">
+                          <span className="text-xs text-[#DC2626] line-through font-normal">
                             {formatPrice(comparePrice, currency)}
                           </span>
-                          <span className="text-[10px] font-bold text-[#7A0F1A] bg-[#7A0F1A]/10 border border-[#7A0F1A]/20 px-1.5 py-0.5 rounded-2xs uppercase tracking-wider">
+                          <span className="text-[10px] font-bold text-[#15803D] bg-[#15803D]/10 border border-[#15803D]/20 px-1.5 py-0.5 rounded-2xs uppercase tracking-wider">
                             {discount}% OFF
                           </span>
                         </>
