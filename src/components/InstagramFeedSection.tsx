@@ -13,32 +13,36 @@ export const InstagramFeedSection: React.FC<InstagramFeedSectionProps> = ({
   const images = [
     {
       id: 'ig-1',
-      src: 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&w=800&q=90',
-      alt: 'Avirena Handcrafted Gold Rings Stack',
+      src: '/instagram/post-1.jpg',
+      alt: 'Avirena Granulated Dome Studs Instagram Reel',
       aspect: 'aspect-[4/5]',
       offsetClass: 'sm:-translate-y-4',
+      url: 'https://www.instagram.com/reel/DdBnEviT5WR/',
     },
     {
       id: 'ig-2',
-      src: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=800&q=90',
-      alt: 'Avirena Solitaire Signet Ring Editorial',
+      src: '/instagram/post-2.jpg',
+      alt: 'Avirena Atelier Brand Signature Post',
       aspect: 'aspect-[3/4]',
       offsetClass: 'sm:translate-y-8 z-10',
       hasHandle: true,
+      url: 'https://www.instagram.com/p/Dc8v3NVvEuK/',
     },
     {
       id: 'ig-3',
-      src: 'https://images.unsplash.com/photo-1602751584552-8ba73aad10e1?auto=format&fit=crop&w=800&q=90',
-      alt: 'Avirena Sunlit Gold Cuff and Minimal Rings',
+      src: '/instagram/post-3.jpg',
+      alt: 'Avirena Sculptural Leaf Studs Reel',
       aspect: 'aspect-[4/5]',
       offsetClass: 'sm:-translate-y-6',
+      url: 'https://www.instagram.com/reel/Dc8u9B2MYd0/',
     },
     {
       id: 'ig-4',
-      src: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=800&q=90',
-      alt: 'Avirena Sculptural Earrings and Layered Chains',
+      src: 'https://cdn.shopify.com/s/files/1/1031/9364/1282/files/cfe3752b-17e9-413b-95a8-111c4798de48.png?v=1788866888',
+      alt: 'Avirena Tiered Pebble Drops Campaign',
       aspect: 'aspect-[3/4]',
       offsetClass: 'sm:translate-y-4',
+      url: 'https://www.instagram.com/avirenajewels/',
     },
   ];
 
@@ -84,7 +88,7 @@ export const InstagramFeedSection: React.FC<InstagramFeedSectionProps> = ({
           {images.map((img) => (
             <a
               key={img.id}
-              href={instagramUrl}
+              href={img.url || instagramUrl}
               target="_blank"
               rel="noopener noreferrer"
               className={`group relative block overflow-hidden bg-[#D8D1C0] shadow-sm transition-all duration-500 ease-out hover:shadow-xl hover:scale-[1.02] ${img.aspect} ${img.offsetClass}`}
