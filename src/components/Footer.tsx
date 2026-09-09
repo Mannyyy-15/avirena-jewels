@@ -88,7 +88,7 @@ export const Footer: React.FC<FooterProps> = ({
               href="https://thepiecraftmarketing.com/"
               target="_blank"
               rel="noopener noreferrer"
-              className="underline underline-offset-4 text-white hover:text-white/80 font-medium transition-colors"
+              className="underline underline-offset-4 text-white hover:text-white font-medium transition-colors"
             >
               The PieCraft Marketing
             </a>
@@ -103,12 +103,12 @@ export const Footer: React.FC<FooterProps> = ({
             <h4 className="text-xs sm:text-[13px] uppercase font-bold tracking-[0.16em] text-white">
               Navigation
             </h4>
-            <ul className="space-y-2 text-xs sm:text-[13px] text-white font-light">
+            <ul className="space-y-2 text-xs sm:text-[13px] text-white font-normal">
               <li>
                 <a
                   href="/shop"
                   onClick={(e) => { e.preventDefault(); handleNavigate('collection', 'all'); }}
-                  className="text-white hover:text-white/80 hover:underline transition-all cursor-pointer text-center md:text-left block py-0.5"
+                  className="text-white hover:text-white hover:underline transition-all cursor-pointer text-center md:text-left block py-0.5"
                 >
                   Shop All
                 </a>
@@ -117,7 +117,7 @@ export const Footer: React.FC<FooterProps> = ({
                 <a
                   href="/shop/earrings"
                   onClick={(e) => { e.preventDefault(); handleNavigate('collection', 'earrings'); }}
-                  className="text-white hover:text-white/80 hover:underline transition-all cursor-pointer text-center md:text-left block py-0.5"
+                  className="text-white hover:text-white hover:underline transition-all cursor-pointer text-center md:text-left block py-0.5"
                 >
                   Earrings
                 </a>
@@ -126,7 +126,7 @@ export const Footer: React.FC<FooterProps> = ({
                 <a
                   href="/shop/rings"
                   onClick={(e) => { e.preventDefault(); handleNavigate('collection', 'rings'); }}
-                  className="text-white hover:text-white/80 hover:underline transition-all cursor-pointer text-center md:text-left block py-0.5"
+                  className="text-white hover:text-white hover:underline transition-all cursor-pointer text-center md:text-left block py-0.5"
                 >
                   Rings
                 </a>
@@ -135,7 +135,7 @@ export const Footer: React.FC<FooterProps> = ({
                 <a
                   href="/shop/necklaces"
                   onClick={(e) => { e.preventDefault(); handleNavigate('collection', 'necklaces'); }}
-                  className="text-white hover:text-white/80 hover:underline transition-all cursor-pointer text-center md:text-left block py-0.5"
+                  className="text-white hover:text-white hover:underline transition-all cursor-pointer text-center md:text-left block py-0.5"
                 >
                   Necklaces
                 </a>
@@ -144,7 +144,7 @@ export const Footer: React.FC<FooterProps> = ({
                 <a
                   href="/shop/bracelets"
                   onClick={(e) => { e.preventDefault(); handleNavigate('collection', 'bracelets'); }}
-                  className="text-white hover:text-white/80 hover:underline transition-all cursor-pointer text-center md:text-left block py-0.5"
+                  className="text-white hover:text-white hover:underline transition-all cursor-pointer text-center md:text-left block py-0.5"
                 >
                   Bracelets
                 </a>
@@ -153,7 +153,7 @@ export const Footer: React.FC<FooterProps> = ({
                 <a
                   href="/collections"
                   onClick={(e) => { e.preventDefault(); handleNavigate('collections'); }}
-                  className="text-white hover:text-white/80 hover:underline transition-all cursor-pointer text-center md:text-left block py-0.5"
+                  className="text-white hover:text-white hover:underline transition-all cursor-pointer text-center md:text-left block py-0.5"
                 >
                   Curated Suites
                 </a>
@@ -162,7 +162,7 @@ export const Footer: React.FC<FooterProps> = ({
                 <a
                   href="/about"
                   onClick={(e) => { e.preventDefault(); handleNavigate('about'); }}
-                  className="text-white hover:text-white/80 hover:underline transition-all cursor-pointer text-center md:text-left block py-0.5"
+                  className="text-white hover:text-white hover:underline transition-all cursor-pointer text-center md:text-left block py-0.5"
                 >
                   About Us
                 </a>
@@ -171,7 +171,7 @@ export const Footer: React.FC<FooterProps> = ({
                 <a
                   href="/faq"
                   onClick={(e) => { e.preventDefault(); handleNavigate('faq'); }}
-                  className="text-white hover:text-white/80 hover:underline transition-all cursor-pointer text-center md:text-left block py-0.5"
+                  className="text-white hover:text-white hover:underline transition-all cursor-pointer text-center md:text-left block py-0.5"
                 >
                   FAQ &amp; Sizing
                 </a>
@@ -180,7 +180,7 @@ export const Footer: React.FC<FooterProps> = ({
                 <a
                   href="/journal"
                   onClick={(e) => { e.preventDefault(); handleNavigate('journal'); }}
-                  className="text-white hover:text-white/80 hover:underline transition-all cursor-pointer text-center md:text-left block py-0.5"
+                  className="text-white hover:text-white hover:underline transition-all cursor-pointer text-center md:text-left block py-0.5"
                 >
                   Styling Journal
                 </a>
@@ -193,12 +193,12 @@ export const Footer: React.FC<FooterProps> = ({
             <h4 className="text-xs sm:text-[13px] uppercase font-bold tracking-[0.16em] text-white">
               Support
             </h4>
-            <ul className="space-y-2 text-xs sm:text-[13px] text-white font-light">
+            <ul className="space-y-2 text-xs sm:text-[13px] text-white font-normal">
               <li>
                 <a
                   href="/contact"
                   onClick={(e) => { e.preventDefault(); handleNavigate('contact'); }}
-                  className="text-white hover:text-white/80 hover:underline transition-all cursor-pointer text-center md:text-left block py-0.5"
+                  className="text-white hover:text-white hover:underline transition-all cursor-pointer text-center md:text-left block py-0.5"
                 >
                   Contact Concierge
                 </a>
@@ -207,7 +207,7 @@ export const Footer: React.FC<FooterProps> = ({
                 <a
                   href="/refund-policy"
                   onClick={(e) => { e.preventDefault(); handlePolicyClick('returns'); }}
-                  className="text-white hover:text-white/80 hover:underline transition-all cursor-pointer text-center md:text-left block py-0.5"
+                  className="text-white hover:text-white hover:underline transition-all cursor-pointer text-center md:text-left block py-0.5"
                 >
                   Return &amp; Refund
                 </a>
@@ -216,7 +216,7 @@ export const Footer: React.FC<FooterProps> = ({
                 <a
                   href="/shipping-policy"
                   onClick={(e) => { e.preventDefault(); handlePolicyClick('shipping'); }}
-                  className="text-white hover:text-white/80 hover:underline transition-all cursor-pointer text-center md:text-left block py-0.5"
+                  className="text-white hover:text-white hover:underline transition-all cursor-pointer text-center md:text-left block py-0.5"
                 >
                   Shipping Policy
                 </a>
@@ -225,7 +225,7 @@ export const Footer: React.FC<FooterProps> = ({
                 <a
                   href="/privacy-policy"
                   onClick={(e) => { e.preventDefault(); handlePolicyClick('privacy'); }}
-                  className="text-white hover:text-white/80 hover:underline transition-all cursor-pointer text-center md:text-left block py-0.5"
+                  className="text-white hover:text-white hover:underline transition-all cursor-pointer text-center md:text-left block py-0.5"
                 >
                   Privacy Policy
                 </a>
@@ -234,7 +234,7 @@ export const Footer: React.FC<FooterProps> = ({
                 <a
                   href="/terms-of-service"
                   onClick={(e) => { e.preventDefault(); handlePolicyClick('terms'); }}
-                  className="text-white hover:text-white/80 hover:underline transition-all cursor-pointer text-center md:text-left block py-0.5"
+                  className="text-white hover:text-white hover:underline transition-all cursor-pointer text-center md:text-left block py-0.5"
                 >
                   Terms of Service
                 </a>
@@ -243,7 +243,7 @@ export const Footer: React.FC<FooterProps> = ({
                 <a
                   href="/legal-notice"
                   onClick={(e) => { e.preventDefault(); handlePolicyClick('legal'); }}
-                  className="text-white hover:text-white/80 hover:underline transition-all cursor-pointer text-center md:text-left block py-0.5"
+                  className="text-white hover:text-white hover:underline transition-all cursor-pointer text-center md:text-left block py-0.5"
                 >
                   Legal Notice
                 </a>
@@ -253,7 +253,7 @@ export const Footer: React.FC<FooterProps> = ({
                   href="https://wa.me/917823889290"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-white hover:text-white/80 hover:underline transition-all cursor-pointer text-center md:text-left block py-0.5"
+                  className="text-white hover:text-white hover:underline transition-all cursor-pointer text-center md:text-left block py-0.5"
                 >
                   WhatsApp Support
                 </a>
@@ -285,7 +285,7 @@ export const Footer: React.FC<FooterProps> = ({
                   placeholder="Email Address"
                   required
                   aria-label="Email Address for Avirena newsletter"
-                  className="w-full bg-transparent text-white placeholder-white/50 text-xs sm:text-sm outline-none px-1 py-1 text-center sm:text-left"
+                  className="w-full bg-transparent text-white placeholder-white placeholder:text-white placeholder:opacity-100 text-xs sm:text-sm outline-none px-1 py-1 text-center sm:text-left font-normal"
                 />
                 <button
                   type="submit"
