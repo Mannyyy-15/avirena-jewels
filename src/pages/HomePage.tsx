@@ -222,30 +222,34 @@ export const HomePage: React.FC<HomePageProps> = ({
       });
 
       // Staggered collection cards
-      gsap.from('.collection-card', {
-        y: 35,
-        opacity: 0,
-        duration: 0.75,
-        stagger: 0.08,
-        ease: 'power2.out',
-        scrollTrigger: {
-          trigger: '.collection-grid',
-          start: 'top 85%',
-        },
-      });
+      if (document.querySelector('.collection-card')) {
+        gsap.from('.collection-card', {
+          y: 35,
+          opacity: 0,
+          duration: 0.75,
+          stagger: 0.08,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: '.collection-grid',
+            start: 'top 85%',
+          },
+        });
+      }
 
       // Staggered popular cards
-      gsap.from('.popular-card', {
-        y: 35,
-        opacity: 0,
-        duration: 0.75,
-        stagger: 0.08,
-        ease: 'power2.out',
-        scrollTrigger: {
-          trigger: '.popular-grid',
-          start: 'top 85%',
-        },
-      });
+      if (document.querySelector('.popular-card')) {
+        gsap.from('.popular-card', {
+          y: 35,
+          opacity: 0,
+          duration: 0.75,
+          stagger: 0.08,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: '.popular-grid',
+            start: 'top 85%',
+          },
+        });
+      }
     }, containerRef);
 
     return () => ctx.revert();

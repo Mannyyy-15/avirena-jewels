@@ -476,7 +476,8 @@ const CRITICAL_CSS = `
       #root a{color:inherit;text-decoration:none}
       #root h1,#root h2,#root h3{font-family:'Cormorant Garamond',Georgia,serif;
         font-weight:300;letter-spacing:-.01em;margin:0 0 .5rem}
-      #root p{margin:0 0 1rem;line-height:1.65;color:rgba(65,60,35,.85)}
+      #root main p{margin:0 0 1rem;line-height:1.65;color:rgba(65,60,35,.85)}
+      #root footer p,#root footer a,#root footer span{color:#FFFFFF}
       .site-header{display:flex;align-items:center;justify-content:center;
         padding:1.25rem 1.5rem;border-bottom:1px solid var(--av-line);background:var(--av-bg)}
       .site-header nav{display:flex;flex-wrap:wrap;gap:1.25rem;justify-content:center;

@@ -16,52 +16,85 @@ import { SeoMeta } from './components/SeoMeta';
 import { ShopifyProvider, useShopify } from './context/ShopifyContext';
 import { initSmoothScroll, scrollToTop } from './lib/smoothScroll';
 
-/*
- * Route-level code splitting. The app shipped as one 747KB bundle across 16
- * routes; every visitor paid for the checkout flow and every page they never
- * opened. HomePage stays statically imported because it is the landing route.
- *
- * Safe with the prerender flow: src/main.tsx uses createRoot (client render),
- * not hydrateRoot, so React replaces the prerendered skeleton wholesale and a
- * suspended chunk cannot cause a hydration mismatch.
+import { ErrorBoundary } from './components/ErrorBoundary';
+
+/**
+ * Wraps dynamic component imports with deployment-safe retry logic.
+ * If a new build has deployed on Vercel and changed chunk hashes,
+ * fetching an older chunk URL (e.g. ProductDetailPage-[oldHash].js) results in a 404.
+ * This helper catches the failure and reloads the page once to acquire the latest HTML
+ * and valid chunk mappings, preventing uncaught module fetch TypeErrors.
  */
-const CollectionPage = lazy(() =>
+function lazyWithRetry<T extends React.ComponentType<any>>(
+  componentImport: () => Promise<{ default: T }>
+) {
+  return lazy(async () => {
+    try {
+      return await componentImport();
+    } catch (error: any) {
+      console.warn('[Avirena] Dynamic component chunk failed to load, attempting reload:', error);
+      const isChunkError =
+        error?.message?.includes('dynamically imported module') ||
+        error?.message?.includes('Loading chunk') ||
+        error?.message?.includes('Failed to fetch') ||
+        error?.name === 'TypeError';
+
+      const retryKey = `avirena_chunk_retry_${window.location.pathname}`;
+      const hasRetried = sessionStorage.getItem(retryKey);
+
+      if (isChunkError && !hasRetried) {
+        sessionStorage.setItem(retryKey, 'true');
+        window.location.reload();
+        // Return unresolved promise while the browser initiates the full reload
+        return new Promise<{ default: T }>(() => {});
+      }
+
+      sessionStorage.removeItem(retryKey);
+      throw error;
+    }
+  });
+}
+
+/*
+ * Route-level code splitting with deployment-resilient dynamic imports.
+ */
+const CollectionPage = lazyWithRetry(() =>
   import('./pages/CollectionPage').then((m) => ({ default: m.CollectionPage }))
 );
-const CollectionsHubPage = lazy(() =>
+const CollectionsHubPage = lazyWithRetry(() =>
   import('./pages/CollectionsHubPage').then((m) => ({ default: m.CollectionsHubPage }))
 );
-const ProductDetailPage = lazy(() =>
+const ProductDetailPage = lazyWithRetry(() =>
   import('./pages/ProductDetailPage').then((m) => ({ default: m.ProductDetailPage }))
 );
-const CartPage = lazy(() =>
+const CartPage = lazyWithRetry(() =>
   import('./pages/CartPage').then((m) => ({ default: m.CartPage }))
 );
-const CheckoutPage = lazy(() =>
+const CheckoutPage = lazyWithRetry(() =>
   import('./pages/CheckoutPage').then((m) => ({ default: m.CheckoutPage }))
 );
-const AboutPage = lazy(() =>
+const AboutPage = lazyWithRetry(() =>
   import('./pages/AboutPage').then((m) => ({ default: m.AboutPage }))
 );
-const ContactPage = lazy(() =>
+const ContactPage = lazyWithRetry(() =>
   import('./pages/ContactPage').then((m) => ({ default: m.ContactPage }))
 );
-const JournalPage = lazy(() =>
+const JournalPage = lazyWithRetry(() =>
   import('./pages/JournalPage').then((m) => ({ default: m.JournalPage }))
 );
-const FaqPage = lazy(() =>
+const FaqPage = lazyWithRetry(() =>
   import('./pages/FaqPage').then((m) => ({ default: m.FaqPage }))
 );
-const PoliciesPage = lazy(() =>
+const PoliciesPage = lazyWithRetry(() =>
   import('./pages/PoliciesPage').then((m) => ({ default: m.PoliciesPage }))
 );
-const GuidesPage = lazy(() =>
+const GuidesPage = lazyWithRetry(() =>
   import('./pages/GuidesPage').then((m) => ({ default: m.GuidesPage }))
 );
-const WishlistModal = lazy(() =>
+const WishlistModal = lazyWithRetry(() =>
   import('./components/WishlistModal').then((m) => ({ default: m.WishlistModal }))
 );
-const SearchModal = lazy(() =>
+const SearchModal = lazyWithRetry(() =>
   import('./components/SearchModal').then((m) => ({ default: m.SearchModal }))
 );
 
@@ -743,7 +776,8 @@ function AppContent() {
 
       {/* Main Multi-Page View Container */}
       <main className="flex-1 w-full">
-        <Suspense fallback={<RouteFallback />}>
+        <ErrorBoundary>
+          <Suspense fallback={<RouteFallback />}>
         {currentPage === 'home' && (
           <HomePage
             onSelectProduct={handleSelectProduct}
@@ -871,6 +905,7 @@ function AppContent() {
           />
         )}
         </Suspense>
+        </ErrorBoundary>
       </main>
 
       {/* Instagram Feed Gallery Section */}

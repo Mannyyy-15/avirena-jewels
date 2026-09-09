@@ -297,3 +297,29 @@ html.lenis, html.lenis body {
 .text-\[\#E7E4D5\]\/60, [class*="text-[#E7E4D5]/60"] { color: #FFFFFF !important; }
 .text-\[\#F2EFDB\]\/95, [class*="text-[#F2EFDB]/95"] { color: #FFFFFF !important; }
 .text-\[\#F2EFDB\]\/90, [class*="text-[#F2EFDB]/90"] { color: #FFFFFF !important; }
+
+/* 3. Pure White Footer Text Protection (Immune to skeleton or ID specificity) */
+footer,
+footer p,
+footer a,
+footer span,
+footer h3,
+footer h4,
+footer h5,
+footer li,
+#root footer p,
+#root footer a,
+#root footer span,
+#root footer h3,
+#root footer h4,
+#root footer h5,
+#root footer li {
+  color: #FFFFFF !important;
+}
+
+/* Ensure newsletter button stays black text on white background */
+footer button[type="submit"],
+#root footer button[type="submit"] {
+  color: #000000 !important;
+}
+

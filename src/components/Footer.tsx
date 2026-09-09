@@ -82,13 +82,17 @@ export const Footer: React.FC<FooterProps> = ({
             Modern anti-tarnish jewelry. <br />
             Crafted for every day!
           </h3>
-          <p className="text-xs sm:text-[13px] text-white font-normal tracking-wide leading-relaxed">
+          <p
+            style={{ color: '#FFFFFF' }}
+            className="text-xs sm:text-[13px] !text-white font-normal tracking-wide leading-relaxed"
+          >
             © {new Date().getFullYear()} Avirena Jewels / Atelier &amp; Brand by{' '}
             <a
               href="https://thepiecraftmarketing.com/"
               target="_blank"
               rel="noopener noreferrer"
-              className="underline underline-offset-4 text-white hover:text-white font-medium transition-colors"
+              style={{ color: '#FFFFFF' }}
+              className="underline underline-offset-4 !text-white hover:!text-white font-medium transition-colors"
             >
               The PieCraft Marketing
             </a>
@@ -370,7 +374,10 @@ export const Footer: React.FC<FooterProps> = ({
           3. PAYMENT METHODS STRIP (Clean bottom trust badge row)
           ========================================================================= */}
       <div className="w-full pt-6 sm:pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
-        <p className="text-[11px] sm:text-xs uppercase tracking-[0.16em] text-white font-medium text-center md:text-left">
+        <p
+          style={{ color: '#FFFFFF' }}
+          className="text-[11px] sm:text-xs uppercase tracking-[0.16em] !text-white font-medium text-center md:text-left"
+        >
           100% Secure &amp; Verified Checkout • All Major Cards, UPI &amp; Netbanking Accepted
         </p>
         <PaymentBadges />
