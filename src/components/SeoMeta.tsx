@@ -17,6 +17,7 @@ interface SeoMetaProps {
   currentPage: PageView;
   selectedProduct?: Product;
   selectedCategory?: Category;
+  curatedEdit?: 'under-999' | 'gifting-edit' | null;
   currency: Currency;
   /** Slug of the guide being viewed, when currentPage is 'guides'. */
   activeGuideSlug?: string | null;
@@ -26,6 +27,7 @@ export const SeoMeta: React.FC<SeoMetaProps> = ({
   currentPage,
   selectedProduct,
   selectedCategory,
+  curatedEdit,
   currency,
   activeGuideSlug,
 }) => {
@@ -42,10 +44,22 @@ export const SeoMeta: React.FC<SeoMetaProps> = ({
     let canonical = 'https://avirenajewels.com';
 
     if (currentPage === 'collection' || currentPage === 'shop') {
-      const catLabel = selectedCategory && selectedCategory !== 'all' ? `${selectedCategory.toUpperCase()} | ` : '';
-      title = `${catLabel}Shop Dailywear Jewelry | AVIRENA`;
-      description = `Discover our curated collection of ${selectedCategory || 'dailywear'} jewelry in premium anti-tarnish brass. Free delivery on all orders.`;
-      canonical = `https://avirenajewels.com/shop${selectedCategory && selectedCategory !== 'all' ? `/${selectedCategory}` : ''}`;
+      if (curatedEdit === 'under-999') {
+        title = 'Anti-Tarnish Jewellery Under ₹999 | Affordable Dailywear | AVIRENA';
+        description =
+          'Shop luxury anti-tarnish dailywear jewellery under ₹999. Waterproof, nickel-free brass earrings, rings, and pendants handcrafted for sensitive skin. Free delivery across India.';
+        canonical = 'https://avirenajewels.com/collections/under-999';
+      } else if (curatedEdit === 'gifting-edit') {
+        title = 'Jewellery Gifts Under ₹1000 | Thoughtful Everyday Gifts | AVIRENA';
+        description =
+          'Find the perfect jewellery gift under ₹1000 with Avirena. Sculptural earrings, pearl drops, and timeless staples with zero sizing risk. Includes luxury gift box.';
+        canonical = 'https://avirenajewels.com/collections/gifting-edit';
+      } else {
+        const catLabel = selectedCategory && selectedCategory !== 'all' ? `${selectedCategory.toUpperCase()} | ` : '';
+        title = `${catLabel}Shop Dailywear Jewelry | AVIRENA`;
+        description = `Discover our curated collection of ${selectedCategory || 'dailywear'} jewelry in premium anti-tarnish brass. Free delivery on all orders.`;
+        canonical = `https://avirenajewels.com/shop${selectedCategory && selectedCategory !== 'all' ? `/${selectedCategory}` : ''}`;
+      }
     } else if (currentPage === 'collections') {
       title = 'Signature Jewelry Design Suites | AVIRENA';
       description = 'Explore the Avirena collections: sculptural brass earrings, baroque pearl pieces and architectural chains, all in anti-tarnish gold-tone brass.';

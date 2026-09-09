@@ -1065,11 +1065,12 @@ async function main() {
         </ul>
         <p>Categories beyond earrings are still being stocked. <a href="/shop">Browse everything available now</a>.</p>
 
-        <h2>Shop by occasion</h2>
+        <h2>Curated edits &amp; occasions</h2>
         <ul>
+          <li><a href="/collections/under-999"><strong>The Under ₹999 Edit</strong></a> — premium anti-tarnish dailywear jewelry under ₹999.</li>
+          <li><a href="/collections/gifting-edit"><strong>The Gifting Edit</strong></a> — zero-sizing-risk earrings and timeless dailywear gifts under ₹1,000. Our <a href="/guides/jewellery-gifting-guide-india">gifting guide</a> explains what else to consider.</li>
           <li><strong>Office and everyday</strong> — understated pieces light enough to forget you have them on.</li>
           <li><strong>Festive and occasion wear</strong> — statement drops and crystal hoops that carry a saree or an evening outfit.</li>
-          <li><strong>Gifting</strong> — earrings need no sizing, which makes them the safest jewellery gift. Our <a href="/guides/jewellery-gifting-guide-india">gifting guide</a> explains what else to consider.</li>
         </ul>
 
         <h2>Before you choose</h2>
@@ -1084,6 +1085,144 @@ async function main() {
     `,
   });
   addSitemapUrl(`${SITE_URL}/collections`, '0.8', 'weekly');
+
+  // ---------------- ROUTE 3a: Under ₹999 Edit (/collections/under-999) ----------------
+  const under999Products = shopifyProducts.filter((p: any) => {
+    const price = parseFloat(p.priceRange?.minVariantPrice?.amount || '0');
+    return price <= 999;
+  });
+  const under999Images = under999Products
+    .map((p) => p.images?.edges?.[0]?.node?.url)
+    .filter(Boolean) as string[];
+
+  routes.push({
+    path: 'collections/under-999',
+    title: 'Anti-Tarnish Jewellery Under ₹999 | Affordable Dailywear | AVIRENA',
+    description:
+      'Shop luxury anti-tarnish dailywear jewellery under ₹999. Waterproof, nickel-free brass earrings, rings, and pendants handcrafted for sensitive skin. Free delivery across India.',
+    canonical: `${SITE_URL}/collections/under-999`,
+    ogImage: under999Images[0] || `${SITE_URL}/logo.png`,
+    ogType: 'website',
+    keywords: 'anti tarnish jewellery under 1000, jewellery under 999, affordable brass jewellery, daily wear earrings under 1000, waterproof jewellery india',
+    jsonLd: [
+      ...getGlobalSchema(),
+      {
+        '@context': 'https://schema.org',
+        '@type': 'CollectionPage',
+        name: 'The Under ₹999 Anti-Tarnish Edit | AVIRENA',
+        url: `${SITE_URL}/collections/under-999`,
+        description:
+          'Curated edit of anti-tarnish dailywear jewelry under ₹999. Handcrafted in skin-safe brass with durable anti-tarnish protective sealing.',
+      },
+      {
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          {
+            '@type': 'ListItem',
+            position: 1,
+            name: 'Home',
+            item: SITE_URL,
+          },
+          {
+            '@type': 'ListItem',
+            position: 2,
+            name: 'Collections',
+            item: `${SITE_URL}/collections`,
+          },
+          {
+            '@type': 'ListItem',
+            position: 3,
+            name: 'Under ₹999 Edit',
+            item: `${SITE_URL}/collections/under-999`,
+          },
+        ],
+      },
+    ],
+    htmlContent: `
+      <main class="category-page">
+        <nav aria-label="Breadcrumb">
+          <a href="/">Home</a> / <a href="/collections">Collections</a> / <span>The Under ₹999 Edit</span>
+        </nav>
+        <h1>The Under ₹999 Edit</h1>
+        <p>Lustrous anti-tarnish dailywear jewelry handcrafted in skin-safe brass &amp; durable alloys. Every piece under ₹999.</p>
+        <section class="products-grid">
+          ${renderProductCards(under999Products)}
+        </section>
+      </main>
+    `,
+  });
+  addSitemapUrl(`${SITE_URL}/collections/under-999`, '0.85', 'weekly', under999Images);
+
+  // ---------------- ROUTE 3b: The Gifting Edit (/collections/gifting-edit) ----------------
+  const giftingProducts = shopifyProducts.filter((p: any) => {
+    const price = parseFloat(p.priceRange?.minVariantPrice?.amount || '0');
+    const title = (p.title || '').toLowerCase();
+    const type = (p.productType || '').toLowerCase();
+    return price <= 1200 || title.includes('earring') || type.includes('earring') || title.includes('stud') || title.includes('drop');
+  });
+  const giftingImages = giftingProducts
+    .map((p) => p.images?.edges?.[0]?.node?.url)
+    .filter(Boolean) as string[];
+
+  routes.push({
+    path: 'collections/gifting-edit',
+    title: 'Jewellery Gifts Under ₹1000 | Thoughtful Everyday Gifts | AVIRENA',
+    description:
+      'Find the perfect jewellery gift under ₹1000 with Avirena. Sculptural earrings, pearl drops, and timeless staples with zero sizing risk. Includes luxury gift box.',
+    canonical: `${SITE_URL}/collections/gifting-edit`,
+    ogImage: giftingImages[0] || `${SITE_URL}/logo.png`,
+    ogType: 'website',
+    keywords: 'jewellery gifts under 1000, gifts for her india, daily wear jewellery gifts, earring gifts under 1000, thoughtful birthday gifts jewellery',
+    jsonLd: [
+      ...getGlobalSchema(),
+      {
+        '@context': 'https://schema.org',
+        '@type': 'CollectionPage',
+        name: 'The Gifting Edit: Jewellery Under ₹1000 | AVIRENA',
+        url: `${SITE_URL}/collections/gifting-edit`,
+        description:
+          'Thoughtful jewellery gifts under ₹1000 with zero sizing risk. Earrings, pearl drops, and timeless anti-tarnish dailywear staples.',
+      },
+      {
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          {
+            '@type': 'ListItem',
+            position: 1,
+            name: 'Home',
+            item: SITE_URL,
+          },
+          {
+            '@type': 'ListItem',
+            position: 2,
+            name: 'Collections',
+            item: `${SITE_URL}/collections`,
+          },
+          {
+            '@type': 'ListItem',
+            position: 3,
+            name: 'The Gifting Edit',
+            item: `${SITE_URL}/collections/gifting-edit`,
+          },
+        ],
+      },
+    ],
+    htmlContent: `
+      <main class="category-page">
+        <nav aria-label="Breadcrumb">
+          <a href="/">Home</a> / <a href="/collections">Collections</a> / <span>The Gifting Edit</span>
+        </nav>
+        <h1>The Gifting Edit</h1>
+        <p>Zero-sizing-risk earrings, luminous pearl drops &amp; sculpted staples. Thoughtful gifting under ₹1,000 in signature Avirena packaging.</p>
+        <section class="products-grid">
+          ${renderProductCards(giftingProducts)}
+        </section>
+      </main>
+    `,
+  });
+  addSitemapUrl(`${SITE_URL}/collections/gifting-edit`, '0.85', 'weekly', giftingImages);
 
   // ---------------- ROUTE 4: About Page (/about) ----------------
   routes.push({

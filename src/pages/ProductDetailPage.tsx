@@ -1,5 +1,18 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { ChevronRight, ChevronLeft, Plus, Minus, Heart, Maximize2 } from 'lucide-react';
+import {
+  ChevronRight,
+  ChevronLeft,
+  Plus,
+  Minus,
+  Heart,
+  Maximize2,
+  ShieldCheck,
+  Sparkles,
+  Truck,
+  RefreshCw,
+  CheckCircle2,
+  MapPin,
+} from 'lucide-react';
 import { Product, Currency, Metal, CartItem } from '../types';
 import { formatPrice, getCompareAtPrice, getDiscountPercentage } from '../data/products';
 import { useShopify } from '../context/ShopifyContext';
@@ -83,6 +96,37 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
 
   // Bottom Tabs state (Product Overview, Packaging, Shipping & Returns)
   const [activeTab, setActiveTab] = useState<'overview' | 'packaging' | 'shipping'>('overview');
+
+  // Pincode Delivery Estimator State
+  const [pincodeInput, setPincodeInput] = useState<string>(() => {
+    try {
+      return localStorage.getItem('avirena_pincode') || '';
+    } catch {
+      return '';
+    }
+  });
+  const [pincodeStatus, setPincodeStatus] = useState<string>(() => {
+    try {
+      const saved = localStorage.getItem('avirena_pincode');
+      if (saved && /^[1-9][0-9]{5}$/.test(saved)) {
+        return `Delivery in 2–4 Business Days to ${saved} (Free Express Air Delivery)`;
+      }
+    } catch {}
+    return '';
+  });
+
+  const handleCheckPincode = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    const clean = pincodeInput.trim();
+    if (!/^[1-9][0-9]{5}$/.test(clean)) {
+      setPincodeStatus('Please enter a valid 6-digit Indian PIN code.');
+      return;
+    }
+    try {
+      localStorage.setItem('avirena_pincode', clean);
+    } catch {}
+    setPincodeStatus(`Delivery in 2–4 Business Days to ${clean} (Free Express Air Delivery)`);
+  };
 
   // Live Shopify catalog only (drives 'styled with' / related pieces).
   const activeProducts = Array.isArray(catalogProducts) ? catalogProducts : [];
@@ -554,6 +598,79 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                 <span>{isWishlisted ? 'Saved to Wishlist' : 'Add to Wishlist'}</span>
               </button>
             </div>
+
+            {/* Trust & Quality Badges Grid */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2 w-full">
+              <div className="flex flex-col items-start p-2.5 rounded-xs bg-[#FAF8F5] border border-[#D8D2C2]/70 shadow-2xs">
+                <div className="flex items-center gap-1.5 mb-1 text-black">
+                  <ShieldCheck className="w-4 h-4 text-black shrink-0" />
+                  <span className="text-[11px] font-bold uppercase tracking-wider">Anti-Tarnish</span>
+                </div>
+                <span className="text-[10px] text-[#413C23]/75 leading-tight">Durable protective e-coat shield</span>
+              </div>
+
+              <div className="flex flex-col items-start p-2.5 rounded-xs bg-[#FAF8F5] border border-[#D8D2C2]/70 shadow-2xs">
+                <div className="flex items-center gap-1.5 mb-1 text-black">
+                  <Sparkles className="w-4 h-4 text-black shrink-0" />
+                  <span className="text-[11px] font-bold uppercase tracking-wider">Zero Allergy</span>
+                </div>
+                <span className="text-[10px] text-[#413C23]/75 leading-tight">Surgical steel posts, nickel free</span>
+              </div>
+
+              <div className="flex flex-col items-start p-2.5 rounded-xs bg-[#FAF8F5] border border-[#D8D2C2]/70 shadow-2xs">
+                <div className="flex items-center gap-1.5 mb-1 text-black">
+                  <Truck className="w-4 h-4 text-black shrink-0" />
+                  <span className="text-[11px] font-bold uppercase tracking-wider">Fast Dispatch</span>
+                </div>
+                <span className="text-[10px] text-[#413C23]/75 leading-tight">Ships in 24–48h across India</span>
+              </div>
+
+              <div className="flex flex-col items-start p-2.5 rounded-xs bg-[#FAF8F5] border border-[#D8D2C2]/70 shadow-2xs">
+                <div className="flex items-center gap-1.5 mb-1 text-black">
+                  <RefreshCw className="w-4 h-4 text-black shrink-0" />
+                  <span className="text-[11px] font-bold uppercase tracking-wider">7-Day Return</span>
+                </div>
+                <span className="text-[10px] text-[#413C23]/75 leading-tight">Easy exchanges & transit insured</span>
+              </div>
+            </div>
+
+            {/* Pincode Delivery Estimator */}
+            <form onSubmit={handleCheckPincode} className="p-3.5 bg-[#FAF8F5] border border-[#D8D2C2] rounded-xs space-y-2 w-full shadow-2xs">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-black">
+                  <MapPin className="w-3.5 h-3.5 text-black" />
+                  <span>Delivery Estimate &amp; Pincode</span>
+                </div>
+                <span className="text-[10px] text-emerald-800 font-bold tracking-wider uppercase bg-emerald-100/70 border border-emerald-300/60 px-2 py-0.5 rounded-2xs">
+                  Free Shipping
+                </span>
+              </div>
+              <div className="flex items-center gap-2">
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  pattern="[0-9]*"
+                  maxLength={6}
+                  value={pincodeInput}
+                  onChange={(e) => setPincodeInput(e.target.value.replace(/\D/g, ''))}
+                  placeholder="Enter 6-digit Indian PIN"
+                  aria-label="Enter 6-digit Indian Pincode"
+                  className="flex-1 px-3 py-2 text-xs bg-white border border-[#D8D2C2] rounded-xs text-black placeholder:text-neutral-400 outline-none focus:border-black font-mono"
+                />
+                <button
+                  type="submit"
+                  className="px-4 py-2 bg-black text-white text-xs font-semibold uppercase tracking-wider rounded-xs hover:bg-neutral-800 transition-colors cursor-pointer shrink-0"
+                >
+                  Check
+                </button>
+              </div>
+              {pincodeStatus && (
+                <div className="flex items-center gap-1.5 text-xs text-emerald-900 pt-0.5 animate-in fade-in">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-700 shrink-0" />
+                  <span className="font-medium">{pincodeStatus}</span>
+                </div>
+              )}
+            </form>
 
             {/* 4 Clean Hairline Accordions */}
             <div className="pt-4 border-t border-[#D8D2C2] divide-y divide-[#D8D2C2] w-full">

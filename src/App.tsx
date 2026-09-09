@@ -6,6 +6,7 @@ import { Footer } from './components/Footer';
 import { InstagramFeedSection } from './components/InstagramFeedSection';
 import DemoOne from './components/ui/demo';
 import { CartDrawer } from './components/CartDrawer';
+import { WhatsAppConcierge } from './components/WhatsAppConcierge';
 
 import { ToastContainer, ToastMessage } from './components/Toast';
 
@@ -148,13 +149,16 @@ const buildPath = (
   page: PageView,
   product: Product | undefined,
   category: Category,
-  guideSlug: string | null
+  guideSlug: string | null,
+  curatedEdit?: 'under-999' | 'gifting-edit' | null
 ): string => {
   switch (page) {
     case 'home':
       return '/';
     case 'collection':
     case 'shop':
+      if (curatedEdit === 'under-999') return '/collections/under-999';
+      if (curatedEdit === 'gifting-edit') return '/collections/gifting-edit';
       return category && category !== 'all' ? `/shop/${category}` : '/shop';
     case 'collections':
       return '/collections';
@@ -205,13 +209,20 @@ const buildTitle = (
   page: PageView,
   product: Product | undefined,
   category: Category,
-  guideSlug: string | null
+  guideSlug: string | null,
+  curatedEdit?: 'under-999' | 'gifting-edit' | null
 ): string => {
   switch (page) {
     case 'home':
       return 'Avirena Jewels – Anti-Tarnish Dailywear Jewelry India';
     case 'collection':
     case 'shop':
+      if (curatedEdit === 'under-999') {
+        return 'Anti-Tarnish Jewellery Under ₹999 | Affordable Dailywear | AVIRENA';
+      }
+      if (curatedEdit === 'gifting-edit') {
+        return 'Jewellery Gifts Under ₹1000 | Thoughtful Everyday Gifts | AVIRENA';
+      }
       return category && category !== 'all'
         ? CATEGORY_TITLES[category]
         : 'Anti-Tarnish Jewellery Online India | AVIRENA';
@@ -297,6 +308,7 @@ function AppContent() {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<Category>('all');
   const [selectedMetal, setSelectedMetal] = useState<string>('all');
+  const [curatedEdit, setCuratedEdit] = useState<'under-999' | 'gifting-edit' | null>(null);
   const [activeGuideSlug, setActiveGuideSlug] = useState<string | null>(null);
   const [activePolicyTab, setActivePolicyTab] = useState<'returns' | 'privacy' | 'terms' | 'shipping' | 'contact' | 'legal'>('returns');
   const [currency, setCurrency] = useState<Currency>('INR');
@@ -429,9 +441,19 @@ function AppContent() {
           const slug = parts[1];
           if (!slug) {
             setSelectedCategory('all');
+            setCuratedEdit(null);
+            setCurrentPage('collection');
+          } else if (slug === 'under-999') {
+            setSelectedCategory('all');
+            setCuratedEdit('under-999');
+            setCurrentPage('collection');
+          } else if (slug === 'gifting-edit') {
+            setSelectedCategory('all');
+            setCuratedEdit('gifting-edit');
             setCurrentPage('collection');
           } else if (isCategorySlug(slug)) {
             setSelectedCategory(slug);
+            setCuratedEdit(null);
             setCurrentPage('collection');
           }
           // An invalid category slug is a not-found case. Vercel serves a real 404
@@ -440,10 +462,24 @@ function AppContent() {
           break;
         }
         case 'collections':
-        case 'suites':
-          setCurrentPage('collections');
+        case 'suites': {
+          const slug = parts[1];
+          if (slug === 'under-999') {
+            setSelectedCategory('all');
+            setCuratedEdit('under-999');
+            setCurrentPage('collection');
+          } else if (slug === 'gifting-edit') {
+            setSelectedCategory('all');
+            setCuratedEdit('gifting-edit');
+            setCurrentPage('collection');
+          } else {
+            setCuratedEdit(null);
+            setCurrentPage('collections');
+          }
           break;
+        }
         case 'about':
+          setCuratedEdit(null);
           setCurrentPage('about');
           break;
         case 'contact':
@@ -570,9 +606,9 @@ function AppContent() {
   useEffect(() => {
     // Title always reflects the real route, including the category segment, and
     // matches what scripts/prerender.ts serves for that route.
-    document.title = buildTitle(currentPage, selectedProduct, selectedCategory, activeGuideSlug);
+    document.title = buildTitle(currentPage, selectedProduct, selectedCategory, activeGuideSlug, curatedEdit);
 
-    const targetPath = buildPath(currentPage, selectedProduct, selectedCategory, activeGuideSlug);
+    const targetPath = buildPath(currentPage, selectedProduct, selectedCategory, activeGuideSlug, curatedEdit);
     const currentPath = window.location.pathname;
 
     // The URL is authoritative while an initial load or a popstate is being
@@ -606,11 +642,12 @@ function AppContent() {
       // in place, never with pushState.
       window.history.replaceState(null, '', targetPath);
     }
-  }, [currentPage, selectedProduct, selectedCategory, activeGuideSlug]);
+  }, [currentPage, selectedProduct, selectedCategory, activeGuideSlug, curatedEdit]);
 
   // Navigation handlers
   const handleSelectProduct = (product: Product, shouldScroll: boolean = true) => {
     setSelectedProduct(product);
+    setCuratedEdit(null);
     setCurrentPage('pdp');
     if (shouldScroll) {
       scrollToTop();
@@ -618,13 +655,22 @@ function AppContent() {
   };
 
   const handleNavigateToCollection = (category: Category = 'all', metal: string = 'all') => {
+    setCuratedEdit(null);
     setSelectedCategory(category);
     setSelectedMetal(metal);
     setCurrentPage('collection');
     scrollToTop();
   };
 
+  const handleSelectCuratedEdit = (edit: 'under-999' | 'gifting-edit') => {
+    setCuratedEdit(edit);
+    setSelectedCategory('all');
+    setCurrentPage('collection');
+    scrollToTop();
+  };
+
   const handlePageChange = (page: PageView) => {
+    setCuratedEdit(null);
     setCurrentPage(page);
     scrollToTop();
   };
@@ -754,6 +800,7 @@ function AppContent() {
         currentPage={currentPage}
         selectedProduct={selectedProduct ?? undefined}
         selectedCategory={selectedCategory}
+        curatedEdit={curatedEdit}
         currency={currency}
         activeGuideSlug={activeGuideSlug}
       />
@@ -769,7 +816,11 @@ function AppContent() {
         openWishlistModal={() => setIsWishlistModalOpen(true)}
         openStoryModal={() => handlePageChange('about')}
         openCareModal={() => handlePageChange('faq')}
-        setSelectedCategory={setSelectedCategory}
+        setSelectedCategory={(cat) => {
+          setCuratedEdit(null);
+          setSelectedCategory(cat);
+        }}
+        onSelectCuratedEdit={handleSelectCuratedEdit}
         currency={currency}
         setCurrency={setCurrency}
       />
@@ -794,7 +845,12 @@ function AppContent() {
         {(currentPage === 'collection' || currentPage === 'shop') && (
           <CollectionPage
             selectedCategory={selectedCategory}
-            setSelectedCategory={setSelectedCategory}
+            setSelectedCategory={(cat) => {
+              setCuratedEdit(null);
+              setSelectedCategory(cat);
+            }}
+            curatedEdit={curatedEdit}
+            onClearCuratedEdit={() => setCuratedEdit(null)}
             initialMetal={selectedMetal}
             onSelectProduct={handleSelectProduct}
             onQuickAdd={handleQuickAdd}
@@ -984,6 +1040,9 @@ function AppContent() {
 
       {/* Floating Toast Feedback Notifications */}
       <ToastContainer toasts={toasts} onDismiss={removeToast} />
+
+      {/* Floating WhatsApp VIP Concierge & Lead Magnet */}
+      <WhatsAppConcierge />
     </div>
   );
 }

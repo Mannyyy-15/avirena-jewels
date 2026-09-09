@@ -2,7 +2,7 @@ import React, { useState, useMemo, useRef, useEffect } from 'react';
 import gsap from 'gsap';
 import { Product, Currency, Category, Metal } from '../types';
 import { formatPrice, getCompareAtPrice, getDiscountPercentage } from '../data/products';
-import { ChevronDown, Heart, Check, ShoppingBag } from 'lucide-react';
+import { ChevronDown, Heart, Check, ShoppingBag, X } from 'lucide-react';
 import shopHeroImg from '../assets/shop-hero-editorial.webp';
 
 interface CollectionPageProps {
@@ -16,6 +16,8 @@ interface CollectionPageProps {
   selectedCategory: Category;
   setSelectedCategory: (cat: Category) => void;
   initialMetal?: string;
+  curatedEdit?: 'under-999' | 'gifting-edit' | null;
+  onClearCuratedEdit?: () => void;
   onSelectProduct: (product: Product) => void;
   onQuickAdd: (product: Product) => void;
   currency: Currency;
@@ -30,6 +32,8 @@ export const CollectionPage: React.FC<CollectionPageProps> = ({
   selectedCategory,
   setSelectedCategory,
   initialMetal,
+  curatedEdit,
+  onClearCuratedEdit,
   onSelectProduct,
   onQuickAdd,
   currency,
@@ -59,15 +63,30 @@ export const CollectionPage: React.FC<CollectionPageProps> = ({
         { opacity: 1, y: 0, duration: 0.6, stagger: 0.04, ease: 'power2.out' }
       );
     }
-  }, [selectedCategory, selectedMetal, sortBy, isCatalogReady]);
+  }, [selectedCategory, selectedMetal, sortBy, isCatalogReady, curatedEdit]);
 
   const filteredProducts = useMemo(() => {
     let list = [...products];
 
+    // 1. Curated Edit Filter
+    if (curatedEdit === 'under-999') {
+      list = list.filter((p) => {
+        const inr = p.price < 500 ? Math.round(p.price * 90) : Math.round(p.price);
+        return inr <= 999;
+      });
+    } else if (curatedEdit === 'gifting-edit') {
+      list = list.filter((p) => {
+        const inr = p.price < 500 ? Math.round(p.price * 90) : Math.round(p.price);
+        return inr <= 1200 || p.category === 'earrings' || p.isBestseller;
+      });
+    }
+
+    // 2. Category Filter
     if (selectedCategory && selectedCategory !== 'all') {
       list = list.filter((p) => p.category === selectedCategory);
     }
 
+    // 3. Metal Filter
     if (selectedMetal && selectedMetal !== 'all') {
       list = list.filter((p) => {
         if (selectedMetal === 'brass') return p.metal.toLowerCase().includes('brass') || p.metal.toLowerCase().includes('gold');
@@ -77,6 +96,7 @@ export const CollectionPage: React.FC<CollectionPageProps> = ({
       });
     }
 
+    // 4. Sort Order
     if (sortBy === 'price-asc') {
       list.sort((a, b) => a.price - b.price);
     } else if (sortBy === 'price-desc') {
@@ -84,9 +104,11 @@ export const CollectionPage: React.FC<CollectionPageProps> = ({
     }
 
     return list;
-  }, [products, selectedCategory, selectedMetal, sortBy]);
+  }, [products, selectedCategory, selectedMetal, sortBy, curatedEdit]);
 
   const getMastheadTitle = () => {
+    if (curatedEdit === 'under-999') return 'THE UNDER ₹999 EDIT';
+    if (curatedEdit === 'gifting-edit') return 'THE GIFTING EDIT';
     if (selectedCategory === 'all') return 'ALL JEWELRY';
     return selectedCategory.toUpperCase();
   };
@@ -324,13 +346,23 @@ export const CollectionPage: React.FC<CollectionPageProps> = ({
         </div>
         <div className="relative z-10 w-full flex items-center justify-between text-[11px] sm:text-xs font-serif text-[#FAF8F5]/90 pt-1">
           <span className="italic tracking-wider font-light">Homegrown dailywear jewels</span>
-          <span className="uppercase tracking-[0.2em] font-sans-body text-[10px] sm:text-[11px] font-medium text-[#FAF8F5]/85">HOME / SHOP / {getMastheadTitle()}{isCatalogReady ? ` (${filteredProducts.length})` : ''}</span>
+          <span className="uppercase tracking-[0.2em] font-sans-body text-[10px] sm:text-[11px] font-medium text-[#FAF8F5]/85">HOME / {curatedEdit ? 'COLLECTIONS' : 'SHOP'} / {getMastheadTitle()}{isCatalogReady ? ` (${filteredProducts.length})` : ''}</span>
         </div>
-        <div className="relative z-10 w-full text-center pb-2 sm:pb-3">
+        <div className="relative z-10 w-full text-center pb-2 sm:pb-3 max-w-3xl mx-auto">
           <h1 className="font-serif-display text-5xl sm:text-7xl md:text-8xl lg:text-9xl tracking-tight text-[#FAF8F5] font-light italic leading-none drop-shadow-[0_4px_12px_rgba(0,0,0,0.15)]">{getMastheadTitle()}</h1>
+          {curatedEdit === 'under-999' && (
+            <p className="mt-2.5 sm:mt-3 text-xs sm:text-sm text-[#FAF8F5]/90 font-light tracking-wide">
+              Lustrous anti-tarnish dailywear jewelry handcrafted in skin-safe brass &amp; durable alloys. Every piece under ₹999.
+            </p>
+          )}
+          {curatedEdit === 'gifting-edit' && (
+            <p className="mt-2.5 sm:mt-3 text-xs sm:text-sm text-[#FAF8F5]/90 font-light tracking-wide">
+              Zero-sizing-risk earrings, luminous pearl drops &amp; sculpted staples. Thoughtful gifting under ₹1,000 in signature Avirena packaging.
+            </p>
+          )}
         </div>
         <div className="relative z-10 w-full flex items-center justify-between text-[10px] sm:text-[11px] font-mono tracking-widest text-[#FAF8F5]/70 pb-3 border-t border-[#FAF8F5]/20 pt-2">
-          <span>CURATED DAILYWEAR BRASS</span>
+          <span>{curatedEdit ? 'CURATED EDIT' : 'CURATED DAILYWEAR BRASS'}</span>
           <span>AVIRENA JEWELS</span>
         </div>
       </section>
@@ -406,11 +438,24 @@ export const CollectionPage: React.FC<CollectionPageProps> = ({
               </div>
             )}
           </div>
-          {(selectedCategory !== 'all' || selectedMetal !== 'all') && (
+          {curatedEdit && (
+            <div className="inline-flex items-center gap-1 px-2.5 py-1 rounded-sm bg-[#413C23] text-[#FAF8F5] text-[10px] sm:text-[11px] font-semibold tracking-wider uppercase">
+              <span>✦ {curatedEdit === 'under-999' ? 'Under ₹999' : 'Gifting Edit'}</span>
+              <button
+                onClick={onClearCuratedEdit}
+                className="hover:text-white cursor-pointer ml-1 p-0.5 rounded-full hover:bg-white/20 transition-colors"
+                aria-label="Remove curated edit filter"
+              >
+                <X className="w-3 h-3" />
+              </button>
+            </div>
+          )}
+          {(selectedCategory !== 'all' || selectedMetal !== 'all' || curatedEdit) && (
             <button
               onClick={() => {
                 setSelectedCategory('all');
                 setSelectedMetal('all');
+                if (onClearCuratedEdit) onClearCuratedEdit();
               }}
               className="text-[11px] text-[#8F896D] hover:text-[#413C23] underline underline-offset-4 cursor-pointer ml-1"
             >

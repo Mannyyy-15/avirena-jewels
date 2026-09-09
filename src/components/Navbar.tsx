@@ -15,17 +15,29 @@ interface NavbarProps {
   openStoryModal: () => void;
   openCareModal: () => void;
   setSelectedCategory?: (cat: Category) => void;
+  onSelectCuratedEdit?: (edit: 'under-999' | 'gifting-edit') => void;
   currency?: Currency;
   setCurrency?: (c: Currency) => void;
 }
 
-const ANNOUNCEMENTS = [
-  'FREE DELIVERY ON ALL ORDERS ACROSS INDIA',
-  'PREMIUM ANTI-TARNISH BRASS & ORGANIC FRESHWATER PEARLS',
-  'HOMEGROWN HANDCRAFTED DAILYWEAR JEWELS',
-  '7-DAY EASY RETURNS & EXCHANGES',
-  'ZERO ALLERGY SURGICAL STEEL POSTS & HYPOALLERGENIC FINISHES',
-  'HANDCRAFTED BY SKILLED ARTISANS ACROSS INDIA',
+interface AnnouncementItem {
+  text: string;
+  href?: string;
+  isVip?: boolean;
+}
+
+const ANNOUNCEMENTS: AnnouncementItem[] = [
+  {
+    text: 'JOIN VIP CLUB: GET 10% OFF YOUR FIRST ORDER VIA WHATSAPP',
+    href: "https://wa.me/917823889290?text=Hi%20Avirena,%20I'd%20like%20to%20claim%20my%2010%25%20VIP%20welcome%20code!",
+    isVip: true,
+  },
+  { text: 'FREE DELIVERY ON ALL ORDERS ACROSS INDIA' },
+  { text: 'PREMIUM ANTI-TARNISH BRASS & ORGANIC FRESHWATER PEARLS' },
+  { text: 'HOMEGROWN HANDCRAFTED DAILYWEAR JEWELS' },
+  { text: '7-DAY EASY RETURNS & EXCHANGES' },
+  { text: 'ZERO ALLERGY SURGICAL STEEL POSTS & HYPOALLERGENIC FINISHES' },
+  { text: 'HANDCRAFTED BY SKILLED ARTISANS ACROSS INDIA' },
 ];
 
 const CATEGORY_ITEMS: { id: Category; label: string }[] = [
@@ -47,6 +59,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   openStoryModal,
   openCareModal,
   setSelectedCategory,
+  onSelectCuratedEdit,
 }) => {
   // Category availability is read from the live Shopify catalog, never from a
   // hardcoded list. A category with no stock is still listed and still routable
@@ -95,6 +108,15 @@ export const Navbar: React.FC<NavbarProps> = ({
     setMobileMenuOpen(false);
   };
 
+  const selectCuratedEdit = (edit: 'under-999' | 'gifting-edit') => {
+    if (onSelectCuratedEdit) {
+      onSelectCuratedEdit(edit);
+    }
+    setCollectionsDropdownOpen(false);
+    setMobileMenuOpen(false);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   const handleQuickSignIn = (e: React.FormEvent) => {
     e.preventDefault();
     if (emailInput.trim()) {
@@ -112,21 +134,51 @@ export const Navbar: React.FC<NavbarProps> = ({
       <div className="w-full bg-black text-white py-2 sm:py-2.5 overflow-hidden border-b border-black marquee-pause select-none">
         <div className="flex animate-infinite-marquee">
           <div className="flex items-center shrink-0">
-            {ANNOUNCEMENTS.map((text, idx) => (
+            {ANNOUNCEMENTS.map((item, idx) => (
               <div key={`ann-track1-${idx}`} className="flex items-center shrink-0 px-6 sm:px-10">
-                <span className="text-[10px] sm:text-[11px] font-semibold tracking-[0.22em] uppercase text-white whitespace-nowrap">
-                  {text}
-                </span>
+                {item.href ? (
+                  <a
+                    href={item.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 text-[10px] sm:text-[11px] font-bold tracking-[0.22em] uppercase text-[#E5D7B7] hover:text-white transition-colors whitespace-nowrap group cursor-pointer"
+                  >
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping inline-block mr-0.5" />
+                    <span className="underline underline-offset-4 decoration-[#E5D7B7]/50 group-hover:decoration-white">
+                      {item.text}
+                    </span>
+                    <span className="text-xs font-normal opacity-80 group-hover:translate-x-0.5 transition-transform">↗</span>
+                  </a>
+                ) : (
+                  <span className="text-[10px] sm:text-[11px] font-semibold tracking-[0.22em] uppercase text-white whitespace-nowrap">
+                    {item.text}
+                  </span>
+                )}
                 <span className="ml-6 sm:ml-10 text-white/60 text-xs select-none">✦</span>
               </div>
             ))}
           </div>
           <div className="flex items-center shrink-0" aria-hidden="true">
-            {ANNOUNCEMENTS.map((text, idx) => (
+            {ANNOUNCEMENTS.map((item, idx) => (
               <div key={`ann-track2-${idx}`} className="flex items-center shrink-0 px-6 sm:px-10">
-                <span className="text-[10px] sm:text-[11px] font-semibold tracking-[0.22em] uppercase text-white whitespace-nowrap">
-                  {text}
-                </span>
+                {item.href ? (
+                  <a
+                    href={item.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 text-[10px] sm:text-[11px] font-bold tracking-[0.22em] uppercase text-[#E5D7B7] hover:text-white transition-colors whitespace-nowrap group cursor-pointer"
+                  >
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping inline-block mr-0.5" />
+                    <span className="underline underline-offset-4 decoration-[#E5D7B7]/50 group-hover:decoration-white">
+                      {item.text}
+                    </span>
+                    <span className="text-xs font-normal opacity-80 group-hover:translate-x-0.5 transition-transform">↗</span>
+                  </a>
+                ) : (
+                  <span className="text-[10px] sm:text-[11px] font-semibold tracking-[0.22em] uppercase text-white whitespace-nowrap">
+                    {item.text}
+                  </span>
+                )}
                 <span className="ml-6 sm:ml-10 text-white/60 text-xs select-none">✦</span>
               </div>
             ))}
@@ -220,10 +272,24 @@ export const Navbar: React.FC<NavbarProps> = ({
                       </button>
                     ))}
 
-                    <div className="border-t border-[#E8E2D6]/80 mt-1 pt-1 mx-2">
+                    <div className="border-t border-[#E8E2D6]/80 mt-1 pt-1.5 mx-2 space-y-1">
+                      <button
+                        onClick={() => selectCuratedEdit('under-999')}
+                        className="w-full text-left px-2 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#413C23] hover:text-black hover:bg-[#F2EFDB] transition-all cursor-pointer flex items-center justify-between rounded-xs"
+                      >
+                        <span>Under ₹999 Edit</span>
+                        <span className="text-[8.5px] px-1.5 py-0.2 bg-[#413C23] text-[#FAF8F5] rounded-xs font-bold tracking-normal">HOT</span>
+                      </button>
+                      <button
+                        onClick={() => selectCuratedEdit('gifting-edit')}
+                        className="w-full text-left px-2 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#413C23] hover:text-black hover:bg-[#F2EFDB] transition-all cursor-pointer flex items-center justify-between rounded-xs"
+                      >
+                        <span>The Gifting Edit</span>
+                        <span className="text-[9px] text-[#8F896D]">✦</span>
+                      </button>
                       <button
                         onClick={() => selectCategory('all')}
-                        className="w-full text-left px-2 py-2.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-black hover:text-neutral-600 transition-all cursor-pointer"
+                        className="w-full text-left px-2 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#8F896D] hover:text-black hover:bg-[#F2EFDB] transition-all cursor-pointer rounded-xs"
                       >
                         All Jewelry
                       </button>
@@ -525,12 +591,28 @@ export const Navbar: React.FC<NavbarProps> = ({
                           )}
                         </button>
                       ))}
-                      <button
-                        onClick={() => selectCategory('all')}
-                        className="block w-full text-left py-1.5 px-2 font-semibold text-[#8F896D] hover:text-[#413C23] transition-colors"
-                      >
-                        All Categories →
-                      </button>
+                      <div className="border-t border-[#D8D2C2]/60 pt-1.5 mt-1 space-y-1">
+                        <button
+                          onClick={() => selectCuratedEdit('under-999')}
+                          className="flex w-full items-center justify-between py-1.5 px-2 font-semibold text-[#413C23] hover:text-black transition-colors rounded-xs"
+                        >
+                          <span>The Under ₹999 Edit</span>
+                          <span className="text-[8.5px] px-1.5 py-0.2 bg-[#413C23] text-[#FAF8F5] rounded-xs font-bold">HOT</span>
+                        </button>
+                        <button
+                          onClick={() => selectCuratedEdit('gifting-edit')}
+                          className="flex w-full items-center justify-between py-1.5 px-2 font-semibold text-[#413C23] hover:text-black transition-colors rounded-xs"
+                        >
+                          <span>The Gifting Edit</span>
+                          <span className="text-[9px] text-[#8F896D]">✦</span>
+                        </button>
+                        <button
+                          onClick={() => selectCategory('all')}
+                          className="block w-full text-left py-1.5 px-2 font-semibold text-[#8F896D] hover:text-[#413C23] transition-colors"
+                        >
+                          All Categories →
+                        </button>
+                      </div>
                     </div>
                   )}
                 </div>
