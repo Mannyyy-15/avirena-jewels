@@ -34,7 +34,12 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     font-weight: 400;
-    overflow-x: hidden;
+    /* Ponytail: `clip` (not `hidden`) so body never becomes a scroll
+       container — a scroll container that never scrolls deadens every
+       `position: sticky` ancestor of it (PDP product image column).
+       Horizontal page overflow is still clipped by the root element. */
+    overflow-x: clip;
+    overflow-y: visible;
     width: 100%;
   }
 
