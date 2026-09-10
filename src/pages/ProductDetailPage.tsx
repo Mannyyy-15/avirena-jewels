@@ -1,9 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import {
-  ChevronRight,
-  ChevronLeft,
-  Plus,
-  Minus,
   Heart,
   Maximize2,
   ShieldCheck,
@@ -84,16 +80,9 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
   const [zoomPosition, setZoomPosition] = useState<{ x: number; y: number }>({ x: 50, y: 50 });
   const [isZoomed, setIsZoomed] = useState<boolean>(false);
 
-  // Desktop Thumbnail Strip Scrolling (Strict single row when > 5 images)
-  const desktopThumbnailRef = useRef<HTMLDivElement>(null);
-  const [canScrollLeft, setCanScrollLeft] = useState(false);
-  const [canScrollRight, setCanScrollRight] = useState(false);
-
-  // Dynamic sticky: left image column sticks while right scrolls, then
-  // naturally releases when both columns' bottoms align.
-  const leftColRef = useRef<HTMLDivElement>(null);
-  const rightColRef = useRef<HTMLDivElement>(null);
-  const [stickyTop, setStickyTop] = useState(24); // default 24px (1.5rem)
+  // Sticky left column: pure CSS `position: sticky` inside the CSS grid.
+  // The grid row height = right column height (taller), so the left column
+  // sticks until both columns' bottoms align, then releases naturally.
 
   // Fullscreen High-Res Lightbox State (Mobile & Desktop)
   const [isLightboxOpen, setIsLightboxOpen] = useState<boolean>(false);
@@ -270,70 +259,6 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
     }
   };
 
-  const checkThumbnailScroll = () => {
-    if (!desktopThumbnailRef.current) return;
-    const { scrollLeft, scrollWidth, clientWidth } = desktopThumbnailRef.current;
-    setCanScrollLeft(scrollLeft > 4);
-    setCanScrollRight(scrollLeft + clientWidth < scrollWidth - 4);
-  };
-
-  useEffect(() => {
-    const timer = setTimeout(checkThumbnailScroll, 120);
-    window.addEventListener('resize', checkThumbnailScroll);
-    return () => {
-      clearTimeout(timer);
-      window.removeEventListener('resize', checkThumbnailScroll);
-    };
-  }, [product.id, imagesList.length]);
-
-  // Compute dynamic sticky top so left column bottom aligns with right column
-  // bottom when scrolled. This prevents empty space below thumbnails.
-  useEffect(() => {
-    const compute = () => {
-      if (!leftColRef.current || !rightColRef.current) return;
-      const leftH = leftColRef.current.getBoundingClientRect().height;
-      const rightH = rightColRef.current.getBoundingClientRect().height;
-      const vh = window.innerHeight;
-      if (leftH >= rightH || leftH >= vh) {
-        // Left is taller or fills viewport — no sticky needed
-        setStickyTop(24);
-      } else {
-        // Stick so that the bottom of left aligns with viewport bottom,
-        // which means top = vh - leftH - some bottom padding
-        const computedTop = Math.max(24, vh - leftH - 32);
-        setStickyTop(computedTop);
-      }
-    };
-    compute();
-    window.addEventListener('resize', compute);
-    // Recompute after images load
-    const timer = setTimeout(compute, 500);
-    return () => {
-      window.removeEventListener('resize', compute);
-      clearTimeout(timer);
-    };
-  }, [product.id, imagesList.length, activeImageIndex]);
-
-  const scrollThumbnails = (direction: 'left' | 'right') => {
-    if (!desktopThumbnailRef.current) return;
-    const scrollAmount = desktopThumbnailRef.current.clientWidth * 0.7;
-    desktopThumbnailRef.current.scrollBy({
-      left: direction === 'left' ? -scrollAmount : scrollAmount,
-      behavior: 'smooth',
-    });
-    setTimeout(checkThumbnailScroll, 350);
-  };
-
-  useEffect(() => {
-    if (desktopThumbnailRef.current && imagesList.length > 5) {
-      const activeEl = desktopThumbnailRef.current.children[activeImageIndex] as HTMLElement | undefined;
-      if (activeEl) {
-        activeEl.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
-      }
-      setTimeout(checkThumbnailScroll, 350);
-    }
-  }, [activeImageIndex, imagesList.length]);
-
   const toggleAccordion = (key: 'description' | 'materials' | 'dimensions' | 'care') => {
     setOpenAccordion(openAccordion === key ? null : key);
   };
@@ -449,42 +374,11 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
       <section className="w-full px-4 sm:px-8 lg:px-12 xl:px-16 2xl:px-20 pt-1 pb-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 xl:gap-14 items-start w-full">
           
-          {/* LEFT: Hero Image — sticky on desktop, bottom-aligns with right column */}
-          <div
-            ref={leftColRef}
-            className="lg:col-span-6 xl:col-span-6 w-full lg:sticky lg:self-start"
-            style={{ '--sticky-top': `${stickyTop}px`, top: 'var(--sticky-top)' } as React.CSSProperties}
-          >
-            <div className="flex flex-col lg:flex-row xl:flex-col gap-3 w-full">
-              {/* Vertical Thumbnail Strip — small laptops only (lg, 1024-1279px) */}
-              <div className="hidden lg:flex xl:hidden flex-col gap-2.5 w-[72px] shrink-0 max-h-[calc(100vh-160px)] overflow-y-auto no-scrollbar py-0.5">
-                {imagesList.map((img, idx) => (
-                  <button
-                    key={idx}
-                    onClick={() => setActiveImageIndex(idx)}
-                    className={`w-full aspect-square rounded-xs border overflow-hidden transition-all cursor-pointer bg-[#FAF8F5] shrink-0 ${
-                      activeImageIndex === idx
-                        ? 'border-[#413C23] ring-2 ring-[#413C23]/25 shadow-xs'
-                        : 'border-[#D8D2C2] opacity-70 hover:opacity-100 hover:border-[#8F896D]'
-                    }`}
-                    aria-label={`View gallery image ${idx + 1}`}
-                  >
-                    <img
-                      src={img}
-                      alt={`${product.name} thumbnail ${idx + 1}`}
-                      referrerPolicy="no-referrer"
-                      width={160}
-                      height={160}
-                      loading="lazy"
-                      decoding="async"
-                      className="w-full h-full object-cover object-center"
-                    />
-                  </button>
-                ))}
-              </div>
-
+          {/* LEFT: Hero Image — CSS sticky, sticks while right column scrolls */}
+          <div className="lg:col-span-6 xl:col-span-6 w-full lg:sticky lg:top-6 lg:self-start">
+            <div className="flex flex-col gap-3 w-full">
               {/* Main Interactive Zoom Canvas */}
-              <div className="flex-1 space-y-3">
+              <div className="space-y-3">
                 <div
                   onClick={() => setIsLightboxOpen(true)}
                   onMouseEnter={() => setIsZoomed(true)}
@@ -549,8 +443,8 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                   </div>
                 </div>
 
-                {/* Mobile Thumbnails Strip (horizontal, below image on mobile only) */}
-                <div className="flex lg:hidden items-center gap-2.5 overflow-x-auto no-scrollbar py-1.5">
+                {/* Mobile & Small Laptop Thumbnails Strip (horizontal, below image) */}
+                <div className="flex xl:hidden items-center gap-2.5 overflow-x-auto no-scrollbar py-1.5">
                   {imagesList.map((img, idx) => (
                     <button
                       key={idx}
@@ -606,8 +500,8 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
             </div>
           </div>
 
-          {/* RIGHT: Buy Box, Narrative, Finish Selector, CTA & Accordions (Full-Width Content) */}
-          <div ref={rightColRef} className="lg:col-span-6 xl:col-span-6 space-y-5 w-full text-left">
+          {/* RIGHT: Buy Box, Narrative, Finish Selector, CTA & Accordions */}
+          <div className="lg:col-span-6 xl:col-span-6 space-y-5 w-full text-left">
             
             {/* Category Tag & Brand Serif Title */}
             <div className="space-y-1.5 w-full">
