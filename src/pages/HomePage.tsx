@@ -261,7 +261,7 @@ export const HomePage: React.FC<HomePageProps> = ({
       {/* 1. EXACT 100VH HERO SECTION */}
       <section
         ref={heroRef}
-        className="relative w-full bg-[#E7E4D5] border-b border-[#D8D2C2] min-h-[calc(100vh-6rem)] sm:min-h-[calc(100vh-5rem)] h-[calc(100vh-5rem)] max-h-[1080px] flex flex-col justify-between p-6 sm:p-10 md:p-12 lg:px-16 lg:py-10 select-none overflow-hidden"
+        className="relative w-full bg-[#E7E4D5] border-b border-[#D8D2C2] min-h-[calc(100vh-6rem)] sm:min-h-[calc(100vh-5rem)] min-h-[calc(100dvh-6rem)] sm:min-h-[calc(100dvh-5rem)] max-h-[1080px] flex flex-col justify-between p-4 pb-5 sm:p-10 md:p-12 lg:px-16 lg:py-10 select-none overflow-hidden"
       >
         {/* Top Micro-Header */}
         <div className="gsap-hero-sub w-full flex items-center justify-between z-10 text-xs">
@@ -277,7 +277,7 @@ export const HomePage: React.FC<HomePageProps> = ({
         </div>
 
         {/* Center Stage: Large Official Logo with Floating Golden Baroque Pearl Ring Centered */}
-        <div className="relative my-auto py-8 sm:py-12 md:py-16 flex items-center justify-center w-full z-10 overflow-visible px-2 sm:px-4">
+        <div className="relative my-auto py-4 sm:py-12 md:py-16 flex items-center justify-center w-full z-10 overflow-visible px-2 sm:px-4">
           {/* Official Brand Logo */}
           <div className="gsap-hero-title w-full flex items-center justify-center select-none pointer-events-none z-0">
             {/* LCP element. WebP (91KB) is served to every modern browser with the
