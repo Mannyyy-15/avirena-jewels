@@ -415,98 +415,129 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
       <section className="w-full px-4 sm:px-8 lg:px-12 xl:px-16 2xl:px-20 pt-1 pb-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 xl:gap-14 items-start w-full">
           
-          {/* LEFT: Hero Image with Interactive Magnifying Zoom Lens */}
-          <div className="lg:col-span-6 xl:col-span-6 space-y-4 w-full">
-            {/* Main Interactive Zoom Canvas (True 1:1 Square) */}
-            <div
-              onClick={() => setIsLightboxOpen(true)}
-              onMouseEnter={() => setIsZoomed(true)}
-              onMouseLeave={() => setIsZoomed(false)}
-              onMouseMove={handleMouseMove}
-              className="relative w-full aspect-square max-h-[calc(100vh-140px)] bg-[#FAF8F5] border border-[#D8D2C2] rounded-xs overflow-hidden flex items-center justify-center cursor-pointer sm:cursor-crosshair shadow-xs select-none group/canvas"
-            >
-              <img
-                src={imagesList[activeImageIndex] || imagesList[0]}
-                alt={product.name}
-                referrerPolicy="no-referrer"
-                width={1254}
-                height={1254}
-                loading="eager"
-                fetchPriority="high"
-                decoding="sync"
-                style={{
-                  transformOrigin: `${zoomPosition.x}% ${zoomPosition.y}%`,
-                }}
-                className={`w-full h-full object-contain object-center p-3 sm:p-5 transition-transform duration-100 ease-out select-none pointer-events-none ${
-                  isZoomed ? 'sm:scale-[2.4] scale-100' : 'scale-100'
-                }`}
-              />
-
-              {/* Wishlist Button */}
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onToggleWishlist(product);
-                }}
-                className="absolute top-3.5 right-3.5 z-10 p-2.5 rounded-full bg-[#FAF8F5]/90 hover:bg-[#FAF8F5] text-[#413C23] transition-all shadow-xs cursor-pointer border border-[#D8D2C2]"
-                title={isWishlisted ? 'Saved to Wishlist' : 'Save to Wishlist'}
-                aria-label="Wishlist"
-              >
-                <Heart className={`w-4 h-4 ${isWishlisted ? 'fill-[#7A0F1A] text-[#7A0F1A]' : 'stroke-[1.5]'}`} />
-              </button>
-
-              {/* Fullscreen Expand Button (Mobile & Desktop) */}
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setIsLightboxOpen(true);
-                }}
-                className="absolute top-3.5 left-3.5 z-10 p-2.5 rounded-full bg-[#FAF8F5]/90 hover:bg-[#FAF8F5] text-[#413C23] transition-all shadow-xs cursor-pointer border border-[#D8D2C2] flex items-center justify-center group-hover/canvas:scale-105"
-                title="Expand image fullscreen"
-                aria-label="Expand image fullscreen"
-              >
-                <Maximize2 className="w-4 h-4 text-[#413C23]" />
-              </button>
-
-              {/* Desktop hint: Hover to Zoom • Click to Expand */}
-              <div className="hidden sm:block absolute bottom-3 left-3.5 pointer-events-none text-[9px] uppercase tracking-widest text-[#8F896D] font-semibold bg-[#FAF8F5]/85 px-2 py-0.5 rounded-2xs border border-[#D8D2C2]/60 backdrop-blur-xs">
-                Hover to Zoom • Click to Expand
+          {/* LEFT: Hero Image with Vertical Thumbnail Strip (Desktop) */}
+          <div className="lg:col-span-6 xl:col-span-6 w-full">
+            <div className="flex flex-col lg:flex-row gap-3 w-full">
+              {/* Desktop Vertical Thumbnail Strip (Left of main image) */}
+              <div className="hidden lg:flex flex-col gap-2.5 w-[72px] xl:w-[80px] shrink-0 max-h-[calc(100vh-160px)] overflow-y-auto no-scrollbar py-0.5">
+                {imagesList.map((img, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => setActiveImageIndex(idx)}
+                    className={`w-full aspect-square rounded-xs border overflow-hidden transition-all cursor-pointer bg-[#FAF8F5] shrink-0 ${
+                      activeImageIndex === idx
+                        ? 'border-[#413C23] ring-2 ring-[#413C23]/25 shadow-xs'
+                        : 'border-[#D8D2C2] opacity-70 hover:opacity-100 hover:border-[#8F896D]'
+                    }`}
+                    aria-label={`View gallery image ${idx + 1}`}
+                  >
+                    <img
+                      src={img}
+                      alt={`${product.name} thumbnail ${idx + 1}`}
+                      referrerPolicy="no-referrer"
+                      width={160}
+                      height={160}
+                      loading="lazy"
+                      decoding="async"
+                      className="w-full h-full object-cover object-center"
+                    />
+                  </button>
+                ))}
               </div>
 
-              {/* Mobile hint: Tap to Expand */}
-              <div className="flex sm:hidden items-center gap-1.5 absolute bottom-3 left-3.5 pointer-events-none text-[9px] uppercase tracking-widest text-[#413C23] font-semibold bg-[#FAF8F5]/90 px-2.5 py-1 rounded-xs border border-[#D8D2C2] shadow-xs">
-                <Maximize2 className="w-3 h-3 text-[#8F896D]" />
-                <span>Tap to Expand</span>
-              </div>
-            </div>
-
-            {/* Mobile Thumbnails Strip (Immediately below hero canvas on mobile; desktop gallery is in Section 3 below) */}
-            <div className="flex lg:hidden items-center gap-2.5 overflow-x-auto no-scrollbar py-1.5">
-              {imagesList.map((img, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => setActiveImageIndex(idx)}
-                  className={`w-12 h-12 sm:w-16 sm:h-16 shrink-0 aspect-square rounded-xs border overflow-hidden transition-all cursor-pointer ${
-                    activeImageIndex === idx
-                      ? 'border-[#413C23] ring-2 ring-[#413C23]/25'
-                      : 'border-[#D8D2C2] opacity-80 hover:opacity-100'
-                  }`}
-                  aria-label={`View image ${idx + 1}`}
+              {/* Main Interactive Zoom Canvas */}
+              <div className="flex-1 space-y-3">
+                <div
+                  onClick={() => setIsLightboxOpen(true)}
+                  onMouseEnter={() => setIsZoomed(true)}
+                  onMouseLeave={() => setIsZoomed(false)}
+                  onMouseMove={handleMouseMove}
+                  className="relative w-full aspect-square max-h-[calc(100vh-160px)] bg-[#FAF8F5] border border-[#D8D2C2] rounded-xs overflow-hidden flex items-center justify-center cursor-pointer sm:cursor-crosshair shadow-xs select-none group/canvas"
                 >
                   <img
-                    src={img}
-                    alt={`${product.name} thumbnail ${idx + 1}`}
+                    src={imagesList[activeImageIndex] || imagesList[0]}
+                    alt={product.name}
                     referrerPolicy="no-referrer"
-                    width={160}
-                    height={160}
-                    loading="lazy"
-                    decoding="async"
-                    className="w-full h-full object-cover object-center"
+                    width={1254}
+                    height={1254}
+                    loading="eager"
+                    fetchPriority="high"
+                    decoding="sync"
+                    style={{
+                      transformOrigin: `${zoomPosition.x}% ${zoomPosition.y}%`,
+                    }}
+                    className={`w-full h-full object-contain object-center p-3 sm:p-5 transition-transform duration-100 ease-out select-none pointer-events-none ${
+                      isZoomed ? 'sm:scale-[2.4] scale-100' : 'scale-100'
+                    }`}
                   />
-                </button>
-              ))}
+
+                  {/* Wishlist Button */}
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onToggleWishlist(product);
+                    }}
+                    className="absolute top-3.5 right-3.5 z-10 p-2.5 rounded-full bg-[#FAF8F5]/90 hover:bg-[#FAF8F5] text-[#413C23] transition-all shadow-xs cursor-pointer border border-[#D8D2C2]"
+                    title={isWishlisted ? 'Saved to Wishlist' : 'Save to Wishlist'}
+                    aria-label="Wishlist"
+                  >
+                    <Heart className={`w-4 h-4 ${isWishlisted ? 'fill-[#7A0F1A] text-[#7A0F1A]' : 'stroke-[1.5]'}`} />
+                  </button>
+
+                  {/* Fullscreen Expand Button */}
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setIsLightboxOpen(true);
+                    }}
+                    className="absolute top-3.5 left-3.5 z-10 p-2.5 rounded-full bg-[#FAF8F5]/90 hover:bg-[#FAF8F5] text-[#413C23] transition-all shadow-xs cursor-pointer border border-[#D8D2C2] flex items-center justify-center group-hover/canvas:scale-105"
+                    title="Expand image fullscreen"
+                    aria-label="Expand image fullscreen"
+                  >
+                    <Maximize2 className="w-4 h-4 text-[#413C23]" />
+                  </button>
+
+                  {/* Desktop hint */}
+                  <div className="hidden sm:block absolute bottom-3 left-3.5 pointer-events-none text-[9px] uppercase tracking-widest text-[#8F896D] font-semibold bg-[#FAF8F5]/85 px-2 py-0.5 rounded-2xs border border-[#D8D2C2]/60 backdrop-blur-xs">
+                    Hover to Zoom • Click to Expand
+                  </div>
+
+                  {/* Mobile hint */}
+                  <div className="flex sm:hidden items-center gap-1.5 absolute bottom-3 left-3.5 pointer-events-none text-[9px] uppercase tracking-widest text-[#413C23] font-semibold bg-[#FAF8F5]/90 px-2.5 py-1 rounded-xs border border-[#D8D2C2] shadow-xs">
+                    <Maximize2 className="w-3 h-3 text-[#8F896D]" />
+                    <span>Tap to Expand</span>
+                  </div>
+                </div>
+
+                {/* Mobile Thumbnails Strip (horizontal, below image on mobile only) */}
+                <div className="flex lg:hidden items-center gap-2.5 overflow-x-auto no-scrollbar py-1.5">
+                  {imagesList.map((img, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => setActiveImageIndex(idx)}
+                      className={`w-12 h-12 sm:w-16 sm:h-16 shrink-0 aspect-square rounded-xs border overflow-hidden transition-all cursor-pointer ${
+                        activeImageIndex === idx
+                          ? 'border-[#413C23] ring-2 ring-[#413C23]/25'
+                          : 'border-[#D8D2C2] opacity-80 hover:opacity-100'
+                      }`}
+                      aria-label={`View image ${idx + 1}`}
+                    >
+                      <img
+                        src={img}
+                        alt={`${product.name} thumbnail ${idx + 1}`}
+                        referrerPolicy="no-referrer"
+                        width={160}
+                        height={160}
+                        loading="lazy"
+                        decoding="async"
+                        className="w-full h-full object-cover object-center"
+                      />
+                    </button>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
 
@@ -846,110 +877,12 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
         </div>
       </section>
 
-      {/* 3. BELOW THE 100VH FOLD: FULL-WIDTH THUMBNAILS GRID & EDITORIAL TABS (LEFT) + PERFECT MATCH WITH (RIGHT) */}
+      {/* 3. BELOW-FOLD: EDITORIAL TABS (LEFT) + PERFECT MATCH WITH (RIGHT) */}
       <section className="w-full px-4 sm:px-8 lg:px-12 xl:px-16 2xl:px-20 pt-8 border-t border-[#D8D2C2]">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 xl:gap-14 items-start w-full">
           
-          {/* LEFT SIDE: 5 Thumbnails spanning full column width + Editorial Tabs */}
+          {/* LEFT SIDE: Editorial Tabs */}
           <div className="lg:col-span-6 xl:col-span-6 space-y-8 w-full">
-            
-            {/* Desktop Thumbnail Gallery (Strict single row on desktop, scrollable if > 5 images) */}
-            <div className="hidden lg:block relative w-full group/gallery py-1">
-              {imagesList.length <= 5 ? (
-                /* Exactly 5 or fewer images: standard 5-column grid */
-                <div className="grid grid-cols-5 gap-3 sm:gap-4 w-full">
-                  {imagesList.map((img, idx) => (
-                    <button
-                      key={idx}
-                      onClick={() => setActiveImageIndex(idx)}
-                      className={`w-full aspect-square rounded-xs border overflow-hidden transition-all cursor-pointer bg-[#FAF8F5] ${
-                        activeImageIndex === idx
-                          ? 'border-[#413C23] ring-2 ring-[#413C23]/25 shadow-xs'
-                          : 'border-[#D8D2C2] opacity-80 hover:opacity-100 hover:border-[#8F896D]'
-                      }`}
-                      aria-label={`View gallery image ${idx + 1}`}
-                    >
-                      <img
-                        src={img}
-                        alt={`${product.name} thumbnail ${idx + 1}`}
-                        referrerPolicy="no-referrer"
-                        width={160}
-                        height={160}
-                        loading="lazy"
-                        decoding="async"
-                        className="w-full h-full object-cover object-center"
-                      />
-                    </button>
-                  ))}
-                </div>
-              ) : (
-                /* More than 5 images: single horizontal scrollable row with sleek chevrons (never wraps) */
-                <div className="relative w-full">
-                  {/* Left Scroll Chevron */}
-                  {canScrollLeft && (
-                    <button
-                      type="button"
-                      onClick={() => scrollThumbnails('left')}
-                      className="absolute -left-3.5 top-1/2 -translate-y-1/2 z-20 w-8 h-8 rounded-full bg-[#FAF8F5]/95 text-[#413C23] hover:bg-white hover:scale-105 transition-all shadow-md border border-[#D8D2C2] flex items-center justify-center cursor-pointer active:scale-95"
-                      title="Previous thumbnails"
-                      aria-label="Scroll left"
-                    >
-                      <ChevronLeft className="w-4 h-4 text-[#413C23]" />
-                    </button>
-                  )}
-
-                  {/* Horizontal Scroll Track (Strictly 1 line, exactly 5 visible at once) */}
-                  <div
-                    ref={desktopThumbnailRef}
-                    onScroll={checkThumbnailScroll}
-                    className="flex items-center gap-3 sm:gap-4 overflow-x-auto no-scrollbar scroll-smooth w-full py-0.5"
-                  >
-                    {imagesList.map((img, idx) => (
-                      <button
-                        key={idx}
-                        onClick={() => setActiveImageIndex(idx)}
-                        className={`w-[calc((100%-12px*4)/5)] sm:w-[calc((100%-16px*4)/5)] min-w-[calc((100%-12px*4)/5)] sm:min-w-[calc((100%-16px*4)/5)] shrink-0 aspect-square rounded-xs border overflow-hidden transition-all cursor-pointer bg-[#FAF8F5] ${
-                          activeImageIndex === idx
-                            ? 'border-[#413C23] ring-2 ring-[#413C23]/25 shadow-xs'
-                            : 'border-[#D8D2C2] opacity-80 hover:opacity-100 hover:border-[#8F896D]'
-                        }`}
-                        aria-label={`View gallery image ${idx + 1}`}
-                      >
-                        <img
-                          src={img}
-                          alt={`${product.name} thumbnail ${idx + 1}`}
-                          referrerPolicy="no-referrer"
-                          width={160}
-                          height={160}
-                          loading="lazy"
-                          decoding="async"
-                          className="w-full h-full object-cover object-center"
-                        />
-                      </button>
-                    ))}
-                  </div>
-
-                  {/* Right Scroll Chevron */}
-                  {canScrollRight && (
-                    <button
-                      type="button"
-                      onClick={() => scrollThumbnails('right')}
-                      className="absolute -right-3.5 top-1/2 -translate-y-1/2 z-20 w-8 h-8 rounded-full bg-[#FAF8F5]/95 text-[#413C23] hover:bg-white hover:scale-105 transition-all shadow-md border border-[#D8D2C2] flex items-center justify-center cursor-pointer active:scale-95"
-                      title="Next thumbnails"
-                      aria-label="Scroll right"
-                    >
-                      <ChevronRight className="w-4 h-4 text-[#413C23]" />
-                    </button>
-                  )}
-
-                  {/* Subtle photo counter micro-bar */}
-                  <div className="flex items-center justify-between pt-1.5 px-0.5 text-[10px] text-[#8F896D] uppercase tracking-wider font-medium">
-                    <span>{imagesList.length} photos</span>
-                    <span className="italic">Scroll or click arrows to browse all →</span>
-                  </div>
-                </div>
-              )}
-            </div>
 
             {/* Horizontal Tabs: Product Overview | Packaging | Shipping & Returns */}
             <div className="space-y-4 pt-2 w-full">
