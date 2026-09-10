@@ -166,7 +166,7 @@ function getGlobalSchema() {
       ],
       contactPoint: {
         '@type': 'ContactPoint',
-        telephone: '+91-78238-89290',
+        telephone: '+91-92252-61659',
         contactType: 'customer service',
         availableLanguage: ['English', 'Hindi'],
         areaServed: ['IN', 'US', 'GB', 'EU'],
@@ -183,7 +183,7 @@ function getGlobalSchema() {
       '@id': `${SITE_URL}/#store`,
       url: SITE_URL,
       email: 'avirenajewels@gmail.com',
-      telephone: '+91-78238-89290',
+      telephone: '+91-92252-61659',
       priceRange: '₹₹',
       currenciesAccepted: 'INR',
       paymentAccepted: 'Credit Card, Debit Card, UPI, Net Banking',
@@ -1278,7 +1278,7 @@ async function main() {
     path: 'contact',
     title: 'Contact Avirena | Support & Order Help',
     description:
-      'Contact Avirena Jewels for order help, exchanges, ring sizing and product questions. Email or WhatsApp +91 78238 89290, replies in 1-2 business days.',
+      'Contact Avirena Jewels for order help, exchanges, ring sizing and product questions. Email or WhatsApp +91 92252 61659, replies in 1-2 business days.',
     canonical: `${SITE_URL}/contact`,
     ogImage: `${SITE_URL}/logo.png`,
     ogType: 'website',
@@ -1299,7 +1299,7 @@ async function main() {
         <h2>How to reach us</h2>
         <ul>
           <li><strong>Email:</strong> <a href="mailto:avirenajewels@gmail.com">avirenajewels@gmail.com</a></li>
-          <li><strong>WhatsApp / Phone:</strong> <a href="https://wa.me/917823889290">+91 78238 89290</a></li>
+          <li><strong>WhatsApp / Phone:</strong> <a href="https://wa.me/919225261659">+91 92252 61659</a></li>
           <li><strong>Hours:</strong> Monday to Saturday, 10:00 AM - 7:00 PM IST. Closed Sunday.</li>
           <li><strong>Response time:</strong> 1-2 business days.</li>
         </ul>
@@ -1476,7 +1476,7 @@ async function main() {
 
         <h2>2. How to Initiate a Return</h2>
         <ul>
-          <li>Email our concierge team at <a href="mailto:avirenajewels@gmail.com">avirenajewels@gmail.com</a> or WhatsApp us at <a href="https://wa.me/917823889290">+91 78238 89290</a> with your Order ID (#AV-XXXXX) and reason for return/exchange.</li>
+          <li>Email our concierge team at <a href="mailto:avirenajewels@gmail.com">avirenajewels@gmail.com</a> or WhatsApp us at <a href="https://wa.me/919225261659">+91 92252 61659</a> with your Order ID (#AV-XXXXX) and reason for return/exchange.</li>
           <li>We will arrange a courier pickup from your address across India.</li>
         </ul>
 
@@ -1656,7 +1656,7 @@ async function main() {
           <li><strong>Headquarters:</strong> Mumbai, Maharashtra, India</li>
           <li><strong>Trading Model:</strong> Online-only boutique</li>
           <li><strong>Official Email:</strong> <a href="mailto:avirenajewels@gmail.com">avirenajewels@gmail.com</a></li>
-          <li><strong>Support Telephone &amp; WhatsApp:</strong> <a href="https://wa.me/917823889290">+91 78238 89290</a></li>
+          <li><strong>Support Telephone &amp; WhatsApp:</strong> <a href="https://wa.me/919225261659">+91 92252 61659</a></li>
         </ul>
 
         <h2>2. Grievance Redressal Officer</h2>

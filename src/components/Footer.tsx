@@ -254,7 +254,7 @@ export const Footer: React.FC<FooterProps> = ({
               </li>
               <li>
                 <a
-                  href="https://wa.me/917823889290"
+                  href="https://wa.me/919225261659"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-white hover:text-white hover:underline transition-all cursor-pointer text-center md:text-left block py-0.5"
@@ -339,7 +339,7 @@ export const Footer: React.FC<FooterProps> = ({
 
               {/* 3. WhatsApp Concierge */}
               <a
-                href="https://wa.me/917823889290"
+                href="https://wa.me/919225261659"
                 target="_blank"
                 rel="noreferrer"
                 aria-label="WhatsApp Concierge"

@@ -131,7 +131,7 @@ export const ContactPage: React.FC<ContactPageProps> = ({ onNavigateToShop }) =>
               </p>
             </div>
             <a
-              href="https://wa.me/917823889290?text=Hi%20Avirena,%20I%20have%20a%20question%20about%20a%20jewelry%20piece."
+              href="https://wa.me/919225261659?text=Hi%20Avirena,%20I%20have%20a%20question%20about%20a%20jewelry%20piece."
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-1.5 text-xs text-[#413C23] hover:text-[#8F896D] font-medium uppercase tracking-wider pt-2 transition-colors"

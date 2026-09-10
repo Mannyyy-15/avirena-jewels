@@ -169,7 +169,7 @@ export const SeoMeta: React.FC<SeoMetaProps> = ({
       ],
       contactPoint: {
         '@type': 'ContactPoint',
-        telephone: '+91-78238-89290',
+        telephone: '+91-92252-61659',
         contactType: 'customer service',
         availableLanguage: ['English', 'Hindi'],
         areaServed: ['IN', 'US', 'GB', 'EU'],
@@ -187,7 +187,7 @@ export const SeoMeta: React.FC<SeoMetaProps> = ({
       '@id': 'https://avirenajewels.com/#store',
       url: 'https://avirenajewels.com',
       email: 'avirenajewels@gmail.com',
-      telephone: '+91-78238-89290',
+      telephone: '+91-92252-61659',
       priceRange: '₹₹',
       currenciesAccepted: 'INR',
       paymentAccepted: 'Credit Card, Debit Card, UPI, Net Banking',

@@ -3,7 +3,7 @@
 Paste each section into **Shopify admin → Settings → Policies → Written policies**.
 These appear in the checkout footer, so they must match the site's own /policies page.
 
-Contact used throughout: **avirenajewels@gmail.com** · **+91 78238 89290**
+Contact used throughout: **avirenajewels@gmail.com** · **+91 92252 61659**
 
 > Note: claims that could not be substantiated were removed from the site's original
 > wording — no "certificate of authenticity", no "gemological inspection", no
@@ -22,7 +22,7 @@ If a piece is not right for you, we offer a **7-day return and exchange window**
 - Personalised or made-to-order items are final sale unless there is a manufacturing defect.
 
 **2. How to start a return**
-- Email avirenajewels@gmail.com or WhatsApp +91 78238 89290 with your order number and the reason for the return.
+- Email avirenajewels@gmail.com or WhatsApp +91 92252 61659 with your order number and the reason for the return.
 - We will arrange a courier pickup from your address.
 
 **3. Refunds**
@@ -97,7 +97,7 @@ These terms are governed by the laws of India. Disputes are subject to the juris
 Mumbai, Maharashtra, India
 
 - Email: avirenajewels@gmail.com
-- WhatsApp / Phone: +91 78238 89290
+- WhatsApp / Phone: +91 92252 61659
 - Website: https://avirenajewels.com
 
 We reply to enquiries within 1–2 business days, Monday to Saturday.
@@ -116,7 +116,7 @@ For order issues, please include your order number.
 **Business name:** Avirena Jewels
 **Registered address:** _[add your registered business address]_
 **Email:** avirenajewels@gmail.com
-**Phone:** +91 78238 89290
+**Phone:** +91 92252 61659
 
 **Grievance Officer** (required under the Consumer Protection (E-Commerce) Rules, 2020):
 Name: _[add name]_

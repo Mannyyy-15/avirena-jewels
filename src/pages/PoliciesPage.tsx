@@ -187,7 +187,7 @@ Email:
 avirenajewels@gmail.com
 
 Telephone & WhatsApp Support:
-+91 78238 89290
++91 92252 61659
 
 Support Hours:
 Monday – Saturday: 10:00 AM – 7:00 PM IST

@@ -2,7 +2,7 @@ import React from 'react';
 
 export const WhatsAppConcierge: React.FC = () => {
   const waUrl =
-    "https://wa.me/917823889290?text=Hi%20Avirena,%20I'd%20love%20to%20know%20more%20about%20your%20jewellery!";
+    "https://wa.me/919225261659?text=Hi%20Avirena,%20I'd%20love%20to%20know%20more%20about%20your%20jewellery!";
 
   return (
     <a
