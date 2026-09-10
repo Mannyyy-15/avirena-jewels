@@ -331,10 +331,16 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
     }
   };
 
-  // Complementary recommendations for "Perfect match with"
-  const complementaryItems = activeProducts
-    .filter((p) => p.id !== product.id)
-    .slice(0, 3);
+  // Complementary recommendations for "Perfect match with" — randomized each visit.
+  const complementaryItems = useMemo(() => {
+    const others = activeProducts.filter((p) => p.id !== product.id);
+    const shuffled = [...others];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled.slice(0, 3);
+  }, [activeProducts, product.id]);
 
   // "More from AVIRENA" — 5 other pieces from the live catalog.
   const moreProducts = useMemo(
