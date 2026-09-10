@@ -237,13 +237,13 @@ const METADATA: Record<string, {
 
 const productsCode = dump.map((p) => {
   const meta = METADATA[p.handle] || {
-    subtitle: 'Artisanal Dailywear Jewelry',
+    subtitle: 'Sculptural Dailywear Jewelry',
     category: 'earrings',
     metal: 'Gold-Tone Brass',
     priceInr: 699,
     comparePriceInr: 2199,
     details: [
-      'Handcrafted anti-tarnish dailywear jewelry',
+      'Anti-tarnish dailywear jewellery',
       'Hypoallergenic surgical steel posts',
       'Free delivery across India & 7-day easy returns',
     ],

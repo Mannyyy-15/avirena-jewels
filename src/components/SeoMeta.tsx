@@ -40,14 +40,14 @@ export const SeoMeta: React.FC<SeoMetaProps> = ({
     // Dynamic Title & Description Map
     let title = 'Avirena Jewels – Anti-Tarnish Dailywear Jewelry India';
     let description =
-      'At Avirena Jewels, our mission is to create elegant, high-quality dailywear jewellery handcrafted in durable anti-tarnish brass and natural cultured pearls.';
+      'At Avirena Jewels, our mission is to create elegant, high-quality dailywear jewellery made in durable anti-tarnish brass with cultured freshwater pearls.';
     let canonical = 'https://avirenajewels.com';
 
     if (currentPage === 'collection' || currentPage === 'shop') {
       if (curatedEdit === 'under-999') {
         title = 'Anti-Tarnish Jewellery Under ₹999 | Affordable Dailywear | AVIRENA';
         description =
-          'Shop luxury anti-tarnish dailywear jewellery under ₹999. Waterproof, nickel-free brass earrings, rings, and pendants handcrafted for sensitive skin. Free delivery across India.';
+          'Shop luxury anti-tarnish dailywear jewellery under ₹999. Waterproof, nickel-free brass earrings, rings, and pendants made for sensitive skin. Free delivery across India.';
         canonical = 'https://avirenajewels.com/collections/under-999';
       } else if (curatedEdit === 'gifting-edit') {
         title = 'Jewellery Gifts Under ₹1000 | Thoughtful Everyday Gifts | AVIRENA';
@@ -66,7 +66,7 @@ export const SeoMeta: React.FC<SeoMetaProps> = ({
       canonical = 'https://avirenajewels.com/collections';
     } else if (currentPage === 'pdp' && selectedProduct) {
       title = `${selectedProduct.name} — ${selectedProduct.metal} | AVIRENA`;
-      description = `${selectedProduct.description} Handcrafted in ${selectedProduct.metal} with anti-tarnish protective coating. Free delivery across India & 7-day easy returns.`;
+      description = `${selectedProduct.description} Made in ${selectedProduct.metal} with an anti-tarnish protective coating. Free delivery across India & 7-day easy returns.`;
       // Real product URLs are singular /product/{handle} (see scripts/prerender.ts
       // and the sitemap). shopify.ts sets id = handle for live products, so prefer
       // handle and fall back to id — the same value the router resolves by.
@@ -422,7 +422,7 @@ export const SeoMeta: React.FC<SeoMetaProps> = ({
             name: 'Are Avirena baroque pearls natural?',
             acceptedAnswer: {
               '@type': 'Answer',
-              text: 'Yes, Avirena uses hand-selected cultured freshwater baroque pearls known for their organic luster and naturally unique contours. We never use simulated resin, plastic, or synthetic pearls.',
+              text: 'Yes, Avirena uses cultured freshwater baroque pearls known for their organic luster and naturally unique contours. We never use simulated resin, plastic, or synthetic pearls.',
             },
           },
           {

@@ -646,7 +646,7 @@ async function main() {
     path: '',
     title: 'Avirena Jewels – Anti-Tarnish Dailywear Jewelry India',
     description:
-      'At Avirena Jewels, our mission is to create elegant, high-quality dailywear jewellery handcrafted in durable anti-tarnish brass and natural cultured pearls.',
+      'At Avirena Jewels, our mission is to create elegant, high-quality dailywear jewellery made in durable anti-tarnish brass with cultured freshwater pearls.',
     canonical: SITE_URL,
     ogImage: `${SITE_URL}/og-banner.jpg`,
     ogType: 'website',
@@ -720,7 +720,7 @@ async function main() {
             name: 'Are Avirena baroque pearls natural?',
             acceptedAnswer: {
               '@type': 'Answer',
-              text: 'Yes, Avirena exclusively uses hand-selected cultured freshwater baroque pearls known for their organic luster and natural unique contours.',
+              text: 'Yes, Avirena uses cultured freshwater baroque pearls known for their organic luster and natural unique contours.',
             },
           },
         ],
@@ -765,7 +765,7 @@ async function main() {
             <li><a href="/shop/necklaces">Necklaces</a> — architectural chains and pendants</li>
             <li><a href="/shop/rings">Rings</a> — sculptural bands and wave rings</li>
             <li><a href="/shop/bracelets">Bracelets</a> — open cuffs and linked wristwear</li>
-            <li><a href="/shop/brooches">Brooches</a> — artisanal sculptural pins</li>
+            <li><a href="/shop/brooches">Brooches</a> — sculptural lapel pins</li>
           </ul>
         </section>
         <section class="categories-section">
@@ -914,7 +914,7 @@ async function main() {
     { id: 'necklaces', title: 'Necklaces', desc: 'Layered architectural chains, pearl drop pendants, and statement collars.' },
     { id: 'rings', title: 'Rings', desc: 'Ergonomic statement bands, wave rings, and baroque pearl solitaire rings.' },
     { id: 'bracelets', title: 'Bracelets', desc: 'Structured cuffs, open wire bangles, and delicate linked wristwear.' },
-    { id: 'brooches', title: 'Brooches', desc: 'Artisanal sculptural lapel brooches and organic drape pins.' },
+    { id: 'brooches', title: 'Brooches', desc: 'Sculptural lapel brooches and organic drape pins.' },
   ];
 
   const noindexedCategories: string[] = [];
@@ -938,7 +938,7 @@ async function main() {
       title: `Anti-Tarnish ${cat.title} Online India | AVIRENA`,
       description: isEmpty
         ? `${cat.title} are not in stock at AVIRENA yet. Browse our current dailywear jewelry in anti-tarnish brass.`
-        : `${cat.desc} Handcrafted in premium brass with anti-tarnish protective sealing.`,
+        : `${cat.desc} Made in premium brass with an anti-tarnish protective coating.`,
       canonical: `${SITE_URL}/shop/${cat.id}`,
       ogImage: catImages[0] || `${SITE_URL}/logo.png`,
       ogType: 'website',
@@ -1099,7 +1099,7 @@ async function main() {
     path: 'collections/under-999',
     title: 'Anti-Tarnish Jewellery Under ₹999 | Affordable Dailywear | AVIRENA',
     description:
-      'Shop luxury anti-tarnish dailywear jewellery under ₹999. Waterproof, nickel-free brass earrings, rings, and pendants handcrafted for sensitive skin. Free delivery across India.',
+      'Shop luxury anti-tarnish dailywear jewellery under ₹999. Waterproof, nickel-free brass earrings, rings, and pendants made for sensitive skin. Free delivery across India.',
     canonical: `${SITE_URL}/collections/under-999`,
     ogImage: under999Images[0] || `${SITE_URL}/logo.png`,
     ogType: 'website',
@@ -1112,7 +1112,7 @@ async function main() {
         name: 'The Under ₹999 Anti-Tarnish Edit | AVIRENA',
         url: `${SITE_URL}/collections/under-999`,
         description:
-          'Curated edit of anti-tarnish dailywear jewelry under ₹999. Handcrafted in skin-safe brass with durable anti-tarnish protective sealing.',
+          'Curated edit of anti-tarnish dailywear jewelry under ₹999. Made in skin-safe brass with a durable anti-tarnish protective coating.',
       },
       {
         '@context': 'https://schema.org',
@@ -1145,7 +1145,7 @@ async function main() {
           <a href="/">Home</a> / <a href="/collections">Collections</a> / <span>The Under ₹999 Edit</span>
         </nav>
         <h1>The Under ₹999 Edit</h1>
-        <p>Lustrous anti-tarnish dailywear jewelry handcrafted in skin-safe brass &amp; durable alloys. Every piece under ₹999.</p>
+        <p>Lustrous anti-tarnish dailywear jewelry made in skin-safe brass &amp; durable alloys. Every piece under ₹999.</p>
         <section class="products-grid">
           ${renderProductCards(under999Products)}
         </section>
@@ -1229,7 +1229,7 @@ async function main() {
     path: 'about',
     title: 'About Avirena | Homegrown Dailywear Craftsmanship',
     description:
-      'Learn about Avirena Jewels, our homegrown Indian artisans, anti-tarnish metal crafting, and our dailywear jewelry philosophy.',
+      'Learn about Avirena Jewels, our Mumbai design studio, anti-tarnish metal finishing, and our dailywear jewellery philosophy.',
     canonical: `${SITE_URL}/about`,
     ogImage: `${SITE_URL}/logo.png`,
     ogType: 'website',
@@ -1532,7 +1532,7 @@ async function main() {
         <h2>1. Order Processing Timelines</h2>
         <ul>
           <li><strong>In-stock pieces:</strong> Dispatched within 1-2 business days (Monday to Saturday, excluding public holidays).</li>
-          <li><strong>Made-to-order pieces:</strong> Handcrafted and dispatched within 7-10 business days.</li>
+          <li><strong>Made-to-order pieces:</strong> Made to order and dispatched within 7-10 business days.</li>
         </ul>
 
         <h2>2. Domestic Delivery (India)</h2>
@@ -1882,7 +1882,7 @@ async function main() {
     const priceAmount = parseFloat(product.priceRange?.minVariantPrice?.amount || '0');
     const currency = product.priceRange?.minVariantPrice?.currencyCode || 'INR';
     const prodTitle = product.title;
-    const prodDesc = product.description || `Homegrown dailywear jewelry handcrafted in durable anti-tarnish brass by Avirena Jewels.`;
+    const prodDesc = product.description || `Homegrown dailywear jewelry made in durable anti-tarnish brass by Avirena Jewels.`;
 
     const productJsonLd = [
       ...getGlobalSchema(),

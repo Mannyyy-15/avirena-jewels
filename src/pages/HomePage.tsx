@@ -716,7 +716,7 @@ export const HomePage: React.FC<HomePageProps> = ({
             </div>
             <div className="py-2.5 px-4 bg-[#F2EFDB]/70 border border-[#D8D2C2] rounded-xs flex items-center justify-center sm:justify-start gap-2.5">
               <Gem className="w-4 h-4 text-[#8F896D] shrink-0" />
-              <span className="font-medium">Handcrafted Sculptural Brass</span>
+              <span className="font-medium">Sculptural Brass</span>
             </div>
             <div className="py-2.5 px-4 bg-[#F2EFDB]/70 border border-[#D8D2C2] rounded-xs flex items-center justify-center sm:justify-start gap-2.5">
               <Check className="w-4 h-4 text-[#8F896D] shrink-0" />

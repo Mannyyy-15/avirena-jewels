@@ -570,7 +570,7 @@ export function transformShopifyProduct(node: any): Product {
     price: basePriceEur,
     originalPrice: baseComparePriceEur,
     images: images.length > 0 ? images : ['/logo.png'],
-    description: node.description || 'Handcrafted dailywear jewellery sculpted for everyday wear.',
+    description: node.description || 'Dailywear jewellery sculpted for everyday wear.',
     details,
     materials: METAL_MATERIALS[metal],
     sizes: category === 'rings' ? ['US 6 (52mm)', 'US 7 (54mm)', 'US 8 (57mm)'] : undefined,

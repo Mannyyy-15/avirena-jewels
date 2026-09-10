@@ -126,7 +126,7 @@ Free delivery across India. 7-day easy returns on unworn pieces in original pack
       title: "Avirena Granulated Dome Studs | Beaded Gold-Tone Studs | AVIRENA",
       description: "Granulated caviar bead dome studs in anti-tarnish gold-tone brass. Hinged omega clip backing. Free delivery across India & 7-day returns."
     },
-    description: `Artisanal texture. Timeless dome. Intricately beaded micro-granulation covers an arched oval dome, creating an enchanting play of light and shadow reminiscent of vintage high jewellery. Engineered with a premium hinged clasp that hugs the ear with supreme security and zero pinch.
+    description: `Sculptural texture. Timeless dome. Intricately beaded micro-granulation covers an arched oval dome, creating an enchanting play of light and shadow reminiscent of vintage high jewellery. Engineered with a premium hinged clasp that hugs the ear with supreme security and zero pinch.
 
 Product highlights
 • Rich granulated beaded caviar texture across an arched dome

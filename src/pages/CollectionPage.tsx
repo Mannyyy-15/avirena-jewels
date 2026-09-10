@@ -352,7 +352,7 @@ export const CollectionPage: React.FC<CollectionPageProps> = ({
           <h1 className="font-serif-display text-5xl sm:text-7xl md:text-8xl lg:text-9xl tracking-tight text-[#FAF8F5] font-light italic leading-none drop-shadow-[0_4px_12px_rgba(0,0,0,0.15)]">{getMastheadTitle()}</h1>
           {curatedEdit === 'under-999' && (
             <p className="mt-2.5 sm:mt-3 text-xs sm:text-sm text-[#FAF8F5]/90 font-light tracking-wide">
-              Lustrous anti-tarnish dailywear jewelry handcrafted in skin-safe brass &amp; durable alloys. Every piece under ₹999.
+              Lustrous anti-tarnish dailywear jewelry made in skin-safe brass &amp; durable alloys. Every piece under ₹999.
             </p>
           )}
           {curatedEdit === 'gifting-edit' && (

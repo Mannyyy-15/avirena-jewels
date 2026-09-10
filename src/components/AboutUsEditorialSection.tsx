@@ -90,7 +90,7 @@ export const AboutUsEditorialSection: React.FC<AboutUsEditorialSectionProps> = (
               <div className="aspect-[3/4] rounded-t-none rounded-b-full overflow-hidden bg-[#F2EFDB] border border-[#D8D2C2] shadow-sm transition-transform duration-300 hover:scale-104">
                 <img
                   src={vignette2Img}
-                  alt="Avirena handcrafted gold rings and necklaces"
+                  alt="Avirena gold-tone rings and necklaces"
                   className="w-full h-full object-cover object-center"
                   loading="lazy"
                   width={300}

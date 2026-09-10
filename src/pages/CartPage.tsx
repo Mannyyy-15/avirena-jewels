@@ -70,7 +70,7 @@ export const CartPage: React.FC<CartPageProps> = ({
             Your Bag is Empty
           </h2>
           <p className="text-xs text-[#8F896D]">
-            Explore our curated handcrafted dailywear jewels in premium brass.
+            Explore our curated dailywear jewels in premium brass.
           </p>
         </div>
         <button

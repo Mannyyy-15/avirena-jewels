@@ -119,7 +119,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                 <div className="space-y-1">
                   <h3 className="font-serif-display text-2xl text-[#413C23] font-medium">Your Bag is Empty</h3>
                   <p className="text-xs text-[#8F896D]">
-                    Discover our handcrafted dailywear jewels in premium brass.
+                    Discover our dailywear jewels in premium brass.
                   </p>
                 </div>
                 <button

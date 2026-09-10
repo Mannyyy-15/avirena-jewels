@@ -535,7 +535,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
               </p>
               <p className={`w-full ${isDescriptionExpanded ? '' : 'line-clamp-4'}`}>
                 {product.description ||
-                  'Hand-sculpted jewelry with organic texture and sculptural form. Each curve tells a story of light, resilience, and individuality.'}
+                  'Jewellery with organic texture and sculptural form. Each curve tells a story of light, resilience, and individuality.'}
               </p>
               <button
                 type="button"
@@ -1001,7 +1001,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
               <div className="text-xs text-[#413C23]/85 leading-relaxed font-normal pt-1 w-full">
                 {activeTab === 'overview' && (
                   <p>
-                    Handcrafted jewelry sculpted with organic texture and inspired by architectural sun emblems. Each piece is individually cast, giving it a raw yet elegant finish that captures warm sunlight. Each curve and imperfection tells a story of light, resilience, and individuality. A statement piece born from the meeting of earth and fire — bold, imperfect, alive.
+                    Jewellery sculpted with organic texture and inspired by architectural sun emblems. Each piece has a raw yet elegant finish that captures warm sunlight. Each curve and imperfection tells a story of light, resilience, and individuality. A statement piece born from the meeting of earth and fire — bold, imperfect, alive.
                   </p>
                 )}
 
