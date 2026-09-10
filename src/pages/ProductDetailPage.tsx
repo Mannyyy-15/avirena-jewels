@@ -415,11 +415,11 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
       <section className="w-full px-4 sm:px-8 lg:px-12 xl:px-16 2xl:px-20 pt-1 pb-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 xl:gap-14 items-start w-full">
           
-          {/* LEFT: Hero Image with Vertical Thumbnail Strip (Desktop) */}
-          <div className="lg:col-span-6 xl:col-span-6 w-full">
-            <div className="flex flex-col lg:flex-row gap-3 w-full">
-              {/* Desktop Vertical Thumbnail Strip (Left of main image) */}
-              <div className="hidden lg:flex flex-col gap-2.5 w-[72px] xl:w-[80px] shrink-0 max-h-[calc(100vh-160px)] overflow-y-auto no-scrollbar py-0.5">
+          {/* LEFT: Hero Image — sticky on desktop so right buy-box scrolls independently */}
+          <div className="lg:col-span-6 xl:col-span-6 w-full lg:sticky lg:top-6 lg:self-start">
+            <div className="flex flex-col lg:flex-row xl:flex-col gap-3 w-full">
+              {/* Vertical Thumbnail Strip — small laptops only (lg, 1024-1279px) */}
+              <div className="hidden lg:flex xl:hidden flex-col gap-2.5 w-[72px] shrink-0 max-h-[calc(100vh-160px)] overflow-y-auto no-scrollbar py-0.5">
                 {imagesList.map((img, idx) => (
                   <button
                     key={idx}
@@ -523,6 +523,33 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                           : 'border-[#D8D2C2] opacity-80 hover:opacity-100'
                       }`}
                       aria-label={`View image ${idx + 1}`}
+                    >
+                      <img
+                        src={img}
+                        alt={`${product.name} thumbnail ${idx + 1}`}
+                        referrerPolicy="no-referrer"
+                        width={160}
+                        height={160}
+                        loading="lazy"
+                        decoding="async"
+                        className="w-full h-full object-cover object-center"
+                      />
+                    </button>
+                  ))}
+                </div>
+
+                {/* XL+ Horizontal Thumbnail Row (below main image, for medium/big screens) */}
+                <div className="hidden xl:grid grid-cols-5 gap-3 w-full pt-1">
+                  {imagesList.map((img, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => setActiveImageIndex(idx)}
+                      className={`w-full aspect-square rounded-xs border overflow-hidden transition-all cursor-pointer bg-[#FAF8F5] ${
+                        activeImageIndex === idx
+                          ? 'border-[#413C23] ring-2 ring-[#413C23]/25 shadow-xs'
+                          : 'border-[#D8D2C2] opacity-80 hover:opacity-100 hover:border-[#8F896D]'
+                      }`}
+                      aria-label={`View gallery image ${idx + 1}`}
                     >
                       <img
                         src={img}
