@@ -357,8 +357,10 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
       <section className="w-full px-4 sm:px-8 lg:px-12 xl:px-16 2xl:px-20 pt-1 pb-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 xl:gap-14 items-start w-full">
           
-          {/* LEFT: Hero Image — CSS sticky, sticks while right column scrolls */}
-          <div className="lg:col-span-6 xl:col-span-6 w-full lg:sticky lg:top-6 lg:self-start">
+          {/* LEFT: Hero Image — CSS sticky, sticks while right column scrolls.
+            top-[124px] clears the sticky navbar (announcement bar ~37px +
+            main bar h-20 80px ≈ 117px) so the image never slides beneath it. */}
+          <div className="lg:col-span-6 xl:col-span-6 w-full lg:sticky lg:top-[124px] lg:self-start">
             <div className="flex flex-col gap-3 w-full">
               {/* Main Image Canvas (click to open fullscreen lightbox) */}
               <div className="space-y-3">
