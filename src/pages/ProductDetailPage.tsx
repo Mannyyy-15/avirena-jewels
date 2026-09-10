@@ -9,8 +9,6 @@ import {
   CheckCircle2,
   AlertCircle,
   MapPin,
-  ChevronLeft,
-  ChevronRight,
 } from 'lucide-react';
 import { Product, Currency, Metal, CartItem } from '../types';
 import { formatPrice, getCompareAtPrice, getDiscountPercentage } from '../data/products';
@@ -330,21 +328,11 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
     .filter((p) => p.id !== product.id)
     .slice(0, 3);
 
-  // "More from AVIRENA" carousel — everything else in the live catalog.
+  // "More from AVIRENA" — 5 other pieces from the live catalog.
   const moreProducts = useMemo(
-    () => activeProducts.filter((p) => p.id !== product.id).slice(0, 8),
+    () => activeProducts.filter((p) => p.id !== product.id).slice(0, 5),
     [activeProducts, product.id]
   );
-
-  const moreRowRef = useRef<HTMLDivElement>(null);
-
-  const scrollMoreRow = (dir: 1 | -1) => {
-    const el = moreRowRef.current;
-    if (!el) return;
-    const card = el.querySelector('[data-more-card]') as HTMLElement | null;
-    const step = card ? card.offsetWidth + 16 : 280;
-    el.scrollBy({ left: dir * step, behavior: 'smooth' });
-  };
 
   return (
     <div className="w-full min-h-screen bg-[#E7E4D5] text-[#413C23] font-sans-body text-left select-none pb-24">
@@ -970,8 +958,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
         </div>
       </section>
 
-      {/* 4. MORE FROM AVIRENA — single scroll-snap row; swipe on touch,
-          arrow buttons on desktop (native scroll, no drag-state library) */}
+      {/* 4. MORE FROM AVIRENA — simple 5-piece grid, no carousel */}
       {moreProducts.length > 0 && (
         <section className="w-full px-4 sm:px-8 lg:px-12 xl:px-16 2xl:px-20 pt-12 pb-4 border-t border-[#D8D2C2]">
           <div className="w-full">
@@ -986,54 +973,18 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                 View all pieces
               </button>
             </div>
-
-            <div className="relative w-full">
-              {/* Edge fade hints so scrolled-off content is discoverable */}
-              <div className="pointer-events-none absolute inset-y-0 left-0 w-10 z-10 bg-gradient-to-r from-[#E7E4D5] to-transparent" />
-              <div className="pointer-events-none absolute inset-y-0 right-0 w-10 z-10 bg-gradient-to-l from-[#E7E4D5] to-transparent xl:w-14" />
-
-              <div
-                ref={moreRowRef}
-                role="region"
-                aria-label="More from AVIRENA, scrollable product carousel"
-                tabIndex={0}
-                className="flex gap-4 overflow-x-auto snap-x snap-mandatory scroll-smooth no-scrollbar -mx-4 sm:-mx-8 lg:-mx-12 xl:-mx-16 2xl:-mx-20 px-4 sm:px-8 lg:px-12 xl:px-16 2xl:px-20 py-1 focus:outline-none focus-visible:ring-1 focus-visible:ring-[#8F896D]/40 rounded-xs"
-              >
-                {moreProducts.map((item) => (
-                  <div
-                    key={item.id}
-                    data-more-card
-                    className="w-[64vw] max-w-[300px] sm:w-[250px] xl:w-[280px] shrink-0 snap-start"
-                  >
-                    <ProductCard
-                      product={item}
-                      currency={currency}
-                      onSelect={onSelectProduct}
-                      onQuickAdd={handleQuickAddRecommendation}
-                      isWishlisted={isWishlistedById ? isWishlistedById(item.id) : false}
-                      onToggleWishlist={onToggleWishlist}
-                    />
-                  </div>
-                ))}
-              </div>
-
-              {/* Previous / Next arrows (desktop only; touch uses native swipe) */}
-              <button
-                type="button"
-                onClick={() => scrollMoreRow(-1)}
-                aria-label="Scroll to previous products"
-                className="hidden lg:flex absolute top-[38%] -left-5 z-20 w-9 h-9 rounded-full bg-[#FAF8F5]/95 hover:bg-[#FAF8F5] text-[#413C23] border border-[#D8D2C2] shadow-md transition-all items-center justify-center cursor-pointer active:scale-95"
-              >
-                <ChevronLeft className="w-4 h-4" strokeWidth={1.75} />
-              </button>
-              <button
-                type="button"
-                onClick={() => scrollMoreRow(1)}
-                aria-label="Scroll to next products"
-                className="hidden lg:flex absolute top-[38%] -right-5 z-20 w-9 h-9 rounded-full bg-[#FAF8F5]/95 hover:bg-[#FAF8F5] text-[#413C23] border border-[#D8D2C2] shadow-md transition-all items-center justify-center cursor-pointer active:scale-95"
-              >
-                <ChevronRight className="w-4 h-4" strokeWidth={1.75} />
-              </button>
+            <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-5 gap-x-4 gap-y-8">
+              {moreProducts.map((item) => (
+                <ProductCard
+                  key={item.id}
+                  product={item}
+                  currency={currency}
+                  onSelect={onSelectProduct}
+                  onQuickAdd={handleQuickAddRecommendation}
+                  isWishlisted={isWishlistedById ? isWishlistedById(item.id) : false}
+                  onToggleWishlist={onToggleWishlist}
+                />
+              ))}
             </div>
           </div>
         </section>
