@@ -14,6 +14,7 @@ import { Product, Currency, Metal, CartItem } from '../types';
 import { formatPrice, getCompareAtPrice, getDiscountPercentage } from '../data/products';
 import { useShopify } from '../context/ShopifyContext';
 import { ProductImageLightbox } from '../components/ProductImageLightbox';
+import { ProductCard } from '../components/ProductCard';
 
 interface ProductDetailPageProps {
   product: Product;
@@ -24,6 +25,7 @@ interface ProductDetailPageProps {
   isWishlisted: boolean;
   onToggleWishlist: (product: Product) => void;
   catalogProducts?: Product[];
+  isWishlistedById?: (id: string) => boolean;
 }
 
 // Helpers to identify metal tone and group product families
@@ -56,6 +58,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
   isWishlisted,
   onToggleWishlist,
   catalogProducts = [],
+  isWishlistedById,
 }) => {
   const { isConfigured, addToShopifyCart, syncLocalCartToShopify } = useShopify();
 
@@ -324,6 +327,12 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
   const complementaryItems = activeProducts
     .filter((p) => p.id !== product.id)
     .slice(0, 3);
+
+  // "More from AVIRENA" grid — everything else in the live catalog.
+  const moreProducts = useMemo(
+    () => activeProducts.filter((p) => p.id !== product.id).slice(0, 8),
+    [activeProducts, product.id]
+  );
 
   return (
     <div className="w-full min-h-screen bg-[#E7E4D5] text-[#413C23] font-sans-body text-left select-none pb-24">
@@ -948,6 +957,38 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
 
         </div>
       </section>
+
+      {/* 4. MORE FROM AVIRENA — full product grid so shoppers can keep browsing */}
+      {moreProducts.length > 0 && (
+        <section className="w-full px-4 sm:px-8 lg:px-12 xl:px-16 2xl:px-20 pt-12 pb-4 border-t border-[#D8D2C2]">
+          <div className="w-full">
+            <div className="flex items-end justify-between gap-4 mb-6">
+              <h3 className="font-serif-display text-2xl sm:text-3xl font-light text-[#413C23] tracking-tight">
+                More from AVIRENA
+              </h3>
+              <button
+                onClick={onNavigateBack}
+                className="text-[11px] uppercase tracking-[0.18em] font-semibold text-[#8F896D] hover:text-[#413C23] transition-colors cursor-pointer underline underline-offset-4 decoration-[#D8D2C2] shrink-0"
+              >
+                View all pieces
+              </button>
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-x-4 gap-y-8">
+              {moreProducts.map((item) => (
+                <ProductCard
+                  key={item.id}
+                  product={item}
+                  currency={currency}
+                  onSelect={onSelectProduct}
+                  onQuickAdd={handleQuickAddRecommendation}
+                  isWishlisted={isWishlistedById ? isWishlistedById(item.id) : false}
+                  onToggleWishlist={onToggleWishlist}
+                />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* 8. HIGH-RES FULLSCREEN LIGHTBOX (Mobile & Desktop) */}
       <ProductImageLightbox

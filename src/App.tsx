@@ -935,6 +935,7 @@ function AppContent() {
             isWishlisted={isProductWishlisted(selectedProduct.id)}
             onToggleWishlist={handleToggleWishlist}
             catalogProducts={storeProducts}
+            isWishlistedById={isProductWishlisted}
           />
         )}
 
