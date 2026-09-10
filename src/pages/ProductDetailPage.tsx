@@ -11,6 +11,7 @@ import {
   Truck,
   RefreshCw,
   CheckCircle2,
+  AlertCircle,
   MapPin,
 } from 'lucide-react';
 import { Product, Currency, Metal, CartItem } from '../types';
@@ -97,7 +98,25 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
   // Bottom Tabs state (Product Overview, Packaging, Shipping & Returns)
   const [activeTab, setActiveTab] = useState<'overview' | 'packaging' | 'shipping'>('overview');
 
-  // Pincode Delivery Estimator State
+  /**
+   * Pincode delivery estimator.
+   *
+   * Previously this accepted ANY well-formed 6-digit number and always replied
+   * "Delivery in 2-4 Business Days" — including for PINs that do not exist and
+   * for genuinely remote regions where that estimate is untrue. A delivery
+   * promise a shopper can screenshot has to be real.
+   *
+   * Now resolves against India Post's public pincode API (no key required),
+   * confirms the PIN exists, names the district and state back to the shopper
+   * so they can see it matched the right place, and gives a delivery window
+   * banded by region rather than one flat national claim.
+   */
+  type PincodeResult = {
+    ok: boolean;
+    message: string;
+    place?: string;
+  };
+
   const [pincodeInput, setPincodeInput] = useState<string>(() => {
     try {
       return localStorage.getItem('avirena_pincode') || '';
@@ -105,27 +124,72 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
       return '';
     }
   });
-  const [pincodeStatus, setPincodeStatus] = useState<string>(() => {
-    try {
-      const saved = localStorage.getItem('avirena_pincode');
-      if (saved && /^[1-9][0-9]{5}$/.test(saved)) {
-        return `Delivery in 2–4 Business Days to ${saved} (Free Express Air Delivery)`;
-      }
-    } catch {}
-    return '';
-  });
+  const [pincodeResult, setPincodeResult] = useState<PincodeResult | null>(null);
+  const [isCheckingPincode, setIsCheckingPincode] = useState(false);
 
-  const handleCheckPincode = (e?: React.FormEvent) => {
+  /**
+   * Delivery window by destination state.
+   *
+   * Metro and well-connected states get the shorter band; the North-East,
+   * island territories and Ladakh genuinely take longer, and saying so is
+   * better than promising 2-4 days and missing it.
+   */
+  const deliveryWindowFor = (state: string): string => {
+    const s = state.toLowerCase();
+    const extended = [
+      'andaman', 'nicobar', 'lakshadweep', 'ladakh', 'arunachal', 'nagaland',
+      'manipur', 'mizoram', 'tripura', 'meghalaya', 'sikkim', 'assam',
+    ];
+    if (extended.some((x) => s.includes(x))) return '5–8 business days';
+    const metro = ['maharashtra', 'delhi', 'gujarat', 'karnataka', 'telangana', 'tamil nadu', 'haryana'];
+    if (metro.some((x) => s.includes(x))) return '2–4 business days';
+    return '3–6 business days';
+  };
+
+  const handleCheckPincode = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
     const clean = pincodeInput.trim();
+
     if (!/^[1-9][0-9]{5}$/.test(clean)) {
-      setPincodeStatus('Please enter a valid 6-digit Indian PIN code.');
+      setPincodeResult({ ok: false, message: 'Enter a valid 6-digit Indian PIN code.' });
       return;
     }
+
+    setIsCheckingPincode(true);
     try {
-      localStorage.setItem('avirena_pincode', clean);
-    } catch {}
-    setPincodeStatus(`Delivery in 2–4 Business Days to ${clean} (Free Express Air Delivery)`);
+      const res = await fetch(`https://api.postalpincode.in/pincode/${clean}`);
+      const data = await res.json();
+      const entry = Array.isArray(data) ? data[0] : null;
+      const office = entry?.PostOffice?.[0];
+
+      if (entry?.Status !== 'Success' || !office) {
+        setPincodeResult({
+          ok: false,
+          message: `We could not find PIN ${clean}. Please check and try again.`,
+        });
+        return;
+      }
+
+      const place = `${office.District}, ${office.State}`;
+      try {
+        localStorage.setItem('avirena_pincode', clean);
+      } catch {}
+
+      setPincodeResult({
+        ok: true,
+        place,
+        message: `Delivers to ${place} in ${deliveryWindowFor(office.State)}. Free shipping.`,
+      });
+    } catch {
+      // Network failure is not the shopper's problem — do not imply their PIN
+      // was wrong, and do not invent a delivery promise we could not verify.
+      setPincodeResult({
+        ok: false,
+        message: 'Could not check right now. We ship free across India — try again shortly.',
+      });
+    } finally {
+      setIsCheckingPincode(false);
+    }
   };
 
   // Live Shopify catalog only (drives 'styled with' / related pieces).
@@ -599,52 +663,52 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
               </button>
             </div>
 
-            {/* Trust & Quality Badges Grid */}
+            {/* Trust & Quality Badges.
+                Palette is the brand's own (#413C23 ink, #8F896D muted, #F2EFDB
+                surface) rather than raw black/white — the previous version used
+                pure black text and emerald accents that belonged to no part of
+                the design system. "Zero Allergy" was also an absolute claim we
+                cannot make: nickel-free materially reduces reaction risk, it
+                does not guarantee nobody reacts. */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2 w-full">
-              <div className="flex flex-col items-start p-2.5 rounded-xs bg-[#FAF8F5] border border-[#D8D2C2]/70 shadow-2xs">
-                <div className="flex items-center gap-1.5 mb-1 text-black">
-                  <ShieldCheck className="w-4 h-4 text-black shrink-0" />
-                  <span className="text-[11px] font-bold uppercase tracking-wider">Anti-Tarnish</span>
+              {[
+                { Icon: ShieldCheck, title: 'Anti-Tarnish', copy: 'Protective e-coat finish' },
+                { Icon: Sparkles, title: 'Skin Friendly', copy: 'Nickel-free, steel posts' },
+                { Icon: Truck, title: 'Free Shipping', copy: 'Tracked, across India' },
+                { Icon: RefreshCw, title: '7-Day Returns', copy: 'Easy exchange on unworn' },
+              ].map(({ Icon, title, copy }) => (
+                <div
+                  key={title}
+                  className="flex flex-col items-start p-2.5 rounded-xs bg-[#F2EFDB] border border-[#D8D2C2] transition-colors hover:border-[#8F896D]"
+                >
+                  <div className="flex items-center gap-1.5 mb-1 text-[#413C23]">
+                    <Icon className="w-4 h-4 text-[#8F896D] shrink-0" strokeWidth={1.5} />
+                    <span className="text-[11px] font-semibold uppercase tracking-[0.12em]">{title}</span>
+                  </div>
+                  <span className="text-[10px] text-[#413C23]/80 leading-tight">{copy}</span>
                 </div>
-                <span className="text-[10px] text-[#413C23]/75 leading-tight">Durable protective e-coat shield</span>
-              </div>
-
-              <div className="flex flex-col items-start p-2.5 rounded-xs bg-[#FAF8F5] border border-[#D8D2C2]/70 shadow-2xs">
-                <div className="flex items-center gap-1.5 mb-1 text-black">
-                  <Sparkles className="w-4 h-4 text-black shrink-0" />
-                  <span className="text-[11px] font-bold uppercase tracking-wider">Zero Allergy</span>
-                </div>
-                <span className="text-[10px] text-[#413C23]/75 leading-tight">Surgical steel posts, nickel free</span>
-              </div>
-
-              <div className="flex flex-col items-start p-2.5 rounded-xs bg-[#FAF8F5] border border-[#D8D2C2]/70 shadow-2xs">
-                <div className="flex items-center gap-1.5 mb-1 text-black">
-                  <Truck className="w-4 h-4 text-black shrink-0" />
-                  <span className="text-[11px] font-bold uppercase tracking-wider">Fast Dispatch</span>
-                </div>
-                <span className="text-[10px] text-[#413C23]/75 leading-tight">Ships in 24–48h across India</span>
-              </div>
-
-              <div className="flex flex-col items-start p-2.5 rounded-xs bg-[#FAF8F5] border border-[#D8D2C2]/70 shadow-2xs">
-                <div className="flex items-center gap-1.5 mb-1 text-black">
-                  <RefreshCw className="w-4 h-4 text-black shrink-0" />
-                  <span className="text-[11px] font-bold uppercase tracking-wider">7-Day Return</span>
-                </div>
-                <span className="text-[10px] text-[#413C23]/75 leading-tight">Easy exchanges & transit insured</span>
-              </div>
+              ))}
             </div>
 
-            {/* Pincode Delivery Estimator */}
-            <form onSubmit={handleCheckPincode} className="p-3.5 bg-[#FAF8F5] border border-[#D8D2C2] rounded-xs space-y-2 w-full shadow-2xs">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-black">
-                  <MapPin className="w-3.5 h-3.5 text-black" />
-                  <span>Delivery Estimate &amp; Pincode</span>
+            {/* Pincode Delivery Estimator.
+                Brand palette throughout, and the result now reflects a real
+                India Post lookup rather than echoing back whatever was typed. */}
+            <form
+              onSubmit={handleCheckPincode}
+              className="p-3.5 bg-[#F2EFDB] border border-[#D8D2C2] rounded-xs space-y-2.5 w-full"
+            >
+              <div className="flex items-center justify-between gap-2">
+                <div className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.12em] text-[#413C23]">
+                  <MapPin className="w-3.5 h-3.5 text-[#8F896D]" strokeWidth={1.5} />
+                  <span>Check Delivery</span>
                 </div>
-                <span className="text-[10px] text-emerald-800 font-bold tracking-wider uppercase bg-emerald-100/70 border border-emerald-300/60 px-2 py-0.5 rounded-2xs">
+                <span className="text-[10px] text-[#413C23] font-semibold tracking-[0.12em] uppercase bg-[#E7E4D5] border border-[#D8D2C2] px-2 py-0.5 rounded-2xs shrink-0">
                   Free Shipping
                 </span>
               </div>
+
+              {/* Placeholder is #6B6650 (5.44:1 on this surface), not the
+                  #8F896D accent — that measures 3.32:1 and fails WCAG AA. */}
               <div className="flex items-center gap-2">
                 <input
                   type="text"
@@ -652,22 +716,37 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                   pattern="[0-9]*"
                   maxLength={6}
                   value={pincodeInput}
-                  onChange={(e) => setPincodeInput(e.target.value.replace(/\D/g, ''))}
-                  placeholder="Enter 6-digit Indian PIN"
-                  aria-label="Enter 6-digit Indian Pincode"
-                  className="flex-1 px-3 py-2 text-xs bg-white border border-[#D8D2C2] rounded-xs text-black placeholder:text-neutral-400 outline-none focus:border-black font-mono"
+                  onChange={(e) => {
+                    setPincodeInput(e.target.value.replace(/\D/g, ''));
+                    if (pincodeResult) setPincodeResult(null);
+                  }}
+                  placeholder="6-digit PIN code"
+                  aria-label="Enter your 6-digit Indian PIN code"
+                  className="flex-1 min-w-0 px-3 py-2.5 text-xs bg-[#FAF8F5] border border-[#D8D2C2] rounded-xs text-[#413C23] placeholder:text-[#6B6650] outline-none focus:border-[#8F896D] focus:ring-1 focus:ring-[#8F896D]/30 transition-colors tracking-[0.08em]"
                 />
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-black text-white text-xs font-semibold uppercase tracking-wider rounded-xs hover:bg-neutral-800 transition-colors cursor-pointer shrink-0"
+                  disabled={isCheckingPincode || pincodeInput.length !== 6}
+                  className="px-5 py-2.5 bg-[#413C23] hover:bg-[#8F896D] disabled:opacity-40 disabled:cursor-not-allowed text-[#FAF8F5] text-[11px] font-semibold uppercase tracking-[0.14em] rounded-xs transition-colors cursor-pointer shrink-0"
                 >
-                  Check
+                  {isCheckingPincode ? 'Checking…' : 'Check'}
                 </button>
               </div>
-              {pincodeStatus && (
-                <div className="flex items-center gap-1.5 text-xs text-emerald-900 pt-0.5 animate-in fade-in">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-700 shrink-0" />
-                  <span className="font-medium">{pincodeStatus}</span>
+
+              {pincodeResult && (
+                <div
+                  role="status"
+                  aria-live="polite"
+                  className={`flex items-start gap-1.5 text-[11px] leading-snug animate-in fade-in ${
+                    pincodeResult.ok ? 'text-[#413C23]' : 'text-[#7A0F1A]'
+                  }`}
+                >
+                  {pincodeResult.ok ? (
+                    <CheckCircle2 className="w-3.5 h-3.5 text-[#8F896D] shrink-0 mt-px" strokeWidth={1.75} />
+                  ) : (
+                    <AlertCircle className="w-3.5 h-3.5 text-[#7A0F1A] shrink-0 mt-px" strokeWidth={1.75} />
+                  )}
+                  <span className="font-medium">{pincodeResult.message}</span>
                 </div>
               )}
             </form>
