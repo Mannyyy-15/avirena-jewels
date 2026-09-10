@@ -491,7 +491,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                           key={`${m.url}-${idx}`}
                           data-thumb
                           onClick={() => setActiveImageIndex(idx)}
-                          className={`relative w-12 h-12 sm:w-16 sm:h-16 lg:w-20 lg:h-20 shrink-0 aspect-square rounded-xs border overflow-hidden transition-all cursor-pointer bg-white flex items-center justify-center ${
+                          className={`flex-[0_0_calc((100%-40px)/5)] aspect-square shrink-0 rounded-xs border overflow-hidden transition-all cursor-pointer bg-white flex items-center justify-center ${
                             activeImageIndex === idx
                               ? 'border-[#413C23] ring-2 ring-[#413C23]/25'
                               : 'border-[#D8D2C2] opacity-80 hover:opacity-100 hover:border-[#8F896D]'
