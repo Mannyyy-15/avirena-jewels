@@ -14,6 +14,14 @@ export interface ProductVariant {
   sku?: string;
 }
 
+export interface ProductMedia {
+  contentType: 'image' | 'video';
+  /** Image URL, or the mp4 source URL for video items */
+  url: string;
+  /** Preview/poster frame, present on video items */
+  poster?: string;
+}
+
 export interface Product {
   id: string;
   shopifyId?: string;
@@ -29,6 +37,8 @@ export interface Product {
   /** Only set when backed by a real review system. Never hardcode. */
   reviewsCount?: number;
   images: string[];
+  /** Ordered Shopify gallery (images + videos). Undefined for mock products. */
+  media?: ProductMedia[];
   description: string;
   details: string[];
   materials: string;

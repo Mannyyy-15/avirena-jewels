@@ -9,8 +9,11 @@ import {
   CheckCircle2,
   AlertCircle,
   MapPin,
+  Play,
+  ChevronLeft,
+  ChevronRight,
 } from 'lucide-react';
-import { Product, Currency, Metal, CartItem } from '../types';
+import { Product, Currency, Metal, CartItem, ProductMedia } from '../types';
 import { formatPrice, getCompareAtPrice, getDiscountPercentage } from '../data/products';
 import { useShopify } from '../context/ShopifyContext';
 import { ProductImageLightbox } from '../components/ProductImageLightbox';
@@ -193,6 +196,12 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
   const imagesList =
     product.images && product.images.length > 0 ? product.images : ['/logo.png'];
 
+  // Full gallery in Shopify media order (images + videos); mock products have no
+  // media, so we fall back to their plain image list.
+  const mediaList: ProductMedia[] =
+    (product.media && product.media.length > 0 ? product.media : imagesList.map((u) => ({ contentType: 'image', url: u })));
+  const activeMedia = mediaList[activeImageIndex] || mediaList[0];
+
   // Discover sibling variant pieces in the live catalog (e.g. Solene Crystal Hoops Gold & Silver)
   const { goldVariant, silverVariant, isGoldAvailable, isSilverAvailable } = useMemo(() => {
     const familyKey = getProductFamilyKey(product);
@@ -334,6 +343,16 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
     [activeProducts, product.id]
   );
 
+  const thumbRowRef = useRef<HTMLDivElement>(null);
+
+  const scrollThumbs = (dir: 1 | -1) => {
+    const el = thumbRowRef.current;
+    if (!el) return;
+    const thumb = el.querySelector('[data-thumb]') as HTMLElement | null;
+    const step = thumb ? thumb.offsetWidth + 10 : 72;
+    el.scrollBy({ left: dir * step, behavior: 'smooth' });
+  };
+
   return (
     <div className="w-full min-h-screen bg-[#E7E4D5] text-[#413C23] font-sans-body text-left select-none pb-24">
       
@@ -371,23 +390,47 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
             main bar h-20 80px ≈ 117px) so the image never slides beneath it. */}
           <div className="lg:col-span-6 xl:col-span-6 w-full lg:sticky lg:top-[124px] lg:self-start">
             <div className="flex flex-col gap-3 w-full">
-              {/* Main Image Canvas (click to open fullscreen lightbox) */}
+              {/* Main product canvas: image, or video player when the active
+                media item is a video. bg-white so images that ship with a baked
+                white background blend seamlessly instead of looking like a
+                border; no padding — artwork fills the whole square. */}
               <div className="space-y-3">
                 <div
-                  onClick={() => setIsLightboxOpen(true)}
-                  className="relative w-full aspect-square max-h-[calc(100vh-160px)] bg-[#FAF8F5] border border-[#D8D2C2] rounded-xs overflow-hidden flex items-center justify-center cursor-pointer shadow-xs select-none group/canvas"
+                  onClick={() => {
+                    if (activeMedia.contentType !== 'video') setIsLightboxOpen(true);
+                  }}
+                  className={`relative w-full aspect-square max-h-[calc(100vh-160px)] bg-white border border-[#D8D2C2] rounded-xs overflow-hidden flex items-center justify-center shadow-xs select-none group/canvas ${
+                    activeMedia.contentType === 'video' ? '' : 'cursor-pointer'
+                  }`}
                 >
-                  <img
-                    src={imagesList[activeImageIndex] || imagesList[0]}
-                    alt={product.name}
-                    referrerPolicy="no-referrer"
-                    width={1254}
-                    height={1254}
-                    loading="eager"
-                    fetchPriority="high"
-                    decoding="sync"
-                    className="w-full h-full object-contain object-center p-3 sm:p-5 select-none pointer-events-none"
-                  />
+                  {(() => {
+                    if (activeMedia.contentType === 'video') {
+                      return (
+                        <video
+                          key={activeMedia.url}
+                          src={activeMedia.url}
+                          poster={activeMedia.poster}
+                          controls
+                          playsInline
+                          preload="metadata"
+                          className="w-full h-full object-contain object-center bg-white"
+                        />
+                      );
+                    }
+                    return (
+                      <img
+                        src={activeMedia.url || imagesList[0]}
+                        alt={product.name}
+                        referrerPolicy="no-referrer"
+                        width={1254}
+                        height={1254}
+                        loading="eager"
+                        fetchPriority="high"
+                        decoding="sync"
+                        className="w-full h-full object-contain object-center select-none pointer-events-none"
+                      />
+                    );
+                  })()}
 
                   {/* Wishlist Button */}
                   <button
@@ -403,85 +446,102 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                     <Heart className={`w-4 h-4 ${isWishlisted ? 'fill-[#7A0F1A] text-[#7A0F1A]' : 'stroke-[1.5]'}`} />
                   </button>
 
-                  {/* Fullscreen Expand Button */}
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setIsLightboxOpen(true);
-                    }}
-                    className="absolute top-3.5 left-3.5 z-10 p-2.5 rounded-full bg-[#FAF8F5]/90 hover:bg-[#FAF8F5] text-[#413C23] transition-all shadow-xs cursor-pointer border border-[#D8D2C2] flex items-center justify-center group-hover/canvas:scale-105"
-                    title="Expand image fullscreen"
-                    aria-label="Expand image fullscreen"
-                  >
-                    <Maximize2 className="w-4 h-4 text-[#413C23]" />
-                  </button>
+                  {/* Fullscreen expand only makes sense for stills */}
+                  {activeMedia.contentType !== 'video' && (
+                    <>
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setIsLightboxOpen(true);
+                        }}
+                        className="absolute top-3.5 left-3.5 z-10 p-2.5 rounded-full bg-[#FAF8F5]/90 hover:bg-[#FAF8F5] text-[#413C23] transition-all shadow-xs cursor-pointer border border-[#D8D2C2] flex items-center justify-center group-hover/canvas:scale-105"
+                        title="Expand image fullscreen"
+                        aria-label="Expand image fullscreen"
+                      >
+                        <Maximize2 className="w-4 h-4 text-[#413C23]" />
+                      </button>
 
-                  {/* Desktop hint */}
-                  <div className="hidden sm:block absolute bottom-3 left-3.5 pointer-events-none text-[9px] uppercase tracking-widest text-[#8F896D] font-semibold bg-[#FAF8F5]/85 px-2 py-0.5 rounded-2xs border border-[#D8D2C2]/60 backdrop-blur-xs">
-                    Click to Expand
-                  </div>
+                      {/* Desktop hint */}
+                      <div className="hidden sm:block absolute bottom-3 left-3.5 pointer-events-none text-[9px] uppercase tracking-widest text-[#8F896D] font-semibold bg-[#FAF8F5]/85 px-2 py-0.5 rounded-2xs border border-[#D8D2C2]/60 backdrop-blur-xs">
+                        Click to Expand
+                      </div>
 
-                  {/* Mobile hint */}
-                  <div className="flex sm:hidden items-center gap-1.5 absolute bottom-3 left-3.5 pointer-events-none text-[9px] uppercase tracking-widest text-[#413C23] font-semibold bg-[#FAF8F5]/90 px-2.5 py-1 rounded-xs border border-[#D8D2C2] shadow-xs">
-                    <Maximize2 className="w-3 h-3 text-[#8F896D]" />
-                    <span>Tap to Expand</span>
-                  </div>
+                      {/* Mobile hint */}
+                      <div className="flex sm:hidden items-center gap-1.5 absolute bottom-3 left-3.5 pointer-events-none text-[9px] uppercase tracking-widest text-[#413C23] font-semibold bg-[#FAF8F5]/90 px-2.5 py-1 rounded-xs border border-[#D8D2C2] shadow-xs">
+                        <Maximize2 className="w-3 h-3 text-[#8F896D]" />
+                        <span>Tap to Expand</span>
+                      </div>
+                    </>
+                  )}
                 </div>
 
-                {/* Mobile & Small Laptop Thumbnails Strip (horizontal, below image) */}
-                <div className="flex xl:hidden items-center gap-2.5 overflow-x-auto no-scrollbar py-1.5">
-                  {imagesList.map((img, idx) => (
-                    <button
-                      key={idx}
-                      onClick={() => setActiveImageIndex(idx)}
-                      className={`w-12 h-12 sm:w-16 sm:h-16 shrink-0 aspect-square rounded-xs border overflow-hidden transition-all cursor-pointer ${
-                        activeImageIndex === idx
-                          ? 'border-[#413C23] ring-2 ring-[#413C23]/25'
-                          : 'border-[#D8D2C2] opacity-80 hover:opacity-100'
-                      }`}
-                      aria-label={`View image ${idx + 1}`}
+                {/* Thumbnail strip — one row only on every screen; slides when
+                    there are more than five items (native swipe + arrows). */}
+                {mediaList.length > 1 && (
+                  <div className="relative">
+                    <div
+                      ref={thumbRowRef}
+                      className="flex items-center gap-2.5 overflow-x-auto no-scrollbar py-1.5"
                     >
-                      <img
-                        src={img}
-                        alt={`${product.name} thumbnail ${idx + 1}`}
-                        referrerPolicy="no-referrer"
-                        width={160}
-                        height={160}
-                        loading="lazy"
-                        decoding="async"
-                        className="w-full h-full object-cover object-center"
-                      />
-                    </button>
-                  ))}
-                </div>
+                      {mediaList.map((m, idx) => (
+                        <button
+                          key={`${m.url}-${idx}`}
+                          data-thumb
+                          onClick={() => setActiveImageIndex(idx)}
+                          className={`relative w-14 h-14 sm:w-16 sm:h-16 shrink-0 aspect-square rounded-xs border overflow-hidden transition-all cursor-pointer bg-white flex items-center justify-center ${
+                            activeImageIndex === idx
+                              ? 'border-[#413C23] ring-2 ring-[#413C23]/25'
+                              : 'border-[#D8D2C2] opacity-80 hover:opacity-100 hover:border-[#8F896D]'
+                          }`}
+                          aria-label={
+                            m.contentType === 'video'
+                              ? `Play video ${idx + 1}`
+                              : `View image ${idx + 1}`
+                          }
+                        >
+                          <img
+                            src={m.contentType === 'video' ? m.poster || m.url : m.url}
+                            alt={`${product.name} thumbnail ${idx + 1}`}
+                            referrerPolicy="no-referrer"
+                            width={160}
+                            height={160}
+                            loading="lazy"
+                            decoding="async"
+                            className="w-full h-full object-cover object-center"
+                          />
+                          {m.contentType === 'video' && (
+                            <span className="absolute inset-0 flex items-center justify-center bg-black/25 pointer-events-none">
+                              <Play className="w-5 h-5 text-white fill-white" strokeWidth={1.5} />
+                            </span>
+                          )}
+                        </button>
+                      ))}
+                    </div>
 
-                {/* XL+ Horizontal Thumbnail Row (below main image, for medium/big screens) */}
-                <div className="hidden xl:grid grid-cols-5 gap-3 w-full pt-1">
-                  {imagesList.map((img, idx) => (
-                    <button
-                      key={idx}
-                      onClick={() => setActiveImageIndex(idx)}
-                      className={`w-full aspect-square rounded-xs border overflow-hidden transition-all cursor-pointer bg-[#FAF8F5] ${
-                        activeImageIndex === idx
-                          ? 'border-[#413C23] ring-2 ring-[#413C23]/25 shadow-xs'
-                          : 'border-[#D8D2C2] opacity-80 hover:opacity-100 hover:border-[#8F896D]'
-                      }`}
-                      aria-label={`View gallery image ${idx + 1}`}
-                    >
-                      <img
-                        src={img}
-                        alt={`${product.name} thumbnail ${idx + 1}`}
-                        referrerPolicy="no-referrer"
-                        width={160}
-                        height={160}
-                        loading="lazy"
-                        decoding="async"
-                        className="w-full h-full object-cover object-center"
-                      />
-                    </button>
-                  ))}
-                </div>
+                    {/* Slide arrows only appear when the strip actually overflows */}
+                    {mediaList.length > 5 && (
+                      <>
+                        <button
+                          type="button"
+                          onClick={() => scrollThumbs(-1)}
+                          aria-label="Scroll thumbnails left"
+                          className="absolute left-0 top-1/2 -translate-y-1/2 z-10 h-7 w-7 rounded-full bg-[#FAF8F5]/95 hover:bg-[#FAF8F5] text-[#413C23] border border-[#D8D2C2] shadow-md transition-all flex items-center justify-center cursor-pointer active:scale-95"
+                        >
+                          <ChevronLeft className="w-3.5 h-3.5" strokeWidth={1.75} />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => scrollThumbs(1)}
+                          aria-label="Scroll thumbnails right"
+                          className="absolute right-0 top-1/2 -translate-y-1/2 z-10 h-7 w-7 rounded-full bg-[#FAF8F5]/95 hover:bg-[#FAF8F5] text-[#413C23] border border-[#D8D2C2] shadow-md transition-all flex items-center justify-center cursor-pointer active:scale-95"
+                        >
+                          <ChevronRight className="w-3.5 h-3.5" strokeWidth={1.75} />
+                        </button>
+                      </>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -995,7 +1055,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
         isOpen={isLightboxOpen}
         onClose={() => setIsLightboxOpen(false)}
         images={imagesList}
-        initialIndex={activeImageIndex}
+        initialIndex={Math.max(0, imagesList.indexOf(activeMedia.url))}
         productName={product.name}
       />
 

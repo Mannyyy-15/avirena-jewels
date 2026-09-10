@@ -1,4 +1,4 @@
-import { Product, ProductVariant, Category, Metal, ShopifyCart } from '../types';
+import { Product, ProductVariant, Category, Metal, ShopifyCart, ProductMedia } from '../types';
 import { getCompareAtPrice } from '../data/products';
 
 const SHOPIFY_STORE_DOMAIN = import.meta.env.VITE_SHOPIFY_STORE_DOMAIN || '';
@@ -93,6 +93,21 @@ export const GET_PRODUCTS_QUERY = `
               }
             }
           }
+          media(first: 20) {
+            edges {
+              node {
+                mediaContentType
+                alt
+                ... on Video {
+                  sources { url mimeType }
+                  previewImage { url }
+                }
+                ... on MediaImage {
+                  image { url }
+                }
+              }
+            }
+          }
           variants(first: 20) {
             edges {
               node {
@@ -144,6 +159,21 @@ export const GET_PRODUCT_BY_HANDLE_QUERY = `
           node {
             url
             altText
+          }
+        }
+      }
+      media(first: 20) {
+        edges {
+          node {
+            mediaContentType
+            alt
+            ... on Video {
+              sources { url mimeType }
+              previewImage { url }
+            }
+            ... on MediaImage {
+              image { url }
+            }
           }
         }
       }
@@ -432,6 +462,22 @@ export const GET_CART_QUERY = `
 
 export function transformShopifyProduct(node: any): Product {
   const images = (node.images?.edges || []).map((edge: any) => edge.node.url);
+
+  // Ordered Shopify gallery (images + videos) in the same order the shop admin
+  // arranged them. Falls back to undefined so the PDP can use plain images.
+  const media: ProductMedia[] = (node.media?.edges || [])
+    .map((edge: any) => {
+      const m = edge.node;
+      if (m.mediaContentType === 'VIDEO') {
+        const src = m.sources?.[0]?.url;
+        return src
+          ? { contentType: 'video' as const, url: src, poster: m.previewImage?.url }
+          : null;
+      }
+      const imageUrl = m.image?.url;
+      return imageUrl ? { contentType: 'image' as const, url: imageUrl } : null;
+    })
+    .filter((m: ProductMedia | null): m is ProductMedia => m !== null);
   const rawAmount = parseFloat(node.priceRange?.minVariantPrice?.amount || '0');
   const currencyCode = (node.priceRange?.minVariantPrice?.currencyCode || 'INR').toUpperCase();
   
@@ -570,6 +616,7 @@ export function transformShopifyProduct(node: any): Product {
     price: basePriceEur,
     originalPrice: baseComparePriceEur,
     images: images.length > 0 ? images : ['/logo.png'],
+    media: media.length > 0 ? media : undefined,
     description: node.description || 'Dailywear jewellery sculpted for everyday wear.',
     details,
     materials: METAL_MATERIALS[metal],
