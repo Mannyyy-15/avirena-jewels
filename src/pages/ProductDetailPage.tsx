@@ -9,7 +9,6 @@ import {
   CheckCircle2,
   AlertCircle,
   MapPin,
-  Play,
   ChevronLeft,
   ChevronRight,
 } from 'lucide-react';
@@ -513,8 +512,8 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                             className="w-full h-full object-cover object-center"
                           />
                           {m.contentType === 'video' && (
-                            <span className="absolute inset-0 flex items-center justify-center bg-black/25 pointer-events-none">
-                              <Play className="w-5 h-5 text-white fill-white" strokeWidth={1.5} />
+                            <span className="absolute top-1.5 left-1.5 bg-[#413C23]/90 text-[#FAF8F5] text-[9px] tracking-[0.14em] uppercase font-semibold px-1.5 py-0.5 rounded-xs shadow-xs pointer-events-none">
+                              Video
                             </span>
                           )}
                         </button>
