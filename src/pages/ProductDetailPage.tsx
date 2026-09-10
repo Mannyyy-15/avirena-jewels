@@ -89,6 +89,12 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
 
+  // Dynamic sticky: left image column sticks while right scrolls, then
+  // naturally releases when both columns' bottoms align.
+  const leftColRef = useRef<HTMLDivElement>(null);
+  const rightColRef = useRef<HTMLDivElement>(null);
+  const [stickyTop, setStickyTop] = useState(24); // default 24px (1.5rem)
+
   // Fullscreen High-Res Lightbox State (Mobile & Desktop)
   const [isLightboxOpen, setIsLightboxOpen] = useState<boolean>(false);
 
@@ -280,6 +286,34 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
     };
   }, [product.id, imagesList.length]);
 
+  // Compute dynamic sticky top so left column bottom aligns with right column
+  // bottom when scrolled. This prevents empty space below thumbnails.
+  useEffect(() => {
+    const compute = () => {
+      if (!leftColRef.current || !rightColRef.current) return;
+      const leftH = leftColRef.current.getBoundingClientRect().height;
+      const rightH = rightColRef.current.getBoundingClientRect().height;
+      const vh = window.innerHeight;
+      if (leftH >= rightH || leftH >= vh) {
+        // Left is taller or fills viewport — no sticky needed
+        setStickyTop(24);
+      } else {
+        // Stick so that the bottom of left aligns with viewport bottom,
+        // which means top = vh - leftH - some bottom padding
+        const computedTop = Math.max(24, vh - leftH - 32);
+        setStickyTop(computedTop);
+      }
+    };
+    compute();
+    window.addEventListener('resize', compute);
+    // Recompute after images load
+    const timer = setTimeout(compute, 500);
+    return () => {
+      window.removeEventListener('resize', compute);
+      clearTimeout(timer);
+    };
+  }, [product.id, imagesList.length, activeImageIndex]);
+
   const scrollThumbnails = (direction: 'left' | 'right') => {
     if (!desktopThumbnailRef.current) return;
     const scrollAmount = desktopThumbnailRef.current.clientWidth * 0.7;
@@ -415,8 +449,12 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
       <section className="w-full px-4 sm:px-8 lg:px-12 xl:px-16 2xl:px-20 pt-1 pb-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 xl:gap-14 items-start w-full">
           
-          {/* LEFT: Hero Image — sticky on desktop so right buy-box scrolls independently */}
-          <div className="lg:col-span-6 xl:col-span-6 w-full lg:sticky lg:top-6 lg:self-start">
+          {/* LEFT: Hero Image — sticky on desktop, bottom-aligns with right column */}
+          <div
+            ref={leftColRef}
+            className="lg:col-span-6 xl:col-span-6 w-full lg:sticky lg:self-start"
+            style={{ '--sticky-top': `${stickyTop}px`, top: 'var(--sticky-top)' } as React.CSSProperties}
+          >
             <div className="flex flex-col lg:flex-row xl:flex-col gap-3 w-full">
               {/* Vertical Thumbnail Strip — small laptops only (lg, 1024-1279px) */}
               <div className="hidden lg:flex xl:hidden flex-col gap-2.5 w-[72px] shrink-0 max-h-[calc(100vh-160px)] overflow-y-auto no-scrollbar py-0.5">
@@ -569,7 +607,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
           </div>
 
           {/* RIGHT: Buy Box, Narrative, Finish Selector, CTA & Accordions (Full-Width Content) */}
-          <div className="lg:col-span-6 xl:col-span-6 space-y-5 w-full text-left">
+          <div ref={rightColRef} className="lg:col-span-6 xl:col-span-6 space-y-5 w-full text-left">
             
             {/* Category Tag & Brand Serif Title */}
             <div className="space-y-1.5 w-full">
