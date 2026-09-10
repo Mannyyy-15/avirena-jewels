@@ -76,14 +76,6 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
   // Bag stay above the fold; this toggles the full text.
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
 
-  // Interactive Magnifying Zoom Lens State
-  const [zoomPosition, setZoomPosition] = useState<{ x: number; y: number }>({ x: 50, y: 50 });
-  const [isZoomed, setIsZoomed] = useState<boolean>(false);
-
-  // Sticky left column: pure CSS `position: sticky` inside the CSS grid.
-  // The grid row height = right column height (taller), so the left column
-  // sticks until both columns' bottoms align, then releases naturally.
-
   // Fullscreen High-Res Lightbox State (Mobile & Desktop)
   const [isLightboxOpen, setIsLightboxOpen] = useState<boolean>(false);
 
@@ -220,13 +212,11 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
     if (isVariantSwitchRef.current) {
       isVariantSwitchRef.current = false;
       setActiveImageIndex(0);
-      setIsZoomed(false);
       setIsLightboxOpen(false);
     } else {
       setActiveImageIndex(0);
       setOpenAccordion(null);
       setActiveTab('overview');
-      setIsZoomed(false);
       setIsLightboxOpen(false);
       setIsDescriptionExpanded(false);
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -261,13 +251,6 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
 
   const toggleAccordion = (key: 'description' | 'materials' | 'dimensions' | 'care') => {
     setOpenAccordion(openAccordion === key ? null : key);
-  };
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = Math.max(0, Math.min(100, ((e.clientX - rect.left) / rect.width) * 100));
-    const y = Math.max(0, Math.min(100, ((e.clientY - rect.top) / rect.height) * 100));
-    setZoomPosition({ x, y });
   };
 
   const handleAddToCart = async () => {
@@ -377,14 +360,11 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
           {/* LEFT: Hero Image — CSS sticky, sticks while right column scrolls */}
           <div className="lg:col-span-6 xl:col-span-6 w-full lg:sticky lg:top-6 lg:self-start">
             <div className="flex flex-col gap-3 w-full">
-              {/* Main Interactive Zoom Canvas */}
+              {/* Main Image Canvas (click to open fullscreen lightbox) */}
               <div className="space-y-3">
                 <div
                   onClick={() => setIsLightboxOpen(true)}
-                  onMouseEnter={() => setIsZoomed(true)}
-                  onMouseLeave={() => setIsZoomed(false)}
-                  onMouseMove={handleMouseMove}
-                  className="relative w-full aspect-square max-h-[calc(100vh-160px)] bg-[#FAF8F5] border border-[#D8D2C2] rounded-xs overflow-hidden flex items-center justify-center cursor-pointer sm:cursor-crosshair shadow-xs select-none group/canvas"
+                  className="relative w-full aspect-square max-h-[calc(100vh-160px)] bg-[#FAF8F5] border border-[#D8D2C2] rounded-xs overflow-hidden flex items-center justify-center cursor-pointer shadow-xs select-none group/canvas"
                 >
                   <img
                     src={imagesList[activeImageIndex] || imagesList[0]}
@@ -395,12 +375,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                     loading="eager"
                     fetchPriority="high"
                     decoding="sync"
-                    style={{
-                      transformOrigin: `${zoomPosition.x}% ${zoomPosition.y}%`,
-                    }}
-                    className={`w-full h-full object-contain object-center p-3 sm:p-5 transition-transform duration-100 ease-out select-none pointer-events-none ${
-                      isZoomed ? 'sm:scale-[2.4] scale-100' : 'scale-100'
-                    }`}
+                    className="w-full h-full object-contain object-center p-3 sm:p-5 select-none pointer-events-none"
                   />
 
                   {/* Wishlist Button */}
@@ -433,7 +408,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
 
                   {/* Desktop hint */}
                   <div className="hidden sm:block absolute bottom-3 left-3.5 pointer-events-none text-[9px] uppercase tracking-widest text-[#8F896D] font-semibold bg-[#FAF8F5]/85 px-2 py-0.5 rounded-2xs border border-[#D8D2C2]/60 backdrop-blur-xs">
-                    Hover to Zoom • Click to Expand
+                    Click to Expand
                   </div>
 
                   {/* Mobile hint */}
