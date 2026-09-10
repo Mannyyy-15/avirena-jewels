@@ -636,8 +636,11 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                 pure black text and emerald accents that belonged to no part of
                 the design system. "Zero Allergy" was also an absolute claim we
                 cannot make: nickel-free materially reduces reaction risk, it
-                does not guarantee nobody reacts. */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2 w-full">
+                does not guarantee nobody reacts.
+                2x2 grid keeps cards roomy in the half-width PDP column on every
+                device; 4-across only kicks in on very wide screens where the
+                column is actually wide enough (>=1536px viewport). */}
+            <div className="grid grid-cols-2 2xl:grid-cols-4 gap-2.5 pt-2 w-full">
               {[
                 { Icon: ShieldCheck, title: 'Anti-Tarnish', copy: 'Protective e-coat finish' },
                 { Icon: Sparkles, title: 'Skin Friendly', copy: 'Nickel-free, steel posts' },
@@ -646,11 +649,11 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
               ].map(({ Icon, title, copy }) => (
                 <div
                   key={title}
-                  className="flex flex-col items-start p-2.5 rounded-xs bg-[#F2EFDB] border border-[#D8D2C2] transition-colors hover:border-[#8F896D]"
+                  className="flex flex-col items-start p-3 rounded-xs bg-[#E7E4D5] border border-[#D8D2C2] transition-colors hover:border-[#8F896D]"
                 >
-                  <div className="flex items-center gap-1.5 mb-1 text-[#413C23]">
+                  <div className="flex items-center gap-1.5 mb-1.5 text-[#413C23]">
                     <Icon className="w-4 h-4 text-[#8F896D] shrink-0" strokeWidth={1.5} />
-                    <span className="text-[11px] font-semibold uppercase tracking-[0.12em]">{title}</span>
+                    <span className="text-[11px] font-semibold uppercase tracking-[0.12em] whitespace-nowrap">{title}</span>
                   </div>
                   <span className="text-[10px] text-[#413C23]/80 leading-tight">{copy}</span>
                 </div>
@@ -662,14 +665,14 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                 India Post lookup rather than echoing back whatever was typed. */}
             <form
               onSubmit={handleCheckPincode}
-              className="p-3.5 bg-[#F2EFDB] border border-[#D8D2C2] rounded-xs space-y-2.5 w-full"
+              className="p-3.5 bg-[#E7E4D5] border border-[#D8D2C2] rounded-xs space-y-2.5 w-full"
             >
               <div className="flex items-center justify-between gap-2">
                 <div className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.12em] text-[#413C23]">
                   <MapPin className="w-3.5 h-3.5 text-[#8F896D]" strokeWidth={1.5} />
                   <span>Check Delivery</span>
                 </div>
-                <span className="text-[10px] text-[#413C23] font-semibold tracking-[0.12em] uppercase bg-[#E7E4D5] border border-[#D8D2C2] px-2 py-0.5 rounded-2xs shrink-0">
+                <span className="text-[10px] text-[#413C23] font-semibold tracking-[0.12em] uppercase bg-[#F2EFDB] border border-[#D8D2C2] px-2 py-0.5 rounded-2xs shrink-0">
                   Free Shipping
                 </span>
               </div>
