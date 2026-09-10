@@ -48,7 +48,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       className="group cursor-pointer flex flex-col transition-all duration-300 relative text-left font-sans-body w-full"
     >
       {/* Product Image Canvas Container */}
-      <div className="relative aspect-square w-full bg-[#FAF8F5] border border-[#D8D2C2] rounded-xs overflow-hidden flex items-center justify-center p-4 sm:p-6 transition-all duration-300 group-hover:border-[#8F896D] group-hover:shadow-[0_8px_20px_rgba(65,60,35,0.08)]">
+      <div className="relative aspect-square w-full bg-[#FAF8F5] border border-[#D8D2C2] rounded-xs overflow-hidden flex items-center justify-center transition-all duration-300 group-hover:border-[#8F896D] group-hover:shadow-[0_8px_20px_rgba(65,60,35,0.08)]">
         {/* Badges */}
         <div className="absolute top-2.5 left-2.5 flex flex-col gap-1 z-10">
           {product.isBestseller && (

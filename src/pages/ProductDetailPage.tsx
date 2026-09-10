@@ -410,7 +410,9 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                           key={activeMedia.url}
                           src={activeMedia.url}
                           poster={activeMedia.poster}
-                          controls
+                          autoPlay
+                          muted
+                          loop
                           playsInline
                           preload="metadata"
                           className="w-full h-full object-contain object-center bg-white"
@@ -489,7 +491,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                           key={`${m.url}-${idx}`}
                           data-thumb
                           onClick={() => setActiveImageIndex(idx)}
-                          className={`relative w-14 h-14 sm:w-16 sm:h-16 shrink-0 aspect-square rounded-xs border overflow-hidden transition-all cursor-pointer bg-white flex items-center justify-center ${
+                          className={`relative w-12 h-12 sm:w-16 sm:h-16 lg:w-20 lg:h-20 shrink-0 aspect-square rounded-xs border overflow-hidden transition-all cursor-pointer bg-white flex items-center justify-center ${
                             activeImageIndex === idx
                               ? 'border-[#413C23] ring-2 ring-[#413C23]/25'
                               : 'border-[#D8D2C2] opacity-80 hover:opacity-100 hover:border-[#8F896D]'
@@ -980,7 +982,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                     onClick={() => onSelectProduct(item)}
                     className="flex items-center gap-4 cursor-pointer flex-1"
                   >
-                    <div className="w-16 h-16 sm:w-20 sm:h-20 bg-[#FAF8F5] border border-[#D8D2C2] rounded-xs overflow-hidden shrink-0 flex items-center justify-center p-2 group-hover:border-[#413C23] transition-colors">
+                    <div className="w-16 h-16 sm:w-20 sm:h-20 bg-[#FAF8F5] border border-[#D8D2C2] rounded-xs overflow-hidden shrink-0 flex items-center justify-center group-hover:border-[#413C23] transition-colors">
                       <img
                         src={item.images?.[0] || '/logo.png'}
                         alt={item.name}
