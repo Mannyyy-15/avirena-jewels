@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import gsap from 'gsap';
+import { revealWhenReady } from '../lib/gsapReveal';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ArrowRight, Clock, BookOpen, Share2, ChevronRight, Check } from 'lucide-react';
 import blogHeroImg from '../assets/blog-hero-editorial.webp';
@@ -43,7 +44,7 @@ export const JournalPage: React.FC<JournalPageProps> = ({
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
-    const ctx = gsap.context(() => {
+    return revealWhenReady(containerRef, '.journal-reveal', () => {
       gsap.from('.journal-reveal', {
         y: 28,
         opacity: 0,
@@ -55,9 +56,7 @@ export const JournalPage: React.FC<JournalPageProps> = ({
           start: 'top 85%',
         },
       });
-    }, containerRef);
-
-    return () => ctx.revert();
+    });
   }, [selectedArticle, activeCategory]);
 
   const articles: Article[] = [

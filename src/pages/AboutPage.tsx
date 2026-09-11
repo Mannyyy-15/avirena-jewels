@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import gsap from 'gsap';
+import { revealWhenReady } from '../lib/gsapReveal';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { AboutUsEditorialSection } from '../components/AboutUsEditorialSection';
 
@@ -28,7 +29,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const ctx = gsap.context(() => {
+    return revealWhenReady(containerRef, '.gsap-about-reveal', () => {
       // Reveal animations for editorial images
       gsap.utils.toArray<HTMLElement>('.gsap-about-reveal').forEach((el) => {
         gsap.fromTo(
@@ -62,23 +63,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({
           toggleActions: 'play none none reverse',
         },
       });
-
-      // New collection collage reveal
-      gsap.from('.new-collection-element', {
-        y: 35,
-        opacity: 0,
-        duration: 0.85,
-        stagger: 0.12,
-        ease: 'power2.out',
-        scrollTrigger: {
-          trigger: '.new-collection-grid',
-          start: 'top 80%',
-          toggleActions: 'play none none reverse',
-        },
-      });
-    }, containerRef);
-
-    return () => ctx.revert();
+    });
   }, []);
 
   return (

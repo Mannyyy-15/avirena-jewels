@@ -17,7 +17,7 @@ import { HomePage } from './pages/HomePage';
 
 import { SeoMeta } from './components/SeoMeta';
 import { ShopifyProvider, useShopify } from './context/ShopifyContext';
-import { initSmoothScroll, scrollToTop } from './lib/smoothScroll';
+import { initSmoothScroll, scrollToTop, killDetachedScrollTriggers } from './lib/smoothScroll';
 
 import { ErrorBoundary } from './components/ErrorBoundary';
 
@@ -270,6 +270,50 @@ const buildTitle = (
  * slow chunk fetch shows the site's own surface, not a white flash. Sized to the
  * viewport so swapping it for the real page does not shift layout.
  */
+/**
+ * Best-effort page for the URL we booted on.
+ *
+ * `currentPage` used to default to 'home' until the URL->state effect ran, so a
+ * direct load of /contact (or any deep route) briefly mounted HomePage. Its
+ * GSAP effect then ran against a DOM that did not contain its elements, which
+ * is what produced the repeated "Invalid scope" warnings - and it cost a wasted
+ * mount of the wrong lazy chunk on every deep link.
+ *
+ * Only the unambiguous, product-independent routes are resolved here; anything
+ * needing the catalog (a /product/<handle> lookup) still settles in the effect.
+ */
+const initialPageFromPath = (): PageView => {
+  if (typeof window === 'undefined') return 'home';
+  const path = window.location.pathname.replace(/\/+$/, '');
+  if (!path || path === '') return 'home';
+
+  const [first] = path.slice(1).split('/');
+  switch (first) {
+    case 'shop':
+      return 'collection';
+    case 'collections':
+      return 'collections';
+    case 'product':
+      return 'pdp';
+    case 'about':
+      return 'about';
+    case 'contact':
+      return 'contact';
+    case 'journal':
+      return 'journal';
+    case 'faq':
+      return 'faq';
+    case 'cart':
+      return 'cart';
+    case 'checkout':
+      return 'checkout';
+    case 'guides':
+      return 'guides';
+    default:
+      return 'home';
+  }
+};
+
 function RouteFallback() {
   return (
     <div
@@ -289,11 +333,21 @@ function AppContent() {
   // Initialize Lenis Smooth Scroll with GSAP
   useEffect(() => {
     const cleanup = initSmoothScroll();
-    return cleanup;
+
+    // The page is prerendered and mounted with createRoot, so React replaces the
+    // static skeleton wholesale shortly after first paint. Any ScrollTrigger
+    // created against a skeleton node is orphaned by that swap, and the next
+    // refresh warns "Invalid scope" for each one. Sweep once the swap settles.
+    const sweep = window.setTimeout(() => killDetachedScrollTriggers(), 600);
+
+    return () => {
+      clearTimeout(sweep);
+      cleanup();
+    };
   }, []);
 
   // Page Routing State
-  const [currentPage, setCurrentPage] = useState<PageView>('home');
+  const [currentPage, setCurrentPage] = useState<PageView>(initialPageFromPath);
   // True once the URL -> state sync (effect 1) has run at least once, and again
   // whenever a popstate is being applied. While false, the URL-writing effect
   // must stay quiet: on first paint it still holds the default state ('home'),
@@ -645,6 +699,21 @@ function AppContent() {
       window.history.replaceState(null, '', targetPath);
     }
   }, [currentPage, selectedProduct, selectedCategory, activeGuideSlug, curatedEdit]);
+
+  /**
+   * Drop ScrollTriggers belonging to the page we just navigated away from.
+   *
+   * React unmounts the old page but its ScrollTriggers stay registered, so each
+   * later refresh re-measures elements that no longer exist. That is the source
+   * of the repeated GSAP "Invalid scope" warnings during route changes.
+   *
+   * Deferred a frame so the incoming page has mounted and registered its own
+   * triggers before we sweep.
+   */
+  useEffect(() => {
+    const id = window.setTimeout(() => killDetachedScrollTriggers(), 150);
+    return () => clearTimeout(id);
+  }, [currentPage, selectedProduct, activeGuideSlug]);
 
   // Navigation handlers
   const handleSelectProduct = (product: Product, shouldScroll: boolean = true) => {

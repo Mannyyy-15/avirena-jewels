@@ -1,13 +1,18 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { X, Check, Copy, Truck } from 'lucide-react';
+import { X, Check, Copy, Sparkles } from 'lucide-react';
 import offerImage from '../assets/about/about-vignette-2.webp';
 
 /**
  * Welcome offer modal shown once per visitor on entry.
  *
- * The code it promotes (FREESHIP) is a real, active Shopify discount with no
- * end date, so the copy makes no expiry or scarcity claim - there is nothing
- * here that stops being true tomorrow.
+ * Leads with the sale depth, which is the strongest hook we can make honestly:
+ * every piece is currently 68-70% below its compare-at price, so "up to 70%"
+ * is a real figure rather than a round number chosen for effect.
+ *
+ * FREESHIP is a real, active Shopify discount with no end date, so the copy
+ * carries no countdown or "ends tonight" claim - nothing here stops being true
+ * tomorrow, which is what keeps the hook from reading as the usual fake-urgency
+ * popup.
  *
  * Layout is image-left / content-right on desktop and stacks on mobile, where
  * the image is capped in height so the CTA stays above the fold on small
@@ -131,21 +136,21 @@ export const OfferWelcomeModal: React.FC<OfferWelcomeModalProps> = ({ onShopNow 
             {/* Content panel */}
             <div className="flex flex-col justify-center gap-4 px-6 py-7 sm:px-8 sm:py-10">
               <span className="inline-flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#6B6650]">
-                <Truck className="w-3.5 h-3.5 text-[#8F896D] shrink-0" strokeWidth={1.75} />
-                Welcome to Avirena
+                <Sparkles className="w-3.5 h-3.5 text-[#8F896D] shrink-0" strokeWidth={1.75} />
+                The Launch Sale Is Live
               </span>
 
               <h2
                 id="welcome-offer-title"
                 className="font-serif-display text-3xl sm:text-4xl leading-[1.15] text-[#413C23]"
               >
-                Free delivery on your first order
+                Up to <span className="text-[#7A0F1A]">70% off</span> everything
               </h2>
 
               <p className="text-sm leading-relaxed text-[#6B6650]">
-                Anti-tarnish brass, nickel-free with surgical steel posts, made for
-                everyday wear. Use this code at checkout for free shipping anywhere
-                in India.
+                Anti-tarnish brass, nickel-free with surgical steel posts, built for
+                daily wear - now from ₹599. Add <strong className="font-semibold text-[#413C23]">FREESHIP</strong> at
+                checkout and delivery anywhere in India is on us.
               </p>
 
               <button
@@ -176,7 +181,7 @@ export const OfferWelcomeModal: React.FC<OfferWelcomeModalProps> = ({ onShopNow 
                   onClick={handleShopNow}
                   className="w-full px-6 py-3.5 rounded-xs bg-[#413C23] text-[#FAF8F5] text-xs font-semibold uppercase tracking-[0.14em] hover:bg-[#2F2B19] transition-colors cursor-pointer"
                 >
-                  Shop the collection
+                  Shop the sale
                 </button>
                 <button
                   onClick={handleClose}

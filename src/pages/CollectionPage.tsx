@@ -1,5 +1,6 @@
 import React, { useState, useMemo, useRef, useEffect } from 'react';
 import gsap from 'gsap';
+import { revealWhenReady } from '../lib/gsapReveal';
 import { Product, Currency, Category, Metal } from '../types';
 import { formatPrice, getCompareAtPrice, getDiscountPercentage } from '../data/products';
 import { ChevronDown, Heart, Check, ShoppingBag, X } from 'lucide-react';
@@ -56,13 +57,21 @@ export const CollectionPage: React.FC<CollectionPageProps> = ({
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
-    if (containerRef.current) {
+    if (!containerRef.current) return;
+
+    // Scope the selector to this grid: a bare '.collection-page-card' matches
+    // globally, and a filter that yields no results leaves nothing to animate,
+    // which GSAP reports as "target not found".
+    return revealWhenReady(containerRef, '.collection-page-card', () => {
+      const cards = gsap.utils.toArray<HTMLElement>('.collection-page-card');
+      if (cards.length === 0) return;
+
       gsap.fromTo(
-        '.collection-page-card',
+        cards,
         { opacity: 0, y: 24 },
         { opacity: 1, y: 0, duration: 0.6, stagger: 0.04, ease: 'power2.out' }
       );
-    }
+    });
   }, [selectedCategory, selectedMetal, sortBy, isCatalogReady, curatedEdit]);
 
   const filteredProducts = useMemo(() => {

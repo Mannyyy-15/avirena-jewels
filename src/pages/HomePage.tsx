@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import gsap from 'gsap';
+import { revealWhenReady } from '../lib/gsapReveal';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import {
   ArrowRight,
@@ -183,7 +184,7 @@ export const HomePage: React.FC<HomePageProps> = ({
   }, [activeGiftTier, giftingProducts.length]);
 
   useEffect(() => {
-    const ctx = gsap.context(() => {
+    return revealWhenReady(containerRef, '.gsap-hero-title', () => {
       // Hero entrance
       gsap.from('.gsap-hero-title', {
         scale: 0.94,
@@ -250,9 +251,7 @@ export const HomePage: React.FC<HomePageProps> = ({
           },
         });
       }
-    }, containerRef);
-
-    return () => ctx.revert();
+    });
   }, []);
 
   return (

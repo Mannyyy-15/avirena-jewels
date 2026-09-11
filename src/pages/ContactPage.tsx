@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import gsap from 'gsap';
+import { revealWhenReady } from '../lib/gsapReveal';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import {
   Mail,
@@ -38,7 +39,7 @@ export const ContactPage: React.FC<ContactPageProps> = ({ onNavigateToShop }) =>
   const [openFaq, setOpenFaq] = useState<number | null>(0);
 
   useEffect(() => {
-    const ctx = gsap.context(() => {
+    return revealWhenReady(containerRef, '.contact-hero-element', () => {
       // 1. Hero Reveal
       gsap.from('.contact-hero-element', {
         y: 28,
@@ -60,9 +61,7 @@ export const ContactPage: React.FC<ContactPageProps> = ({ onNavigateToShop }) =>
           start: 'top 85%',
         },
       });
-    }, containerRef);
-
-    return () => ctx.revert();
+    });
   }, []);
 
   const handleSubmit = (e: React.FormEvent) => {

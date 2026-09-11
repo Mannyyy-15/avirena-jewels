@@ -58,3 +58,25 @@ export function scrollToTop(): void {
 export function getLenis(): Lenis | null {
   return lenisInstance;
 }
+
+/**
+ * Kills ScrollTriggers whose trigger element has left the DOM.
+ *
+ * This is a single-page app: when a route changes, React unmounts the previous
+ * page but its ScrollTriggers stay registered. Every subsequent
+ * `ScrollTrigger.refresh()` then tries to re-measure elements that no longer
+ * exist, which is what produces the repeated "Invalid scope" warnings - and it
+ * leaks a little work on each refresh for the life of the session.
+ *
+ * Call on route change, after the new page has mounted.
+ */
+export function killDetachedScrollTriggers(): void {
+  if (typeof document === 'undefined') return;
+
+  ScrollTrigger.getAll().forEach((trigger) => {
+    const el = trigger.trigger as Element | undefined;
+    if (el && !document.body.contains(el)) {
+      trigger.kill();
+    }
+  });
+}
