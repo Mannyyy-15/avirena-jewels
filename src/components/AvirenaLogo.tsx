@@ -34,8 +34,12 @@ export const AvirenaLogo: React.FC<AvirenaLogoProps> = ({
     <div className={`inline-flex items-center justify-center select-none ${heightClass} ${className}`}>
       {/* WebP first: index.html preloads /logo.webp (92KB), so serving the
           327KB PNG here downloaded both and wasted the preload. The PNG stays
-          as a fallback for browsers without WebP support. */}
-      <picture>
+          as a fallback for browsers without WebP support.
+
+          <picture> must carry the sizing classes too: the img's h-full resolves
+          against its parent, and a bare <picture> is an inline box with no
+          height of its own, so the logo escaped the wrapper's height. */}
+      <picture className="h-full w-auto max-w-full flex items-center justify-center">
         <source srcSet="/logo.webp" type="image/webp" />
         <img
           src="/logo.png"
