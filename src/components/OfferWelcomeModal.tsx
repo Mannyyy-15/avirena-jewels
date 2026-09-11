@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { X, Check, Copy, Sparkles } from 'lucide-react';
+import { X, Sparkles } from 'lucide-react';
 import offerImage from '../assets/about/about-vignette-2.webp';
 
 /**
@@ -9,10 +9,11 @@ import offerImage from '../assets/about/about-vignette-2.webp';
  * every piece is currently 68-70% below its compare-at price, so "up to 70%"
  * is a real figure rather than a round number chosen for effect.
  *
- * FREESHIP is a real, active Shopify discount with no end date, so the copy
- * carries no countdown or "ends tonight" claim - nothing here stops being true
- * tomorrow, which is what keeps the hook from reading as the usual fake-urgency
- * popup.
+ * Free delivery is site-wide and unconditional, so it is stated as a fact
+ * rather than gated behind a code - a coupon for something every order already
+ * gets is just a hurdle. The copy also carries no countdown or "ends tonight"
+ * claim: nothing here stops being true tomorrow, which is what keeps the hook
+ * from reading as the usual fake-urgency popup.
  *
  * Layout is image-left / content-right on desktop and stacks on mobile, where
  * the image is capped in height so the CTA stays above the fold on small
@@ -20,7 +21,6 @@ import offerImage from '../assets/about/about-vignette-2.webp';
  */
 
 const STORAGE_KEY = 'avirena_welcome_offer_seen';
-const DISCOUNT_CODE = 'FREESHIP';
 
 /** Delay before showing, so the modal never competes with the LCP paint. */
 const SHOW_DELAY_MS = 1600;
@@ -32,7 +32,6 @@ interface OfferWelcomeModalProps {
 
 export const OfferWelcomeModal: React.FC<OfferWelcomeModalProps> = ({ onShopNow }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [hasCopied, setHasCopied] = useState(false);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const previouslyFocused = useRef<HTMLElement | null>(null);
 
@@ -80,16 +79,6 @@ export const OfferWelcomeModal: React.FC<OfferWelcomeModalProps> = ({ onShopNow 
       previouslyFocused.current?.focus?.();
     };
   }, [isOpen]);
-
-  const handleCopy = async () => {
-    try {
-      await navigator.clipboard.writeText(DISCOUNT_CODE);
-      setHasCopied(true);
-      setTimeout(() => setHasCopied(false), 2000);
-    } catch {
-      /* Clipboard blocked - the code stays visible for manual copying. */
-    }
-  };
 
   const handleShopNow = () => {
     handleClose();
@@ -149,32 +138,9 @@ export const OfferWelcomeModal: React.FC<OfferWelcomeModalProps> = ({ onShopNow 
 
               <p className="text-sm leading-relaxed text-[#6B6650]">
                 Anti-tarnish brass, nickel-free with surgical steel posts, built for
-                daily wear - now from ₹599. Add <strong className="font-semibold text-[#413C23]">FREESHIP</strong> at
-                checkout and delivery anywhere in India is on us.
+                daily wear - now from ₹599. Free delivery anywhere in India, on
+                every order, with no code needed.
               </p>
-
-              <button
-                onClick={handleCopy}
-                aria-label={`Copy discount code ${DISCOUNT_CODE}`}
-                className="group flex items-center justify-between gap-3 w-full px-4 py-3 rounded-xs bg-[#F2EFDB] border border-dashed border-[#8F896D] hover:border-[#413C23] transition-colors cursor-pointer"
-              >
-                <span className="font-mono text-lg font-semibold tracking-[0.12em] text-[#413C23]">
-                  {DISCOUNT_CODE}
-                </span>
-                <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.12em] text-[#6B6650] group-hover:text-[#413C23] transition-colors">
-                  {hasCopied ? (
-                    <>
-                      <Check className="w-3.5 h-3.5" strokeWidth={2} />
-                      Copied
-                    </>
-                  ) : (
-                    <>
-                      <Copy className="w-3.5 h-3.5" strokeWidth={1.75} />
-                      Copy
-                    </>
-                  )}
-                </span>
-              </button>
 
               <div className="flex flex-col gap-2.5">
                 <button

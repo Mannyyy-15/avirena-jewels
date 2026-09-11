@@ -947,7 +947,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                   <div className="pt-3 text-xs text-[#413C23]/80 leading-relaxed font-normal w-full">
                     <p>
                       {product.materials ||
-                        'Hand-crafted in solid high-grade brass with a resilient protective anti-tarnish coating. 100% hypoallergenic, nickel-free, and lead-free dailywear formulation.'}
+                        'High-grade brass with a protective anti-tarnish coating. Nickel-free, lead-free and cadmium-free, with surgical steel posts. This is fashion jewellery: not solid gold, gold vermeil or sterling silver, and not hallmarked to any precious-metal standard.'}
                     </p>
                   </div>
                 )}

@@ -32,12 +32,20 @@ export const AvirenaLogo: React.FC<AvirenaLogoProps> = ({
 
   return (
     <div className={`inline-flex items-center justify-center select-none ${heightClass} ${className}`}>
-      <img
-        src="/logo.png"
-        alt="AVIRENA"
-        className={`h-full w-auto max-w-full object-contain ${themeFilterClass}`}
-        loading="eager"
-      />
+      {/* WebP first: index.html preloads /logo.webp (92KB), so serving the
+          327KB PNG here downloaded both and wasted the preload. The PNG stays
+          as a fallback for browsers without WebP support. */}
+      <picture>
+        <source srcSet="/logo.webp" type="image/webp" />
+        <img
+          src="/logo.png"
+          alt="AVIRENA"
+          className={`h-full w-auto max-w-full object-contain ${themeFilterClass}`}
+          loading="eager"
+          fetchPriority="high"
+          decoding="async"
+        />
+      </picture>
     </div>
   );
 };

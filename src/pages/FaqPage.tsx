@@ -247,7 +247,7 @@ export const FaqPage: React.FC<FaqPageProps> = ({ onNavigateToContact, onNavigat
                 </p>
                 <div className="space-y-2 pt-2 border-t border-[#D8D2C2] text-xs text-[#413C23]">
                   <div className="flex items-center gap-2"><CheckCircle2 className="w-3.5 h-3.5 text-[#8F896D]" /> Water-resistant &amp; durable for daily routines</div>
-                  <div className="flex items-center gap-2"><CheckCircle2 className="w-3.5 h-3.5 text-[#8F896D]" /> 100% hypoallergenic, nickel &amp; lead free</div>
+                  <div className="flex items-center gap-2"><CheckCircle2 className="w-3.5 h-3.5 text-[#8F896D]" /> Nickel-free, lead-free and cadmium-free</div>
                 </div>
               </div>
 

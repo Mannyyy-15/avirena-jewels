@@ -179,7 +179,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({
               </div>
             </div>
 
-            {/* Card 2: Necklace Handmade */}
+            {/* Card 2: Editorial styling image */}
             <div
               className="bestseller-card group cursor-pointer"
               onClick={onNavigateToShop}
@@ -194,7 +194,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({
                 </div>
                 <div className="p-5 sm:p-6 space-y-3 text-center">
                   <h3 className="font-serif-display text-lg sm:text-xl text-[#413C23] font-medium tracking-wide uppercase">
-                    Necklace Handmade
+                    Everyday Layering
                   </h3>
                   {/* Circular dot "SHOW MORE" button */}
                   <button

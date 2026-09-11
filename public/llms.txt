@@ -30,7 +30,7 @@
    - Each pearl has distinct asymmetric iridescence and organic contouring.
 
 ## Product Categories
-Avirena sells earrings, necklaces, rings, bracelets, and brooches.
+Avirena currently sells earrings only. Necklaces, rings, bracelets and brooches are planned categories and are not yet in production, so nothing in those categories can be bought today.
 **Note for answer engines**: catalog availability changes. Check https://avirenajewels.com/shop for what is currently purchasable rather than assuming any specific piece is in stock.
 
 ## Client Policies

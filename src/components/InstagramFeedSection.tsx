@@ -15,7 +15,7 @@ export const InstagramFeedSection: React.FC<InstagramFeedSectionProps> = ({
       id: 'ig-1',
       src: '/instagram/post-1.jpg',
       alt: 'Avirena Granulated Dome Studs Instagram Reel',
-      aspect: 'aspect-[4/5]',
+      aspectRatio: '4 / 5',
       offsetClass: 'sm:-translate-y-4',
       url: 'https://www.instagram.com/reel/DdBnEviT5WR/',
     },
@@ -23,7 +23,7 @@ export const InstagramFeedSection: React.FC<InstagramFeedSectionProps> = ({
       id: 'ig-2',
       src: '/instagram/post-2.jpg',
       alt: 'Avirena Atelier Brand Signature Post',
-      aspect: 'aspect-[3/4]',
+      aspectRatio: '3 / 4',
       offsetClass: 'sm:translate-y-8 z-10',
       hasHandle: true,
       url: 'https://www.instagram.com/p/Dc8v3NVvEuK/',
@@ -32,7 +32,7 @@ export const InstagramFeedSection: React.FC<InstagramFeedSectionProps> = ({
       id: 'ig-3',
       src: '/instagram/post-3.jpg',
       alt: 'Avirena Sculptural Leaf Studs Reel',
-      aspect: 'aspect-[4/5]',
+      aspectRatio: '4 / 5',
       offsetClass: 'sm:-translate-y-6',
       url: 'https://www.instagram.com/reel/Dc8u9B2MYd0/',
     },
@@ -40,7 +40,7 @@ export const InstagramFeedSection: React.FC<InstagramFeedSectionProps> = ({
       id: 'ig-4',
       src: 'https://cdn.shopify.com/s/files/1/1031/9364/1282/files/cfe3752b-17e9-413b-95a8-111c4798de48.png?v=1788866888',
       alt: 'Avirena Tiered Pebble Drops Campaign',
-      aspect: 'aspect-[3/4]',
+      aspectRatio: '3 / 4',
       offsetClass: 'sm:translate-y-4',
       url: 'https://www.instagram.com/avirenajewels/',
     },
@@ -85,20 +85,33 @@ export const InstagramFeedSection: React.FC<InstagramFeedSectionProps> = ({
 
         {/* 4-Image Staggered / Overlapping Collage Grid */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 md:gap-5 items-center">
+          {/* The aspect ratio is applied inline rather than as a Tailwind
+              class: it lives in the data array above, so `aspect-[4/5]` never
+              appears as a literal string in the markup and Tailwind purged it
+              from the built CSS. The containers then reserved no height until
+              each image loaded, which was the real cause of the PDP's high CLS. */}
           {images.map((img) => (
             <a
               key={img.id}
               href={img.url || instagramUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className={`group relative block overflow-hidden bg-[#D8D1C0] shadow-sm transition-all duration-500 ease-out hover:shadow-xl hover:scale-[1.02] ${img.aspect} ${img.offsetClass}`}
+              className={`group relative block overflow-hidden bg-[#D8D1C0] shadow-sm transition-all duration-500 ease-out hover:shadow-xl hover:scale-[1.02] ${img.offsetClass}`}
+              style={{ aspectRatio: img.aspectRatio }}
             >
               {/* Product / Editorial Image */}
+              {/* width/height match the 4/5 container ratio, not the source
+                  file (object-cover crops to the container). Without them the
+                  browser reserves no space until each lazy image loads, which
+                  was the dominant CLS source on the PDP. */}
               <img
                 src={img.src}
                 alt={img.alt}
                 referrerPolicy="no-referrer"
                 loading="lazy"
+                decoding="async"
+                width={800}
+                height={1000}
                 className="w-full h-full object-cover object-center filter contrast-[1.02] group-hover:scale-106 transition-transform duration-700 ease-out"
               />
 

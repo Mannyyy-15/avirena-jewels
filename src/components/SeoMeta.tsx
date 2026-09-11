@@ -291,6 +291,60 @@ export const SeoMeta: React.FC<SeoMetaProps> = ({
       });
     }
 
+    // 3d. Product breadcrumb.
+    // prerender.ts emits this for every PDP; without a matching block here the
+    // client render drops it, and Google indexes the rendered DOM - so the
+    // breadcrumb rich result was being lost on every product page.
+    if (currentPage === 'pdp' && selectedProduct) {
+      schemas.push({
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://avirenajewels.com' },
+          { '@type': 'ListItem', position: 2, name: 'Shop', item: 'https://avirenajewels.com/shop' },
+          { '@type': 'ListItem', position: 3, name: selectedProduct.name, item: canonical },
+        ],
+      });
+    }
+
+    // 3e. Guide breadcrumb (same reasoning as 3d).
+    if (currentPage === 'guides' && activeGuideSlug) {
+      schemas.push({
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://avirenajewels.com' },
+          { '@type': 'ListItem', position: 2, name: 'Guides', item: 'https://avirenajewels.com/guides' },
+          { '@type': 'ListItem', position: 3, name: title, item: canonical },
+        ],
+      });
+    }
+
+    // 3f. Page-type schema for About / Contact.
+    // prerender.ts emits AboutPage / ContactPage; the client render previously
+    // emitted neither, leaving those routes with only the sitewide blocks.
+    if (currentPage === 'about') {
+      schemas.push({
+        '@context': 'https://schema.org',
+        '@type': 'AboutPage',
+        name: title,
+        url: canonical,
+        description,
+        isPartOf: { '@type': 'WebSite', url: 'https://avirenajewels.com' },
+      });
+    }
+
+    if (currentPage === 'contact') {
+      schemas.push({
+        '@context': 'https://schema.org',
+        '@type': 'ContactPage',
+        name: title,
+        url: canonical,
+        description,
+        isPartOf: { '@type': 'WebSite', url: 'https://avirenajewels.com' },
+      });
+    }
+
     // 4. Product Schema (if on PDP)
     if (currentPage === 'pdp' && selectedProduct) {
       schemas.push({

@@ -4,10 +4,8 @@ import { GUIDES } from './data/guides';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
 import { InstagramFeedSection } from './components/InstagramFeedSection';
-import DemoOne from './components/ui/demo';
 import { CartDrawer } from './components/CartDrawer';
 import { WhatsAppConcierge } from './components/WhatsAppConcierge';
-import { RecentPurchaseToast } from './components/RecentPurchaseToast';
 import { OfferWelcomeModal } from './components/OfferWelcomeModal';
 
 import { ToastContainer, ToastMessage } from './components/Toast';
@@ -314,6 +312,22 @@ const initialPageFromPath = (): PageView => {
   }
 };
 
+/**
+ * Signals that the lazy route chunk has mounted.
+ *
+ * Rendered as the last child inside <Suspense>, it only runs its effect once
+ * React has swapped the fallback for the real page. Sections below the route
+ * wait on this: previously they painted beside the short fallback and were
+ * then shoved down ~3,400px when the page arrived, which was the dominant
+ * source of CLS on the PDP.
+ */
+const RouteMountSignal: React.FC<{ onMount: () => void }> = ({ onMount }) => {
+  useEffect(() => {
+    onMount();
+  }, [onMount]);
+  return null;
+};
+
 function RouteFallback() {
   return (
     <div
@@ -348,6 +362,10 @@ function AppContent() {
 
   // Page Routing State
   const [currentPage, setCurrentPage] = useState<PageView>(initialPageFromPath);
+  // Identifies the route whose chunk has mounted. Storing the key rather than
+  // a boolean means a mount can't be undone by a reset effect that happens to
+  // run after it - which blanked the footer on routes that mount instantly.
+  const [mountedRouteKey, setMountedRouteKey] = useState<string | null>(null);
   // True once the URL -> state sync (effect 1) has run at least once, and again
   // whenever a popstate is being applied. While false, the URL-writing effect
   // must stay quiet: on first paint it still holds the default state ('home'),
@@ -733,6 +751,10 @@ function AppContent() {
    * whenever the store is configured; the local page remains only as a
    * fallback for when it is not.
    */
+  const routeKey = `${currentPage}:${selectedProduct?.handle ?? ''}:${activeGuideSlug ?? ''}`;
+  const handleRouteMounted = React.useCallback(() => setMountedRouteKey(routeKey), [routeKey]);
+  const isRouteMounted = mountedRouteKey === routeKey;
+
   const handleProceedToCheckout = async () => {
     if (isConfigured && cart.length > 0) {
       try {
@@ -1055,17 +1077,20 @@ function AppContent() {
             onClearCart={handleClearCart}
           />
         )}
+        <RouteMountSignal key={routeKey} onMount={handleRouteMounted} />
         </Suspense>
         </ErrorBoundary>
       </main>
 
-      {/* Instagram Feed Gallery Section */}
-      <InstagramFeedSection />
+      {/* Both the Instagram section and the footer are held back until the
+          route chunk mounts (see RouteMountSignal). Rendering them beside the
+          short loading fallback made them jump ~3,400px the moment the real
+          page arrived, which was the dominant CLS on the PDP. They appear as
+          soon as the route is ready, so the footer is never withheld from a
+          settled page. */}
+      {isRouteMounted && <InstagramFeedSection />}
 
-      {/* Community Testimonials Showcase */}
-      <DemoOne />
-
-      {/* Footer */}
+      {isRouteMounted && (
       <Footer
         setCurrentPage={handlePageChange}
         onNavigateToPolicy={handleNavigateToPolicy}
@@ -1073,6 +1098,7 @@ function AppContent() {
         openCareModal={() => handlePageChange('faq')}
         setSelectedCategory={setSelectedCategory}
       />
+      )}
 
       {/* Slide-out Cart Drawer */}
       <CartDrawer
@@ -1141,12 +1167,6 @@ function AppContent() {
 
       {/* Welcome offer modal (once per visitor, shown shortly after entry) */}
       <OfferWelcomeModal onShopNow={() => handleNavigateToCollection('all')} />
-
-      {/* Floating Recent Purchase Social Proof Notification */}
-      <RecentPurchaseToast
-        products={storeProducts}
-        onSelectProduct={handleSelectProduct}
-      />
     </div>
   );
 }
