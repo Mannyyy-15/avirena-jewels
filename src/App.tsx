@@ -7,6 +7,7 @@ import { InstagramFeedSection } from './components/InstagramFeedSection';
 import DemoOne from './components/ui/demo';
 import { CartDrawer } from './components/CartDrawer';
 import { WhatsAppConcierge } from './components/WhatsAppConcierge';
+import { RecentPurchaseToast } from './components/RecentPurchaseToast';
 
 import { ToastContainer, ToastMessage } from './components/Toast';
 
@@ -1044,6 +1045,12 @@ function AppContent() {
 
       {/* Floating WhatsApp VIP Concierge & Lead Magnet */}
       <WhatsAppConcierge />
+
+      {/* Floating Recent Purchase Social Proof Notification */}
+      <RecentPurchaseToast
+        products={storeProducts}
+        onSelectProduct={handleSelectProduct}
+      />
     </div>
   );
 }
