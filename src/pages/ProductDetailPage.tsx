@@ -652,13 +652,50 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
               );
             })()}
 
-            {/* Recurring Urgency Offer Timer - Clean & Professional Luxury Badge */}
-            <div className="pt-0.5 flex items-center">
-              <div className="inline-flex items-center gap-2 py-1.5 px-3 rounded-2xs bg-[#FAF8F5] border border-[#D8D2C2] text-xs sm:text-[13px] shadow-2xs">
-                <Clock className="w-3.5 h-3.5 text-[#8F896D] shrink-0" strokeWidth={1.8} />
-                <span className="text-[#8F896D] font-medium">Limited offer ends in</span>
-                <span className="font-mono font-semibold text-[#7A0F1A] tracking-wide">
-                  {String(offerTimeLeft.hours).padStart(2, '0')}h {String(offerTimeLeft.minutes).padStart(2, '0')}m {String(offerTimeLeft.seconds).padStart(2, '0')}s
+            {/* Limited-offer countdown.
+                Restrained on purpose: premium retail keeps urgency in the page's
+                own neutral palette rather than a red banner, and places it
+                between the price and the CTA so it reads as part of the buying
+                decision instead of an ad pasted over the product.
+
+                Digits sit in their own tiles so the eye can lock onto the
+                changing number, with the seconds tile carrying the single
+                accent — one moving focal point rather than three competing. */}
+            <div className="pt-1 w-full">
+              <div className="inline-flex flex-wrap items-center gap-x-3 gap-y-2 py-2.5 px-3.5 rounded-xs bg-[#F2EFDB] border border-[#D8D2C2]">
+                <span className="inline-flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#413C23]">
+                  <Clock className="w-3.5 h-3.5 text-[#8F896D] shrink-0" strokeWidth={1.75} />
+                  Offer ends in
+                </span>
+
+                <span className="inline-flex items-center gap-1" role="timer" aria-live="off">
+                  {[
+                    { value: offerTimeLeft.hours, label: 'Hrs' },
+                    { value: offerTimeLeft.minutes, label: 'Min' },
+                    { value: offerTimeLeft.seconds, label: 'Sec', accent: true },
+                  ].map(({ value, label, accent }, i, arr) => (
+                    <React.Fragment key={label}>
+                      <span className="inline-flex flex-col items-center">
+                        <span
+                          className={`inline-flex items-center justify-center min-w-[2.1rem] px-1.5 py-1 rounded-2xs font-mono text-[15px] leading-none tabular-nums font-semibold border ${
+                            accent
+                              ? 'bg-[#413C23] text-[#FAF8F5] border-[#413C23]'
+                              : 'bg-[#FAF8F5] text-[#413C23] border-[#D8D2C2]'
+                          }`}
+                        >
+                          {String(Math.max(0, value)).padStart(2, '0')}
+                        </span>
+                        <span className="mt-1 text-[8px] uppercase tracking-[0.14em] text-[#6B6650]">
+                          {label}
+                        </span>
+                      </span>
+                      {i < arr.length - 1 && (
+                        <span className="pb-3 text-[#8F896D] text-sm leading-none select-none" aria-hidden="true">
+                          :
+                        </span>
+                      )}
+                    </React.Fragment>
+                  ))}
                 </span>
               </div>
             </div>
