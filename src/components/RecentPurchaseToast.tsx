@@ -180,14 +180,14 @@ export const RecentPurchaseToast: React.FC<RecentPurchaseToastProps> = ({
       role="status"
       aria-live="polite"
       onClick={handleClick}
-      className={`fixed bottom-5 right-5 sm:bottom-6 sm:right-6 z-40 max-w-[340px] w-[calc(100vw-40px)] sm:w-auto bg-white/95 backdrop-blur-md rounded-xs border border-[#D8D2C2] shadow-[0_8px_26px_rgba(65,60,35,0.12)] p-2.5 sm:p-3 flex items-center gap-3 select-none cursor-pointer transition-all duration-500 ease-out hover:border-[#413C23] hover:shadow-[0_10px_32px_rgba(65,60,35,0.18)] ${
+      className={`fixed bottom-4 right-3 xs:right-4 sm:bottom-6 sm:right-6 z-40 max-w-[calc(100vw-24px)] xs:max-w-[340px] sm:max-w-[370px] bg-white rounded-xs border border-[#D8D2C2] shadow-[0_10px_35px_rgba(0,0,0,0.15)] p-3 sm:p-3.5 flex items-center gap-3 select-none cursor-pointer transition-all duration-500 ease-out hover:border-[#413C23] hover:shadow-[0_12px_40px_rgba(0,0,0,0.2)] font-sans-body ${
         isVisible
           ? 'opacity-100 translate-y-0 scale-100 pointer-events-auto'
           : 'opacity-0 translate-y-4 scale-95 pointer-events-none'
       }`}
     >
       {/* Product Image Thumbnail */}
-      <div className="relative w-12 h-12 sm:w-14 sm:h-14 rounded-2xs border border-[#E7E4D5] bg-[#FAF8F5] overflow-hidden shrink-0 flex items-center justify-center">
+      <div className="relative w-14 h-14 sm:w-16 sm:h-16 rounded-xs border border-[#E7E4D5] bg-[#FAF8F5] overflow-hidden shrink-0 flex items-center justify-center">
         <img
           src={productImg}
           alt={currentItem.product.name}
@@ -198,22 +198,23 @@ export const RecentPurchaseToast: React.FC<RecentPurchaseToastProps> = ({
 
       {/* Notification Text */}
       <div className="flex-1 min-w-0 pr-1 text-left">
-        <p className="text-[11px] sm:text-xs text-[#413C23] font-medium truncate leading-tight">
-          <span className="font-semibold text-black">{currentItem.name}</span>{' '}
-          <span className="text-[#8F896D]">from</span> {currentItem.city}
+        <p className="text-xs sm:text-[13px] text-neutral-800 leading-snug truncate">
+          <strong className="font-semibold text-neutral-950">{currentItem.name}</strong>{' '}
+          <span className="text-neutral-500">from</span>{' '}
+          <span className="font-medium text-neutral-700">{currentItem.city}</span>
         </p>
 
-        <p className="text-[12px] sm:text-[13px] text-[#413C23] font-serif-display font-light truncate mt-0.5 leading-snug">
+        <p className="text-xs sm:text-sm text-neutral-900 font-semibold truncate mt-0.5 leading-snug">
           Purchased {currentItem.product.name}
         </p>
 
-        <div className="flex items-center gap-1.5 text-[10px] text-[#8F896D] mt-0.5">
-          <span className="inline-flex items-center gap-0.5 text-[#15803D] font-medium">
-            <CheckCircle2 className="w-3 h-3 text-[#15803D]" strokeWidth={2.2} />
+        <div className="flex items-center gap-2 text-[11px] sm:text-xs text-neutral-500 mt-1">
+          <span className="inline-flex items-center gap-1 text-[#15803D] font-semibold">
+            <CheckCircle2 className="w-3.5 h-3.5 text-[#15803D]" strokeWidth={2.5} />
             Verified Order
           </span>
           <span>•</span>
-          <span>{currentItem.timeAgo}</span>
+          <span className="text-neutral-500">{currentItem.timeAgo}</span>
         </div>
       </div>
 
@@ -224,10 +225,10 @@ export const RecentPurchaseToast: React.FC<RecentPurchaseToastProps> = ({
           e.stopPropagation();
           setIsVisible(false);
         }}
-        className="p-1 -mr-1 -mt-5 text-[#8F896D] hover:text-[#413C23] transition-colors cursor-pointer rounded-xs"
+        className="p-1 -mr-1 -mt-6 text-neutral-400 hover:text-neutral-800 transition-colors cursor-pointer rounded-xs"
         aria-label="Dismiss notification"
       >
-        <X className="w-3.5 h-3.5" />
+        <X className="w-4 h-4" />
       </button>
     </div>
   );
