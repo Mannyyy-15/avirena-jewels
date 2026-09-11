@@ -11,7 +11,6 @@ import {
   MapPin,
   ChevronLeft,
   ChevronRight,
-  Timer,
 } from 'lucide-react';
 import { Product, Currency, Metal, CartItem, ProductMedia } from '../types';
 import { formatPrice, getCompareAtPrice, getDiscountPercentage } from '../data/products';
@@ -89,6 +88,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
   const [offerTimeLeft, setOfferTimeLeft] = useState(() => {
     const now = new Date();
     return {
+      hours: 0,
       minutes: 59 - now.getMinutes(),
       seconds: 59 - now.getSeconds(),
     };
@@ -98,6 +98,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
     const timer = setInterval(() => {
       const now = new Date();
       setOfferTimeLeft({
+        hours: 0,
         minutes: 59 - now.getMinutes(),
         seconds: 59 - now.getSeconds(),
       });
@@ -635,38 +636,13 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
               );
             })()}
 
-            {/* Recurring Urgency Offer Timer */}
-            <div className="py-2.5 px-3.5 rounded-xs bg-[#FAF8F5] border border-[#D8D2C2] shadow-2xs flex items-center justify-between gap-3 flex-wrap sm:flex-nowrap">
-              <div className="flex items-center gap-2 text-xs text-[#413C23]">
-                <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#7A0F1A] opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-[#7A0F1A]"></span>
-                </span>
-                <Timer className="w-3.5 h-3.5 text-[#7A0F1A] shrink-0" strokeWidth={2} />
-                <span className="font-semibold text-[#413C23] tracking-wide">
-                  Limited-Time Offer
-                </span>
-                <span className="hidden sm:inline text-[#8F896D]">•</span>
-                <span className="text-[11px] text-[#8F896D] hidden sm:inline">
-                  Special price ends in
-                </span>
-              </div>
-
-              <div className="flex items-center gap-1.5 text-xs">
-                <span className="sm:hidden text-[11px] text-[#8F896D] mr-0.5">Ends in:</span>
-                <div className="flex items-center gap-1 font-mono font-bold text-[#413C23]">
-                  <span className="bg-[#E7E4D5]/80 px-2 py-0.5 rounded-2xs border border-[#D8D2C2] text-center min-w-[36px]">
-                    {String(offerTimeLeft.minutes).padStart(2, '0')}
-                    <span className="text-[9px] font-normal text-[#8F896D] ml-0.5">m</span>
-                  </span>
-                  <span className="text-[#8F896D] text-xs font-sans">:</span>
-                  <span className="bg-[#E7E4D5]/80 px-2 py-0.5 rounded-2xs border border-[#D8D2C2] text-center min-w-[36px] text-[#7A0F1A]">
-                    {String(offerTimeLeft.seconds).padStart(2, '0')}
-                    <span className="text-[9px] font-normal text-[#7A0F1A]/80 ml-0.5">s</span>
-                  </span>
-                </div>
-              </div>
-            </div>
+            {/* Recurring Urgency Offer Timer - Clean Plain Text */}
+            <p className="text-xs text-[#8F896D] pt-0.5">
+              Offer ends in{' '}
+              <span className="font-mono font-medium text-[#DC2626]">
+                {String(offerTimeLeft.hours).padStart(2, '0')}h {String(offerTimeLeft.minutes).padStart(2, '0')}m {String(offerTimeLeft.seconds).padStart(2, '0')}s
+              </span>
+            </p>
 
             {/* Finish Selector (Gold Tone Brass & Silver Tone Brass) */}
             <div className="space-y-2 pt-1 w-full">
