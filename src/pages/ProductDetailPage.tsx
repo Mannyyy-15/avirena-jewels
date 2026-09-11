@@ -12,6 +12,7 @@ import {
   ChevronLeft,
   ChevronRight,
   Clock,
+  Check,
 } from 'lucide-react';
 import { Product, Currency, Metal, CartItem, ProductMedia } from '../types';
 import { formatPrice, getCompareAtPrice, getDiscountPercentage } from '../data/products';
@@ -68,6 +69,10 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
   // Buy Now redirects to Shopify; this disables the button while that resolves
   // so a second tap cannot create a second checkout.
   const [isBuyingNow, setIsBuyingNow] = useState(false);
+
+  // Add to Bag success animation states
+  const [isAddedToBag, setIsAddedToBag] = useState(false);
+  const [addedRecId, setAddedRecId] = useState<string | null>(null);
 
   // Tracks in-place variant changes to avoid jumpy scrollToTop
   const isVariantSwitchRef = useRef(false);
@@ -295,6 +300,11 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
       metal: selectedFinish === 'Gold Tone Brass' ? 'Gold-Tone Brass' : 'Silver-Tone Alloy',
     });
 
+    setIsAddedToBag(true);
+    setTimeout(() => {
+      setIsAddedToBag(false);
+    }, 1800);
+
     if (isConfigured && product.variants && product.variants.length > 0) {
       const targetVariant = product.variants[0];
       if (targetVariant?.id) {
@@ -346,6 +356,11 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
       quantity: 1,
       metal: recommendedItem.metal,
     });
+
+    setAddedRecId(recommendedItem.id);
+    setTimeout(() => {
+      setAddedRecId(null);
+    }, 1800);
 
     if (isConfigured && recommendedItem.variants && recommendedItem.variants.length > 0) {
       const targetVariant = recommendedItem.variants[0];
@@ -726,9 +741,21 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                 <button
                   id="pdp-add-to-bag-cta"
                   onClick={handleAddToCart}
-                  className="w-full sm:w-auto sm:min-w-[190px] py-4 px-8 bg-transparent border border-black hover:bg-black hover:text-white text-black text-xs uppercase tracking-[0.2em] font-semibold rounded-xs transition-all flex items-center justify-center cursor-pointer active:scale-98"
+                  disabled={isBuyingNow}
+                  className={`w-full sm:w-auto sm:min-w-[190px] py-4 px-8 text-xs uppercase tracking-[0.2em] font-semibold rounded-xs transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer active:scale-95 ${
+                    isAddedToBag
+                      ? 'bg-black text-white border border-black shadow-md'
+                      : 'bg-transparent border border-black hover:bg-black hover:text-white text-black'
+                  }`}
                 >
-                  Add to Bag
+                  {isAddedToBag ? (
+                    <span className="inline-flex items-center gap-2 animate-in fade-in zoom-in-75 duration-200">
+                      <Check className="w-4 h-4 stroke-[2.5]" />
+                      <span>Added to Bag</span>
+                    </span>
+                  ) : (
+                    <span>Add to Bag</span>
+                  )}
                 </button>
               </div>
 
@@ -1047,9 +1074,20 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                   {/* Right: "Add to cart" Quick-Add Action Link */}
                   <button
                     onClick={() => handleQuickAddRecommendation(item)}
-                    className="text-xs font-semibold text-[#413C23] hover:text-[#8F896D] underline underline-offset-4 uppercase tracking-wider shrink-0 cursor-pointer transition-colors"
+                    className={`text-xs font-semibold uppercase tracking-wider shrink-0 cursor-pointer transition-all duration-200 flex items-center gap-1.5 ${
+                      addedRecId === item.id
+                        ? 'text-[#15803D]'
+                        : 'text-[#413C23] hover:text-[#8F896D] underline underline-offset-4'
+                    }`}
                   >
-                    Add to cart
+                    {addedRecId === item.id ? (
+                      <span className="inline-flex items-center gap-1 animate-in fade-in zoom-in-75 duration-150">
+                        <Check className="w-3.5 h-3.5 stroke-[2.5]" />
+                        <span>Added</span>
+                      </span>
+                    ) : (
+                      <span>Add to cart</span>
+                    )}
                   </button>
                 </div>
               ))}
