@@ -11,6 +11,7 @@ import {
   MapPin,
   ChevronLeft,
   ChevronRight,
+  Clock,
 } from 'lucide-react';
 import { Product, Currency, Metal, CartItem, ProductMedia } from '../types';
 import { formatPrice, getCompareAtPrice, getDiscountPercentage } from '../data/products';
@@ -636,13 +637,16 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
               );
             })()}
 
-            {/* Recurring Urgency Offer Timer - Clean Plain Text */}
-            <p className="text-sm sm:text-[15px] text-[#8F896D] pt-0.5">
-              Offer ends in{' '}
-              <span className="font-mono font-semibold text-[#DC2626]">
-                {String(offerTimeLeft.hours).padStart(2, '0')}h {String(offerTimeLeft.minutes).padStart(2, '0')}m {String(offerTimeLeft.seconds).padStart(2, '0')}s
-              </span>
-            </p>
+            {/* Recurring Urgency Offer Timer - Clean & Professional Luxury Badge */}
+            <div className="pt-0.5 flex items-center">
+              <div className="inline-flex items-center gap-2 py-1.5 px-3 rounded-2xs bg-[#FAF8F5] border border-[#D8D2C2] text-xs sm:text-[13px] shadow-2xs">
+                <Clock className="w-3.5 h-3.5 text-[#8F896D] shrink-0" strokeWidth={1.8} />
+                <span className="text-[#8F896D] font-medium">Limited offer ends in</span>
+                <span className="font-mono font-semibold text-[#7A0F1A] tracking-wide">
+                  {String(offerTimeLeft.hours).padStart(2, '0')}h {String(offerTimeLeft.minutes).padStart(2, '0')}m {String(offerTimeLeft.seconds).padStart(2, '0')}s
+                </span>
+              </div>
+            </div>
 
             {/* Finish Selector (Gold Tone Brass & Silver Tone Brass) */}
             <div className="space-y-2 pt-1 w-full">
