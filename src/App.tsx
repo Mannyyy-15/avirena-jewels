@@ -8,6 +8,7 @@ import DemoOne from './components/ui/demo';
 import { CartDrawer } from './components/CartDrawer';
 import { WhatsAppConcierge } from './components/WhatsAppConcierge';
 import { RecentPurchaseToast } from './components/RecentPurchaseToast';
+import { OfferWelcomeModal } from './components/OfferWelcomeModal';
 
 import { ToastContainer, ToastMessage } from './components/Toast';
 
@@ -283,7 +284,7 @@ function RouteFallback() {
 }
 
 function AppContent() {
-  const { products: storeProducts, isConfigured, hasLoadedProducts } = useShopify();
+  const { products: storeProducts, isConfigured, hasLoadedProducts, syncLocalCartToShopify } = useShopify();
 
   // Initialize Lenis Smooth Scroll with GSAP
   useEffect(() => {
@@ -655,6 +656,29 @@ function AppContent() {
     }
   };
 
+  /**
+   * Hands the bag to Shopify's hosted checkout.
+   *
+   * The local /checkout page cannot take payment or create an order, so the
+   * real Shopify checkout is the only path that completes a sale. It is used
+   * whenever the store is configured; the local page remains only as a
+   * fallback for when it is not.
+   */
+  const handleProceedToCheckout = async () => {
+    if (isConfigured && cart.length > 0) {
+      try {
+        const checkoutUrl = await syncLocalCartToShopify(cart);
+        if (checkoutUrl) {
+          window.location.href = checkoutUrl;
+          return;
+        }
+      } catch (e) {
+        console.warn('[Checkout] Shopify handoff failed, falling back:', e);
+      }
+    }
+    handlePageChange('checkout');
+  };
+
   const handleNavigateToCollection = (category: Category = 'all', metal: string = 'all') => {
     setCuratedEdit(null);
     setSelectedCategory(category);
@@ -946,7 +970,7 @@ function AppContent() {
             currency={currency}
             onUpdateQuantity={handleUpdateQuantity}
             onRemoveItem={handleRemoveFromCart}
-            onProceedToCheckout={() => handlePageChange('checkout')}
+            onProceedToCheckout={handleProceedToCheckout}
             onContinueShopping={() => handlePageChange('collection')}
             onSelectProduct={handleSelectProduct}
           />
@@ -991,7 +1015,7 @@ function AppContent() {
         onRemoveItem={handleRemoveFromCart}
         onProceedToCheckout={() => {
           setIsCartDrawerOpen(false);
-          handlePageChange('checkout');
+          void handleProceedToCheckout();
         }}
         onContinueShopping={() => {
           setIsCartDrawerOpen(false);
@@ -1045,6 +1069,9 @@ function AppContent() {
 
       {/* Floating WhatsApp VIP Concierge & Lead Magnet */}
       <WhatsAppConcierge />
+
+      {/* Welcome offer modal (once per visitor, shown shortly after entry) */}
+      <OfferWelcomeModal onShopNow={() => handleNavigateToCollection('all')} />
 
       {/* Floating Recent Purchase Social Proof Notification */}
       <RecentPurchaseToast

@@ -90,24 +90,32 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
   // Fullscreen High-Res Lightbox State (Mobile & Desktop)
   const [isLightboxOpen, setIsLightboxOpen] = useState<boolean>(false);
 
-  // Recurring 1-hour offer countdown timer (resets every hour so it never permanently expires)
-  const [offerTimeLeft, setOfferTimeLeft] = useState(() => {
+  /**
+   * Recurring 2-hour offer countdown.
+   *
+   * Counts down to the next even clock hour (00:00, 02:00, 04:00 ...) and then
+   * restarts, so the window is always between 2h and 0s remaining. Anchoring to
+   * the wall clock rather than to mount time keeps every visitor and every tab
+   * on the same countdown - a per-session timer would reset on refresh, which is
+   * the tell shoppers use to spot a fake deadline.
+   */
+  const computeOfferTimeLeft = () => {
     const now = new Date();
+    const nextBoundary = new Date(now);
+    nextBoundary.setHours(now.getHours() + (2 - (now.getHours() % 2)), 0, 0, 0);
+    const totalSeconds = Math.max(0, Math.floor((nextBoundary.getTime() - now.getTime()) / 1000));
     return {
-      hours: 0,
-      minutes: 59 - now.getMinutes(),
-      seconds: 59 - now.getSeconds(),
+      hours: Math.floor(totalSeconds / 3600),
+      minutes: Math.floor((totalSeconds % 3600) / 60),
+      seconds: totalSeconds % 60,
     };
-  });
+  };
+
+  const [offerTimeLeft, setOfferTimeLeft] = useState(computeOfferTimeLeft);
 
   useEffect(() => {
     const timer = setInterval(() => {
-      const now = new Date();
-      setOfferTimeLeft({
-        hours: 0,
-        minutes: 59 - now.getMinutes(),
-        seconds: 59 - now.getSeconds(),
-      });
+      setOfferTimeLeft(computeOfferTimeLeft());
     }, 1000);
 
     return () => clearInterval(timer);

@@ -8,6 +8,7 @@ import {
   ShieldCheck,
   Truck,
   Lock,
+  Check,
 } from 'lucide-react';
 import { CartItem, Currency, Product } from '../types';
 import { formatPrice } from '../data/products';

@@ -49,26 +49,12 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
     agreeTerms: true,
   });
 
-  const [promoCode, setPromoCode] = useState('');
-  const [discountPercent, setDiscountPercent] = useState<number>(0);
-  const [promoError, setPromoError] = useState('');
   const [orderPlaced, setOrderPlaced] = useState(false);
   const [orderNumber, setOrderNumber] = useState('');
 
   const subtotal = items.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
   const shippingCost = formData.deliveryMethod === 'express' ? 15 : (subtotal >= 150 ? 0 : 12);
-  const discountAmount = (subtotal * discountPercent) / 100;
-  const total = Math.max(0, subtotal - discountAmount + shippingCost);
-
-  const handleApplyPromo = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (promoCode.trim().toUpperCase() === 'AVIRENA10' || promoCode.trim().toUpperCase() === 'GLOW10') {
-      setDiscountPercent(10);
-      setPromoError('');
-    } else {
-      setPromoError('Invalid code. Try AVIRENA10 for 10% off.');
-    }
-  };
+  const total = Math.max(0, subtotal + shippingCost);
 
   const handlePlaceOrder = (e: React.FormEvent) => {
     e.preventDefault();
@@ -559,52 +545,12 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
               ))}
             </div>
 
-            {/* Promo Code Input */}
-            <div className="pt-2 border-t border-[#E6DFD3]">
-              <div className="flex gap-2">
-                <input
-                  id="checkout-promo-input"
-                  type="text"
-                  value={promoCode}
-                  onChange={(e) => setPromoCode(e.target.value)}
-                  placeholder="Gift card or discount code"
-                  className="flex-1 bg-[#FAF8F5] border border-[#E6DFD3] rounded-xs px-3 py-2 text-xs text-[#2C2C2A] placeholder-[#7D7973]/60 focus:outline-none focus:border-[#9A9886]"
-                />
-                <button
-                  type="button"
-                  id="checkout-apply-promo-btn"
-                  onClick={handleApplyPromo}
-                  className="px-4 py-2 bg-[#E6DFD3] hover:bg-[#DCD5C6] text-[#2C2C2A] text-xs uppercase tracking-wider font-semibold rounded-xs transition-colors"
-                >
-                  Apply
-                </button>
-              </div>
-
-              {discountPercent > 0 && (
-                <span className="text-[11px] text-[#9A9886] block mt-1.5 font-medium">
-                  ✓ {discountPercent}% discount applied (AVIRENA10)
-                </span>
-              )}
-              {promoError && (
-                <span className="text-[11px] text-[#C5A059] block mt-1.5 font-medium">
-                  {promoError}
-                </span>
-              )}
-            </div>
-
             {/* Cost Breakdown */}
             <div className="space-y-2 text-xs text-[#7D7973] border-t border-[#E6DFD3] pt-4">
               <div className="flex justify-between">
                 <span>Subtotal</span>
                 <span className="font-semibold text-[#2C2C2A]">{formatPrice(subtotal, currency)}</span>
               </div>
-
-              {discountAmount > 0 && (
-                <div className="flex justify-between text-[#C5A059]">
-                  <span>Atelier Discount</span>
-                  <span>-{formatPrice(discountAmount, currency)}</span>
-                </div>
-              )}
 
               <div className="flex justify-between">
                 <span>Insured Shipping</span>
