@@ -637,9 +637,9 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
             })()}
 
             {/* Recurring Urgency Offer Timer - Clean Plain Text */}
-            <p className="text-xs text-[#8F896D] pt-0.5">
+            <p className="text-sm sm:text-[15px] text-[#8F896D] pt-0.5">
               Offer ends in{' '}
-              <span className="font-mono font-medium text-[#DC2626]">
+              <span className="font-mono font-semibold text-[#DC2626]">
                 {String(offerTimeLeft.hours).padStart(2, '0')}h {String(offerTimeLeft.minutes).padStart(2, '0')}m {String(offerTimeLeft.seconds).padStart(2, '0')}s
               </span>
             </p>
