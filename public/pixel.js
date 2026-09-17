@@ -1,5 +1,5 @@
 /**
- * Avirena Jewels - Universal Button & SPA Route Tracker for Meta Pixel
+ * Avirena Jewels - Universal Button & Page Activity Tracker for Meta Pixel
  * Pixel ID: 3584415405045765
  */
 (function() {
@@ -17,60 +17,77 @@
     fbq('track', 'PageView');
   }
 
-  // 1. SPA Route Change Listener
-  var lastUrl = window.location.href;
-  function onRouteChanged() {
+  // 1. SPA Route & Page Tracking
+  var lastTrackedUrl = window.location.href;
+  function trackPageIfChanged() {
     var cur = window.location.href;
-    if (cur !== lastUrl) {
-      lastUrl = cur;
+    if (cur !== lastTrackedUrl) {
+      lastTrackedUrl = cur;
       if (typeof window.fbq === 'function') {
         window.fbq('track', 'PageView');
       }
     }
   }
 
-  var pushState = history.pushState;
+  var origPush = history.pushState;
   history.pushState = function() {
-    pushState.apply(this, arguments);
-    setTimeout(onRouteChanged, 50);
+    origPush.apply(this, arguments);
+    setTimeout(trackPageIfChanged, 50);
   };
 
-  var replaceState = history.replaceState;
+  var origReplace = history.replaceState;
   history.replaceState = function() {
-    replaceState.apply(this, arguments);
-    setTimeout(onRouteChanged, 50);
+    origReplace.apply(this, arguments);
+    setTimeout(trackPageIfChanged, 50);
   };
 
   window.addEventListener('popstate', function() {
-    setTimeout(onRouteChanged, 50);
+    setTimeout(trackPageIfChanged, 50);
   });
   window.addEventListener('hashchange', function() {
-    setTimeout(onRouteChanged, 50);
+    setTimeout(trackPageIfChanged, 50);
   });
 
-  // 2. Universal Click & Button Listener
+  // 2. Universal Click Tracker for EVERY button, link, and interactive element
   document.addEventListener('click', function(e) {
     try {
       var target = e.target;
       if (!target) return;
 
-      var btn = target.closest('button, a, [role="button"], input[type="submit"], input[type="button"]');
-      if (!btn) return;
+      var el = target.closest('button, a, [role="button"], input, select, textarea, label, [onclick], [class*="cursor-pointer"], [class*="btn"], [class*="button"]') || target;
+      if (el === document.body || el === document.documentElement) return;
 
-      var text = (btn.innerText || btn.textContent || btn.getAttribute('aria-label') || btn.getAttribute('title') || btn.value || '').trim();
-      var id = btn.id || '';
-      var href = btn.getAttribute('href') || '';
-      var className = typeof btn.className === 'string' ? btn.className.split(' ').slice(0, 3).join(' ') : '';
+      var text = (el.innerText || el.textContent || el.getAttribute('aria-label') || el.getAttribute('title') || el.value || '').trim();
+      if (!text && el.parentElement) {
+        text = (el.parentElement.innerText || el.parentElement.getAttribute('aria-label') || '').trim();
+      }
+      text = text.replace(/\s+/g, ' ').slice(0, 80);
+
+      var id = el.id || (el.parentElement && el.parentElement.id) || '';
+      var tag = el.tagName ? el.tagName.toLowerCase() : 'element';
+      var href = el.getAttribute('href') || (el.closest('a') ? el.closest('a').getAttribute('href') : '') || '';
+      var className = typeof el.className === 'string' ? el.className.split(' ').slice(0, 3).join(' ') : '';
+
+      if (!text && !id && !href) return;
 
       if (typeof window.fbq === 'function') {
         window.fbq('trackCustom', 'ButtonClick', {
-          button_text: text.slice(0, 100),
+          element: tag,
+          button_text: text || 'unlabeled_button',
           button_id: id,
           button_url: href,
           button_class: className,
           page_path: window.location.pathname,
           page_title: document.title
         });
+
+        // Intent detection
+        var lower = text.toLowerCase();
+        if (lower.includes('checkout') || lower.includes('buy now')) {
+          window.fbq('track', 'InitiateCheckout');
+        } else if (lower.includes('whatsapp') || id.includes('whatsapp')) {
+          window.fbq('track', 'Contact', { channel: 'WhatsApp' });
+        }
       }
     } catch (err) {}
   }, true);

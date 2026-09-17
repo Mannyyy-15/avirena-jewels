@@ -61,6 +61,20 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
     const generatedOrder = `AVR-${Math.floor(100000 + Math.random() * 900000)}`;
     setOrderNumber(generatedOrder);
     setOrderPlaced(true);
+
+    // Meta Pixel Purchase Event
+    if (typeof window !== 'undefined' && (window as any).fbq) {
+      (window as any).fbq('track', 'Purchase', {
+        content_name: items.map((i) => i.product.name).join(', '),
+        content_ids: items.map((i) => i.product.handle || i.product.id),
+        content_type: 'product',
+        value: total,
+        currency: currency === 'INR' ? 'INR' : currency,
+        num_items: items.reduce((sum, item) => sum + item.quantity, 0),
+        order_id: generatedOrder
+      });
+    }
+
     onClearCart();
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };

@@ -43,6 +43,15 @@ export const CartPage: React.FC<CartPageProps> = ({
 
 
   const handleCheckout = async () => {
+    if (typeof window !== 'undefined' && (window as any).fbq) {
+      (window as any).fbq('track', 'InitiateCheckout', {
+        value: subtotal,
+        currency: currency === 'INR' ? 'INR' : currency,
+        num_items: totalCount,
+        content_ids: items.map((i) => i.product.handle || i.product.id)
+      });
+    }
+
     if (isConfigured && items.length > 0) {
       setIsRedirecting(true);
       try {
