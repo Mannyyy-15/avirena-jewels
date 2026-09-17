@@ -718,6 +718,19 @@ function AppContent() {
     }
   }, [currentPage, selectedProduct, selectedCategory, activeGuideSlug, curatedEdit]);
 
+  // Track PageView in Meta Pixel on client-side route changes
+  const isFirstRouteRender = React.useRef(true);
+  useEffect(() => {
+    if (isFirstRouteRender.current) {
+      isFirstRouteRender.current = false;
+      return;
+    }
+    if (typeof window !== 'undefined' && (window as any).fbq) {
+      (window as any).fbq('track', 'PageView');
+    }
+  }, [currentPage, selectedProduct, selectedCategory, activeGuideSlug, curatedEdit]);
+
+
   /**
    * Drop ScrollTriggers belonging to the page we just navigated away from.
    *
