@@ -275,6 +275,18 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
     } else {
       setSelectedFinish('Gold Tone Brass');
     }
+
+    // Meta Pixel ViewContent event
+    if (typeof window !== 'undefined' && (window as any).fbq) {
+      (window as any).fbq('track', 'ViewContent', {
+        content_name: product.name,
+        content_ids: [product.handle || product.id],
+        content_type: 'product',
+        value: product.price,
+        currency: 'INR'
+      });
+    }
+
   }, [product.id]);
 
   const handleFinishChange = (finish: 'Gold Tone Brass' | 'Silver Tone Brass') => {

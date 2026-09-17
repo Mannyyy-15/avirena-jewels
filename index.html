@@ -89,7 +89,7 @@
       gtag('js', new Date());
       gtag('config', 'G-9WWZWVFT8S');
     </script>
-    <!-- Meta Pixel Code -->
+            <!-- Meta Pixel & Universal Activity Tracker -->
     <script>
       !function(f,b,e,v,n,t,s)
       {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
@@ -101,9 +101,87 @@
       'https://connect.facebook.net/en_US/fbevents.js');
       fbq('init', '3584415405045765');
       fbq('track', 'PageView');
+
+      // 1. SPA Route & Page Tracking (Every page view across all pages)
+      (function() {
+        var lastTrackedUrl = window.location.href;
+        function trackPageIfChanged() {
+          var cur = window.location.href;
+          if (cur !== lastTrackedUrl) {
+            lastTrackedUrl = cur;
+            if (typeof window.fbq === 'function') {
+              window.fbq('track', 'PageView');
+            }
+          }
+        }
+
+        var origPush = history.pushState;
+        history.pushState = function() {
+          origPush.apply(this, arguments);
+          setTimeout(trackPageIfChanged, 50);
+        };
+
+        var origReplace = history.replaceState;
+        history.replaceState = function() {
+          origReplace.apply(this, arguments);
+          setTimeout(trackPageIfChanged, 50);
+        };
+
+        window.addEventListener('popstate', function() { setTimeout(trackPageIfChanged, 50); });
+        window.addEventListener('hashchange', function() { setTimeout(trackPageIfChanged, 50); });
+      })();
+
+      // 2. Universal Button & Click Tracker for EVERY button & interactive element
+      document.addEventListener('click', function(e) {
+        try {
+          var target = e.target;
+          if (!target) return;
+
+          var el = target.closest('button, a, [role="button"], input, select, textarea, label, [onclick], [class*="cursor-pointer"], [class*="btn"], [class*="button"]') || target;
+          if (el === document.body || el === document.documentElement) return;
+
+          var text = (el.innerText || el.textContent || el.getAttribute('aria-label') || el.getAttribute('title') || el.value || '').trim();
+          if (!text && el.parentElement) {
+            text = (el.parentElement.innerText || el.parentElement.getAttribute('aria-label') || '').trim();
+          }
+          text = text.replace(/\s+/g, ' ').slice(0, 80);
+
+          var id = el.id || (el.parentElement && el.parentElement.id) || '';
+          var tag = el.tagName ? el.tagName.toLowerCase() : 'element';
+          var href = el.getAttribute('href') || (el.closest('a') ? el.closest('a').getAttribute('href') : '') || '';
+          var className = typeof el.className === 'string' ? el.className.split(' ').slice(0, 3).join(' ') : '';
+
+          if (!text && !id && !href) {
+            if (tag === 'button' || tag === 'svg' || el.getAttribute('role') === 'button') {
+              text = el.getAttribute('aria-label') || className || 'action_button';
+            } else {
+              return;
+            }
+          }
+
+          if (typeof window.fbq === 'function') {
+            window.fbq('trackCustom', 'ButtonClick', {
+              element: tag,
+              button_text: text || 'button',
+              button_id: id,
+              button_url: href,
+              button_class: className,
+              page_path: window.location.pathname,
+              page_title: document.title
+            });
+
+            var lower = text.toLowerCase();
+            if (lower.includes('checkout') || lower.includes('buy now')) {
+              window.fbq('track', 'InitiateCheckout');
+            } else if (lower.includes('whatsapp') || id.includes('whatsapp')) {
+              window.fbq('track', 'Contact', { channel: 'WhatsApp' });
+            }
+          }
+        } catch (err) {}
+      }, true);
     </script>
     <script src="/pixel.js" defer></script>
-    <!-- End Meta Pixel Code -->
+    <!-- End Meta Pixel -->
   </head>
   <body class="bg-[#E7E4D5] text-[#413C23] antialiased selection:bg-[#8F896D]/30 selection:text-[#413C23]">
     <noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=3584415405045765&ev=PageView&noscript=1" /></noscript>
