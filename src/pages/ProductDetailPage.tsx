@@ -334,6 +334,17 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
    * normal add-to-bag flow rather than leaving the button dead.
    */
   const handleBuyNow = async () => {
+    if (typeof window !== 'undefined' && (window as any).fbq) {
+      (window as any).fbq('track', 'InitiateCheckout', {
+        content_name: product.name,
+        content_ids: [product.handle || product.id],
+        content_type: 'product',
+        value: product.price,
+        currency: 'INR',
+        num_items: 1
+      });
+    }
+
     const metal: Metal = selectedFinish === 'Gold Tone Brass' ? 'Gold-Tone Brass' : 'Silver-Tone Alloy';
     const variantId = product.variants && product.variants.length > 0 ? product.variants[0].id : undefined;
 

@@ -769,6 +769,17 @@ function AppContent() {
   const isRouteMounted = mountedRouteKey === routeKey;
 
   const handleProceedToCheckout = async () => {
+    if (typeof window !== 'undefined' && (window as any).fbq) {
+      const totalVal = cart.reduce((acc, item) => acc + item.product.price * item.quantity, 0);
+      const totalQty = cart.reduce((acc, item) => acc + item.quantity, 0);
+      (window as any).fbq('track', 'InitiateCheckout', {
+        value: totalVal,
+        currency: 'INR',
+        num_items: totalQty,
+        content_ids: cart.map((c) => c.product.handle || c.product.id)
+      });
+    }
+
     if (isConfigured && cart.length > 0) {
       try {
         const checkoutUrl = await syncLocalCartToShopify(cart);
@@ -841,6 +852,16 @@ function AppContent() {
 
   // Cart operations
   const handleAddToCart = (item: Omit<CartItem, 'id'>) => {
+    if (typeof window !== 'undefined' && (window as any).fbq) {
+      (window as any).fbq('track', 'AddToCart', {
+        content_name: item.product.name,
+        content_ids: [item.product.handle || item.product.id],
+        content_type: 'product',
+        value: item.product.price * item.quantity,
+        currency: 'INR'
+      });
+    }
+
     const existingIndex = cart.findIndex(
       (c) =>
         c.product.id === item.product.id &&
@@ -897,6 +918,18 @@ function AppContent() {
   };
 
   const handleToggleWishlist = (product: Product) => {
+    if (!isProductWishlisted(product.id)) {
+      if (typeof window !== 'undefined' && (window as any).fbq) {
+        (window as any).fbq('track', 'AddToWishlist', {
+          content_name: product.name,
+          content_ids: [product.handle || product.id],
+          content_type: 'product',
+          value: product.price,
+          currency: 'INR'
+        });
+      }
+    }
+
     if (isProductWishlisted(product.id)) {
       setWishlist(wishlist.filter((p) => p.id !== product.id));
       addToast({
