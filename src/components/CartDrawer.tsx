@@ -13,6 +13,7 @@ import {
 import { CartItem, Currency, Product } from '../types';
 import { formatPrice } from '../data/products';
 import { useShopify } from '../context/ShopifyContext';
+import { buildDirectCheckoutUrl } from '../lib/shopify';
 
 interface CartDrawerProps {
   isOpen: boolean;
@@ -54,8 +55,16 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
         value: subtotal,
         currency: currency === 'INR' ? 'INR' : currency,
         num_items: totalCount,
-        content_ids: items.map((i) => i.product.handle || i.product.id)
+        content_ids: items.map((i) => i.product.handle || i.product.id),
       });
+    }
+
+    // Instant direct checkout redirect on custom checkout domain (0ms GraphQL wait)
+    const directUrl = buildDirectCheckoutUrl(items);
+    if (directUrl) {
+      setIsRedirectingToShopify(true);
+      window.location.href = directUrl;
+      return;
     }
 
     if (isConfigured && items.length > 0) {
@@ -75,7 +84,6 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
     onClose();
     onProceedToCheckout();
   };
-
   return (
     <div className="fixed inset-0 z-50 overflow-hidden font-sans-body">
       {/* Dark Dimmed Backdrop */}

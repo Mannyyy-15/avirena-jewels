@@ -13,6 +13,7 @@ import {
 import { CartItem, Currency, Product } from '../types';
 import { formatPrice } from '../data/products';
 import { useShopify } from '../context/ShopifyContext';
+import { buildDirectCheckoutUrl } from '../lib/shopify';
 
 interface CartPageProps {
   items: CartItem[];
@@ -50,6 +51,14 @@ export const CartPage: React.FC<CartPageProps> = ({
         num_items: totalCount,
         content_ids: items.map((i) => i.product.handle || i.product.id)
       });
+    }
+
+    // High-speed Direct Permalink Checkout: redirect immediately to Shopify edge CDN
+    const directCheckoutUrl = buildDirectCheckoutUrl(items);
+    if (directCheckoutUrl) {
+      setIsRedirecting(true);
+      window.location.href = directCheckoutUrl;
+      return;
     }
 
     if (isConfigured && items.length > 0) {

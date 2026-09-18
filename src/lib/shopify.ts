@@ -4,21 +4,43 @@ import { getCompareAtPrice } from '../data/products';
 const SHOPIFY_STORE_DOMAIN = import.meta.env.VITE_SHOPIFY_STORE_DOMAIN || '';
 const SHOPIFY_STOREFRONT_ACCESS_TOKEN = import.meta.env.VITE_SHOPIFY_STOREFRONT_ACCESS_TOKEN || '';
 const SHOPIFY_API_VERSION = import.meta.env.VITE_SHOPIFY_API_VERSION || '2025-01';
+export const SHOPIFY_CHECKOUT_DOMAIN = 'checkout.avirenajewels.com';
 
 /**
- * Material description per metal finish. These must describe what the piece is
- * actually made of — brass and alloy with protective coatings, not precious metal.
+ * Extracts numeric ID from either a plain numeric string or a Shopify GID
+ * e.g. "gid://shopify/ProductVariant/44729124487355" -> "44729124487355"
  */
-const METAL_MATERIALS: Record<Metal, string> = {
-  'Gold-Tone Brass':
-    'High-grade brass with anti-tarnish gold-tone e-coating (hypoallergenic, nickel-free)',
-  'Anti-Tarnish Brass':
-    'High-grade brass with protective anti-tarnish e-coating (hypoallergenic, nickel-free)',
-  'Silver-Tone Alloy':
-    'Durable silver-tone alloy with protective anti-tarnish coating (hypoallergenic, nickel-free)',
-  'Rose Gold-Tone':
-    'High-grade brass with anti-tarnish rose gold-tone e-coating (hypoallergenic, nickel-free)',
-};
+export function extractNumericId(id: string): string {
+  if (!id) return '';
+  return id.includes('/') ? id.split('/').pop() || id : id;
+}
+
+/**
+ * Builds an instantaneous direct Shopify checkout permalink with 0ms client-side GraphQL latency.
+ * e.g. https://checkout.avirenajewels.com/cart/44729124487355:1,44729124487356:2
+ */
+export function buildDirectCheckoutUrl(
+  items: { variantId?: string; product?: Product; quantity: number }[]
+): string | null {
+  if (!items || items.length === 0) return null;
+  const parts = items
+    .map((item) => {
+      const rawVariantId =
+        item.variantId ||
+        (item.product?.variants && item.product.variants.length > 0
+          ? item.product.variants[0].id
+          : null);
+      if (!rawVariantId) return null;
+      const numId = extractNumericId(rawVariantId);
+      if (!numId) return null;
+      return `${numId}:${Math.max(1, item.quantity || 1)}`;
+    })
+    .filter(Boolean);
+
+  if (parts.length === 0) return null;
+  const domain = SHOPIFY_CHECKOUT_DOMAIN || SHOPIFY_STORE_DOMAIN;
+  return `https://${domain}/cart/${parts.join(',')}`;
+}
 
 export const isShopifyConfigured = (): boolean => {
   return Boolean(
