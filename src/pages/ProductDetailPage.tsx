@@ -683,6 +683,33 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
               );
             })()}
 
+            {/* Bundle + prepaid offers.
+                Both are real automatic Shopify discounts, verified applying at
+                checkout: the gold+silver duos take Rs100 off the pair (product
+                class, so it stacks) and PREPAID50 takes a further Rs50 off any
+                order paid online. Percentages are deliberately not quoted -
+                the saving is a flat rupee amount on every pair. */}
+            <div className="pt-1 w-full space-y-1.5">
+              <div className="flex flex-wrap items-center gap-x-2 gap-y-1 py-2 px-3 rounded-xs bg-[#FAF8F5] border border-dashed border-[#8F896D]">
+                <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#413C23] shrink-0">
+                  Pair &amp; save
+                </span>
+                <span className="text-[11px] text-[#6B6650]">
+                  Buy the gold and silver together &mdash;{' '}
+                  <strong className="font-semibold text-[#413C23]">&#8377;100 off</strong> the pair, applied automatically.
+                </span>
+              </div>
+              <div className="flex flex-wrap items-center gap-x-2 gap-y-1 py-2 px-3 rounded-xs bg-[#F2EFDB] border border-[#D8D2C2]">
+                <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#413C23] shrink-0">
+                  Pay online
+                </span>
+                <span className="text-[11px] text-[#6B6650]">
+                  Use code <strong className="font-mono font-semibold text-[#413C23]">PREPAID50</strong> for{' '}
+                  <strong className="font-semibold text-[#413C23]">&#8377;50 off</strong> &mdash; stacks with the pair offer.
+                </span>
+              </div>
+            </div>
+
             {/* Limited-offer countdown.
                 Restrained on purpose: premium retail keeps urgency in the page's
                 own neutral palette rather than a red banner, and places it

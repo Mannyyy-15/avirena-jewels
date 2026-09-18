@@ -50,6 +50,10 @@ export const FaqPage: React.FC<FaqPageProps> = ({ onNavigateToContact, onNavigat
       a: 'To maintain the radiant shine of your jewelry for years, we recommend putting on your jewelry after applying perfumes, hairsprays, and lotions. Remove pieces before swimming, intense workouts, or showering, and wipe gently with a soft dry cloth after wearing before storing safely.',
     },
     {
+      q: 'Is the anti-tarnish finish guaranteed?',
+      a: 'Yes. Every piece carries a 6-month anti-tarnish guarantee: if the protective coating tarnishes under normal everyday wear within 6 months of delivery, we replace the piece once, free. The guarantee covers the coating itself, not scratches, impact damage, or damage caused by perfume, chlorine or cleaning chemicals. Email avirenajewels@gmail.com with your order number and a photo and we will sort it out.',
+    },
+    {
       q: 'How do I determine my ring or bracelet size?',
       a: 'Use our interactive Ring Sizing tool on this page, or measure the inner diameter of an existing ring. For bangles and cuffs, our flexible open architectures (like the Scalo Bracelet and Two Pearl Cuff) are designed with gentle tension memory and can be adjusted to fit wrists comfortably.',
     },
