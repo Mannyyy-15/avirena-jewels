@@ -6,6 +6,8 @@ export type PairOffer = {
   title: string;
   handles: [string, string];
   saving: number;
+  shopifyHandle?: string;
+  bundleProduct?: Product;
 };
 
 export const PAIR_OFFERS: PairOffer[] = [
@@ -14,24 +16,28 @@ export const PAIR_OFFERS: PairOffer[] = [
     title: 'Crystal Hoops Duo',
     handles: ['avirena-crystal-hoops-gold-tone-earrings', 'avirena-crystal-hoops-silver-tone-earrings'],
     saving: 100,
+    shopifyHandle: 'crystal-hoops-duo',
   },
   {
     id: 'studs-hearts-duo',
     title: 'Studs + Hearts Duo',
     handles: ['avirena-square-studs-gold-tone-brass-earrings', 'avirena-heart-drops-silver-tone-earrings'],
     saving: 100,
+    shopifyHandle: 'studs-hearts-duo',
   },
   {
     id: 'drops-spirals-duo',
     title: 'Drops + Spirals Duo',
     handles: ['avirena-drop-earrings-gold-tone-brass', 'avirena-spiral-earrings-silver-tone'],
     saving: 100,
+    shopifyHandle: 'drops-spirals-duo',
   },
   {
     id: 'cascade-duo',
     title: 'Cascade Gold + Silver Duo',
     handles: ['avirena-cascade-statement-drops-gold-tone', 'avirena-cascade-statement-drops-silver'],
     saving: 100,
+    shopifyHandle: 'cascade-statement-duo',
   },
 ];
 
@@ -41,21 +47,52 @@ export function resolvePairOffers(products: Product[]) {
     if (p.handle) byKey.set(p.handle, p);
     if (p.id) byKey.set(p.id, p);
   });
-  return PAIR_OFFERS.map((offer) => ({
-    ...offer,
-    products: offer.handles.map((h) => byKey.get(h)).filter(Boolean) as Product[],
-  })).filter((offer) => offer.products.length === 2);
+  return PAIR_OFFERS.map((offer) => {
+    const bundleProduct = offer.shopifyHandle ? byKey.get(offer.shopifyHandle) : undefined;
+    const resolvedProducts = offer.handles.map((h) => byKey.get(h)).filter(Boolean) as Product[];
+    return {
+      ...offer,
+      bundleProduct,
+      products: resolvedProducts,
+    };
+  }).filter((offer) => offer.products.length === 2);
 }
 
 export function findPairOffer(product: Product, products: Product[]) {
   const targetKey = product.handle || product.id;
-  return resolvePairOffers(products).find((offer) => offer.handles.includes(targetKey));
+  return resolvePairOffers(products).find((offer) => offer.handles.includes(targetKey) || (offer.bundleProduct && (offer.bundleProduct.handle === targetKey || offer.bundleProduct.id === targetKey)));
 }
 
 /**
- * Creates the two paired cart items linked with the same bundleGroupId.
+ * Creates cart items for a pair. If the native Shopify Bundle product exists in the catalog,
+ * it returns the single native bundle line item; otherwise it returns linked paired items.
  */
 export function createPairBundleItems(offer: PairOffer, products: [Product, Product]): Omit<CartItem, 'id'>[] {
+  if (offer.bundleProduct) {
+    // If shopify bundle product doesn't have an image uploaded, inherit the dual product images
+    const images =
+      offer.bundleProduct.images && offer.bundleProduct.images.length > 0
+        ? offer.bundleProduct.images
+        : [products[0].images?.[0] || '/logo.png', products[1].images?.[0] || '/logo.png'];
+
+    const hydratedProduct: Product = {
+      ...offer.bundleProduct,
+      images,
+      metal: offer.bundleProduct.metal || '18K Gold + Rhodium Silver',
+    };
+
+    return [
+      {
+        product: hydratedProduct,
+        quantity: 1,
+        metal: hydratedProduct.metal,
+        bundleGroupId: `bundle-${offer.id}-${Date.now()}`,
+        bundleTitle: offer.title,
+        bundleSavings: offer.saving,
+      },
+    ];
+  }
+
   const bundleGroupId = `bundle-${offer.id}-${Date.now()}`;
   return products.map((product) => ({
     product,
