@@ -365,7 +365,7 @@ export const HomePage: React.FC<HomePageProps> = ({
             <div className="flex items-end justify-between border-b border-[#D8D2C2] pb-5">
               <div>
                 <span className="text-xs sm:text-sm text-[#8F896D] uppercase tracking-[0.2em] font-semibold block mb-2">
-                  Curated Duo Suites • Automatic ₹100 Off
+                  Curated Duo Suites • Complementary Finishes
                 </span>
                 <h2 className="font-serif-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-[#413C23] font-bold tracking-tight leading-[1.05] max-w-2xl">
                   Two Finishes.<br />Better Together.
@@ -384,8 +384,22 @@ export const HomePage: React.FC<HomePageProps> = ({
               {pairOffers.map((offer) => {
                 const p1 = offer.products[0];
                 const p2 = offer.products[1];
-                const regularInr = getPriceInINR(p1.price) + getPriceInINR(p2.price);
-                const bundleInr = Math.max(0, regularInr - offer.saving);
+
+                // Product 1 MRP + Product 2 MRP = Bundle MRP
+                const p1Mrp = getPriceInINR(getCompareAtPrice(p1.price, p1.originalPrice));
+                const p2Mrp = getPriceInINR(getCompareAtPrice(p2.price, p2.originalPrice));
+                const bundleMrp = p1Mrp + p2Mrp;
+
+                // Sale price: our price + our price, minus extra ₹100 so it looks more low!
+                const p1Sale = getPriceInINR(p1.price);
+                const p2Sale = getPriceInINR(p2.price);
+                const bundleSale = Math.max(0, p1Sale + p2Sale - (offer.saving || 100));
+
+                // High-converting discount % from total MRP
+                const discountPercentage = bundleMrp > bundleSale
+                  ? Math.round(((bundleMrp - bundleSale) / bundleMrp) * 100)
+                  : 0;
+
                 const isAdding = addingPairId === offer.id;
 
                 return (
@@ -395,10 +409,10 @@ export const HomePage: React.FC<HomePageProps> = ({
                   >
                     {/* Fixed Uniform Square Box Container */}
                     <div className="relative aspect-square w-full bg-[#FAF8F5] border border-[#D8D2C2] rounded-xs flex items-center justify-center p-4 sm:p-5 transition-all duration-300 group-hover:border-[#8F896D] group-hover:shadow-[0_8px_20px_rgba(65,60,35,0.08)] overflow-hidden">
-                      {/* Save Badge top-left */}
+                      {/* Discount % Badge top-left */}
                       <div className="absolute top-2.5 left-2.5 z-10">
                         <span className="text-[10px] font-bold text-[#14532D] bg-[#14532D]/10 border border-[#14532D]/25 px-1.5 py-0.5 rounded-2xs uppercase tracking-wider">
-                          Save ₹{offer.saving}
+                          {discountPercentage}% OFF
                         </span>
                       </div>
 
@@ -477,13 +491,13 @@ export const HomePage: React.FC<HomePageProps> = ({
 
                       <div className="flex items-baseline gap-2 mt-0.5 flex-wrap">
                         <span className="text-base sm:text-lg md:text-xl font-bold text-black tracking-tight">
-                          {formatInr(bundleInr)}
+                          {formatInr(bundleSale)}
                         </span>
                         <span className="text-xs text-[#991B1B] line-through font-normal">
-                          {formatInr(regularInr)}
+                          {formatInr(bundleMrp)}
                         </span>
                         <span className="text-[10px] font-bold text-[#14532D] bg-[#14532D]/10 border border-[#14532D]/25 px-1.5 py-0.2 rounded-2xs uppercase tracking-wider">
-                          Save ₹{offer.saving}
+                          {discountPercentage}% OFF
                         </span>
                       </div>
 

@@ -90,7 +90,10 @@ export const CollectionPage: React.FC<CollectionPageProps> = ({
         return inr <= 1200 || p.category === 'earrings' || p.isBestseller;
       });
     } else if (curatedEdit === 'duo-suites') {
-      const pairHandles = new Set(PAIR_OFFERS.flatMap((o) => o.handles));
+      const pairHandles = new Set([
+        ...PAIR_OFFERS.flatMap((o) => o.handles),
+        ...PAIR_OFFERS.map((o) => o.shopifyHandle).filter(Boolean),
+      ]);
       list = list.filter((p) => pairHandles.has(p.handle || p.id));
     }
 
