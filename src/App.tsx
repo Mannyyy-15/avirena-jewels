@@ -719,17 +719,10 @@ function AppContent() {
     }
   }, [currentPage, selectedProduct, selectedCategory, activeGuideSlug, curatedEdit]);
 
-  // Track PageView in Meta Pixel on client-side route changes
-  const isFirstRouteRender = React.useRef(true);
-  useEffect(() => {
-    if (isFirstRouteRender.current) {
-      isFirstRouteRender.current = false;
-      return;
-    }
-    if (typeof window !== 'undefined' && (window as any).fbq) {
-      (window as any).fbq('track', 'PageView');
-    }
-  }, [currentPage, selectedProduct, selectedCategory, activeGuideSlug, curatedEdit]);
+  // Meta Pixel PageView on route change is handled by the inline tracker in
+  // index.html, which keys off the URL. A second effect here fired again
+  // whenever selectedProduct resolved from the async Shopify catalog - the same
+  // page counted twice, inflating traffic and skewing cost-per-result.
 
 
   /**
