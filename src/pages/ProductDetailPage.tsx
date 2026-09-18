@@ -20,7 +20,6 @@ import { formatPrice, formatInr, getPriceInINR, getCompareAtPrice, getDiscountPe
 import { useShopify } from '../context/ShopifyContext';
 import { ProductImageLightbox } from '../components/ProductImageLightbox';
 import { ProductCard } from '../components/ProductCard';
-import { findPairOffer, createPairBundleItems } from '../data/offers';
 
 interface ProductDetailPageProps {
   product: Product;
@@ -225,11 +224,6 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
 
   // Live Shopify catalog only (drives 'styled with' / related pieces).
   const activeProducts = Array.isArray(catalogProducts) ? catalogProducts : [];
-  const pairOffer = useMemo(
-    () => findPairOffer(product, activeProducts),
-    [product, activeProducts],
-  );
-  const pairPartner = pairOffer?.products.find((item) => item.id !== product.id);
 
   // Gallery shows this product's OWN photography and nothing else. It used to
   // be padded to 5 thumbnails with Unsplash stock photos, which showed shoppers
@@ -419,18 +413,6 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
         await addToShopifyCart(targetVariant.id, 1);
       }
     }
-  };
-
-  const [isAddedPair, setIsAddedPair] = useState(false);
-
-  const handleAddPair = () => {
-    if (!pairOffer || pairOffer.products.length < 2) return;
-    const bundleItems = createPairBundleItems(pairOffer, [pairOffer.products[0], pairOffer.products[1]]);
-    onAddToCart(bundleItems);
-    setIsAddedPair(true);
-    setTimeout(() => {
-      setIsAddedPair(false);
-    }, 2000);
   };
 
   // Complementary recommendations for "Perfect match with" — randomized each visit.
@@ -715,117 +697,15 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
               );
             })()}
 
-            {/* Bundle + prepaid offers.
-                Both are real automatic Shopify discounts, verified applying at
-                checkout: the gold+silver duos take Rs100 off the pair (product
-                class, so it stacks) and PREPAID50 takes a further Rs50 off any
-                order paid online. Percentages are deliberately not quoted -
-                the saving is a flat rupee amount on every pair. */}
-            <div className="pt-1 w-full space-y-2.5">
-              {pairOffer && pairPartner ? (() => {
-                const productInr = getPriceInINR(product.price);
-                const partnerInr = getPriceInINR(pairPartner.price);
-                const bundleSavingInr = pairOffer.saving || 100;
-                const bundleRegularInr = productInr + partnerInr;
-                const bundleSaleInr = Math.max(0, bundleRegularInr - bundleSavingInr);
-                const partnerFinish = isProductSilver(pairPartner) ? 'Silver Tone' : 'Gold Tone';
-
-                return (
-                  <div className="rounded-xs border border-[#D8D2C2] bg-[#FAF8F5] p-4 sm:p-5 space-y-3.5 transition-all">
-                    {/* Header */}
-                    <div className="flex items-center justify-between border-b border-[#D8D2C2]/70 pb-2.5">
-                      <div>
-                        <span className="text-[10px] uppercase tracking-[0.2em] font-bold text-[#8F896D] block">
-                          The Pair Edit
-                        </span>
-                        <h4 className="font-serif-display text-sm sm:text-base text-[#413C23] font-medium leading-snug">
-                          Pair with {pairPartner.name}
-                        </h4>
-                      </div>
-                      <span className="text-[10px] uppercase tracking-[0.16em] font-semibold text-[#14532D] bg-[#14532D]/10 px-2.5 py-0.5 rounded-xs border border-[#14532D]/20">
-                        Save ₹{bundleSavingInr}
-                      </span>
-                    </div>
-
-                    {/* Partner Piece Showcase */}
-                    <div className="flex items-center gap-3 bg-white border border-[#D8D2C2]/80 p-2 rounded-xs">
-                      <div className="w-14 h-14 bg-[#FAF8F5] border border-[#D8D2C2]/60 rounded-xs flex items-center justify-center p-1 shrink-0 overflow-hidden">
-                        <img
-                          src={pairPartner.images[0] || '/logo.png'}
-                          alt={pairPartner.name}
-                          className="max-w-full max-h-full object-contain mix-blend-multiply"
-                        />
-                      </div>
-                      <div className="min-w-0 flex-1">
-                        <p className="text-[10px] uppercase tracking-[0.14em] font-semibold text-[#8F896D]">
-                          {partnerFinish}
-                        </p>
-                        <p className="font-serif-display text-xs sm:text-sm font-medium text-[#413C23] truncate">
-                          {pairPartner.name}
-                        </p>
-                        <p className="text-[11px] text-[#413C23] font-medium mt-0.5">
-                          {formatInr(partnerInr)} single piece
-                        </p>
-                      </div>
-                    </div>
-
-                    {/* Combined Pricing Summary */}
-                    <div className="flex items-baseline justify-between pt-0.5">
-                      <span className="text-xs text-[#6B6650]">
-                        Both pieces together:
-                      </span>
-                      <div className="flex items-baseline gap-2 text-right">
-                        <span className="text-xs text-[#991B1B] line-through font-normal">
-                          {formatInr(bundleRegularInr)}
-                        </span>
-                        <span className="text-base sm:text-lg font-bold text-[#413C23] tracking-tight">
-                          {formatInr(bundleSaleInr)}
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* Add Both CTA Button */}
-                    <button
-                      type="button"
-                      onClick={handleAddPair}
-                      className={`w-full py-3.5 px-4 rounded-xs text-xs font-semibold uppercase tracking-[0.2em] transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer shadow-sm active:scale-[0.99] ${
-                        isAddedPair
-                          ? 'bg-[#15803D] text-white'
-                          : 'bg-black hover:bg-neutral-800 text-white'
-                      }`}
-                    >
-                      {isAddedPair ? (
-                        <>
-                          <Check className="w-4 h-4 stroke-[2.5]" />
-                          <span>Duo Added to Bag ✓</span>
-                        </>
-                      ) : (
-                        <>
-                          <ShoppingBag className="w-3.5 h-3.5 stroke-[1.75]" />
-                          <span>Add Both Pieces — {formatInr(bundleSaleInr)}</span>
-                        </>
-                      )}
-                    </button>
-                  </div>
-                );
-              })() : (
-                <div className="flex flex-wrap items-center gap-x-2 gap-y-1 py-2 px-3 rounded-xs bg-[#FAF8F5] border border-dashed border-[#8F896D]">
-                  <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#413C23] shrink-0">
-                    Pair &amp; save
-                  </span>
-                  <span className="text-[11px] text-[#6B6650]">
-                    Buy the gold and silver together &mdash;{' '}
-                    <strong className="font-semibold text-[#413C23]">&#8377;100 off</strong> the pair, applied automatically.
-                  </span>
-                </div>
-              )}
+            {/* Online payment discount banner */}
+            <div className="pt-1 w-full">
               <div className="flex flex-wrap items-center gap-x-2 gap-y-1 py-2 px-3 rounded-xs bg-[#F2EFDB] border border-[#D8D2C2]">
                 <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#413C23] shrink-0">
                   Pay online
                 </span>
                 <span className="text-[11px] text-[#6B6650]">
                   Use code <strong className="font-mono font-semibold text-[#413C23]">PREPAID50</strong> for{' '}
-                  <strong className="font-semibold text-[#413C23]">&#8377;50 off</strong> &mdash; stacks with the pair offer.
+                  <strong className="font-semibold text-[#413C23]">&#8377;50 off</strong> &mdash; applied automatically at checkout.
                 </span>
               </div>
             </div>
