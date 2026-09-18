@@ -109,10 +109,16 @@
       // 1. SPA Route & Page Tracking (Every page view across all pages)
       (function() {
         var lastTrackedUrl = window.location.href;
+        // The app normalises the URL shortly after mount (route sync), which
+        // reads as a navigation and fired a second PageView on every load -
+        // inflating traffic counts and skewing cost-per-result. Ignore URL
+        // changes during that settling window; real navigations come later.
+        var settledAt = Date.now() + 1500;
         function trackPageIfChanged() {
           var cur = window.location.href;
           if (cur !== lastTrackedUrl) {
             lastTrackedUrl = cur;
+            if (Date.now() < settledAt) return;
             if (typeof window.fbq === 'function') {
               window.fbq('track', 'PageView');
             }
