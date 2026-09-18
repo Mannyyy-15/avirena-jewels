@@ -93,10 +93,45 @@ export const ShopifyProvider: React.FC<{ children: ReactNode }> = ({ children })
 
         const fetchedEdges = res.data?.products?.edges || [];
         const transformed = fetchedEdges.map((e: any) => transformShopifyProduct(e.node));
-        setProducts(transformed);
-        if (typeof window !== 'undefined' && transformed.length > 0) {
+
+        const byHandle = new Map<string, Product>();
+        transformed.forEach((p: Product) => {
+          if (p.handle) byHandle.set(p.handle, p);
+          if (p.id) byHandle.set(p.id, p);
+        });
+
+        const BUNDLE_PAIRS_MAP: Record<string, [string, string]> = {
+          'crystal-hoops-duo': ['avirena-crystal-hoops-gold-tone-earrings', 'avirena-crystal-hoops-silver-tone-earrings'],
+          'studs-hearts-duo': ['avirena-square-studs-gold-tone-brass-earrings', 'avirena-heart-drops-silver-tone-earrings'],
+          'drops-spirals-duo': ['avirena-drop-earrings-gold-tone-brass', 'avirena-spiral-earrings-silver-tone'],
+          'cascade-statement-duo': ['avirena-cascade-statement-drops-gold-tone', 'avirena-cascade-statement-drops-silver'],
+        };
+
+        const enriched = transformed.map((prod: Product) => {
+          const pair = prod.handle ? BUNDLE_PAIRS_MAP[prod.handle] : undefined;
+          if (pair) {
+            const p1 = byHandle.get(pair[0]);
+            const p2 = byHandle.get(pair[1]);
+            const mainComposite = `/assets/bundles/${prod.handle}.webp`;
+            const p1Imgs = p1?.images || [];
+            const p2Imgs = p2?.images || [];
+            const distinctThumbnails = Array.from(new Set([...p1Imgs, ...p2Imgs])).filter(
+              (u) => u !== mainComposite
+            );
+            const allImages = [mainComposite, ...distinctThumbnails];
+            return {
+              ...prod,
+              images: allImages,
+              media: allImages.map((url) => ({ contentType: 'image' as const, url })),
+            };
+          }
+          return prod;
+        });
+
+        setProducts(enriched);
+        if (typeof window !== 'undefined' && enriched.length > 0) {
           try {
-            localStorage.setItem(SHOPIFY_PRODUCTS_STORAGE_KEY, JSON.stringify(transformed));
+            localStorage.setItem(SHOPIFY_PRODUCTS_STORAGE_KEY, JSON.stringify(enriched));
           } catch (e) {
             // ignore storage quota error
           }

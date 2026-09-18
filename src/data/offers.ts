@@ -48,8 +48,25 @@ export function resolvePairOffers(products: Product[]) {
     if (p.id) byKey.set(p.id, p);
   });
   return PAIR_OFFERS.map((offer) => {
-    const bundleProduct = offer.shopifyHandle ? byKey.get(offer.shopifyHandle) : undefined;
+    let bundleProduct = offer.shopifyHandle ? byKey.get(offer.shopifyHandle) : undefined;
     const resolvedProducts = offer.handles.map((h) => byKey.get(h)).filter(Boolean) as Product[];
+
+    if (bundleProduct && resolvedProducts.length === 2) {
+      const compositeMain = `/assets/bundles/${offer.shopifyHandle}.webp`;
+      const p1Images = resolvedProducts[0].images || [];
+      const p2Images = resolvedProducts[1].images || [];
+      const distinctOriginals = Array.from(new Set([...p1Images, ...p2Images])).filter(
+        (u) => u !== compositeMain
+      );
+      const allImages = [compositeMain, ...distinctOriginals];
+
+      bundleProduct = {
+        ...bundleProduct,
+        images: allImages,
+        media: allImages.map((url) => ({ contentType: 'image' as const, url })),
+      };
+    }
+
     return {
       ...offer,
       bundleProduct,

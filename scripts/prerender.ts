@@ -1953,10 +1953,21 @@ async function main() {
     addSitemapUrl(`${SITE_URL}/guides/${guide.slug}`, '0.7', 'monthly');
   }
 
+  const BUNDLE_COMPOSITES: Record<string, string> = {
+    'crystal-hoops-duo': `${SITE_URL}/assets/bundles/crystal-hoops-duo.webp`,
+    'studs-hearts-duo': `${SITE_URL}/assets/bundles/studs-hearts-duo.webp`,
+    'drops-spirals-duo': `${SITE_URL}/assets/bundles/drops-spirals-duo.webp`,
+    'cascade-statement-duo': `${SITE_URL}/assets/bundles/cascade-statement-duo.webp`,
+  };
+
   // ---------------- DYNAMIC PRODUCT DETAIL PAGES (/product/:handle) ----------------
   for (const product of shopifyProducts) {
     const handle = product.handle || product.id;
-    const prodImages = (product.images?.edges || []).map((e: any) => e.node.url);
+    let prodImages = (product.images?.edges || []).map((e: any) => e.node.url);
+    if (BUNDLE_COMPOSITES[handle]) {
+      const compositeUrl = BUNDLE_COMPOSITES[handle];
+      prodImages = [compositeUrl, ...prodImages.filter((u: string) => u !== compositeUrl)];
+    }
     const mainImage = prodImages[0] || `${SITE_URL}/logo.png`;
     const priceAmount = parseFloat(product.priceRange?.minVariantPrice?.amount || '0');
     const currency = product.priceRange?.minVariantPrice?.currencyCode || 'INR';

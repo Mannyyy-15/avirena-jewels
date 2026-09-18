@@ -451,51 +451,17 @@ export const HomePage: React.FC<HomePageProps> = ({
                       </div>
 
                       {/* Both Pieces Side-by-Side in the Square Box */}
-                      <div className="w-full h-full flex items-center justify-center relative">
-                        {/* Piece 1 */}
-                        <div
-                          className="w-1/2 h-full flex flex-col items-center justify-center p-1.5 relative group/p1"
-                          title={p1.name}
-                        >
-                          <img
-                            src={getProductImage(p1)}
-                            alt={p1.name}
-                            referrerPolicy="no-referrer"
-                            width={800}
-                            height={800}
-                            loading="lazy"
-                            decoding="async"
-                            className="max-w-full max-h-[82%] w-auto h-auto object-contain mix-blend-multiply group-hover/p1:scale-105 transition-transform duration-500 ease-out"
-                          />
-                          <span className="text-[9px] text-[#8F896D] uppercase tracking-wider truncate max-w-full mt-1">
-                            {p1.metal || 'Piece 1'}
-                          </span>
-                        </div>
-
-                        {/* Minimal '+' connector */}
-                        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10 w-6 h-6 rounded-full bg-[#FAF8F5] border border-[#D8D2C2] text-[#413C23] shadow-2xs flex items-center justify-center font-serif text-xs italic pointer-events-none select-none">
-                          +
-                        </div>
-
-                        {/* Piece 2 */}
-                        <div
-                          className="w-1/2 h-full flex flex-col items-center justify-center p-1.5 relative group/p2"
-                          title={p2.name}
-                        >
-                          <img
-                            src={getProductImage(p2)}
-                            alt={p2.name}
-                            referrerPolicy="no-referrer"
-                            width={800}
-                            height={800}
-                            loading="lazy"
-                            decoding="async"
-                            className="max-w-full max-h-[82%] w-auto h-auto object-contain mix-blend-multiply group-hover/p2:scale-105 transition-transform duration-500 ease-out"
-                          />
-                          <span className="text-[9px] text-[#8F896D] uppercase tracking-wider truncate max-w-full mt-1">
-                            {p2.metal || 'Piece 2'}
-                          </span>
-                        </div>
+                      <div className="w-full h-full flex items-center justify-center relative p-2 sm:p-3">
+                        <img
+                          src={`/assets/bundles/${offer.shopifyHandle}.webp`}
+                          alt={offer.title}
+                          referrerPolicy="no-referrer"
+                          width={800}
+                          height={800}
+                          loading="lazy"
+                          decoding="async"
+                          className="max-w-full max-h-full w-auto h-auto object-contain mix-blend-multiply group-hover:scale-105 transition-transform duration-500 ease-out"
+                        />
                       </div>
 
                       {/* Floating Quick Add Button */}

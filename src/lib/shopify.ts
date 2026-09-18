@@ -503,12 +503,23 @@ export const GET_CART_QUERY = `
 
 // ---------------- Helpers & Transformer ----------------
 
+const BUNDLE_COMPOSITES: Record<string, string> = {
+  'crystal-hoops-duo': '/assets/bundles/crystal-hoops-duo.webp',
+  'studs-hearts-duo': '/assets/bundles/studs-hearts-duo.webp',
+  'drops-spirals-duo': '/assets/bundles/drops-spirals-duo.webp',
+  'cascade-statement-duo': '/assets/bundles/cascade-statement-duo.webp',
+};
+
 export function transformShopifyProduct(node: any): Product {
-  const images = (node.images?.edges || []).map((edge: any) => edge.node.url);
+  let images = (node.images?.edges || []).map((edge: any) => edge.node.url);
+  const compositeUrl = node.handle ? BUNDLE_COMPOSITES[node.handle] : undefined;
+  if (compositeUrl) {
+    images = [compositeUrl, ...images.filter((u: string) => u !== compositeUrl)];
+  }
 
   // Ordered Shopify gallery (images + videos) in the same order the shop admin
   // arranged them. Falls back to undefined so the PDP can use plain images.
-  const media: ProductMedia[] = (node.media?.edges || [])
+  let media: ProductMedia[] = (node.media?.edges || [])
     .map((edge: any) => {
       const m = edge.node;
       if (m.mediaContentType === 'VIDEO') {
@@ -521,6 +532,10 @@ export function transformShopifyProduct(node: any): Product {
       return imageUrl ? { contentType: 'image' as const, url: imageUrl } : null;
     })
     .filter((m: ProductMedia | null): m is ProductMedia => m !== null);
+
+  if (compositeUrl) {
+    media = [{ contentType: 'image' as const, url: compositeUrl }, ...media.filter((m) => m.url !== compositeUrl)];
+  }
   const rawAmount = parseFloat(node.priceRange?.minVariantPrice?.amount || '0');
   const currencyCode = (node.priceRange?.minVariantPrice?.currencyCode || 'INR').toUpperCase();
   
