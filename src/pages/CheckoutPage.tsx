@@ -62,18 +62,13 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
     setOrderNumber(generatedOrder);
     setOrderPlaced(true);
 
-    // Meta Pixel Purchase Event
-    if (typeof window !== 'undefined' && (window as any).fbq) {
-      (window as any).fbq('track', 'Purchase', {
-        content_name: items.map((i) => i.product.name).join(', '),
-        content_ids: items.map((i) => i.product.handle || i.product.id),
-        content_type: 'product',
-        value: total,
-        currency: currency === 'INR' ? 'INR' : currency,
-        num_items: items.reduce((sum, item) => sum + item.quantity, 0),
-        order_id: generatedOrder
-      });
-    }
+    // No Meta Purchase event here on purpose.
+    //
+    // This page is the unreachable fallback checkout: it takes no payment and
+    // invents an order id, so firing Purchase would report a sale that never
+    // happened. Real orders complete on checkout.avirenajewels.com, where the
+    // Shopify Facebook & Instagram channel fires Purchase server-side via the
+    // Conversions API - the only source that should ever report a sale.
 
     onClearCart();
     window.scrollTo({ top: 0, behavior: 'smooth' });
