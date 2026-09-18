@@ -521,7 +521,7 @@ export const PRODUCTS: Product[] = [
     price: 13.32,
     originalPrice: 44.43,
     images: [
-      'https://cdn.shopify.com/s/files/1/1031/9364/1282/files/na-019-avirena-jewels-original-imahryvqxd8h4z8u.jpg?v=1789713483',
+      '/cascade-silver-clean.webp',
       'https://cdn.shopify.com/s/files/1/1031/9364/1282/files/na-019-avirena-jewels-original-imahryvquyfrjhz7.jpg?v=1789713484',
       'https://cdn.shopify.com/s/files/1/1031/9364/1282/files/na-019-avirena-jewels-original-imahryvqmz377zth.jpg?v=1789713483',
       'https://cdn.shopify.com/s/files/1/1031/9364/1282/files/na-019-avirena-jewels-original-imahryvqprwzznt5.jpg?v=1789713484'

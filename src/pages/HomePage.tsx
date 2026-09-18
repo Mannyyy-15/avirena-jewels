@@ -13,10 +13,10 @@ import {
   Heart,
   Check
 } from 'lucide-react';
-import { Product, Currency, Category } from '../types';
-import { formatPrice, getCompareAtPrice, getDiscountPercentage } from '../data/products';
+import { CartItem, Product, Currency, Category } from '../types';
+import { formatPrice, formatInr, getPriceInINR, getCompareAtPrice, getDiscountPercentage } from '../data/products';
 import { HeroBaroquePearlRing } from '../components/HeroBaroquePearlRing';
-import { resolvePairOffers } from '../data/offers';
+import { resolvePairOffers, createPairBundleItems, PairOffer } from '../data/offers';
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
@@ -26,6 +26,7 @@ interface HomePageProps {
   onSelectProduct: (product: Product) => void;
   onNavigateToCollection: (category?: Category, metal?: string) => void;
   onQuickAdd: (product: Product) => void;
+  onAddToCart?: (item: Omit<CartItem, 'id'> | Omit<CartItem, 'id'>[]) => void;
   currency: Currency;
   isWishlisted: (id: string) => boolean;
   onToggleWishlist: (product: Product) => void;
@@ -37,6 +38,7 @@ export const HomePage: React.FC<HomePageProps> = ({
   onSelectProduct,
   onNavigateToCollection,
   onQuickAdd,
+  onAddToCart,
   currency,
   isWishlisted,
   onToggleWishlist,
@@ -59,6 +61,22 @@ export const HomePage: React.FC<HomePageProps> = ({
   );
 
   const pairOffers = useMemo(() => resolvePairOffers(safeProducts), [safeProducts]);
+
+  const [addingPairId, setAddingPairId] = useState<string | null>(null);
+
+  const handleAddBundle = (offer: PairOffer & { products: Product[] }) => {
+    if (offer.products.length < 2) return;
+    setAddingPairId(offer.id);
+    const bundleItems = createPairBundleItems(offer, [offer.products[0], offer.products[1]]);
+    if (onAddToCart) {
+      onAddToCart(bundleItems);
+    } else {
+      offer.products.forEach(onQuickAdd);
+    }
+    setTimeout(() => {
+      setAddingPairId(null);
+    }, 1800);
+  };
 
   // Safe image getter. Falls back to the brand logo, never to stock photography:
   // an Unsplash image here would render as this product's photograph.
@@ -325,43 +343,154 @@ export const HomePage: React.FC<HomePageProps> = ({
       </section>
 
       {pairOffers.length > 0 && (
-        <section className="w-full bg-[#F2EFDB] border-b border-[#D8D2C2] px-4 py-12 sm:px-8 sm:py-16 lg:px-12 xl:px-16 2xl:px-20">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between mb-8">
-            <div>
-              <span className="text-[10px] font-bold uppercase tracking-[0.24em] text-[#7A0F1A]">Automatic pair offer</span>
-              <h2 className="mt-2 font-serif-display text-3xl sm:text-4xl font-light text-[#413C23]">Two finishes. Better together.</h2>
-              <p className="mt-2 max-w-2xl text-sm text-[#6B6650]">Choose one of our curated pairs and save ₹100 automatically at Shopify checkout.</p>
+        <section className="w-full bg-[#F5F2EA] border-b border-[#D8D2C2] px-4 py-14 sm:px-8 sm:py-20 lg:px-12 xl:px-16 2xl:px-20">
+          <div className="max-w-7xl mx-auto">
+            {/* Header */}
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10 pb-6 border-b border-[#D8D2C2]/70">
+              <div className="max-w-2xl">
+                <div className="inline-flex items-center gap-2 px-2.5 py-1 bg-[#7A0F1A]/8 border border-[#7A0F1A]/20 rounded-xs mb-3">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#7A0F1A]" />
+                  <span className="text-[10px] font-bold uppercase tracking-[0.24em] text-[#7A0F1A]">The Duo Suites</span>
+                </div>
+                <h2 className="font-serif-display text-3xl sm:text-4xl md:text-5xl font-light text-[#2A271B] tracking-tight">
+                  Two Finishes. Better Together.
+                </h2>
+                <p className="mt-2.5 text-xs sm:text-sm text-[#6B6650] font-normal leading-relaxed">
+                  Curated complementary pairs crafted to balance warm 18K gold and crisp rhodium silver. Save ₹100 instantly when bundled.
+                </p>
+              </div>
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+                <div className="inline-flex items-center gap-2 rounded-xs border border-[#D8D2C2] bg-[#FAF8F5] px-4 py-2.5 text-xs text-[#413C23] shadow-2xs">
+                  <span className="text-[#7A0F1A] font-medium">Extra ₹50 off:</span>
+                  <span className="text-[#6B6650]">Use code</span>
+                  <code className="bg-[#EFECE6] px-1.5 py-0.5 rounded-xs font-mono font-bold text-black text-[11px] tracking-wider">PREPAID50</code>
+                </div>
+              </div>
             </div>
-            <div className="rounded-xs border border-[#D8D2C2] bg-[#FAF8F5] px-4 py-3 text-xs text-[#413C23]">
-              Add code <strong className="font-mono">PREPAID50</strong> for another ₹50 off
-            </div>
-          </div>
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
-            {pairOffers.map((offer) => {
-              const regular = offer.products.reduce((sum, item) => sum + item.price, 0);
-              return (
-                <article key={offer.id} className="overflow-hidden rounded-xs border border-[#D8D2C2] bg-[#FAF8F5]">
-                  <div className="grid grid-cols-2 h-44 border-b border-[#D8D2C2]">
-                    {offer.products.map((item) => (
-                      <button key={item.id} type="button" onClick={() => onSelectProduct(item)} className="p-3 hover:bg-[#F2EFDB] transition-colors cursor-pointer">
-                        <img src={getProductImage(item)} alt={item.name} className="h-full w-full object-contain mix-blend-multiply" loading="lazy" />
-                      </button>
-                    ))}
-                  </div>
-                  <div className="p-4">
-                    <h3 className="font-serif-display text-xl text-[#413C23]">{offer.title}</h3>
-                    <div className="mt-2 flex items-baseline gap-2">
-                      <strong className="text-lg text-[#413C23]">{formatPrice(regular - offer.saving, currency)}</strong>
-                      <span className="text-xs line-through text-[#8F896D]">{formatPrice(regular, currency)}</span>
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-[#15803D]">Save ₹100</span>
+
+            {/* Bundle Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6">
+              {pairOffers.map((offer) => {
+                const p1 = offer.products[0];
+                const p2 = offer.products[1];
+                const regularInr = getPriceInINR(p1.price) + getPriceInINR(p2.price);
+                const bundleInr = Math.max(0, regularInr - offer.saving);
+                const isAdding = addingPairId === offer.id;
+
+                return (
+                  <article
+                    key={offer.id}
+                    className="group flex flex-col justify-between rounded-xs border border-[#D8D2C2] bg-[#FAF8F5] transition-all duration-300 hover:border-[#413C23]/40 hover:shadow-[0_8px_24px_rgba(65,60,35,0.06)]"
+                  >
+                    {/* Dual Piece Stage */}
+                    <div className="relative p-3 bg-gradient-to-b from-[#F2EFDB]/40 to-transparent border-b border-[#D8D2C2]/60">
+                      {/* Top floating badges */}
+                      <div className="flex items-center justify-between gap-1 mb-2 px-1">
+                        <span className="text-[9px] font-bold uppercase tracking-[0.18em] text-[#7A0F1A] bg-[#7A0F1A]/8 px-2 py-0.5 rounded-xs">
+                          Save ₹{offer.saving}
+                        </span>
+                        <span className="text-[9px] uppercase tracking-[0.14em] text-[#8F896D] font-medium">
+                          Curated Duo
+                        </span>
+                      </div>
+
+                      {/* Dual Product Images with + Connector */}
+                      <div className="relative grid grid-cols-2 gap-2 h-44 sm:h-48 items-center bg-[#FAF8F5] rounded-xs border border-[#D8D2C2]/40 overflow-hidden">
+                        {/* Piece 1 */}
+                        <button
+                          type="button"
+                          onClick={() => onSelectProduct(p1)}
+                          title={`View ${p1.name}`}
+                          className="h-full w-full p-2.5 flex flex-col items-center justify-center hover:bg-[#F2EFDB]/40 transition-colors cursor-pointer group/item relative"
+                        >
+                          <img
+                            src={getProductImage(p1)}
+                            alt={p1.name}
+                            className="h-28 sm:h-32 w-full object-contain mix-blend-multiply transition-transform duration-500 group-hover/item:scale-105"
+                            loading="lazy"
+                          />
+                          <span className="text-[9px] text-[#8F896D] tracking-wider uppercase mt-1 truncate max-w-full px-1">
+                            {p1.metal || 'Piece 1'}
+                          </span>
+                        </button>
+
+                        {/* Floating + badge */}
+                        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10 w-6 h-6 rounded-full bg-[#FAF8F5] border border-[#D8D2C2] text-[#413C23] shadow-xs flex items-center justify-center font-serif text-sm italic pointer-events-none select-none">
+                          +
+                        </div>
+
+                        {/* Piece 2 */}
+                        <button
+                          type="button"
+                          onClick={() => onSelectProduct(p2)}
+                          title={`View ${p2.name}`}
+                          className="h-full w-full p-2.5 flex flex-col items-center justify-center hover:bg-[#F2EFDB]/40 transition-colors cursor-pointer group/item relative"
+                        >
+                          <img
+                            src={getProductImage(p2)}
+                            alt={p2.name}
+                            className="h-28 sm:h-32 w-full object-contain mix-blend-multiply transition-transform duration-500 group-hover/item:scale-105"
+                            loading="lazy"
+                          />
+                          <span className="text-[9px] text-[#8F896D] tracking-wider uppercase mt-1 truncate max-w-full px-1">
+                            {p2.metal || 'Piece 2'}
+                          </span>
+                        </button>
+                      </div>
                     </div>
-                    <button type="button" onClick={() => offer.products.forEach(onQuickAdd)} className="mt-4 w-full bg-[#413C23] py-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-white hover:bg-black transition-colors cursor-pointer">
-                      Add both to bag
-                    </button>
-                  </div>
-                </article>
-              );
-            })}
+
+                    {/* Card Content & Action */}
+                    <div className="p-4 sm:p-5 flex flex-col flex-1 justify-between">
+                      <div>
+                        <h3 className="font-serif-display text-lg sm:text-xl font-medium text-[#2A271B] leading-snug group-hover:text-black transition-colors">
+                          {offer.title}
+                        </h3>
+                        <p className="mt-1 text-[11px] text-[#7E7864] line-clamp-1">
+                          {p1.name.replace(/Avirena\s*/i, '')} &amp; {p2.name.replace(/Avirena\s*/i, '')}
+                        </p>
+
+                        {/* Pricing Row */}
+                        <div className="mt-3 flex items-baseline gap-2.5 flex-wrap">
+                          <span className="text-base sm:text-lg font-semibold text-[#1A1918] tracking-tight">
+                            {formatInr(bundleInr)}
+                          </span>
+                          <span className="text-xs text-[#8F896D] line-through decoration-[#8F896D]/60">
+                            {formatInr(regularInr)}
+                          </span>
+                          <span className="text-[10px] font-semibold text-[#15803D] bg-[#15803D]/10 px-1.5 py-0.5 rounded-xs tracking-wider uppercase">
+                            ₹{offer.saving} off
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Add Both to Bag Button */}
+                      <button
+                        type="button"
+                        onClick={() => handleAddBundle(offer)}
+                        disabled={isAdding}
+                        className={`mt-4 w-full py-3 px-3 text-[11px] font-semibold uppercase tracking-[0.18em] transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer rounded-xs shadow-xs active:scale-[0.99] ${
+                          isAdding
+                            ? 'bg-[#15803D] text-white'
+                            : 'bg-[#1A1918] text-[#FAF8F5] hover:bg-black hover:shadow-md'
+                        }`}
+                      >
+                        {isAdding ? (
+                          <>
+                            <Check className="w-3.5 h-3.5 text-white" />
+                            <span>Pair Added to Bag</span>
+                          </>
+                        ) : (
+                          <>
+                            <ShoppingBag className="w-3.5 h-3.5 opacity-90" />
+                            <span>Add Pair to Bag</span>
+                          </>
+                        )}
+                      </button>
+                    </div>
+                  </article>
+                );
+              })}
+            </div>
           </div>
         </section>
       )}

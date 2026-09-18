@@ -1029,6 +1029,7 @@ function AppContent() {
             onSelectProduct={handleSelectProduct}
             onNavigateToCollection={handleNavigateToCollection}
             onQuickAdd={handleQuickAdd}
+            onAddToCart={handleAddToCart}
             currency={currency}
             isWishlisted={isProductWishlisted}
             onToggleWishlist={handleToggleWishlist}
