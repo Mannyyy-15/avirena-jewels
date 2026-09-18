@@ -13,6 +13,7 @@ import {
   ChevronRight,
   Clock,
   Check,
+  ShoppingBag,
 } from 'lucide-react';
 import { Product, Currency, Metal, CartItem, ProductMedia } from '../types';
 import { formatPrice, getCompareAtPrice, getDiscountPercentage } from '../data/products';
