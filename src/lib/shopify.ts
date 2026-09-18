@@ -1,6 +1,24 @@
 import { Product, ProductVariant, Category, Metal, ShopifyCart, ProductMedia } from '../types';
 import { getCompareAtPrice } from '../data/products';
 
+/**
+ * Materials copy per metal, used for the PDP "Materials" accordion.
+ *
+ * "Hypoallergenic" is deliberately absent: the term is unregulated in India and
+ * the site's own sensitive-skin guide warns against relying on it, so the copy
+ * states the verifiable facts (nickel/lead/cadmium-free, surgical steel posts).
+ */
+const METAL_MATERIALS: Record<Metal, string> = {
+  'Gold-Tone Brass':
+    'High-grade brass with anti-tarnish gold-tone e-coating. Nickel-free, lead-free and cadmium-free, with surgical steel posts.',
+  'Anti-Tarnish Brass':
+    'High-grade brass with a protective anti-tarnish e-coating. Nickel-free, lead-free and cadmium-free, with surgical steel posts.',
+  'Silver-Tone Alloy':
+    'Durable silver-tone alloy with a protective anti-tarnish coating. Nickel-free, lead-free and cadmium-free, with surgical steel posts.',
+  'Rose Gold-Tone':
+    'High-grade brass with anti-tarnish rose gold-tone e-coating. Nickel-free, lead-free and cadmium-free, with surgical steel posts.',
+};
+
 const SHOPIFY_STORE_DOMAIN = import.meta.env.VITE_SHOPIFY_STORE_DOMAIN || '';
 const SHOPIFY_STOREFRONT_ACCESS_TOKEN = import.meta.env.VITE_SHOPIFY_STOREFRONT_ACCESS_TOKEN || '';
 const SHOPIFY_API_VERSION = import.meta.env.VITE_SHOPIFY_API_VERSION || '2025-01';
