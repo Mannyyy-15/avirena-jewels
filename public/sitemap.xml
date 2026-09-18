@@ -63,6 +63,9 @@
     <image:image>
       <image:loc>https://cdn.shopify.com/s/files/1/1031/9364/1282/files/f3887f27-b72b-4af5-b09c-325f425e3fc5.png?v=1788866967</image:loc>
     </image:image>
+    <image:image>
+      <image:loc>https://cdn.shopify.com/s/files/1/1031/9364/1282/files/na-019-avirena-jewels-original-imahryvqxd8h4z8u.jpg?v=1789713483</image:loc>
+    </image:image>
   </url>
   <url>
     <loc>https://avirenajewels.com/collections</loc>
@@ -158,6 +161,9 @@
     </image:image>
     <image:image>
       <image:loc>https://cdn.shopify.com/s/files/1/1031/9364/1282/files/f3887f27-b72b-4af5-b09c-325f425e3fc5.png?v=1788866967</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>https://cdn.shopify.com/s/files/1/1031/9364/1282/files/na-019-avirena-jewels-original-imahryvqxd8h4z8u.jpg?v=1789713483</image:loc>
     </image:image>
   </url>
   <url>
@@ -572,6 +578,24 @@
     </image:image>
     <image:image>
       <image:loc>https://cdn.shopify.com/s/files/1/1031/9364/1282/files/d58c92d3-5bee-45bf-8a02-eb6aa55259b5.png?v=1788866974</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://avirenajewels.com/product/avirena-cascade-statement-drops-silver</loc>
+    <lastmod>2026-09-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <image:image>
+      <image:loc>https://cdn.shopify.com/s/files/1/1031/9364/1282/files/na-019-avirena-jewels-original-imahryvqxd8h4z8u.jpg?v=1789713483</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>https://cdn.shopify.com/s/files/1/1031/9364/1282/files/na-019-avirena-jewels-original-imahryvquyfrjhz7.jpg?v=1789713484</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>https://cdn.shopify.com/s/files/1/1031/9364/1282/files/na-019-avirena-jewels-original-imahryvqmz377zth.jpg?v=1789713483</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>https://cdn.shopify.com/s/files/1/1031/9364/1282/files/na-019-avirena-jewels-original-imahryvqprwzznt5.jpg?v=1789713484</image:loc>
     </image:image>
   </url>
 </urlset>

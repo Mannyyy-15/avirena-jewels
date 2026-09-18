@@ -500,5 +500,36 @@ export const PRODUCTS: Product[] = [
     isSculptural: true,
     isNew: true,
     tags: ["anti-tarnish","bestseller","brass","dangle","drop-earrings","earrings","ethnic-wear","featured","festive","gifting","gold-tone","new","nickel-free","occasion-wear","organic","sculptural","statement"],
+  },
+  {
+    id: 'avirena-cascade-statement-drops-silver',
+    shopifyId: 'gid://shopify/Product/10536925659458',
+    handle: 'avirena-cascade-statement-drops-silver',
+    name: 'Avirena Cascade Statement Drops — Silver',
+    subtitle: 'Tiered Perforated Liquid Silver Drop Earrings',
+    category: 'earrings',
+    metal: 'Silver-Tone Alloy',
+    price: 13.32,
+    originalPrice: 44.43,
+    images: [
+      'https://cdn.shopify.com/s/files/1/1031/9364/1282/files/na-019-avirena-jewels-original-imahryvqxd8h4z8u.jpg?v=1789713483',
+      'https://cdn.shopify.com/s/files/1/1031/9364/1282/files/na-019-avirena-jewels-original-imahryvquyfrjhz7.jpg?v=1789713484',
+      'https://cdn.shopify.com/s/files/1/1031/9364/1282/files/na-019-avirena-jewels-original-imahryvqmz377zth.jpg?v=1789713483',
+      'https://cdn.shopify.com/s/files/1/1031/9364/1282/files/na-019-avirena-jewels-original-imahryvqprwzznt5.jpg?v=1789713484'
+    ],
+    description: 'Bold organic drama. Cascading light. Tiered organic plates sculpted with intricate openwork cellular perforations that tumble like liquid silver. A showstopping statement drop that holds the room on its own — no necklace or other accessories required.Product highlights• Multi-tiered cascading molten fringe architecture• Intricate organic cellular openwork detailing• High-gloss mirror silver-tone finish with deep light reflection• Articulated tiers move gracefully without heavy lobe pullMaterials• High-grade brass with anti-tarnish silver-tone protective e-coating• Nickel-free, lead-free and cadmium-free• Surgical steel posts with comfort disc backings• Fashion jewellery (not solid silver or sterling silver)Perfect for• Grand weddings, sangeet and reception looks• Evening galas and red-carpet statements• Designer sarees and occasion lehengas• Luxury occasion giftingCareRemove before swimming, bathing or workouts. Apply perfume and lotion before putting them on. Wipe gently with a soft dry cloth after wear and store dry.Free delivery across India. 7-day easy returns on unworn pieces in original packaging.',
+    details: [
+      'Multi-tiered cascading molten fringe architecture',
+      'Intricate organic cellular openwork detailing',
+      'High-gloss mirror silver-tone finish with deep light reflection',
+      'Surgical steel hypoallergenic posts with comfort disc backings',
+      'Free delivery across India & 7-day easy returns'
+    ],
+    materials: 'High-grade brass with anti-tarnish silver-tone protective e-coating (nickel-free, lead-free) and surgical steel posts',
+    inStock: true,
+    isBestseller: true,
+    isSculptural: true,
+    isNew: true,
+    tags: ["anti-tarnish","bestseller","brass","dangle","drop-earrings","earrings","ethnic-wear","featured","festive","gifting","new","nickel-free","occasion-wear","organic","sculptural","silver-tone","statement"],
   }
 ];
