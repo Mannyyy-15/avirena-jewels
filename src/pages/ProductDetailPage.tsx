@@ -19,12 +19,12 @@ import { formatPrice, getCompareAtPrice, getDiscountPercentage } from '../data/p
 import { useShopify } from '../context/ShopifyContext';
 import { ProductImageLightbox } from '../components/ProductImageLightbox';
 import { ProductCard } from '../components/ProductCard';
-import { findPairOffer } from '../data/offers';
+import { findPairOffer, createPairBundleItems } from '../data/offers';
 
 interface ProductDetailPageProps {
   product: Product;
   currency: Currency;
-  onAddToCart: (item: Omit<CartItem, 'id'>) => void;
+  onAddToCart: (item: Omit<CartItem, 'id'> | Omit<CartItem, 'id'>[]) => void;
   onSelectProduct: (product: Product, shouldScroll?: boolean) => void;
   onNavigateBack: () => void;
   isWishlisted: boolean;
@@ -420,11 +420,16 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
     }
   };
 
+  const [isAddedPair, setIsAddedPair] = useState(false);
+
   const handleAddPair = () => {
-    if (!pairOffer) return;
-    pairOffer.products.forEach((item) => {
-      onAddToCart({ product: item, quantity: 1, metal: item.metal });
-    });
+    if (!pairOffer || pairOffer.products.length < 2) return;
+    const bundleItems = createPairBundleItems(pairOffer, [pairOffer.products[0], pairOffer.products[1]]);
+    onAddToCart(bundleItems);
+    setIsAddedPair(true);
+    setTimeout(() => {
+      setIsAddedPair(false);
+    }, 2000);
   };
 
   // Complementary recommendations for "Perfect match with" — randomized each visit.
@@ -715,28 +720,122 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                 class, so it stacks) and PREPAID50 takes a further Rs50 off any
                 order paid online. Percentages are deliberately not quoted -
                 the saving is a flat rupee amount on every pair. */}
-            <div className="pt-1 w-full space-y-2">
+            <div className="pt-1 w-full space-y-2.5">
               {pairOffer && pairPartner ? (
-                <div className="rounded-xs border border-[#8F896D] bg-[#FAF8F5] p-3">
-                  <div className="flex items-center gap-3">
-                    <img src={pairPartner.images[0] || '/logo.png'} alt={pairPartner.name} className="h-16 w-16 shrink-0 object-contain mix-blend-multiply" />
-                    <div className="min-w-0 flex-1">
-                      <span className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#7A0F1A]">Complete the pair · save ₹100</span>
-                      <p className="mt-1 text-xs font-semibold text-[#413C23]">{pairOffer.title}</p>
-                      <p className="text-[11px] text-[#6B6650]">Both pieces {formatPrice(pairOffer.products.reduce((sum, item) => sum + item.price, 0) - 100, currency)} at checkout</p>
+                <div className="rounded-xs border border-[#8F896D]/80 bg-[#FAF8F5] p-4 sm:p-5 shadow-xs space-y-3.5 transition-all duration-300 hover:border-[#413C23] hover:shadow-[0_8px_24px_rgba(65,60,35,0.08)]">
+                  {/* Badge Header Row */}
+                  <div className="flex items-center justify-between gap-2 border-b border-[#D8D2C2]/60 pb-2.5">
+                    <div className="flex items-center gap-1.5 text-[10px] sm:text-[11px] font-bold uppercase tracking-[0.2em] text-[#413C23]">
+                      <Sparkles className="w-3.5 h-3.5 text-[#8F896D] shrink-0" />
+                      <span>Signature Duo Suite</span>
                     </div>
-                    <button type="button" onClick={handleAddPair} className="shrink-0 rounded-xs bg-[#413C23] px-3 py-2 text-[10px] font-semibold uppercase tracking-wider text-white hover:bg-black cursor-pointer">Add both</button>
+                    <span className="bg-[#15803D] text-[#FAF8F5] text-[10px] font-bold tracking-wider uppercase px-2.5 py-0.5 rounded-full shadow-2xs">
+                      Save ₹100 Instantly
+                    </span>
                   </div>
+
+                  {/* Dual Product Visual Bridge */}
+                  <div className="grid grid-cols-12 gap-2 sm:gap-3 items-center">
+                    {/* Item 1 (Current Product) */}
+                    <div className="col-span-5 flex flex-col items-center text-center">
+                      <div className="relative w-20 h-20 sm:w-24 sm:h-24 bg-[#FAF8F5] border border-[#D8D2C2] rounded-xs flex items-center justify-center p-1.5 overflow-hidden">
+                        <img
+                          src={product.images[0] || '/logo.png'}
+                          alt={product.name}
+                          className="max-w-full max-h-full object-contain mix-blend-multiply"
+                        />
+                        <span className="absolute bottom-1 right-1 px-1.5 py-0.2 bg-[#413C23]/90 text-white text-[8px] uppercase tracking-wider font-semibold rounded-2xs">
+                          {isProductSilver(product) ? 'Silver' : 'Gold'}
+                        </span>
+                      </div>
+                      <p className="font-serif-display text-xs sm:text-[13px] font-medium text-[#413C23] mt-1.5 line-clamp-1 leading-snug">
+                        {product.name}
+                      </p>
+                      <span className="text-[11px] text-[#8F896D] font-medium">
+                        {formatPrice(product.price, currency)}
+                      </span>
+                    </div>
+
+                    {/* Plus Connector */}
+                    <div className="col-span-2 flex flex-col items-center justify-center">
+                      <div className="w-7 h-7 rounded-full bg-[#FAF8F5] border border-[#D8D2C2] text-[#413C23] font-serif flex items-center justify-center shadow-xs text-sm font-semibold">
+                        +
+                      </div>
+                    </div>
+
+                    {/* Item 2 (Partner Product) */}
+                    <div className="col-span-5 flex flex-col items-center text-center">
+                      <div className="relative w-20 h-20 sm:w-24 sm:h-24 bg-[#FAF8F5] border border-[#D8D2C2] rounded-xs flex items-center justify-center p-1.5 overflow-hidden">
+                        <img
+                          src={pairPartner.images[0] || '/logo.png'}
+                          alt={pairPartner.name}
+                          className="max-w-full max-h-full object-contain mix-blend-multiply"
+                        />
+                        <span className="absolute bottom-1 right-1 px-1.5 py-0.2 bg-[#413C23]/90 text-white text-[8px] uppercase tracking-wider font-semibold rounded-2xs">
+                          {isProductSilver(pairPartner) ? 'Silver' : 'Gold'}
+                        </span>
+                      </div>
+                      <p className="font-serif-display text-xs sm:text-[13px] font-medium text-[#413C23] mt-1.5 line-clamp-1 leading-snug">
+                        {pairPartner.name}
+                      </p>
+                      <span className="text-[11px] text-[#8F896D] font-medium">
+                        {formatPrice(pairPartner.price, currency)}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Price & Value Row */}
+                  <div className="bg-[#FAF8F5] border border-[#D8D2C2] rounded-xs p-3 flex items-center justify-between">
+                    <div>
+                      <span className="text-[10px] text-[#8F896D] uppercase tracking-wider block font-semibold">
+                        Duo Bundle Price
+                      </span>
+                      <div className="flex items-baseline gap-2 mt-0.5">
+                        <span className="font-bold text-[#413C23] text-lg sm:text-xl tracking-tight">
+                          {formatPrice(product.price + pairPartner.price - 100, currency)}
+                        </span>
+                        <span className="text-xs text-[#991B1B] line-through">
+                          {formatPrice(product.price + pairPartner.price, currency)}
+                        </span>
+                      </div>
+                    </div>
+                    <span className="text-[10px] sm:text-[11px] font-bold text-[#14532D] bg-[#14532D]/10 border border-[#14532D]/20 px-2 py-1 rounded-2xs uppercase tracking-wide">
+                      ₹100 Saved
+                    </span>
+                  </div>
+
+                  {/* Add Both 1-Click CTA */}
+                  <button
+                    type="button"
+                    onClick={handleAddPair}
+                    className={`w-full py-3 px-4 rounded-xs text-xs font-semibold uppercase tracking-[0.18em] transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer shadow-sm active:scale-[0.99] ${
+                      isAddedPair
+                        ? 'bg-[#15803D] text-[#FAF8F5]'
+                        : 'bg-[#413C23] hover:bg-black text-[#FAF8F5]'
+                    }`}
+                  >
+                    {isAddedPair ? (
+                      <>
+                        <Check className="w-4 h-4 stroke-[2.5]" />
+                        <span>Duo Suite Added to Bag ✓</span>
+                      </>
+                    ) : (
+                      <>
+                        <ShoppingBag className="w-4 h-4 stroke-[1.8]" />
+                        <span>Add Both as Duo Suite — {formatPrice(product.price + pairPartner.price - 100, currency)}</span>
+                      </>
+                    )}
+                  </button>
                 </div>
               ) : (
                 <div className="flex flex-wrap items-center gap-x-2 gap-y-1 py-2 px-3 rounded-xs bg-[#FAF8F5] border border-dashed border-[#8F896D]">
-                <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#413C23] shrink-0">
-                  Pair &amp; save
-                </span>
-                <span className="text-[11px] text-[#6B6650]">
-                  Buy the gold and silver together &mdash;{' '}
-                  <strong className="font-semibold text-[#413C23]">&#8377;100 off</strong> the pair, applied automatically.
-                </span>
+                  <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#413C23] shrink-0">
+                    Pair &amp; save
+                  </span>
+                  <span className="text-[11px] text-[#6B6650]">
+                    Buy the gold and silver together &mdash;{' '}
+                    <strong className="font-semibold text-[#413C23]">&#8377;100 off</strong> the pair, applied automatically.
+                  </span>
                 </div>
               )}
               <div className="flex flex-wrap items-center gap-x-2 gap-y-1 py-2 px-3 rounded-xs bg-[#F2EFDB] border border-[#D8D2C2]">

@@ -14,7 +14,7 @@ import { CartItem, Currency, Product } from '../types';
 import { formatPrice } from '../data/products';
 import { useShopify } from '../context/ShopifyContext';
 import { buildDirectCheckoutUrl } from '../lib/shopify';
-import { getAutomaticPairSavings } from '../data/offers';
+import { getAutomaticPairSavings, groupCartItemsForDisplay } from '../data/offers';
 
 interface CartPageProps {
   items: CartItem[];
@@ -149,84 +149,190 @@ export const CartPage: React.FC<CartPageProps> = ({
           </div>
 
           <div className="divide-y divide-[#D8D2C2]/60">
-            {items.map((item) => (
-              <div
-                key={item.id}
-                className="py-5 first:pt-0 last:pb-0 flex flex-col sm:grid sm:grid-cols-12 gap-4 items-center"
-              >
-                {/* Product Column */}
-                <div className="w-full sm:col-span-6 flex items-center gap-4">
-                  <div className="w-20 h-20 bg-[#FAF8F5] border border-[#D8D2C2] rounded-xs flex items-center justify-center p-2 shrink-0 overflow-hidden">
-                    <img
-                      src={item.product.images[0]}
-                      alt={item.product.name}
-                      referrerPolicy="no-referrer"
-                      className="max-w-full max-h-full w-auto h-auto object-contain mix-blend-multiply"
-                    />
+            {groupCartItemsForDisplay(items).map((group) => {
+              if (group.type === 'bundle') {
+                const leadItem = group.items[0];
+                return (
+                  <div
+                    key={group.bundleGroupId}
+                    className="py-5 first:pt-0 last:pb-0 flex flex-col sm:grid sm:grid-cols-12 gap-4 items-center"
+                  >
+                    {/* Duo Bundle Info Column */}
+                    <div className="w-full sm:col-span-6 space-y-2">
+                      <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#7A0F1A]/10 text-[#7A0F1A] text-[10px] font-bold tracking-[0.16em] uppercase">
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#7A0F1A]" />
+                        <span>Duo Suite · {group.bundleTitle}</span>
+                        <span className="text-[#14532D] font-mono">· Save ₹{group.savings * group.quantity}</span>
+                      </div>
+
+                      {/* Dual Items Visual Row */}
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        {group.items.map((piece) => (
+                          <div
+                            key={piece.id}
+                            className="flex items-center gap-2.5 bg-[#FAF8F5] border border-[#D8D2C2] rounded-xs p-2"
+                          >
+                            <div className="w-12 h-12 bg-white border border-[#D8D2C2]/70 rounded-xs flex items-center justify-center p-1 shrink-0 overflow-hidden">
+                              <img
+                                src={piece.product.images[0] || '/logo.png'}
+                                alt={piece.product.name}
+                                referrerPolicy="no-referrer"
+                                className="max-w-full max-h-full w-auto h-auto object-contain mix-blend-multiply"
+                              />
+                            </div>
+                            <div className="min-w-0 flex-1">
+                              <p className="font-serif-display text-xs font-medium text-[#413C23] truncate leading-tight">
+                                {piece.product.name}
+                              </p>
+                              <span className="text-[10px] text-[#8F896D] uppercase tracking-wider block mt-0.5">
+                                {piece.metal}
+                              </span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Quantity Controls */}
+                    <div className="w-full sm:col-span-3 flex items-center justify-between sm:justify-center">
+                      <div className="flex items-center border border-[#D8D2C2] rounded-xs bg-[#FAF8F5]">
+                        <button
+                          onClick={() => onUpdateQuantity(leadItem.id, Math.max(1, group.quantity - 1))}
+                          className="w-8 h-8 flex items-center justify-center text-[#413C23] hover:bg-[#E7E4D5] transition-colors cursor-pointer disabled:opacity-30"
+                          disabled={group.quantity <= 1}
+                          aria-label="Decrease duo quantity"
+                        >
+                          <Minus className="w-3.5 h-3.5" />
+                        </button>
+                        <span className="px-3 text-xs font-bold text-[#413C23] min-w-[24px] text-center font-mono">
+                          {group.quantity}
+                        </span>
+                        <button
+                          onClick={() => onUpdateQuantity(leadItem.id, group.quantity + 1)}
+                          className="w-8 h-8 flex items-center justify-center text-[#413C23] hover:bg-[#E7E4D5] transition-colors cursor-pointer"
+                          aria-label="Increase duo quantity"
+                        >
+                          <Plus className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+
+                      <button
+                        onClick={() => onRemoveItem(leadItem.id)}
+                        className="sm:hidden text-[#8F896D] hover:text-[#7A0F1A] transition-colors p-1"
+                        title="Remove duo suite"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+
+                    {/* Combined Duo Price & Remove */}
+                    <div className="w-full sm:col-span-3 flex items-center justify-between sm:justify-end gap-3">
+                      <div className="text-right">
+                        <div className="flex items-baseline gap-1.5 justify-end">
+                          <span className="text-xs text-[#991B1B] line-through font-normal">
+                            {formatPrice(group.combinedOriginalPrice * group.quantity, currency)}
+                          </span>
+                          <span className="text-base sm:text-lg font-bold text-[#413C23] tracking-tight">
+                            {formatPrice(group.combinedPrice * group.quantity, currency)}
+                          </span>
+                        </div>
+                        <span className="text-[10px] font-bold text-[#14532D] uppercase tracking-wider block">
+                          ₹{group.savings * group.quantity} Bundle Discount Applied
+                        </span>
+                      </div>
+                      <button
+                        onClick={() => onRemoveItem(leadItem.id)}
+                        className="hidden sm:inline-flex text-[#8F896D] hover:text-[#7A0F1A] transition-colors p-1 cursor-pointer"
+                        title="Remove duo suite"
+                        aria-label="Remove duo suite"
+                      >
+                        <Trash2 className="w-4 h-4 stroke-[1.5]" />
+                      </button>
+                    </div>
+                  </div>
+                );
+              }
+
+              const item = group.item;
+              return (
+                <div
+                  key={item.id}
+                  className="py-5 first:pt-0 last:pb-0 flex flex-col sm:grid sm:grid-cols-12 gap-4 items-center"
+                >
+                  {/* Product Column */}
+                  <div className="w-full sm:col-span-6 flex items-center gap-4">
+                    <div className="w-20 h-20 bg-[#FAF8F5] border border-[#D8D2C2] rounded-xs flex items-center justify-center p-2 shrink-0 overflow-hidden">
+                      <img
+                        src={item.product.images[0]}
+                        alt={item.product.name}
+                        referrerPolicy="no-referrer"
+                        className="max-w-full max-h-full w-auto h-auto object-contain mix-blend-multiply"
+                      />
+                    </div>
+
+                    <div className="min-w-0 flex-1">
+                      <h3 className="font-serif-display text-base sm:text-lg font-medium text-[#413C23] leading-snug">
+                        {item.product.name}
+                      </h3>
+                      <p className="text-[11px] text-[#8F896D] uppercase tracking-wider font-semibold mt-0.5">
+                        {item.metal}
+                        {item.size && <span> • {item.size}</span>}
+                      </p>
+                      <p className="text-xs text-[#8F896D] mt-1 sm:hidden">
+                        {formatPrice(item.product.price, currency)} each
+                      </p>
+                    </div>
                   </div>
 
-                  <div className="min-w-0 flex-1">
-                    <h3 className="font-serif-display text-base sm:text-lg font-medium text-[#413C23] leading-snug">
-                      {item.product.name}
-                    </h3>
-                    <p className="text-[11px] text-[#8F896D] uppercase tracking-wider font-semibold mt-0.5">
-                      {item.metal}
-                      {item.size && <span> • {item.size}</span>}
-                    </p>
-                    <p className="text-xs text-[#8F896D] mt-1 sm:hidden">
-                      {formatPrice(item.product.price, currency)} each
-                    </p>
-                  </div>
-                </div>
+                  {/* Quantity Controls */}
+                  <div className="w-full sm:col-span-3 flex items-center justify-between sm:justify-center">
+                    <div className="flex items-center border border-[#D8D2C2] rounded-xs bg-[#FAF8F5]">
+                      <button
+                        onClick={() => onUpdateQuantity(item.id, Math.max(1, item.quantity - 1))}
+                        className="w-8 h-8 flex items-center justify-center text-[#413C23] hover:bg-[#E7E4D5] transition-colors cursor-pointer disabled:opacity-30"
+                        disabled={item.quantity <= 1}
+                        aria-label="Decrease quantity"
+                      >
+                        <Minus className="w-3.5 h-3.5" />
+                      </button>
+                      <span className="px-3 text-xs font-bold text-[#413C23] min-w-[24px] text-center">
+                        {item.quantity}
+                      </span>
+                      <button
+                        onClick={() => onUpdateQuantity(item.id, item.quantity + 1)}
+                        className="w-8 h-8 flex items-center justify-center text-[#413C23] hover:bg-[#E7E4D5] transition-colors cursor-pointer"
+                        aria-label="Increase quantity"
+                      >
+                        <Plus className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
 
-                {/* Quantity Controls */}
-                <div className="w-full sm:col-span-3 flex items-center justify-between sm:justify-center">
-                  <div className="flex items-center border border-[#D8D2C2] rounded-xs bg-[#FAF8F5]">
                     <button
-                      onClick={() => onUpdateQuantity(item.id, Math.max(1, item.quantity - 1))}
-                      className="w-8 h-8 flex items-center justify-center text-[#413C23] hover:bg-[#E7E4D5] transition-colors cursor-pointer disabled:opacity-30"
-                      disabled={item.quantity <= 1}
-                      aria-label="Decrease quantity"
+                      onClick={() => onRemoveItem(item.id)}
+                      className="sm:hidden text-[#8F896D] hover:text-[#7A0F1A] transition-colors p-1"
+                      title="Remove"
                     >
-                      <Minus className="w-3.5 h-3.5" />
+                      <Trash2 className="w-4 h-4" />
                     </button>
-                    <span className="px-3 text-xs font-bold text-[#413C23] min-w-[24px] text-center">
-                      {item.quantity}
+                  </div>
+
+                  {/* Total Item Price & Remove */}
+                  <div className="w-full sm:col-span-3 flex items-center justify-between sm:justify-end gap-3">
+                    <span className="text-base sm:text-lg font-bold text-[#413C23] tracking-tight">
+                      {formatPrice(item.product.price * item.quantity, currency)}
                     </span>
                     <button
-                      onClick={() => onUpdateQuantity(item.id, item.quantity + 1)}
-                      className="w-8 h-8 flex items-center justify-center text-[#413C23] hover:bg-[#E7E4D5] transition-colors cursor-pointer"
-                      aria-label="Increase quantity"
+                      onClick={() => onRemoveItem(item.id)}
+                      className="hidden sm:inline-flex text-[#8F896D] hover:text-[#7A0F1A] transition-colors p-1 cursor-pointer"
+                      title="Remove item"
+                      aria-label="Remove item"
                     >
-                      <Plus className="w-3.5 h-3.5" />
+                      <Trash2 className="w-4 h-4 stroke-[1.5]" />
                     </button>
                   </div>
-
-                  <button
-                    onClick={() => onRemoveItem(item.id)}
-                    className="sm:hidden text-[#8F896D] hover:text-[#7A0F1A] transition-colors p-1"
-                    title="Remove"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
                 </div>
-
-                {/* Total Item Price & Remove */}
-                <div className="w-full sm:col-span-3 flex items-center justify-between sm:justify-end gap-3">
-                  <span className="text-base sm:text-lg font-bold text-[#413C23] tracking-tight">
-                    {formatPrice(item.product.price * item.quantity, currency)}
-                  </span>
-                  <button
-                    onClick={() => onRemoveItem(item.id)}
-                    className="hidden sm:inline-flex text-[#8F896D] hover:text-[#7A0F1A] transition-colors p-1 cursor-pointer"
-                    title="Remove item"
-                    aria-label="Remove item"
-                  >
-                    <Trash2 className="w-4 h-4 stroke-[1.5]" />
-                  </button>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
 

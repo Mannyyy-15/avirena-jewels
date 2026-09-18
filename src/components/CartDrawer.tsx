@@ -14,7 +14,7 @@ import { CartItem, Currency, Product } from '../types';
 import { formatPrice } from '../data/products';
 import { useShopify } from '../context/ShopifyContext';
 import { buildDirectCheckoutUrl } from '../lib/shopify';
-import { getAutomaticPairSavings } from '../data/offers';
+import { getAutomaticPairSavings, groupCartItemsForDisplay } from '../data/offers';
 
 interface CartDrawerProps {
   isOpen: boolean;
@@ -153,83 +153,164 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
               </div>
             ) : (
               <div className="space-y-3">
-                {items.map((item) => (
-                  <div
-                    key={item.id}
-                    className="flex gap-4 p-4 bg-[#FAF8F5] border border-[#D8D2C2] rounded-xs transition-all hover:border-[#8F896D]"
-                  >
-                    {/* Square thumbnail. Larger and less padded than before:
-                        at 80px with 8px inset the piece was too small to
-                        recognise, which is the thumbnail's only job here. */}
-                    <div className="w-24 h-24 bg-[#FAF8F5] border border-[#D8D2C2] rounded-xs flex items-center justify-center p-1.5 shrink-0 overflow-hidden">
-                      <img
-                        src={item.product.images[0]}
-                        alt={item.product.name}
-                        referrerPolicy="no-referrer"
-                        width={96}
-                        height={96}
-                        loading="lazy"
-                        decoding="async"
-                        className="max-w-full max-h-full w-auto h-auto object-contain mix-blend-multiply"
-                      />
-                    </div>
-
-                    {/* Details Column */}
-                    <div className="flex-1 flex flex-col justify-between min-w-0">
-                      <div>
-                        <div className="flex items-start justify-between gap-2">
-                          {/* Wraps to two lines rather than truncating: names
-                              like "Solene Crystal Hoops - Gold" lose the finish
-                              at the ellipsis, which is the part that tells the
-                              shopper which variant is in their bag. */}
-                          <h4 className="font-serif-display text-base font-medium text-[#413C23] leading-snug line-clamp-2">
-                            {item.product.name}
-                          </h4>
+                {groupCartItemsForDisplay(items).map((group) => {
+                  if (group.type === 'bundle') {
+                    const leadItem = group.items[0];
+                    return (
+                      <div
+                        key={group.bundleGroupId}
+                        className="p-4 bg-[#FAF8F5] border border-[#8F896D]/80 rounded-xs transition-all hover:border-[#413C23] shadow-2xs space-y-3"
+                      >
+                        {/* Bundle Header */}
+                        <div className="flex items-center justify-between gap-2 border-b border-[#D8D2C2]/60 pb-2">
+                          <div className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.16em] text-[#7A0F1A]">
+                            <span className="w-1.5 h-1.5 rounded-full bg-[#7A0F1A]" />
+                            <span>Duo Suite · {group.bundleTitle}</span>
+                          </div>
                           <button
-                            onClick={() => onRemoveItem(item.id)}
+                            onClick={() => onRemoveItem(leadItem.id)}
                             className="text-[#8F896D] hover:text-[#7A0F1A] transition-colors p-1 cursor-pointer shrink-0"
-                            title="Remove item"
-                            aria-label="Remove item"
+                            title="Remove entire duo suite"
+                            aria-label="Remove entire duo suite"
                           >
                             <Trash2 className="w-4 h-4 stroke-[1.5]" />
                           </button>
                         </div>
-                        <div className="text-[11px] text-[#8F896D] uppercase tracking-wider font-semibold mt-0.5">
-                          {item.metal}
-                          {item.size && <span> • {item.size}</span>}
+
+                        {/* Dual Pieces Showcase */}
+                        <div className="grid grid-cols-2 gap-2">
+                          {group.items.map((m) => (
+                            <div key={m.id} className="flex items-center gap-2 bg-white/70 border border-[#D8D2C2]/60 rounded-xs p-1.5">
+                              <div className="w-12 h-12 bg-[#FAF8F5] border border-[#D8D2C2] rounded-xs flex items-center justify-center p-1 shrink-0 overflow-hidden">
+                                <img
+                                  src={m.product.images[0] || '/logo.png'}
+                                  alt={m.product.name}
+                                  className="max-w-full max-h-full object-contain mix-blend-multiply"
+                                />
+                              </div>
+                              <div className="min-w-0 flex-1">
+                                <p className="font-serif-display text-xs font-medium text-[#413C23] truncate leading-tight">
+                                  {m.product.name}
+                                </p>
+                                <span className="text-[10px] text-[#8F896D] uppercase block truncate">
+                                  {m.metal}
+                                </span>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+
+                        {/* Quantity & Combined Price Row */}
+                        <div className="flex items-center justify-between pt-1">
+                          <div className="flex items-center border border-[#D8D2C2] rounded-xs bg-[#FAF8F5]">
+                            <button
+                              onClick={() => onUpdateQuantity(leadItem.id, Math.max(1, group.quantity - 1))}
+                              className="w-7 h-7 flex items-center justify-center text-[#413C23] hover:bg-[#E7E4D5] transition-colors cursor-pointer disabled:opacity-30"
+                              disabled={group.quantity <= 1}
+                              aria-label="Decrease bundle quantity"
+                            >
+                              <Minus className="w-3 h-3" />
+                            </button>
+                            <span className="px-2.5 text-xs font-bold text-[#413C23] min-w-[22px] text-center font-mono">
+                              {group.quantity}
+                            </span>
+                            <button
+                              onClick={() => onUpdateQuantity(leadItem.id, group.quantity + 1)}
+                              className="w-7 h-7 flex items-center justify-center text-[#413C23] hover:bg-[#E7E4D5] transition-colors cursor-pointer"
+                              aria-label="Increase bundle quantity"
+                            >
+                              <Plus className="w-3 h-3" />
+                            </button>
+                          </div>
+
+                          <div className="text-right">
+                            <div className="flex items-baseline gap-1.5 justify-end">
+                              <span className="text-xs text-[#991B1B] line-through font-normal">
+                                {formatPrice(group.combinedOriginalPrice * group.quantity, currency)}
+                              </span>
+                              <span className="font-bold text-base text-[#413C23] tracking-tight">
+                                {formatPrice(group.combinedPrice * group.quantity, currency)}
+                              </span>
+                            </div>
+                            <span className="text-[9.5px] font-bold text-[#14532D] uppercase tracking-wider block">
+                              ₹{group.savings * group.quantity} Saved
+                            </span>
+                          </div>
                         </div>
                       </div>
+                    );
+                  }
 
-                      {/* Quantity & Bold Price Row */}
-                      <div className="flex items-center justify-between pt-2">
-                        <div className="flex items-center border border-[#D8D2C2] rounded-xs bg-[#FAF8F5]">
-                          <button
-                            onClick={() => onUpdateQuantity(item.id, Math.max(1, item.quantity - 1))}
-                            className="w-7 h-7 flex items-center justify-center text-[#413C23] hover:bg-[#E7E4D5] transition-colors cursor-pointer disabled:opacity-30"
-                            disabled={item.quantity <= 1}
-                            aria-label="Decrease quantity"
-                          >
-                            <Minus className="w-3 h-3" />
-                          </button>
-                          <span className="px-2.5 text-xs font-bold text-[#413C23] min-w-[22px] text-center">
-                            {item.quantity}
-                          </span>
-                          <button
-                            onClick={() => onUpdateQuantity(item.id, item.quantity + 1)}
-                            className="w-7 h-7 flex items-center justify-center text-[#413C23] hover:bg-[#E7E4D5] transition-colors cursor-pointer"
-                            aria-label="Increase quantity"
-                          >
-                            <Plus className="w-3 h-3" />
-                          </button>
+                  const item = group.item;
+                  return (
+                    <div
+                      key={item.id}
+                      className="flex gap-4 p-4 bg-[#FAF8F5] border border-[#D8D2C2] rounded-xs transition-all hover:border-[#8F896D]"
+                    >
+                      <div className="w-24 h-24 bg-[#FAF8F5] border border-[#D8D2C2] rounded-xs flex items-center justify-center p-1.5 shrink-0 overflow-hidden">
+                        <img
+                          src={item.product.images[0]}
+                          alt={item.product.name}
+                          referrerPolicy="no-referrer"
+                          width={96}
+                          height={96}
+                          loading="lazy"
+                          decoding="async"
+                          className="max-w-full max-h-full w-auto h-auto object-contain mix-blend-multiply"
+                        />
+                      </div>
+
+                      <div className="flex-1 flex flex-col justify-between min-w-0">
+                        <div>
+                          <div className="flex items-start justify-between gap-2">
+                            <h4 className="font-serif-display text-base font-medium text-[#413C23] leading-snug line-clamp-2">
+                              {item.product.name}
+                            </h4>
+                            <button
+                              onClick={() => onRemoveItem(item.id)}
+                              className="text-[#8F896D] hover:text-[#7A0F1A] transition-colors p-1 cursor-pointer shrink-0"
+                              title="Remove item"
+                              aria-label="Remove item"
+                            >
+                              <Trash2 className="w-4 h-4 stroke-[1.5]" />
+                            </button>
+                          </div>
+                          <div className="text-[11px] text-[#8F896D] uppercase tracking-wider font-semibold mt-0.5">
+                            {item.metal}
+                            {item.size && <span> • {item.size}</span>}
+                          </div>
                         </div>
 
-                        <span className="text-base sm:text-lg font-bold text-[#413C23] tracking-tight">
-                          {formatPrice(item.product.price * item.quantity, currency)}
-                        </span>
+                        <div className="flex items-center justify-between pt-2">
+                          <div className="flex items-center border border-[#D8D2C2] rounded-xs bg-[#FAF8F5]">
+                            <button
+                              onClick={() => onUpdateQuantity(item.id, Math.max(1, item.quantity - 1))}
+                              className="w-7 h-7 flex items-center justify-center text-[#413C23] hover:bg-[#E7E4D5] transition-colors cursor-pointer disabled:opacity-30"
+                              disabled={item.quantity <= 1}
+                              aria-label="Decrease quantity"
+                            >
+                              <Minus className="w-3 h-3" />
+                            </button>
+                            <span className="px-2.5 text-xs font-bold text-[#413C23] min-w-[22px] text-center">
+                              {item.quantity}
+                            </span>
+                            <button
+                              onClick={() => onUpdateQuantity(item.id, item.quantity + 1)}
+                              className="w-7 h-7 flex items-center justify-center text-[#413C23] hover:bg-[#E7E4D5] transition-colors cursor-pointer"
+                              aria-label="Increase quantity"
+                            >
+                              <Plus className="w-3 h-3" />
+                            </button>
+                          </div>
+
+                          <span className="text-base sm:text-lg font-bold text-[#413C23] tracking-tight">
+                            {formatPrice(item.product.price * item.quantity, currency)}
+                          </span>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
           </div>

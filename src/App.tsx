@@ -845,35 +845,48 @@ function AppContent() {
 
 
   // Cart operations
-  const handleAddToCart = (item: Omit<CartItem, 'id'>) => {
+  const handleAddToCart = (itemOrItems: Omit<CartItem, 'id'> | Omit<CartItem, 'id'>[]) => {
+    const itemsToAdd = Array.isArray(itemOrItems) ? itemOrItems : [itemOrItems];
+    if (itemsToAdd.length === 0) return;
+
     if (typeof window !== 'undefined' && (window as any).fbq) {
-      (window as any).fbq('track', 'AddToCart', {
-        content_name: item.product.name,
-        content_ids: [item.product.handle || item.product.id],
-        content_type: 'product',
-        value: item.product.price * item.quantity,
-        currency: 'INR'
+      itemsToAdd.forEach((item) => {
+        (window as any).fbq('track', 'AddToCart', {
+          content_name: item.product.name,
+          content_ids: [item.product.handle || item.product.id],
+          content_type: 'product',
+          value: item.product.price * item.quantity,
+          currency: 'INR',
+        });
       });
     }
 
-    const existingIndex = cart.findIndex(
-      (c) =>
-        c.product.id === item.product.id &&
-        c.metal === item.metal &&
-        c.size === item.size
-    );
+    setCart((prevCart) => {
+      let updatedCart = [...prevCart];
+      for (const item of itemsToAdd) {
+        const existingIndex = updatedCart.findIndex(
+          (c) =>
+            c.product.id === item.product.id &&
+            c.metal === item.metal &&
+            c.size === item.size &&
+            c.bundleGroupId === item.bundleGroupId
+        );
 
-    if (existingIndex > -1) {
-      const updated = [...cart];
-      updated[existingIndex].quantity += item.quantity;
-      setCart(updated);
-    } else {
-      const newItem: CartItem = {
-        ...item,
-        id: `cart-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`,
-      };
-      setCart([...cart, newItem]);
-    }
+        if (existingIndex > -1) {
+          updatedCart[existingIndex] = {
+            ...updatedCart[existingIndex],
+            quantity: updatedCart[existingIndex].quantity + item.quantity,
+          };
+        } else {
+          const newItem: CartItem = {
+            ...item,
+            id: `cart-${Date.now()}-${Math.random().toString(36).substr(2, 6)}`,
+          };
+          updatedCart.push(newItem);
+        }
+      }
+      return updatedCart;
+    });
 
     // Immediately open the cart drawer so the user sees the item added
     setIsCartDrawerOpen(true);
@@ -891,15 +904,29 @@ function AppContent() {
   const handleUpdateQuantity = (id: string, newQty: number) => {
     if (newQty <= 0) {
       handleRemoveFromCart(id);
-    } else {
-      setCart(cart.map((item) => (item.id === id ? { ...item, quantity: newQty } : item)));
+      return;
     }
+    setCart((prevCart) => {
+      const target = prevCart.find((c) => c.id === id);
+      if (!target) return prevCart;
+      if (target.bundleGroupId) {
+        return prevCart.map((c) =>
+          c.bundleGroupId === target.bundleGroupId ? { ...c, quantity: newQty } : c
+        );
+      }
+      return prevCart.map((c) => (c.id === id ? { ...c, quantity: newQty } : c));
+    });
   };
 
   const handleRemoveFromCart = (id: string) => {
-    // No toast: the cart drawer is the feedback. A notification that repeats
-    // what the user just watched happen is noise.
-    setCart(cart.filter((item) => item.id !== id));
+    setCart((prevCart) => {
+      const target = prevCart.find((c) => c.id === id);
+      if (!target) return prevCart;
+      if (target.bundleGroupId) {
+        return prevCart.filter((c) => c.bundleGroupId !== target.bundleGroupId);
+      }
+      return prevCart.filter((c) => c.id !== id);
+    });
   };
 
   const handleClearCart = () => {

@@ -62,6 +62,9 @@ export interface CartItem {
   quantity: number;
   metal: Metal;
   size?: string;
+  bundleGroupId?: string;
+  bundleTitle?: string;
+  bundleSavings?: number;
 }
 
 export interface CurrencyConfig {

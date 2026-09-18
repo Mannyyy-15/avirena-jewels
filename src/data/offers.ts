@@ -35,21 +35,96 @@ export const PAIR_OFFERS: PairOffer[] = [
 ];
 
 export function resolvePairOffers(products: Product[]) {
-  const byHandle = new Map(products.map((product) => [product.handle, product]));
+  const byKey = new Map<string, Product>();
+  products.forEach((p) => {
+    if (p.handle) byKey.set(p.handle, p);
+    if (p.id) byKey.set(p.id, p);
+  });
   return PAIR_OFFERS.map((offer) => ({
     ...offer,
-    products: offer.handles.map((handle) => byHandle.get(handle)).filter(Boolean) as Product[],
+    products: offer.handles.map((h) => byKey.get(h)).filter(Boolean) as Product[],
   })).filter((offer) => offer.products.length === 2);
 }
 
 export function findPairOffer(product: Product, products: Product[]) {
-  return resolvePairOffers(products).find((offer) => offer.handles.includes(product.handle || ''));
+  const targetKey = product.handle || product.id;
+  return resolvePairOffers(products).find((offer) => offer.handles.includes(targetKey));
+}
+
+/**
+ * Creates the two paired cart items linked with the same bundleGroupId.
+ */
+export function createPairBundleItems(offer: PairOffer, products: [Product, Product]): Omit<CartItem, 'id'>[] {
+  const bundleGroupId = `bundle-${offer.id}-${Date.now()}`;
+  return products.map((product) => ({
+    product,
+    quantity: 1,
+    metal: product.metal,
+    bundleGroupId,
+    bundleTitle: offer.title,
+    bundleSavings: offer.saving,
+  }));
+}
+
+export type DisplayCartItem =
+  | {
+      type: 'single';
+      item: CartItem;
+    }
+  | {
+      type: 'bundle';
+      bundleGroupId: string;
+      bundleTitle: string;
+      items: CartItem[];
+      quantity: number;
+      combinedPrice: number;
+      combinedOriginalPrice: number;
+      savings: number;
+    };
+
+/**
+ * Groups cart items so that items sharing a bundleGroupId are merged into a single display unit.
+ */
+export function groupCartItemsForDisplay(items: CartItem[]): DisplayCartItem[] {
+  const result: DisplayCartItem[] = [];
+  const processedBundleGroups = new Set<string>();
+
+  for (const item of items) {
+    if (item.bundleGroupId) {
+      if (processedBundleGroups.has(item.bundleGroupId)) continue;
+      processedBundleGroups.add(item.bundleGroupId);
+
+      const bundleMembers = items.filter((i) => i.bundleGroupId === item.bundleGroupId);
+      const qty = bundleMembers[0]?.quantity || 1;
+      const baseTotal = bundleMembers.reduce((sum, m) => sum + m.product.price, 0);
+      const savings = bundleMembers[0]?.bundleSavings || 100;
+      const finalPrice = Math.max(0, baseTotal - savings);
+
+      result.push({
+        type: 'bundle',
+        bundleGroupId: item.bundleGroupId,
+        bundleTitle: item.bundleTitle || 'Duo Suite',
+        items: bundleMembers,
+        quantity: qty,
+        combinedPrice: finalPrice,
+        combinedOriginalPrice: baseTotal,
+        savings,
+      });
+    } else {
+      result.push({
+        type: 'single',
+        item,
+      });
+    }
+  }
+
+  return result;
 }
 
 export function getAutomaticPairSavings(items: CartItem[]) {
   const quantityByHandle = new Map<string, number>();
   items.forEach((item) => {
-    const handle = item.product.handle || '';
+    const handle = item.product.handle || item.product.id || '';
     quantityByHandle.set(handle, (quantityByHandle.get(handle) || 0) + item.quantity);
   });
 
