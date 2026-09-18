@@ -430,7 +430,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             id="nav-cart-bag-btn"
             onClick={openCartDrawer}
             className="relative p-2 bg-black text-white rounded-xs hover:bg-neutral-800 transition-colors focus:outline-none flex items-center gap-2 cursor-pointer shadow-xs"
-            aria-label="Shopping Bag"
+            aria-label={`Shopping Bag, ${cartCount} ${cartCount === 1 ? 'item' : 'items'}`}
             title="View Shopping Bag"
           >
             <ShoppingBag className="w-4 h-4 stroke-[1.5]" />

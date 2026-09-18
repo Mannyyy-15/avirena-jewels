@@ -1,7 +1,34 @@
 # Avirena — Keyword & AEO Strategy
 
-Research date: 5 September 2026. Based on live SERP analysis of the Indian
-anti-tarnish / fashion jewellery market.
+Research updated: 18 September 2026. Based on Google Trends relative search
+interest in India over the previous 12 months plus the live storefront catalog.
+
+## Google Trends demand snapshot — India
+
+Google Trends scores are relative within each comparison set, not absolute
+monthly search volumes. The useful signal is direction and relative demand.
+
+| Query | 12-month average | Recent 90-day average | Direction |
+|---|---:|---:|---|
+| earrings for women | 44.08 | 38.46 | Largest broad-reach term in its set |
+| artificial jewellery | 19.89 | 16.54 | Broad but less product-specific |
+| fashion jewellery | 14.91 | 13.62 | Strong commercial category term |
+| anti tarnish jewellery | 5.25 | 6.08 | Growing specialist intent |
+| daily wear earrings | 2.68 | 3.08 | Smaller, useful supporting phrase |
+| brass jewellery | 62.11 | 54.54 | Strongest material term in its set |
+| anti tarnish earrings | 38.83 | 60.46 | Fastest-growing high-intent phrase |
+| waterproof jewellery | 3.72 | 1.69 | Declining and unsupported by product claims |
+| nickel free earrings | 0.04 | 0.15 | Low volume, high trust/conversion value |
+| sensitive skin earrings | 0.00 | 0.00 | Better as educational copy than a primary title |
+
+Primary commercial cluster: **anti tarnish earrings for women**.
+
+Secondary reach cluster: **brass jewellery**, **fashion jewellery online**.
+Supporting conversion language: **daily wear earrings**, **nickel-free earrings**,
+**statement earrings**, **gold-tone earrings**, and **silver-tone earrings**.
+
+Google Trends comparison:
+`https://trends.google.com/trends/explore?date=today%2012-m&geo=IN&q=anti%20tarnish%20jewellery,daily%20wear%20earrings,fashion%20jewellery,artificial%20jewellery,earrings%20for%20women`
 
 ---
 
@@ -14,9 +41,9 @@ Kanti Kundan, TheJewelBox, Rubans, Nithilah — leads with *anti-tarnish* or
 *waterproof*. "Dailywear" is how you described yourselves; "anti-tarnish" is
 what customers type. Titles have been retargeted accordingly.
 
-**Your ₹499 price sits in the busiest band.** Competitors cluster at ₹199–899,
-with "under 500" being a heavily-searched qualifier. That is why `under-999`
-is a product tag and why an "under ₹999" collection is recommended below.
+**Your current entry price is ₹599.** The catalog sits naturally in the
+under-₹1,000 discovery band, so the existing `under-999` collection is the
+honest budget landing page to strengthen.
 
 ---
 
@@ -45,12 +72,15 @@ signals (humidity, sweat, Indian sizing) to separate them from US results.
 
 | Keyword | Target page | Status |
 |---|---|---|
-| anti tarnish jewellery india | `/shop` | ✅ in title |
+| anti tarnish jewellery india | `/shop` | ✅ in title and H1 |
+| anti tarnish earrings for women | `/` and `/shop/earrings` | ✅ primary cluster |
 | anti tarnish earrings online | `/shop/earrings` | ✅ in title |
+| brass jewellery online india | `/shop` | ✅ in title + description |
+| fashion jewellery online | `/shop` | ✅ supporting category phrase |
 | brass jewellery online india | `/shop` | ✅ in meta + keywords |
 | nickel free jewellery india | `/shop` | ✅ in keywords |
 | office wear earrings | Office & Everyday collection | ✅ collection live |
-| gifting jewellery under 500 | Gifting Edit collection | ✅ collection live |
+| jewellery gifts under 1000 | Gifting Edit collection | ✅ collection live |
 | skin safe jewellery india | `/shop` | ⚠️ add to copy |
 | waterproof jewellery india | `/shop` | ⚠️ consider — only if true |
 
@@ -74,7 +104,7 @@ Ranked by (search intent × how easily you can answer honestly):
    directly answered by your existing guide. Needs its own section or page.
 2. **"anti tarnish jewellery in monsoon / humid weather"** — genuinely
    India-specific, zero competition, and a real customer worry.
-3. **"jewellery for sensitive ears india"** — your surgical steel posts are a
+3. **"nickel free earrings india"** — your surgical steel posts are a
    real differentiator; nickel-free is a medical concern, not a style one.
 4. **"gifting jewellery for wife/sister under 1000"** — festival and occasion
    driven, spikes around Raksha Bandhan, Karwa Chauth, Diwali.
@@ -107,9 +137,8 @@ marketing copy gets skipped. Do not soften this.
    Coverage report in ~7 days to confirm all 17 URLs indexed.
 2. **Request indexing manually** for the homepage, `/shop`, and the 4 guides.
    Faster than waiting for a natural crawl on a new domain.
-3. **Add an "Under ₹999" collection** — matches a high-volume search
-   qualifier and takes two minutes as a smart collection on the
-   `under-999` tag.
+3. **Strengthen the existing Under ₹999 collection** with links from product
+   pages and gifting content.
 4. **Write long-tail gaps 1–3** above as new guides.
 5. **Google Merchant Center** — free product listings put your 3 products
    into Shopping results. Requires the policies you have just published.

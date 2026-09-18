@@ -525,7 +525,7 @@ export const GUIDES: Guide[] = [
     shortTitle: 'Sensitive Skin Guide',
     metaTitle: 'Jewellery for Sensitive Skin India | Nickel-Free | AVIRENA',
     metaDescription:
-      'Nickel causes most jewellery skin reactions in India. How to identify nickel-free pieces, what "hypoallergenic" really means, and what to check before buying.',
+      'Why nickel triggers many jewellery reactions, how to identify nickel-free earrings, and what to check before buying jewellery for sensitive skin.',
     summary:
       'Nickel is the usual culprit behind itching and rashes. How to spot genuinely nickel-free jewellery and what marketing terms actually mean.',
     category: 'Materials',

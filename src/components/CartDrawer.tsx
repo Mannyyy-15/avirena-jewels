@@ -14,6 +14,7 @@ import { CartItem, Currency, Product } from '../types';
 import { formatPrice } from '../data/products';
 import { useShopify } from '../context/ShopifyContext';
 import { buildDirectCheckoutUrl } from '../lib/shopify';
+import { getAutomaticPairSavings } from '../data/offers';
 
 interface CartDrawerProps {
   isOpen: boolean;
@@ -47,6 +48,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
 
   const subtotal = items.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
   const totalCount = items.reduce((total, i) => total + i.quantity, 0);
+  const pairSavings = getAutomaticPairSavings(items);
 
 
   const handleCheckoutClick = async () => {
@@ -248,6 +250,13 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                   <span>Shipping</span>
                   <span className="font-medium text-[#413C23]">Free Delivery</span>
                 </div>
+                {pairSavings > 0 && (
+                  <div className="flex justify-between rounded-xs border border-[#15803D]/25 bg-[#15803D]/10 px-2.5 py-2 text-xs font-semibold text-[#14532D]">
+                    <span>Pair offer at checkout</span>
+                    <span>−{formatPrice(pairSavings, currency)}</span>
+                  </div>
+                )}
+                <p className="text-[11px] text-[#6B6650]">Use <strong className="font-mono text-[#413C23]">PREPAID50</strong> at checkout for another ₹50 off.</p>
               </div>
 
               {/* Checkout CTA */}

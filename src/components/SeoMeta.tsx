@@ -38,26 +38,33 @@ export const SeoMeta: React.FC<SeoMetaProps> = ({
 
   useEffect(() => {
     // Dynamic Title & Description Map
-    let title = 'Avirena Jewels – Anti-Tarnish Dailywear Jewelry India';
+    let title = 'Anti-Tarnish Earrings for Women India | Avirena';
     let description =
-      'At Avirena Jewels, our mission is to create elegant, high-quality dailywear jewellery made in durable anti-tarnish brass with cultured freshwater pearls.';
+      'Shop anti-tarnish earrings for women in gold and silver tones. Brass statement earrings, studs and hoops from ₹599, with free delivery across India.';
     let canonical = 'https://avirenajewels.com';
 
     if (currentPage === 'collection' || currentPage === 'shop') {
       if (curatedEdit === 'under-999') {
-        title = 'Anti-Tarnish Jewellery Under ₹999 | Affordable Dailywear | AVIRENA';
+        title = 'Anti-Tarnish Earrings Under ₹999 | Avirena';
         description =
-          'Shop luxury anti-tarnish dailywear jewellery under ₹999. Waterproof, nickel-free brass earrings, rings, and pendants made for sensitive skin. Free delivery across India.';
+          'Shop anti-tarnish earrings under ₹999 in gold and silver tones. Nickel-free studs, hoops and drop earrings with free delivery across India.';
         canonical = 'https://avirenajewels.com/collections/under-999';
       } else if (curatedEdit === 'gifting-edit') {
-        title = 'Jewellery Gifts Under ₹1000 | Thoughtful Everyday Gifts | AVIRENA';
+        title = 'Jewellery Gifts Under ₹1000 for Women | Avirena';
         description =
           'Find the perfect jewellery gift under ₹1000 with Avirena. Sculptural earrings, pearl drops, and timeless staples with zero sizing risk. Includes luxury gift box.';
         canonical = 'https://avirenajewels.com/collections/gifting-edit';
       } else {
-        const catLabel = selectedCategory && selectedCategory !== 'all' ? `${selectedCategory.toUpperCase()} | ` : '';
-        title = `${catLabel}Shop Dailywear Jewelry | AVIRENA`;
-        description = `Discover our curated collection of ${selectedCategory || 'dailywear'} jewelry in premium anti-tarnish brass. Free delivery on all orders.`;
+        if (selectedCategory === 'earrings') {
+          title = 'Anti-Tarnish Earrings for Women Online | Avirena';
+          description = 'Shop anti-tarnish earrings for women: brass studs, hoops, drops and statement earrings in gold and silver tones. Free delivery across India.';
+        } else {
+          const catLabel = selectedCategory && selectedCategory !== 'all' ? `${selectedCategory.toUpperCase()} | ` : '';
+          title = selectedCategory === 'all'
+            ? 'Anti-Tarnish & Brass Jewellery Online India | Avirena'
+            : `${catLabel}Shop Dailywear Jewellery | Avirena`;
+          description = `Discover ${selectedCategory || 'fashion'} jewellery in premium anti-tarnish brass and durable alloys. Free delivery on all orders across India.`;
+        }
         canonical = `https://avirenajewels.com/shop${selectedCategory && selectedCategory !== 'all' ? `/${selectedCategory}` : ''}`;
       }
     } else if (currentPage === 'collections') {
@@ -85,7 +92,7 @@ export const SeoMeta: React.FC<SeoMetaProps> = ({
       canonical = 'https://avirenajewels.com/policies';
     } else if (currentPage === 'privacy-policy') {
       title = 'Privacy Policy | AVIRENA Jewels';
-      description = 'Read the official Avirena Jewels Privacy Policy. Information security, data protection, PCI-DSS compliant checkout, and customer privacy standards.';
+      description = 'Read the Avirena Jewels Privacy Policy covering customer data, secure Shopify checkout, marketing communications, and privacy rights.';
       canonical = 'https://avirenajewels.com/privacy-policy';
     } else if (currentPage === 'refund-policy') {
       title = 'Return and Refund Policy (7-Day Exchanges) | AVIRENA Jewels';
@@ -97,7 +104,7 @@ export const SeoMeta: React.FC<SeoMetaProps> = ({
       canonical = 'https://avirenajewels.com/shipping-policy';
     } else if (currentPage === 'terms-of-service') {
       title = 'Terms of Service | AVIRENA Jewels';
-      description = 'Terms of Service for Avirena Jewels. E-commerce store conditions, Indian Consumer Protection Act compliance, jewelry material disclosures, and user terms.';
+      description = 'Read Avirena Jewels store terms covering orders, pricing, cancellations, material disclosures, customer responsibilities, and Indian law.';
       canonical = 'https://avirenajewels.com/terms-of-service';
     } else if (currentPage === 'legal-notice') {
       title = 'Legal Notice & Business Information | AVIRENA Jewels';

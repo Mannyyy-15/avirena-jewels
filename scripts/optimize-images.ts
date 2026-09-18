@@ -59,6 +59,17 @@ const PHOTO_TARGETS: Target[] = [
   quality: 78,
 }));
 
+const PUBLIC_EDITORIAL_TARGETS: Target[] = [
+  'bestsellers-campaign-banner',
+  'gold-edit-campaign-banner',
+  'silver-edit-campaign-banner',
+  'collections-archive-hero',
+].map((name) => ({
+  src: `public/assets/editorial/${name}.jpg`,
+  out: `public/assets/editorial/${name}.webp`,
+  quality: 76,
+}));
+
 function ffmpegAvailable(): boolean {
   try {
     execFileSync('ffmpeg', ['-version'], { stdio: 'ignore' });
@@ -78,7 +89,7 @@ function main(): void {
     return;
   }
 
-  for (const { src, out, quality } of [...TARGETS, ...PHOTO_TARGETS]) {
+  for (const { src, out, quality } of [...TARGETS, ...PHOTO_TARGETS, ...PUBLIC_EDITORIAL_TARGETS]) {
     const srcPath = path.join(ROOT, src);
     const outPath = path.join(ROOT, out);
 

@@ -16,6 +16,7 @@ import {
 import { Product, Currency, Category } from '../types';
 import { formatPrice, getCompareAtPrice, getDiscountPercentage } from '../data/products';
 import { HeroBaroquePearlRing } from '../components/HeroBaroquePearlRing';
+import { resolvePairOffers } from '../data/offers';
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
@@ -56,6 +57,8 @@ export const HomePage: React.FC<HomePageProps> = ({
     () => (Array.isArray(catalogProducts) ? catalogProducts : []),
     [catalogProducts]
   );
+
+  const pairOffers = useMemo(() => resolvePairOffers(safeProducts), [safeProducts]);
 
   // Safe image getter. Falls back to the brand logo, never to stock photography:
   // an Unsplash image here would render as this product's photograph.
@@ -262,6 +265,7 @@ export const HomePage: React.FC<HomePageProps> = ({
         ref={heroRef}
         className="relative w-full bg-[#E7E4D5] border-b border-[#D8D2C2] min-h-[calc(100vh-6rem)] sm:min-h-[calc(100vh-5rem)] min-h-[calc(100dvh-6rem)] sm:min-h-[calc(100dvh-5rem)] max-h-[1080px] flex flex-col justify-between p-4 pb-5 sm:p-10 md:p-12 lg:px-16 lg:py-10 select-none overflow-hidden"
       >
+        <h1 className="sr-only">Anti-Tarnish Earrings for Women, Made for Daily Wear</h1>
         {/* Top Micro-Header */}
         <div className="gsap-hero-sub w-full flex items-center justify-between z-10 text-xs">
           <span className="text-[10px] sm:text-xs font-medium tracking-[0.25em] text-[#8F896D] uppercase">
@@ -319,6 +323,48 @@ export const HomePage: React.FC<HomePageProps> = ({
           </button>
         </div>
       </section>
+
+      {pairOffers.length > 0 && (
+        <section className="w-full bg-[#F2EFDB] border-b border-[#D8D2C2] px-4 py-12 sm:px-8 sm:py-16 lg:px-12 xl:px-16 2xl:px-20">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between mb-8">
+            <div>
+              <span className="text-[10px] font-bold uppercase tracking-[0.24em] text-[#7A0F1A]">Automatic pair offer</span>
+              <h2 className="mt-2 font-serif-display text-3xl sm:text-4xl font-light text-[#413C23]">Two finishes. Better together.</h2>
+              <p className="mt-2 max-w-2xl text-sm text-[#6B6650]">Choose one of our curated pairs and save ₹100 automatically at Shopify checkout.</p>
+            </div>
+            <div className="rounded-xs border border-[#D8D2C2] bg-[#FAF8F5] px-4 py-3 text-xs text-[#413C23]">
+              Add code <strong className="font-mono">PREPAID50</strong> for another ₹50 off
+            </div>
+          </div>
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
+            {pairOffers.map((offer) => {
+              const regular = offer.products.reduce((sum, item) => sum + item.price, 0);
+              return (
+                <article key={offer.id} className="overflow-hidden rounded-xs border border-[#D8D2C2] bg-[#FAF8F5]">
+                  <div className="grid grid-cols-2 h-44 border-b border-[#D8D2C2]">
+                    {offer.products.map((item) => (
+                      <button key={item.id} type="button" onClick={() => onSelectProduct(item)} className="p-3 hover:bg-[#F2EFDB] transition-colors cursor-pointer">
+                        <img src={getProductImage(item)} alt={item.name} className="h-full w-full object-contain mix-blend-multiply" loading="lazy" />
+                      </button>
+                    ))}
+                  </div>
+                  <div className="p-4">
+                    <h3 className="font-serif-display text-xl text-[#413C23]">{offer.title}</h3>
+                    <div className="mt-2 flex items-baseline gap-2">
+                      <strong className="text-lg text-[#413C23]">{formatPrice(regular - offer.saving, currency)}</strong>
+                      <span className="text-xs line-through text-[#8F896D]">{formatPrice(regular, currency)}</span>
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-[#15803D]">Save ₹100</span>
+                    </div>
+                    <button type="button" onClick={() => offer.products.forEach(onQuickAdd)} className="mt-4 w-full bg-[#413C23] py-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-white hover:bg-black transition-colors cursor-pointer">
+                      Add both to bag
+                    </button>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        </section>
+      )}
 
       {/* 2. SECTION 2: EDITORIAL CATEGORY SHOWCASE (COMMENTED OUT)
       <section className="w-full bg-[#E7E4D5] py-16 sm:py-24 border-b border-[#D8D2C2] px-4 sm:px-8 lg:px-12 xl:px-16 2xl:px-20">
@@ -412,9 +458,9 @@ export const HomePage: React.FC<HomePageProps> = ({
 
                   {/* Meta Box with Prominent Bold Price & Discount Badge */}
                   <div className="flex flex-col justify-between pt-1">
-                    <h4 className="font-serif-display text-base sm:text-lg md:text-xl text-black group-hover:text-neutral-700 transition-colors font-medium sm:font-semibold leading-snug truncate block">
+                    <h3 className="font-serif-display text-base sm:text-lg md:text-xl text-black group-hover:text-neutral-700 transition-colors font-medium sm:font-semibold leading-snug truncate block">
                       {displayTitle}
-                    </h4>
+                    </h3>
                     {(() => {
                       const comparePrice = getCompareAtPrice(product.price || 0, product.originalPrice);
                       const discount = getDiscountPercentage(product.price || 0, comparePrice);
@@ -425,10 +471,10 @@ export const HomePage: React.FC<HomePageProps> = ({
                           </span>
                           {comparePrice > (product.price || 0) && (
                             <>
-                              <span className="text-xs text-[#DC2626] line-through font-normal">
+                              <span className="text-xs text-[#991B1B] line-through font-normal">
                                 {formatPrice(comparePrice, currency)}
                               </span>
-                              <span className="text-[10px] font-bold text-[#15803D] bg-[#15803D]/10 border border-[#15803D]/20 px-1.5 py-0.2 rounded-2xs uppercase tracking-wider">
+                              <span className="text-[10px] font-bold text-[#14532D] bg-[#14532D]/10 border border-[#14532D]/25 px-1.5 py-0.2 rounded-2xs uppercase tracking-wider">
                                 {discount}% OFF
                               </span>
                             </>
@@ -470,7 +516,7 @@ export const HomePage: React.FC<HomePageProps> = ({
           {/* Wide Dramatic Model Banner */}
           <div className="gsap-home-reveal w-full h-64 sm:h-80 md:h-96 lg:h-[460px] xl:h-[500px] rounded-xs overflow-hidden border border-[#D8D2C2] relative bg-[#413C23] shadow-xs">
             <img
-              src="/assets/editorial/bestsellers-campaign-banner.jpg"
+              src="/assets/editorial/bestsellers-campaign-banner.webp"
               alt="Avirena Sculptural Jewelry Campaign"
               width={2000}
               height={1000}
@@ -521,9 +567,9 @@ export const HomePage: React.FC<HomePageProps> = ({
 
                   {/* Meta Box with Prominent Bold Price & Discount Badge */}
                   <div className="flex flex-col justify-between pt-1">
-                    <h4 className="font-serif-display text-base sm:text-lg md:text-xl text-black group-hover:text-neutral-700 transition-colors font-medium sm:font-semibold leading-snug truncate block">
+                    <h3 className="font-serif-display text-base sm:text-lg md:text-xl text-black group-hover:text-neutral-700 transition-colors font-medium sm:font-semibold leading-snug truncate block">
                       {product.name}
-                    </h4>
+                    </h3>
                     {(() => {
                       const comparePrice = getCompareAtPrice(product.price || 0, product.originalPrice);
                       const discount = getDiscountPercentage(product.price || 0, comparePrice);
@@ -534,10 +580,10 @@ export const HomePage: React.FC<HomePageProps> = ({
                           </span>
                           {comparePrice > (product.price || 0) && (
                             <>
-                              <span className="text-xs text-[#DC2626] line-through font-normal">
+                              <span className="text-xs text-[#991B1B] line-through font-normal">
                                 {formatPrice(comparePrice, currency)}
                               </span>
-                              <span className="text-[10px] font-bold text-[#15803D] bg-[#15803D]/10 border border-[#15803D]/20 px-1.5 py-0.2 rounded-2xs uppercase tracking-wider">
+                              <span className="text-[10px] font-bold text-[#14532D] bg-[#14532D]/10 border border-[#14532D]/25 px-1.5 py-0.2 rounded-2xs uppercase tracking-wider">
                                 {discount}% OFF
                               </span>
                             </>
@@ -587,7 +633,7 @@ export const HomePage: React.FC<HomePageProps> = ({
           {/* Gold Edit Wide Campaign Banner */}
           <div className="gsap-home-reveal w-full h-64 sm:h-80 md:h-96 lg:h-[460px] xl:h-[500px] rounded-xs overflow-hidden border border-[#D8D2C2] relative bg-[#413C23] shadow-xs">
             <img
-              src="/assets/editorial/gold-edit-campaign-banner.jpg"
+              src="/assets/editorial/gold-edit-campaign-banner.webp"
               alt="Avirena Gold-Tone Brass Campaign"
               width={2000}
               height={1000}
@@ -671,9 +717,9 @@ export const HomePage: React.FC<HomePageProps> = ({
 
                     {/* Meta Box */}
                     <div className="flex flex-col justify-between pt-2 border-t border-[#D8D2C2]/60">
-                      <h4 className="font-serif-display text-base sm:text-lg md:text-xl text-black group-hover:text-neutral-700 transition-colors font-medium sm:font-semibold leading-snug truncate">
+                      <h3 className="font-serif-display text-base sm:text-lg md:text-xl text-black group-hover:text-neutral-700 transition-colors font-medium sm:font-semibold leading-snug truncate">
                         {product.name}
-                      </h4>
+                      </h3>
                       <div className="flex items-baseline justify-between mt-1 flex-wrap gap-1.5">
                         {(() => {
                           const comparePrice = getCompareAtPrice(product.price || 0, product.originalPrice);
@@ -685,10 +731,10 @@ export const HomePage: React.FC<HomePageProps> = ({
                               </span>
                               {comparePrice > (product.price || 0) && (
                                 <>
-                                  <span className="text-xs text-[#DC2626] line-through font-normal">
+                                  <span className="text-xs text-[#991B1B] line-through font-normal">
                                     {formatPrice(comparePrice, currency)}
                                   </span>
-                                  <span className="text-[10px] font-bold text-[#15803D] bg-[#15803D]/10 border border-[#15803D]/20 px-1.5 py-0.2 rounded-2xs uppercase tracking-wider">
+                                  <span className="text-[10px] font-bold text-[#14532D] bg-[#14532D]/10 border border-[#14532D]/25 px-1.5 py-0.2 rounded-2xs uppercase tracking-wider">
                                     {discount}% OFF
                                   </span>
                                 </>
@@ -759,7 +805,7 @@ export const HomePage: React.FC<HomePageProps> = ({
           {/* Silver Edit Wide Campaign Banner */}
           <div className="gsap-home-reveal w-full h-64 sm:h-80 md:h-96 lg:h-[460px] xl:h-[500px] rounded-xs overflow-hidden border border-[#D8D2C2] relative bg-[#413C23] shadow-xs">
             <img
-              src="/assets/editorial/silver-edit-campaign-banner.jpg"
+              src="/assets/editorial/silver-edit-campaign-banner.webp"
               alt="Avirena Silver-Tone Alloy Campaign"
               width={2000}
               height={1000}
@@ -843,9 +889,9 @@ export const HomePage: React.FC<HomePageProps> = ({
 
                     {/* Meta Box */}
                     <div className="flex flex-col justify-between pt-2 border-t border-[#D8D2C2]/60">
-                      <h4 className="font-serif-display text-base sm:text-lg md:text-xl text-black group-hover:text-neutral-700 transition-colors font-medium sm:font-semibold leading-snug truncate">
+                      <h3 className="font-serif-display text-base sm:text-lg md:text-xl text-black group-hover:text-neutral-700 transition-colors font-medium sm:font-semibold leading-snug truncate">
                         {product.name}
-                      </h4>
+                      </h3>
                       <div className="flex items-baseline justify-between mt-1 flex-wrap gap-1.5">
                         {(() => {
                           const comparePrice = getCompareAtPrice(product.price || 0, product.originalPrice);
@@ -857,10 +903,10 @@ export const HomePage: React.FC<HomePageProps> = ({
                               </span>
                               {comparePrice > (product.price || 0) && (
                                 <>
-                                  <span className="text-xs text-[#DC2626] line-through font-normal">
+                                  <span className="text-xs text-[#991B1B] line-through font-normal">
                                     {formatPrice(comparePrice, currency)}
                                   </span>
-                                  <span className="text-[10px] font-bold text-[#15803D] bg-[#15803D]/10 border border-[#15803D]/20 px-1.5 py-0.2 rounded-2xs uppercase tracking-wider">
+                                  <span className="text-[10px] font-bold text-[#14532D] bg-[#14532D]/10 border border-[#14532D]/25 px-1.5 py-0.2 rounded-2xs uppercase tracking-wider">
                                     {discount}% OFF
                                   </span>
                                 </>
@@ -926,11 +972,11 @@ export const HomePage: React.FC<HomePageProps> = ({
           </div>
 
           {/* Right Column: First Product Image & Italian Editorial Canvas (Full-Width Half at 85vh) */}
-          <div className="w-full h-[500px] sm:h-[600px] md:h-[85vh] min-h-[560px] bg-[#878266] text-[#FAF8F5] p-8 sm:p-12 md:p-14 lg:p-16 flex flex-col justify-between items-center text-center relative overflow-hidden">
+          <div className="w-full h-[500px] sm:h-[600px] md:h-[85vh] min-h-[560px] bg-[#5F5B43] text-[#FAF8F5] p-8 sm:p-12 md:p-14 lg:p-16 flex flex-col justify-between items-center text-center relative overflow-hidden">
             
             {/* Top Text: Category & Headline */}
             <div className="space-y-2 z-10 pt-2 sm:pt-4">
-              <span className="text-[11px] sm:text-xs text-[#FAF8F5]/75 uppercase tracking-[0.28em] font-medium block">
+              <span className="text-[11px] sm:text-xs text-[#FAF8F5] uppercase tracking-[0.28em] font-medium block">
                 Atelier Editorial
               </span>
               <h3 className="font-serif-display text-3xl sm:text-5xl md:text-6xl lg:text-[62px] text-[#FAF8F5] font-light tracking-wide">
@@ -959,7 +1005,7 @@ export const HomePage: React.FC<HomePageProps> = ({
 
             {/* Bottom Text & Button */}
             <div className="space-y-4 sm:space-y-5 z-10 max-w-md pb-2 sm:pb-4">
-              <p className="font-serif italic text-sm sm:text-base text-[#FAF8F5]/90 leading-relaxed font-light">
+              <p className="font-serif italic text-sm sm:text-base text-[#FAF8F5] leading-relaxed font-light">
                 {spotlightProduct.subtitle || 'A collection where timelessness meets emotion, and simplicity acquires character.'}
               </p>
 
@@ -1072,9 +1118,9 @@ export const HomePage: React.FC<HomePageProps> = ({
                   </div>
 
                   <div className="p-4 space-y-1.5">
-                    <h4 className="font-serif-display text-lg sm:text-xl text-black group-hover:text-neutral-700 transition-colors font-medium sm:font-semibold truncate">
+                    <h3 className="font-serif-display text-lg sm:text-xl text-black group-hover:text-neutral-700 transition-colors font-medium sm:font-semibold truncate">
                       {product.name}
-                    </h4>
+                    </h3>
                     <div className="flex items-center justify-between text-xs pt-0.5 flex-wrap gap-1">
                       {(() => {
                         const comparePrice = getCompareAtPrice(product.price || 0, product.originalPrice);
@@ -1084,10 +1130,10 @@ export const HomePage: React.FC<HomePageProps> = ({
                             <span className="text-base sm:text-lg font-bold text-black tracking-tight">{formatPrice(product.price || 0, currency)}</span>
                             {comparePrice > (product.price || 0) && (
                               <>
-                                <span className="text-xs text-[#DC2626] line-through font-normal">
+                                <span className="text-xs text-[#991B1B] line-through font-normal">
                                   {formatPrice(comparePrice, currency)}
                                 </span>
-                                <span className="text-[10px] font-bold text-[#15803D] bg-[#15803D]/10 border border-[#15803D]/20 px-1.5 py-0.2 rounded-2xs uppercase tracking-wider">
+                                <span className="text-[10px] font-bold text-[#14532D] bg-[#14532D]/10 border border-[#14532D]/25 px-1.5 py-0.2 rounded-2xs uppercase tracking-wider">
                                   {discount}% OFF
                                 </span>
                               </>

@@ -14,6 +14,7 @@ import { CartItem, Currency, Product } from '../types';
 import { formatPrice } from '../data/products';
 import { useShopify } from '../context/ShopifyContext';
 import { buildDirectCheckoutUrl } from '../lib/shopify';
+import { getAutomaticPairSavings } from '../data/offers';
 
 interface CartPageProps {
   items: CartItem[];
@@ -40,6 +41,7 @@ export const CartPage: React.FC<CartPageProps> = ({
 
   const subtotal = items.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
   const totalCount = items.reduce((total, i) => total + i.quantity, 0);
+  const pairSavings = getAutomaticPairSavings(items);
 
 
 
@@ -238,6 +240,17 @@ export const CartPage: React.FC<CartPageProps> = ({
             <div className="flex justify-between items-center">
               <span className="text-[#8F896D] uppercase tracking-wider font-semibold">Subtotal</span>
               <span className="text-base font-bold text-[#413C23]">{formatPrice(subtotal, currency)}</span>
+            </div>
+
+            {pairSavings > 0 && (
+              <div className="flex justify-between items-center rounded-xs border border-[#15803D]/25 bg-[#15803D]/10 px-3 py-2 text-[#14532D]">
+                <span className="font-semibold">Automatic pair saving</span>
+                <span className="font-bold">−{formatPrice(pairSavings, currency)}</span>
+              </div>
+            )}
+
+            <div className="rounded-xs border border-dashed border-[#8F896D] bg-[#FAF8F5] px-3 py-2 leading-relaxed text-[#6B6650]">
+              Add code <strong className="font-mono text-[#413C23]">PREPAID50</strong> at checkout for another ₹50 off.
             </div>
 
             <div className="flex justify-between items-center">

@@ -19,6 +19,7 @@ import { formatPrice, getCompareAtPrice, getDiscountPercentage } from '../data/p
 import { useShopify } from '../context/ShopifyContext';
 import { ProductImageLightbox } from '../components/ProductImageLightbox';
 import { ProductCard } from '../components/ProductCard';
+import { findPairOffer } from '../data/offers';
 
 interface ProductDetailPageProps {
   product: Product;
@@ -223,6 +224,11 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
 
   // Live Shopify catalog only (drives 'styled with' / related pieces).
   const activeProducts = Array.isArray(catalogProducts) ? catalogProducts : [];
+  const pairOffer = useMemo(
+    () => findPairOffer(product, activeProducts),
+    [product, activeProducts],
+  );
+  const pairPartner = pairOffer?.products.find((item) => item.id !== product.id);
 
   // Gallery shows this product's OWN photography and nothing else. It used to
   // be padded to 5 thumbnails with Unsplash stock photos, which showed shoppers
@@ -412,6 +418,13 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
         await addToShopifyCart(targetVariant.id, 1);
       }
     }
+  };
+
+  const handleAddPair = () => {
+    if (!pairOffer) return;
+    pairOffer.products.forEach((item) => {
+      onAddToCart({ product: item, quantity: 1, metal: item.metal });
+    });
   };
 
   // Complementary recommendations for "Perfect match with" — randomized each visit.
@@ -702,8 +715,21 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                 class, so it stacks) and PREPAID50 takes a further Rs50 off any
                 order paid online. Percentages are deliberately not quoted -
                 the saving is a flat rupee amount on every pair. */}
-            <div className="pt-1 w-full space-y-1.5">
-              <div className="flex flex-wrap items-center gap-x-2 gap-y-1 py-2 px-3 rounded-xs bg-[#FAF8F5] border border-dashed border-[#8F896D]">
+            <div className="pt-1 w-full space-y-2">
+              {pairOffer && pairPartner ? (
+                <div className="rounded-xs border border-[#8F896D] bg-[#FAF8F5] p-3">
+                  <div className="flex items-center gap-3">
+                    <img src={pairPartner.images[0] || '/logo.png'} alt={pairPartner.name} className="h-16 w-16 shrink-0 object-contain mix-blend-multiply" />
+                    <div className="min-w-0 flex-1">
+                      <span className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#7A0F1A]">Complete the pair · save ₹100</span>
+                      <p className="mt-1 text-xs font-semibold text-[#413C23]">{pairOffer.title}</p>
+                      <p className="text-[11px] text-[#6B6650]">Both pieces {formatPrice(pairOffer.products.reduce((sum, item) => sum + item.price, 0) - 100, currency)} at checkout</p>
+                    </div>
+                    <button type="button" onClick={handleAddPair} className="shrink-0 rounded-xs bg-[#413C23] px-3 py-2 text-[10px] font-semibold uppercase tracking-wider text-white hover:bg-black cursor-pointer">Add both</button>
+                  </div>
+                </div>
+              ) : (
+                <div className="flex flex-wrap items-center gap-x-2 gap-y-1 py-2 px-3 rounded-xs bg-[#FAF8F5] border border-dashed border-[#8F896D]">
                 <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#413C23] shrink-0">
                   Pair &amp; save
                 </span>
@@ -711,7 +737,8 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                   Buy the gold and silver together &mdash;{' '}
                   <strong className="font-semibold text-[#413C23]">&#8377;100 off</strong> the pair, applied automatically.
                 </span>
-              </div>
+                </div>
+              )}
               <div className="flex flex-wrap items-center gap-x-2 gap-y-1 py-2 px-3 rounded-xs bg-[#F2EFDB] border border-[#D8D2C2]">
                 <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#413C23] shrink-0">
                   Pay online

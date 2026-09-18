@@ -644,14 +644,14 @@ async function main() {
   // ---------------- ROUTE 1: Home Page (/) ----------------
   routes.push({
     path: '',
-    title: 'Avirena Jewels – Anti-Tarnish Dailywear Jewelry India',
+    title: 'Anti-Tarnish Earrings for Women India | Avirena',
     description:
-      'At Avirena Jewels, our mission is to create elegant, high-quality dailywear jewellery made in durable anti-tarnish brass with cultured freshwater pearls.',
+      'Shop anti-tarnish earrings for women in gold and silver tones. Brass statement earrings, studs and hoops from ₹599, with free delivery across India.',
     canonical: SITE_URL,
     ogImage: `${SITE_URL}/og-banner.jpg`,
     ogType: 'website',
     keywords:
-      'dailywear jewelry, anti tarnish brass jewelry, baroque pearls, sculptural rings, molten earrings, statement necklace, luxury jewelry India, aesthetic dailywear',
+      'anti tarnish earrings, earrings for women, brass jewellery, daily wear earrings, fashion jewellery online India, statement earrings',
     jsonLd: [
       ...getGlobalSchema(),
       {
@@ -745,8 +745,8 @@ async function main() {
       </header>
       <main>
         <section class="hero-section">
-          <h1>Anti-Tarnish Brass Jewellery for Daily Wear</h1>
-          <p>Sculptural earrings in high-grade brass and durable alloys, sealed with a protective anti-tarnish coating. Nickel-free, lead-free and cadmium-free, with surgical steel posts, so they suit sensitive skin. Made in India for everyday wear${
+          <h1>Anti-Tarnish Earrings for Women, Made for Daily Wear</h1>
+          <p>Shop brass statement earrings, studs, hoops and drops in gold and silver tones, sealed with a protective anti-tarnish coating. Nickel-free, lead-free and cadmium-free, with surgical steel posts. Made in India for everyday wear${
             lowestPriceForHome ? `, from ₹${lowestPriceForHome}` : ''
           }.</p>
           <a href="/shop" class="cta-btn">Explore Collection</a>
@@ -857,14 +857,14 @@ async function main() {
 
   routes.push({
     path: 'shop',
-    title: 'Anti-Tarnish Jewellery Online India | AVIRENA',
-    description: `Shop anti-tarnish gold-tone brass jewellery for daily wear. Nickel-free, skin-safe${
+    title: 'Anti-Tarnish & Brass Jewellery Online India | Avirena',
+    description: `Shop anti-tarnish brass jewellery and earrings for women. Nickel-free${
       lowestPrice ? `, from ₹${lowestPrice}` : ''
-    }. Free delivery on all orders and 7-day exchanges across India.`,
+    }. Free delivery and 7-day returns across India.`,
     canonical: `${SITE_URL}/shop`,
     ogImage: shopifyProducts[0]?.images?.edges?.[0]?.node?.url || `${SITE_URL}/logo.png`,
     ogType: 'website',
-    keywords: 'anti tarnish jewellery india, brass jewellery online, dailywear jewellery, gold tone earrings, nickel free jewellery, office wear jewellery',
+    keywords: 'anti tarnish jewellery India, brass jewellery online, fashion jewellery India, earrings for women, daily wear earrings, statement earrings',
     jsonLd: [
       ...getGlobalSchema(),
       {
@@ -897,8 +897,8 @@ async function main() {
     htmlContent: `
       <main class="shop-catalog-page">
         <header>
-          <h1>All Jewelry Collection</h1>
-          <p>Modern jewelry designed in-house. Crafted with durable anti-tarnish brass.</p>
+          <h1>Anti-Tarnish &amp; Brass Jewellery Online</h1>
+          <p>Shop fashion jewellery for women, including daily wear studs, hoops, drops and statement earrings in durable anti-tarnish finishes.</p>
         </header>
         <section class="products-grid">
           ${productCardsHtml}
@@ -935,10 +935,14 @@ async function main() {
 
     routes.push({
       path: `shop/${cat.id}`,
-      title: `Anti-Tarnish ${cat.title} Online India | AVIRENA`,
+      title: cat.id === 'earrings'
+        ? 'Anti-Tarnish Earrings for Women Online | Avirena'
+        : `Anti-Tarnish ${cat.title} Online India | Avirena`,
       description: isEmpty
         ? `${cat.title} are not in stock at AVIRENA yet. Browse our current dailywear jewelry in anti-tarnish brass.`
-        : `${cat.desc} Made in premium brass with an anti-tarnish protective coating.`,
+        : cat.id === 'earrings'
+          ? 'Shop anti-tarnish earrings for women: brass studs, hoops, drops and statement earrings in gold and silver tones. Free delivery across India.'
+          : `${cat.desc} Made in premium brass with an anti-tarnish protective coating.`,
       canonical: `${SITE_URL}/shop/${cat.id}`,
       ogImage: catImages[0] || `${SITE_URL}/logo.png`,
       ogType: 'website',
@@ -986,8 +990,8 @@ async function main() {
           <nav aria-label="Breadcrumb">
             <a href="/">Home</a> / <a href="/shop">Shop</a> / <span>${cat.title}</span>
           </nav>
-          <h1>${cat.title} Collection</h1>
-          <p>${cat.desc}</p>
+          <h1>${cat.id === 'earrings' ? 'Anti-Tarnish Earrings for Women' : `${cat.title} Collection`}</h1>
+          <p>${cat.id === 'earrings' ? 'Shop brass studs, hoops, drops and statement earrings in gold and silver tones, finished with a durable anti-tarnish protective coating.' : cat.desc}</p>
           ${
             isEmpty
               ? `<section class="category-empty">
@@ -1097,13 +1101,13 @@ async function main() {
 
   routes.push({
     path: 'collections/under-999',
-    title: 'Anti-Tarnish Jewellery Under ₹999 | Affordable Dailywear | AVIRENA',
+    title: 'Anti-Tarnish Earrings Under ₹999 | Avirena',
     description:
-      'Shop luxury anti-tarnish dailywear jewellery under ₹999. Waterproof, nickel-free brass earrings, rings, and pendants made for sensitive skin. Free delivery across India.',
+      'Shop anti-tarnish earrings under ₹999 in gold and silver tones. Nickel-free studs, hoops and drop earrings with free delivery across India.',
     canonical: `${SITE_URL}/collections/under-999`,
     ogImage: under999Images[0] || `${SITE_URL}/logo.png`,
     ogType: 'website',
-    keywords: 'anti tarnish jewellery under 1000, jewellery under 999, affordable brass jewellery, daily wear earrings under 1000, waterproof jewellery india',
+    keywords: 'anti tarnish earrings under 1000, earrings under 999, affordable brass jewellery, daily wear earrings under 1000, fashion jewellery India',
     jsonLd: [
       ...getGlobalSchema(),
       {
@@ -1144,8 +1148,8 @@ async function main() {
         <nav aria-label="Breadcrumb">
           <a href="/">Home</a> / <a href="/collections">Collections</a> / <span>The Under ₹999 Edit</span>
         </nav>
-        <h1>The Under ₹999 Edit</h1>
-        <p>Lustrous anti-tarnish dailywear jewelry made in skin-safe brass &amp; durable alloys. Every piece under ₹999.</p>
+        <h1>Anti-Tarnish Earrings Under ₹999</h1>
+        <p>Gold-tone and silver-tone studs, hoops and drop earrings with anti-tarnish finishes. Every piece in this edit is under ₹999.</p>
         <section class="products-grid">
           ${renderProductCards(under999Products)}
         </section>
@@ -1167,7 +1171,7 @@ async function main() {
 
   routes.push({
     path: 'collections/gifting-edit',
-    title: 'Jewellery Gifts Under ₹1000 | Thoughtful Everyday Gifts | AVIRENA',
+    title: 'Jewellery Gifts Under ₹1000 for Women | Avirena',
     description:
       'Find the perfect jewellery gift under ₹1000 with Avirena. Sculptural earrings, pearl drops, and timeless staples with zero sizing risk. Includes luxury gift box.',
     canonical: `${SITE_URL}/collections/gifting-edit`,
@@ -1380,7 +1384,7 @@ async function main() {
     path: 'privacy-policy',
     title: 'Privacy Policy | AVIRENA Jewels',
     description:
-      'Official Privacy Policy of Avirena Jewels. Transparent data protection, PCI-DSS certified payment encryption, zero third-party data broker sales, and client privacy rights.',
+      'Avirena Jewels Privacy Policy covering customer data, secure Shopify checkout, marketing communications, service providers, and privacy rights.',
     canonical: `${SITE_URL}/privacy-policy`,
     ogImage: `${SITE_URL}/logo.png`,
     ogType: 'website',
@@ -1567,7 +1571,7 @@ async function main() {
     path: 'terms-of-service',
     title: 'Terms of Service | AVIRENA Jewels',
     description:
-      'Terms of Service for Avirena Jewels. Online store terms, anti-tarnish brass jewelry material disclosures, pricing, 4-hour cancellation window, and Indian consumer protection.',
+      'Avirena Jewels store terms covering orders, pricing, cancellations, material disclosures, customer responsibilities, and Indian consumer protection.',
     canonical: `${SITE_URL}/terms-of-service`,
     ogImage: `${SITE_URL}/logo.png`,
     ogType: 'website',
@@ -2062,7 +2066,16 @@ async function main() {
   console.log(`🔨 Generating static pre-rendered HTML files for ${routes.length} routes...`);
 
   for (const route of routes) {
-    const renderedHtml = renderPageHtml(indexHtmlTemplate, route);
+    let renderedHtml = renderPageHtml(indexHtmlTemplate, route);
+
+    // The hero art is useful only on the homepage. Keeping these preloads on
+    // every prerendered route wastes bandwidth and produces browser warnings on
+    // product, policy, guide, and collection landings.
+    if (route.path) {
+      renderedHtml = renderedHtml
+        .replace(/\s*<link\s+rel="preload"\s+as="image"\s+href="\/hero\.webp"[^>]*>\s*/i, '\n')
+        .replace(/\s*<link\s+rel="preload"\s+as="image"\s+href="\/logo\.webp"[^>]*>\s*/i, '\n');
+    }
     const targetDir = route.path ? path.join(distDir, route.path) : distDir;
 
     if (!fs.existsSync(targetDir)) {

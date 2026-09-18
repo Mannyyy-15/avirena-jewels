@@ -105,7 +105,7 @@ export const CollectionsHubPage: React.FC<CollectionsHubPageProps> = ({
         {/* Background Atmosphere Image Blend */}
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10 overflow-hidden">
           <img
-            src="/assets/editorial/collections-archive-hero.jpg"
+            src="/assets/editorial/collections-archive-hero.webp"
             alt="Avirena Collections Archive"
             className="w-full h-full object-cover object-[center_40%] opacity-40 filter contrast-110 scale-105"
           />

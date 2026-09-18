@@ -116,9 +116,10 @@ export const CollectionPage: React.FC<CollectionPageProps> = ({
   }, [products, selectedCategory, selectedMetal, sortBy, curatedEdit]);
 
   const getMastheadTitle = () => {
-    if (curatedEdit === 'under-999') return 'THE UNDER ₹999 EDIT';
-    if (curatedEdit === 'gifting-edit') return 'THE GIFTING EDIT';
-    if (selectedCategory === 'all') return 'ALL JEWELRY';
+    if (curatedEdit === 'under-999') return 'EARRINGS UNDER ₹999';
+    if (curatedEdit === 'gifting-edit') return 'JEWELLERY GIFTS';
+    if (selectedCategory === 'all') return 'ANTI-TARNISH JEWELLERY';
+    if (selectedCategory === 'earrings') return 'ANTI-TARNISH EARRINGS';
     return selectedCategory.toUpperCase();
   };
 
@@ -361,7 +362,7 @@ export const CollectionPage: React.FC<CollectionPageProps> = ({
           <h1 className="font-serif-display text-5xl sm:text-7xl md:text-8xl lg:text-9xl tracking-tight text-[#FAF8F5] font-light italic leading-none drop-shadow-[0_4px_12px_rgba(0,0,0,0.15)]">{getMastheadTitle()}</h1>
           {curatedEdit === 'under-999' && (
             <p className="mt-2.5 sm:mt-3 text-xs sm:text-sm text-[#FAF8F5]/90 font-light tracking-wide">
-              Lustrous anti-tarnish dailywear jewelry made in skin-safe brass &amp; durable alloys. Every piece under ₹999.
+              Gold-tone and silver-tone earrings with anti-tarnish finishes and nickel-free posts. Every piece under ₹999.
             </p>
           )}
           {curatedEdit === 'gifting-edit' && (
