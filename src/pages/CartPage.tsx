@@ -11,7 +11,7 @@ import {
   Check,
 } from 'lucide-react';
 import { CartItem, Currency, Product } from '../types';
-import { formatPrice } from '../data/products';
+import { formatPrice, formatInr } from '../data/products';
 import { useShopify } from '../context/ShopifyContext';
 import { buildDirectCheckoutUrl } from '../lib/shopify';
 import { getAutomaticPairSavings, groupCartItemsForDisplay } from '../data/offers';
@@ -351,7 +351,7 @@ export const CartPage: React.FC<CartPageProps> = ({
             {pairSavings > 0 && (
               <div className="flex justify-between items-center rounded-xs border border-[#15803D]/25 bg-[#15803D]/10 px-3 py-2 text-[#14532D]">
                 <span className="font-semibold">Automatic pair saving</span>
-                <span className="font-bold">−{formatPrice(pairSavings, currency)}</span>
+                <span className="font-bold">−{formatInr(pairSavings)}</span>
               </div>
             )}
 

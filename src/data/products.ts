@@ -7,8 +7,17 @@ export const CURRENCIES: Record<Currency, CurrencyConfig> = {
   GBP: { code: 'GBP', symbol: '₹', rate: 90.0, label: 'INR (₹)' },
 };
 
-export const formatPrice = (price: number, currency: Currency = 'INR'): string => {
-  const inrAmount = price < 500 ? Math.round(price * 90) : Math.round(price);
+export const getPriceInINR = (price: number): number => {
+  if (!price || price <= 0) return 0;
+  return price < 500 ? Math.round(price * 90) : Math.round(price);
+};
+
+export const formatInr = (amount: number): string => {
+  return `₹${Math.round(amount).toLocaleString('en-IN')}`;
+};
+
+export const formatPrice = (price: number, _currency: Currency = 'INR'): string => {
+  const inrAmount = getPriceInINR(price);
   return `₹${inrAmount.toLocaleString('en-IN')}`;
 };
 

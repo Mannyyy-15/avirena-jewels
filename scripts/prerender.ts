@@ -1228,6 +1228,81 @@ async function main() {
   });
   addSitemapUrl(`${SITE_URL}/collections/gifting-edit`, '0.85', 'weekly', giftingImages);
 
+  // ---------------- ROUTE 3c: Signature Duo Suites (/collections/duo-suites) ----------------
+  const pairHandles = [
+    'avirena-crystal-hoops-gold-tone-earrings',
+    'avirena-crystal-hoops-silver-tone-earrings',
+    'avirena-square-studs-gold-tone-brass-earrings',
+    'avirena-heart-drops-silver-tone-earrings',
+    'avirena-drop-earrings-gold-tone-brass',
+    'avirena-spiral-earrings-silver-tone',
+    'avirena-cascade-statement-drops-gold-tone',
+    'avirena-cascade-statement-drops-silver',
+  ];
+  const duoProducts = shopifyProducts.filter((p: any) => pairHandles.includes(p.handle));
+  const duoImages = duoProducts
+    .map((p) => p.images?.edges?.[0]?.node?.url)
+    .filter(Boolean) as string[];
+
+  routes.push({
+    path: 'collections/duo-suites',
+    title: 'Signature Duo Suites | Pair & Save ₹100 | Avirena',
+    description:
+      'Curated two-piece pairing sets in matching gold and silver tones. Save an automatic ₹100 on every duo suite with free delivery across India.',
+    canonical: `${SITE_URL}/collections/duo-suites`,
+    ogImage: duoImages[0] || `${SITE_URL}/logo.png`,
+    ogType: 'website',
+    keywords: 'jewelry duo sets, matching earrings pair, gold and silver duo earrings, jewellery bundle offer India',
+    jsonLd: [
+      ...getGlobalSchema(),
+      {
+        '@context': 'https://schema.org',
+        '@type': 'CollectionPage',
+        name: 'Signature Duo Suites | AVIRENA',
+        url: `${SITE_URL}/collections/duo-suites`,
+        description:
+          'Curated two-piece pairing sets in matching gold and silver tones. Automatic ₹100 pair discount applied at checkout.',
+      },
+      {
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          {
+            '@type': 'ListItem',
+            position: 1,
+            name: 'Home',
+            item: SITE_URL,
+          },
+          {
+            '@type': 'ListItem',
+            position: 2,
+            name: 'Collections',
+            item: `${SITE_URL}/collections`,
+          },
+          {
+            '@type': 'ListItem',
+            position: 3,
+            name: 'Signature Duo Suites',
+            item: `${SITE_URL}/collections/duo-suites`,
+          },
+        ],
+      },
+    ],
+    htmlContent: `
+      <main class="category-page">
+        <nav aria-label="Breadcrumb">
+          <a href="/">Home</a> / <a href="/collections">Collections</a> / <span>Signature Duo Suites</span>
+        </nav>
+        <h1>Signature Duo Suites</h1>
+        <p>Matching gold and silver pairing sets. Pair both finishes together and receive an automatic ₹100 pair discount applied at checkout.</p>
+        <section class="products-grid">
+          ${renderProductCards(duoProducts.length > 0 ? duoProducts : shopifyProducts.slice(0, 8))}
+        </section>
+      </main>
+    `,
+  });
+  addSitemapUrl(`${SITE_URL}/collections/duo-suites`, '0.85', 'weekly', duoImages);
+
   // ---------------- ROUTE 4: About Page (/about) ----------------
   routes.push({
     path: 'about',

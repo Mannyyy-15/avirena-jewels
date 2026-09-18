@@ -15,7 +15,7 @@ interface NavbarProps {
   openStoryModal: () => void;
   openCareModal: () => void;
   setSelectedCategory?: (cat: Category) => void;
-  onSelectCuratedEdit?: (edit: 'under-999' | 'gifting-edit') => void;
+  onSelectCuratedEdit?: (edit: 'under-999' | 'gifting-edit' | 'duo-suites') => void;
   currency?: Currency;
   setCurrency?: (c: Currency) => void;
 }
@@ -103,7 +103,7 @@ export const Navbar: React.FC<NavbarProps> = ({
     setMobileMenuOpen(false);
   };
 
-  const selectCuratedEdit = (edit: 'under-999' | 'gifting-edit') => {
+  const selectCuratedEdit = (edit: 'under-999' | 'gifting-edit' | 'duo-suites') => {
     if (onSelectCuratedEdit) {
       onSelectCuratedEdit(edit);
     }
@@ -269,6 +269,13 @@ export const Navbar: React.FC<NavbarProps> = ({
 
                     <div className="border-t border-[#E8E2D6]/80 mt-1 pt-1.5 mx-2 space-y-1">
                       <button
+                        onClick={() => selectCuratedEdit('duo-suites')}
+                        className="w-full text-left px-2 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#413C23] hover:text-black hover:bg-[#F2EFDB] transition-all cursor-pointer flex items-center justify-between rounded-xs"
+                      >
+                        <span>Duo Suites (Pair &amp; Save)</span>
+                        <span className="text-[8.5px] px-1.5 py-0.2 bg-[#7A0F1A] text-[#FAF8F5] rounded-xs font-bold tracking-normal">SAVE ₹100</span>
+                      </button>
+                      <button
                         onClick={() => selectCuratedEdit('under-999')}
                         className="w-full text-left px-2 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#413C23] hover:text-black hover:bg-[#F2EFDB] transition-all cursor-pointer flex items-center justify-between rounded-xs"
                       >
@@ -281,6 +288,13 @@ export const Navbar: React.FC<NavbarProps> = ({
                       >
                         <span>The Gifting Edit</span>
                         <span className="text-[9px] text-[#8F896D]">✦</span>
+                      </button>
+                      <button
+                        onClick={() => navigateTo('collections')}
+                        className="w-full text-left px-2 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#8F896D] hover:text-black hover:bg-[#F2EFDB] transition-all cursor-pointer flex items-center justify-between rounded-xs border-t border-[#E8E2D6]/60 mt-1 pt-1"
+                      >
+                        <span>All Collections Hub</span>
+                        <span className="text-[10px]">→</span>
                       </button>
                       <button
                         onClick={() => selectCategory('all')}
@@ -588,6 +602,13 @@ export const Navbar: React.FC<NavbarProps> = ({
                       ))}
                       <div className="border-t border-[#D8D2C2]/60 pt-1.5 mt-1 space-y-1">
                         <button
+                          onClick={() => selectCuratedEdit('duo-suites')}
+                          className="flex w-full items-center justify-between py-1.5 px-2 font-semibold text-[#413C23] hover:text-black transition-colors rounded-xs"
+                        >
+                          <span>Duo Suites (Pair &amp; Save)</span>
+                          <span className="text-[8.5px] px-1.5 py-0.2 bg-[#7A0F1A] text-[#FAF8F5] rounded-xs font-bold">SAVE ₹100</span>
+                        </button>
+                        <button
                           onClick={() => selectCuratedEdit('under-999')}
                           className="flex w-full items-center justify-between py-1.5 px-2 font-semibold text-[#413C23] hover:text-black transition-colors rounded-xs"
                         >
@@ -600,6 +621,13 @@ export const Navbar: React.FC<NavbarProps> = ({
                         >
                           <span>The Gifting Edit</span>
                           <span className="text-[9px] text-[#8F896D]">✦</span>
+                        </button>
+                        <button
+                          onClick={() => navigateTo('collections')}
+                          className="flex w-full items-center justify-between py-1.5 px-2 font-semibold text-[#8F896D] hover:text-[#413C23] transition-colors border-t border-[#D8D2C2]/50 mt-1 pt-1"
+                        >
+                          <span>All Collections Hub</span>
+                          <span className="text-[10px]">→</span>
                         </button>
                         <button
                           onClick={() => selectCategory('all')}

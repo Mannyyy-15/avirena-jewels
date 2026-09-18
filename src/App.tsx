@@ -151,7 +151,7 @@ const buildPath = (
   product: Product | undefined,
   category: Category,
   guideSlug: string | null,
-  curatedEdit?: 'under-999' | 'gifting-edit' | null
+  curatedEdit?: 'under-999' | 'gifting-edit' | 'duo-suites' | null
 ): string => {
   switch (page) {
     case 'home':
@@ -160,6 +160,7 @@ const buildPath = (
     case 'shop':
       if (curatedEdit === 'under-999') return '/collections/under-999';
       if (curatedEdit === 'gifting-edit') return '/collections/gifting-edit';
+      if (curatedEdit === 'duo-suites') return '/collections/duo-suites';
       return category && category !== 'all' ? `/shop/${category}` : '/shop';
     case 'collections':
       return '/collections';
@@ -211,7 +212,7 @@ const buildTitle = (
   product: Product | undefined,
   category: Category,
   guideSlug: string | null,
-  curatedEdit?: 'under-999' | 'gifting-edit' | null
+  curatedEdit?: 'under-999' | 'gifting-edit' | 'duo-suites' | null
 ): string => {
   switch (page) {
     case 'home':
@@ -223,6 +224,9 @@ const buildTitle = (
       }
       if (curatedEdit === 'gifting-edit') {
         return 'Jewellery Gifts Under ₹1000 | Thoughtful Everyday Gifts | AVIRENA';
+      }
+      if (curatedEdit === 'duo-suites') {
+        return 'Signature Duo Suites | Pair & Save ₹100 | AVIRENA';
       }
       return category && category !== 'all'
         ? CATEGORY_TITLES[category]
@@ -383,7 +387,7 @@ function AppContent() {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<Category>('all');
   const [selectedMetal, setSelectedMetal] = useState<string>('all');
-  const [curatedEdit, setCuratedEdit] = useState<'under-999' | 'gifting-edit' | null>(null);
+  const [curatedEdit, setCuratedEdit] = useState<'under-999' | 'gifting-edit' | 'duo-suites' | null>(null);
   const [activeGuideSlug, setActiveGuideSlug] = useState<string | null>(null);
   const [activePolicyTab, setActivePolicyTab] = useState<'returns' | 'privacy' | 'terms' | 'shipping' | 'contact' | 'legal'>('returns');
   const [currency, setCurrency] = useState<Currency>('INR');
@@ -526,6 +530,10 @@ function AppContent() {
             setSelectedCategory('all');
             setCuratedEdit('gifting-edit');
             setCurrentPage('collection');
+          } else if (slug === 'duo-suites') {
+            setSelectedCategory('all');
+            setCuratedEdit('duo-suites');
+            setCurrentPage('collection');
           } else if (isCategorySlug(slug)) {
             setSelectedCategory(slug);
             setCuratedEdit(null);
@@ -546,6 +554,10 @@ function AppContent() {
           } else if (slug === 'gifting-edit') {
             setSelectedCategory('all');
             setCuratedEdit('gifting-edit');
+            setCurrentPage('collection');
+          } else if (slug === 'duo-suites') {
+            setSelectedCategory('all');
+            setCuratedEdit('duo-suites');
             setCurrentPage('collection');
           } else {
             setCuratedEdit(null);

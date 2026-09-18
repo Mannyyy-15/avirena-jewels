@@ -10,8 +10,8 @@ import {
   Truck,
   Lock,
 } from 'lucide-react';
-import { CartItem, Currency, Product } from '../types';
-import { formatPrice } from '../data/products';
+import { CartItem, Currency } from '../types';
+import { formatPrice, formatInr } from '../data/products';
 import { useShopify } from '../context/ShopifyContext';
 import { buildDirectCheckoutUrl } from '../lib/shopify';
 import { getAutomaticPairSavings, groupCartItemsForDisplay } from '../data/offers';
@@ -334,7 +334,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                 {pairSavings > 0 && (
                   <div className="flex justify-between rounded-xs border border-[#15803D]/25 bg-[#15803D]/10 px-2.5 py-2 text-xs font-semibold text-[#14532D]">
                     <span>Pair offer at checkout</span>
-                    <span>−{formatPrice(pairSavings, currency)}</span>
+                    <span>−{formatInr(pairSavings)}</span>
                   </div>
                 )}
                 <p className="text-[11px] text-[#6B6650]">Use <strong className="font-mono text-[#413C23]">PREPAID50</strong> at checkout for another ₹50 off.</p>

@@ -17,7 +17,7 @@ interface SeoMetaProps {
   currentPage: PageView;
   selectedProduct?: Product;
   selectedCategory?: Category;
-  curatedEdit?: 'under-999' | 'gifting-edit' | null;
+  curatedEdit?: 'under-999' | 'gifting-edit' | 'duo-suites' | null;
   currency: Currency;
   /** Slug of the guide being viewed, when currentPage is 'guides'. */
   activeGuideSlug?: string | null;
@@ -54,6 +54,11 @@ export const SeoMeta: React.FC<SeoMetaProps> = ({
         description =
           'Find the perfect jewellery gift under ₹1000 with Avirena. Sculptural earrings, pearl drops, and timeless staples with zero sizing risk. Includes luxury gift box.';
         canonical = 'https://avirenajewels.com/collections/gifting-edit';
+      } else if (curatedEdit === 'duo-suites') {
+        title = 'Signature Duo Suites | Pair & Save ₹100 | Avirena';
+        description =
+          'Curated two-piece pairing sets in matching gold and silver tones. Save an automatic ₹100 on every duo suite with free delivery across India.';
+        canonical = 'https://avirenajewels.com/collections/duo-suites';
       } else {
         if (selectedCategory === 'earrings') {
           title = 'Anti-Tarnish Earrings for Women Online | Avirena';

@@ -1,4 +1,5 @@
 import { CartItem, Product } from '../types';
+import { getPriceInINR } from './products';
 
 export type PairOffer = {
   id: string;
@@ -96,9 +97,9 @@ export function groupCartItemsForDisplay(items: CartItem[]): DisplayCartItem[] {
 
       const bundleMembers = items.filter((i) => i.bundleGroupId === item.bundleGroupId);
       const qty = bundleMembers[0]?.quantity || 1;
-      const baseTotal = bundleMembers.reduce((sum, m) => sum + m.product.price, 0);
+      const baseTotalInr = bundleMembers.reduce((sum, m) => sum + getPriceInINR(m.product.price), 0);
       const savings = bundleMembers[0]?.bundleSavings || 100;
-      const finalPrice = Math.max(0, baseTotal - savings);
+      const finalPriceInr = Math.max(0, baseTotalInr - savings);
 
       result.push({
         type: 'bundle',
@@ -106,8 +107,8 @@ export function groupCartItemsForDisplay(items: CartItem[]): DisplayCartItem[] {
         bundleTitle: item.bundleTitle || 'Duo Suite',
         items: bundleMembers,
         quantity: qty,
-        combinedPrice: finalPrice,
-        combinedOriginalPrice: baseTotal,
+        combinedPrice: finalPriceInr,
+        combinedOriginalPrice: baseTotalInr,
         savings,
       });
     } else {

@@ -5,6 +5,7 @@ import { Product, Currency, Category, Metal } from '../types';
 import { formatPrice, getCompareAtPrice, getDiscountPercentage } from '../data/products';
 import { ChevronDown, Heart, Check, ShoppingBag, X } from 'lucide-react';
 import shopHeroImg from '../assets/shop-hero-editorial.webp';
+import { PAIR_OFFERS } from '../data/offers';
 
 interface CollectionPageProps {
   products: Product[];
@@ -17,7 +18,7 @@ interface CollectionPageProps {
   selectedCategory: Category;
   setSelectedCategory: (cat: Category) => void;
   initialMetal?: string;
-  curatedEdit?: 'under-999' | 'gifting-edit' | null;
+  curatedEdit?: 'under-999' | 'gifting-edit' | 'duo-suites' | null;
   onClearCuratedEdit?: () => void;
   onSelectProduct: (product: Product) => void;
   onQuickAdd: (product: Product) => void;
@@ -88,6 +89,9 @@ export const CollectionPage: React.FC<CollectionPageProps> = ({
         const inr = p.price < 500 ? Math.round(p.price * 90) : Math.round(p.price);
         return inr <= 1200 || p.category === 'earrings' || p.isBestseller;
       });
+    } else if (curatedEdit === 'duo-suites') {
+      const pairHandles = new Set(PAIR_OFFERS.flatMap((o) => o.handles));
+      list = list.filter((p) => pairHandles.has(p.handle || p.id));
     }
 
     // 2. Category Filter
@@ -116,6 +120,7 @@ export const CollectionPage: React.FC<CollectionPageProps> = ({
   }, [products, selectedCategory, selectedMetal, sortBy, curatedEdit]);
 
   const getMastheadTitle = () => {
+    if (curatedEdit === 'duo-suites') return 'SIGNATURE DUO SUITES';
     if (curatedEdit === 'under-999') return 'EARRINGS UNDER ₹999';
     if (curatedEdit === 'gifting-edit') return 'JEWELLERY GIFTS';
     if (selectedCategory === 'all') return 'ANTI-TARNISH JEWELLERY';
@@ -370,6 +375,11 @@ export const CollectionPage: React.FC<CollectionPageProps> = ({
               Zero-sizing-risk earrings, luminous pearl drops &amp; sculpted staples. Thoughtful gifting under ₹1,000 in signature Avirena packaging.
             </p>
           )}
+          {curatedEdit === 'duo-suites' && (
+            <p className="mt-2.5 sm:mt-3 text-xs sm:text-sm text-[#FAF8F5]/90 font-light tracking-wide">
+              Matching gold and silver pairing sets. Pair both finishes together and receive an automatic ₹100 pair discount applied at checkout.
+            </p>
+          )}
         </div>
         <div className="relative z-10 w-full flex items-center justify-between text-[10px] sm:text-[11px] font-mono tracking-widest text-[#FAF8F5]/70 pb-3 border-t border-[#FAF8F5]/20 pt-2">
           <span>{curatedEdit ? 'CURATED EDIT' : 'CURATED DAILYWEAR BRASS'}</span>
@@ -450,7 +460,7 @@ export const CollectionPage: React.FC<CollectionPageProps> = ({
           </div>
           {curatedEdit && (
             <div className="inline-flex items-center gap-1 px-2.5 py-1 rounded-sm bg-[#413C23] text-[#FAF8F5] text-[10px] sm:text-[11px] font-semibold tracking-wider uppercase">
-              <span>✦ {curatedEdit === 'under-999' ? 'Under ₹999' : 'Gifting Edit'}</span>
+              <span>✦ {curatedEdit === 'under-999' ? 'Under ₹999' : curatedEdit === 'duo-suites' ? 'Duo Suites' : 'Gifting Edit'}</span>
               <button
                 onClick={onClearCuratedEdit}
                 className="hover:text-white cursor-pointer ml-1 p-0.5 rounded-full hover:bg-white/20 transition-colors"
