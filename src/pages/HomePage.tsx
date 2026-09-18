@@ -243,6 +243,21 @@ export const HomePage: React.FC<HomePageProps> = ({
         );
       });
 
+      // Staggered duo cards
+      if (document.querySelector('.duo-card')) {
+        gsap.from('.duo-card', {
+          y: 25,
+          opacity: 0,
+          duration: 0.6,
+          stagger: 0.08,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: '.duo-grid',
+            start: 'top 92%',
+          },
+        });
+      }
+
       // Staggered collection cards
       if (document.querySelector('.collection-card')) {
         gsap.from('.collection-card', {
@@ -365,7 +380,7 @@ export const HomePage: React.FC<HomePageProps> = ({
             </div>
 
             {/* 4-Column Uniform Duo Grid matching Curated Collection Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+            <div className="duo-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
               {pairOffers.map((offer) => {
                 const p1 = offer.products[0];
                 const p2 = offer.products[1];
@@ -376,7 +391,7 @@ export const HomePage: React.FC<HomePageProps> = ({
                 return (
                   <div
                     key={offer.id}
-                    className="collection-card group cursor-pointer flex flex-col space-y-2 text-left w-full"
+                    className="duo-card group cursor-pointer flex flex-col space-y-2 text-left w-full"
                   >
                     {/* Fixed Uniform Square Box Container */}
                     <div className="relative aspect-square w-full bg-[#FAF8F5] border border-[#D8D2C2] rounded-xs flex items-center justify-center p-4 sm:p-5 transition-all duration-300 group-hover:border-[#8F896D] group-hover:shadow-[0_8px_20px_rgba(65,60,35,0.08)] overflow-hidden">
