@@ -112,27 +112,55 @@ export const HomePage: React.FC<HomePageProps> = ({
     return '/logo.png';
   }, [spotlightProduct]);
 
-  // Curated pieces for "Collection" section dynamically from live catalog
+  // Fresh random shuffle seed on mount/refresh to keep sections dynamic and varied
+  const [shuffleSeed, setShuffleSeed] = useState(0);
+  useEffect(() => {
+    setShuffleSeed(Math.floor(Math.random() * 10000) + 1);
+  }, []);
+
+  // Single individual earrings pool (excluding bundle suites)
+  const singleEarrings = useMemo(() => {
+    return safeProducts.filter((p) => {
+      if (!p || !p.id) return false;
+      const isBundle = (p.tags || []).includes('bundle') || (p.tags || []).includes('duo-suite') || (p.handle || '').includes('duo');
+      return !isBundle;
+    });
+  }, [safeProducts]);
+
+  // Shuffled pool to ensure each homepage section features distinct pieces
+  const shuffledSingles = useMemo(() => {
+    const list = [...singleEarrings];
+    if (list.length === 0) return [];
+    // Pseudo-random Fisher-Yates shuffle with seed
+    for (let i = list.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [list[i], list[j]] = [list[j], list[i]];
+    }
+    return list;
+  }, [singleEarrings, shuffleSeed]);
+
+  // Curated pieces for "Collection" section: first 5 distinct pieces
   const collectionFive = useMemo(() => {
-    if (!safeProducts || safeProducts.length === 0) return [];
-    return safeProducts.slice(0, 5).map((p) => ({
+    if (!shuffledSingles || shuffledSingles.length === 0) return [];
+    return shuffledSingles.slice(0, 5).map((p) => ({
       product: p,
       displayTitle: p.name,
     }));
-  }, [safeProducts]);
+  }, [shuffledSingles]);
 
-  // Curated pieces for "Popular" section dynamically from live catalog
+  // Curated pieces for "Popular" section: next 5 distinct pieces (zero overlap with Collection)
   const popularFive = useMemo(() => {
-    if (!safeProducts || safeProducts.length === 0) return [];
-    // Prioritize bestsellers or reverse order for curated variation
-    const sorted = [...safeProducts].sort((a, b) => (b.isBestseller ? 1 : 0) - (a.isBestseller ? 1 : 0));
-    return sorted.slice(0, 5);
-  }, [safeProducts]);
+    if (!shuffledSingles || shuffledSingles.length === 0) return [];
+    if (shuffledSingles.length > 5) {
+      return shuffledSingles.slice(5, 10);
+    }
+    return shuffledSingles.slice(0, 5);
+  }, [shuffledSingles]);
 
   // Curated Gold-Tone Brass pieces dynamically from live catalog
   const goldProducts = useMemo(() => {
-    if (!safeProducts || safeProducts.length === 0) return [];
-    return safeProducts.filter((p) => {
+    if (!shuffledSingles || shuffledSingles.length === 0) return [];
+    return shuffledSingles.filter((p) => {
       if (!p || !p.id) return false;
       const m = (p.metal || '').toLowerCase();
       const n = (p.name || '').toLowerCase();
@@ -140,12 +168,12 @@ export const HomePage: React.FC<HomePageProps> = ({
       if (m.includes('silver') || /\bsilver\b/.test(n) || /\bsilver\b/.test(t)) return false;
       return true;
     });
-  }, [safeProducts]);
+  }, [shuffledSingles]);
 
   // Curated Silver-Tone pieces dynamically from live catalog
   const silverProducts = useMemo(() => {
-    if (!safeProducts || safeProducts.length === 0) return [];
-    return safeProducts.filter((p) => {
+    if (!shuffledSingles || shuffledSingles.length === 0) return [];
+    return shuffledSingles.filter((p) => {
       if (!p || !p.id) return false;
       const m = (p.metal || '').toLowerCase();
       const n = (p.name || '').toLowerCase();
@@ -159,12 +187,13 @@ export const HomePage: React.FC<HomePageProps> = ({
         hasSilverVariant
       );
     });
-  }, [safeProducts]);
+  }, [shuffledSingles]);
 
-  // Filtered Gifting items dynamically from live catalog
+  // Filtered Gifting items dynamically from live catalog (uses diverse remainder of catalog)
   const giftingProducts = useMemo(() => {
-    if (!safeProducts || safeProducts.length === 0) return [];
-    const filtered = safeProducts.filter((p) => {
+    if (!shuffledSingles || shuffledSingles.length === 0) return [];
+    const pool = shuffledSingles.length >= 10 ? shuffledSingles.slice(10) : shuffledSingles;
+    const filtered = pool.filter((p) => {
       if (!p || !p.id) return false;
       const text = `${p.name} ${p.subtitle || ''} ${p.description || ''} ${p.category} ${p.metal} ${(p.tags || []).join(' ')}`.toLowerCase();
       if (activeGiftTier === 'daily') {
@@ -178,9 +207,11 @@ export const HomePage: React.FC<HomePageProps> = ({
       }
       return true;
     });
-    // Never return empty: if specific filter yields nothing, fallback gracefully to catalog slice
-    return filtered.length > 0 ? filtered.slice(0, 4) : safeProducts.slice(0, 4);
-  }, [safeProducts, activeGiftTier]);
+    if (filtered.length >= 4) return filtered.slice(0, 4);
+    // If specific tier yielded fewer, backfill from other distinct pieces
+    const backfill = shuffledSingles.filter((p) => !filtered.some((f) => f.id === p.id));
+    return [...filtered, ...backfill].slice(0, 4);
+  }, [shuffledSingles, activeGiftTier]);
 
   // Refresh ScrollTrigger geometry whenever catalog items load or tier changes
   useEffect(() => {
@@ -402,9 +433,12 @@ export const HomePage: React.FC<HomePageProps> = ({
 
                 const isAdding = addingPairId === offer.id;
 
+                const bundleTarget = offer.bundleProduct || p1;
+
                 return (
                   <div
                     key={offer.id}
+                    onClick={() => onSelectProduct(bundleTarget)}
                     className="duo-card group cursor-pointer flex flex-col space-y-2 text-left w-full"
                   >
                     {/* Fixed Uniform Square Box Container */}
@@ -420,8 +454,7 @@ export const HomePage: React.FC<HomePageProps> = ({
                       <div className="w-full h-full flex items-center justify-center relative">
                         {/* Piece 1 */}
                         <div
-                          onClick={() => onSelectProduct(p1)}
-                          className="w-1/2 h-full flex flex-col items-center justify-center p-1.5 cursor-pointer relative group/p1"
+                          className="w-1/2 h-full flex flex-col items-center justify-center p-1.5 relative group/p1"
                           title={p1.name}
                         >
                           <img
@@ -446,8 +479,7 @@ export const HomePage: React.FC<HomePageProps> = ({
 
                         {/* Piece 2 */}
                         <div
-                          onClick={() => onSelectProduct(p2)}
-                          className="w-1/2 h-full flex flex-col items-center justify-center p-1.5 cursor-pointer relative group/p2"
+                          className="w-1/2 h-full flex flex-col items-center justify-center p-1.5 relative group/p2"
                           title={p2.name}
                         >
                           <img
@@ -483,7 +515,10 @@ export const HomePage: React.FC<HomePageProps> = ({
                     {/* Meta Box with Prominent Bold Price & Discount Badge (Identical to Curated Collection) */}
                     <div className="flex flex-col justify-between pt-1">
                       <h3
-                        onClick={() => onSelectProduct(p1)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onSelectProduct(bundleTarget);
+                        }}
                         className="font-serif-display text-base sm:text-lg md:text-xl text-black group-hover:text-neutral-700 transition-colors font-medium sm:font-semibold leading-snug truncate block"
                       >
                         {offer.title}

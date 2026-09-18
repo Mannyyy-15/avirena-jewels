@@ -99,12 +99,21 @@ export const CollectionPage: React.FC<CollectionPageProps> = ({
 
     // 2. Category Filter
     if (selectedCategory && selectedCategory !== 'all') {
-      list = list.filter((p) => p.category === selectedCategory);
+      list = list.filter((p) => {
+        if (selectedCategory === 'earrings') {
+          return p.category === 'earrings' || p.tags?.includes('duo-suite') || p.tags?.includes('bundle') || (p.handle || '').includes('duo');
+        }
+        return p.category === selectedCategory;
+      });
     }
 
     // 3. Metal Filter
     if (selectedMetal && selectedMetal !== 'all') {
       list = list.filter((p) => {
+        // Duo Suites / Bundles contain both finishes, so they stay visible when filtering by metal
+        const isBundle = p.tags?.includes('duo-suite') || p.tags?.includes('bundle') || (p.handle || '').includes('duo');
+        if (isBundle) return true;
+
         if (selectedMetal === 'brass') return p.metal.toLowerCase().includes('brass') || p.metal.toLowerCase().includes('gold');
         if (selectedMetal === 'alloy') return p.metal.toLowerCase().includes('alloy') || p.metal.toLowerCase().includes('silver');
         if (selectedMetal === 'anti-tarnish') return p.metal.toLowerCase().includes('anti-tarnish');
@@ -399,13 +408,21 @@ export const CollectionPage: React.FC<CollectionPageProps> = ({
                 setMetalDropdownOpen(false);
                 setSortDropdownOpen(false);
               }}
-              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-sm bg-[#7E795F] hover:bg-[#6C674E] text-[#FAF8F5] text-[11px] font-medium tracking-wider uppercase transition-colors cursor-pointer"
+              className={`inline-flex items-center gap-2 px-3.5 sm:px-4 py-2 rounded-xs border text-[11px] font-semibold tracking-[0.14em] uppercase transition-all duration-200 cursor-pointer shadow-xs ${
+                selectedCategory !== 'all'
+                  ? 'bg-[#413C23] text-[#FAF8F5] border-[#413C23]'
+                  : 'bg-[#FAF8F5] text-[#413C23] border-[#D8D2C2] hover:border-[#8F896D]'
+              }`}
             >
-              <span>{selectedCategory === 'all' ? 'Category' : selectedCategory}</span>
-              <ChevronDown className="w-3.5 h-3.5" />
+              <span className={`text-[10px] uppercase tracking-widest font-normal ${selectedCategory !== 'all' ? 'text-[#FAF8F5]/70' : 'text-[#8F896D]'}`}>Category:</span>
+              <span>{selectedCategory === 'all' ? 'All Pieces' : selectedCategory}</span>
+              <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${categoryDropdownOpen ? 'rotate-180' : ''}`} />
             </button>
             {categoryDropdownOpen && (
-              <div className="absolute left-0 mt-2 w-48 bg-[#E7E4D5] border border-[#D8D2C2] rounded-xs shadow-lg py-1 z-30 animate-in fade-in duration-150">
+              <div className="absolute left-0 mt-2 w-56 bg-[#FAF8F5] border border-[#D8D2C2] rounded-xs shadow-[0_16px_36px_rgba(65,60,35,0.12)] p-1.5 z-30 animate-in fade-in duration-150">
+                <div className="px-3 py-1.5 border-b border-[#E8E2D6] mb-1">
+                  <span className="text-[9.5px] uppercase tracking-[0.2em] font-semibold text-[#8F896D]">Filter Category</span>
+                </div>
                 {(['all', 'earrings', 'necklaces', 'rings', 'bracelets', 'brooches'] as Category[]).map((cat) => (
                   <button
                     key={cat}
@@ -413,11 +430,11 @@ export const CollectionPage: React.FC<CollectionPageProps> = ({
                       setSelectedCategory(cat);
                       setCategoryDropdownOpen(false);
                     }}
-                    className={`w-full text-left px-4 py-2 text-xs uppercase tracking-wider transition-colors cursor-pointer flex items-center justify-between ${
-                      selectedCategory === cat ? 'bg-[#D8D2C2] text-[#413C23] font-bold' : 'text-[#413C23]/80 hover:bg-[#EDE8DC]'
+                    className={`w-full text-left px-3.5 py-2 text-[11px] uppercase tracking-[0.14em] transition-colors cursor-pointer flex items-center justify-between rounded-xs ${
+                      selectedCategory === cat ? 'bg-[#EDE8DC] text-[#413C23] font-bold' : 'text-[#413C23]/85 hover:bg-[#F4EFE6]'
                     }`}
                   >
-                    <span>{cat === 'all' ? 'All Jewelry' : cat}</span>
+                    <span>{cat === 'all' ? 'All Jewellery' : cat}</span>
                     {selectedCategory === cat && <Check className="w-3.5 h-3.5 text-[#413C23]" />}
                   </button>
                 ))}
@@ -431,13 +448,21 @@ export const CollectionPage: React.FC<CollectionPageProps> = ({
                 setCategoryDropdownOpen(false);
                 setSortDropdownOpen(false);
               }}
-              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-sm bg-[#7E795F] hover:bg-[#6C674E] text-[#FAF8F5] text-[11px] font-medium tracking-wider uppercase transition-colors cursor-pointer"
+              className={`inline-flex items-center gap-2 px-3.5 sm:px-4 py-2 rounded-xs border text-[11px] font-semibold tracking-[0.14em] uppercase transition-all duration-200 cursor-pointer shadow-xs ${
+                selectedMetal !== 'all'
+                  ? 'bg-[#413C23] text-[#FAF8F5] border-[#413C23]'
+                  : 'bg-[#FAF8F5] text-[#413C23] border-[#D8D2C2] hover:border-[#8F896D]'
+              }`}
             >
-              <span>{selectedMetal === 'all' ? 'Metal' : selectedMetal}</span>
-              <ChevronDown className="w-3.5 h-3.5" />
+              <span className={`text-[10px] uppercase tracking-widest font-normal ${selectedMetal !== 'all' ? 'text-[#FAF8F5]/70' : 'text-[#8F896D]'}`}>Finish:</span>
+              <span>{selectedMetal === 'all' ? 'All Metals' : selectedMetal}</span>
+              <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${metalDropdownOpen ? 'rotate-180' : ''}`} />
             </button>
             {metalDropdownOpen && (
-              <div className="absolute left-0 mt-2 w-48 bg-[#E7E4D5] border border-[#D8D2C2] rounded-xs shadow-lg py-1 z-30 animate-in fade-in duration-150">
+              <div className="absolute left-0 mt-2 w-56 bg-[#FAF8F5] border border-[#D8D2C2] rounded-xs shadow-[0_16px_36px_rgba(65,60,35,0.12)] p-1.5 z-30 animate-in fade-in duration-150">
+                <div className="px-3 py-1.5 border-b border-[#E8E2D6] mb-1">
+                  <span className="text-[9.5px] uppercase tracking-[0.2em] font-semibold text-[#8F896D]">Filter Finish</span>
+                </div>
                 {[
                   { id: 'all', label: 'All Metals' },
                   { id: 'brass', label: 'Gold-Tone Brass' },
@@ -450,8 +475,8 @@ export const CollectionPage: React.FC<CollectionPageProps> = ({
                       setSelectedMetal(metal.id);
                       setMetalDropdownOpen(false);
                     }}
-                    className={`w-full text-left px-4 py-2 text-xs uppercase tracking-wider transition-colors cursor-pointer flex items-center justify-between ${
-                      selectedMetal === metal.id ? 'bg-[#D8D2C2] text-[#413C23] font-bold' : 'text-[#413C23]/80 hover:bg-[#EDE8DC]'
+                    className={`w-full text-left px-3.5 py-2 text-[11px] uppercase tracking-[0.14em] transition-colors cursor-pointer flex items-center justify-between rounded-xs ${
+                      selectedMetal === metal.id ? 'bg-[#EDE8DC] text-[#413C23] font-bold' : 'text-[#413C23]/85 hover:bg-[#F4EFE6]'
                     }`}
                   >
                     <span>{metal.label}</span>
@@ -462,7 +487,7 @@ export const CollectionPage: React.FC<CollectionPageProps> = ({
             )}
           </div>
           {curatedEdit && (
-            <div className="inline-flex items-center gap-1 px-2.5 py-1 rounded-sm bg-[#413C23] text-[#FAF8F5] text-[10px] sm:text-[11px] font-semibold tracking-wider uppercase">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xs bg-[#413C23] text-[#FAF8F5] text-[10px] sm:text-[11px] font-semibold tracking-wider uppercase shadow-xs">
               <span>✦ {curatedEdit === 'under-999' ? 'Under ₹999' : curatedEdit === 'duo-suites' ? 'Duo Suites' : 'Gifting Edit'}</span>
               <button
                 onClick={onClearCuratedEdit}
@@ -480,7 +505,7 @@ export const CollectionPage: React.FC<CollectionPageProps> = ({
                 setSelectedMetal('all');
                 if (onClearCuratedEdit) onClearCuratedEdit();
               }}
-              className="text-[11px] text-[#8F896D] hover:text-[#413C23] underline underline-offset-4 cursor-pointer ml-1"
+              className="text-[11px] text-[#8F896D] hover:text-[#413C23] uppercase tracking-wider font-semibold underline underline-offset-4 cursor-pointer ml-1 transition-colors"
             >
               Reset Filters
             </button>
@@ -493,13 +518,17 @@ export const CollectionPage: React.FC<CollectionPageProps> = ({
               setCategoryDropdownOpen(false);
               setMetalDropdownOpen(false);
             }}
-            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-sm bg-transparent hover:bg-[#D8D2C2]/40 text-[#413C23] text-[11px] font-medium tracking-wider uppercase transition-colors cursor-pointer border border-[#D8D2C2]"
+            className="inline-flex items-center gap-2 px-3.5 sm:px-4 py-2 rounded-xs border border-[#D8D2C2] hover:border-[#8F896D] bg-[#FAF8F5] text-[#413C23] text-[11px] font-semibold tracking-[0.14em] uppercase transition-all duration-200 cursor-pointer shadow-xs"
           >
-            <span>Sort: {sortLabels[sortBy]}</span>
-            <ChevronDown className="w-3.5 h-3.5" />
+            <span className="text-[#8F896D] text-[10px] uppercase tracking-widest font-normal">Sort:</span>
+            <span>{sortLabels[sortBy]}</span>
+            <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${sortDropdownOpen ? 'rotate-180' : ''}`} />
           </button>
           {sortDropdownOpen && (
-            <div className="absolute right-0 mt-2 w-52 bg-[#E7E4D5] border border-[#D8D2C2] rounded-xs shadow-lg py-1 z-30 animate-in fade-in duration-150">
+            <div className="absolute right-0 mt-2 w-52 bg-[#FAF8F5] border border-[#D8D2C2] rounded-xs shadow-[0_16px_36px_rgba(65,60,35,0.12)] p-1.5 z-30 animate-in fade-in duration-150">
+              <div className="px-3 py-1.5 border-b border-[#E8E2D6] mb-1">
+                <span className="text-[9.5px] uppercase tracking-[0.2em] font-semibold text-[#8F896D]">Order By</span>
+              </div>
               {(Object.keys(sortLabels) as Array<keyof typeof sortLabels>).map((key) => (
                 <button
                   key={key}
@@ -507,8 +536,8 @@ export const CollectionPage: React.FC<CollectionPageProps> = ({
                     setSortBy(key);
                     setSortDropdownOpen(false);
                   }}
-                  className={`w-full text-left px-4 py-2 text-xs uppercase tracking-wider transition-colors cursor-pointer flex items-center justify-between ${
-                    sortBy === key ? 'bg-[#D8D2C2] text-[#413C23] font-bold' : 'text-[#413C23]/80 hover:bg-[#EDE8DC]'
+                  className={`w-full text-left px-3.5 py-2 text-[11px] uppercase tracking-[0.14em] transition-colors cursor-pointer flex items-center justify-between rounded-xs ${
+                    sortBy === key ? 'bg-[#EDE8DC] text-[#413C23] font-bold' : 'text-[#413C23]/85 hover:bg-[#F4EFE6]'
                   }`}
                 >
                   <span>{sortLabels[key]}</span>

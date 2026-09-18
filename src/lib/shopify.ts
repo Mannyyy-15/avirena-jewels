@@ -562,7 +562,10 @@ export function transformShopifyProduct(node: any): Product {
   const fullText = `${titleLower} ${typeLower} ${tagsLower} ${descLower}`;
 
   let category: Category = 'earrings';
-  if (/\b(earrings?|studs?|dangles?|hoops?|huggie)\b/i.test(titleLower) || /\b(earrings?|studs?|dangles?|hoops?|huggie)\b/i.test(typeLower) || /\b(earrings?)\b/i.test(tagsLower)) {
+  const isBundleSuite = /\b(duo-suite|bundle)\b/i.test(tagsLower) || /\b(duo)\b/i.test(titleLower) || (node.handle || '').includes('duo');
+  if (isBundleSuite) {
+    category = 'earrings';
+  } else if (/\b(earrings?|studs?|dangles?|hoops?|huggie)\b/i.test(titleLower) || /\b(earrings?|studs?|dangles?|hoops?|huggie)\b/i.test(typeLower) || /\b(earrings?)\b/i.test(tagsLower)) {
     category = 'earrings';
   } else if (/\b(necklaces?|pendants?|chokers?|collars?)\b/i.test(titleLower) || /\b(necklaces?|pendants?|chokers?|collars?)\b/i.test(typeLower) || /\b(necklaces?)\b/i.test(tagsLower)) {
     category = 'necklaces';

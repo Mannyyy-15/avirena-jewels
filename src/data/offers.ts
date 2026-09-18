@@ -86,6 +86,7 @@ export function createPairBundleItems(offer: PairOffer, products: [Product, Prod
         product: hydratedProduct,
         quantity: 1,
         metal: hydratedProduct.metal,
+        variantId: offer.bundleProduct.variants?.[0]?.id,
         bundleGroupId: `bundle-${offer.id}-${Date.now()}`,
         bundleTitle: offer.title,
         bundleSavings: offer.saving,

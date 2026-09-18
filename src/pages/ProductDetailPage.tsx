@@ -697,18 +697,6 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
               );
             })()}
 
-            {/* Online payment discount banner */}
-            <div className="pt-1 w-full">
-              <div className="flex flex-wrap items-center gap-x-2 gap-y-1 py-2 px-3 rounded-xs bg-[#F2EFDB] border border-[#D8D2C2]">
-                <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#413C23] shrink-0">
-                  Pay online
-                </span>
-                <span className="text-[11px] text-[#6B6650]">
-                  Use code <strong className="font-mono font-semibold text-[#413C23]">PREPAID50</strong> for{' '}
-                  <strong className="font-semibold text-[#413C23]">&#8377;50 off</strong> &mdash; applied automatically at checkout.
-                </span>
-              </div>
-            </div>
 
             {/* Stock urgency - real, never invented.
                 Reads quantityAvailable straight from the Shopify Storefront
@@ -774,73 +762,96 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
               </div>
             </div>
 
-            {/* Finish Selector (Gold Tone Brass & Silver Tone Brass) */}
-            <div className="space-y-2 pt-1 w-full">
-              <div className="flex items-center justify-between text-xs">
-                <span className="font-semibold text-[#413C23] uppercase tracking-wider">
-                  Finish: <span className="font-normal text-[#8F896D]">{selectedFinish}</span>
-                </span>
-                {!isSilverAvailable && selectedFinish === 'Gold Tone Brass' && (
-                  <span className="text-[11px] text-[#8F896D]/80 italic">Silver edition unavailable</span>
-                )}
-                {!isGoldAvailable && selectedFinish === 'Silver Tone Brass' && (
-                  <span className="text-[11px] text-[#8F896D]/80 italic">Gold edition unavailable</span>
-                )}
+            {/* Finish Selector (Gold Tone Brass & Silver Tone Brass, or Bundle Pair Suite) */}
+            {(product.tags?.includes('duo-suite') || product.tags?.includes('bundle') || (product.handle || '').includes('duo')) ? (
+              <div className="space-y-2 pt-1 w-full">
+                <div className="flex items-center justify-between text-xs">
+                  <span className="font-semibold text-[#413C23] uppercase tracking-wider">
+                    Included Finishes: <span className="font-normal text-[#8F896D]">Gold-Tone &amp; Silver-Tone Pair</span>
+                  </span>
+                </div>
+                <div className="inline-flex items-center gap-2.5 px-3.5 py-2 rounded-full border border-[#413C23] bg-[#FAF8F5] text-xs font-semibold text-[#413C23] shadow-xs">
+                  <div className="flex -space-x-1 items-center">
+                    <span
+                      aria-hidden="true"
+                      className="w-4 h-4 rounded-full shrink-0 border border-[#00000022] bg-[linear-gradient(135deg,#E8C87A_0%,#C9A227_55%,#9C7A1A_100%)] z-10"
+                    />
+                    <span
+                      aria-hidden="true"
+                      className="w-4 h-4 rounded-full shrink-0 border border-[#00000022] bg-[linear-gradient(135deg,#F2F2F0_0%,#C8C8CC_55%,#9A9AA0_100%)]"
+                    />
+                  </div>
+                  <span>Complete 2-Piece Suite (Both Finishes Included)</span>
+                </div>
               </div>
-              <div className="flex flex-wrap items-center gap-3">
-                {/* Gold Tone Brass */}
-                <button
-                  type="button"
-                  onClick={() => handleFinishChange('Gold Tone Brass')}
-                  disabled={!isGoldAvailable}
-                  title={isGoldAvailable ? 'Select Gold Tone Brass' : 'Unavailable in Silver/Gold Tone Brass'}
-                  className={`inline-flex items-center gap-2 pl-2 pr-4 py-2 rounded-full border text-xs font-semibold transition-all ${
-                    selectedFinish === 'Gold Tone Brass'
-                      ? 'border-[#413C23] bg-[#FAF8F5] text-[#413C23] ring-1 ring-[#413C23] cursor-default'
-                      : isGoldAvailable
-                      ? 'border-[#D8D2C2] text-[#6B6650] bg-[#FAF8F5] hover:border-[#8F896D] cursor-pointer'
-                      : 'border-dashed border-[#D8D2C2] text-neutral-400 bg-[#E7E4D5]/40 cursor-not-allowed opacity-50'
-                  }`}
-                >
-                  <span
-                    aria-hidden="true"
-                    className="w-4 h-4 rounded-full shrink-0 border border-[#00000022] bg-[linear-gradient(135deg,#E8C87A_0%,#C9A227_55%,#9C7A1A_100%)]"
-                  />
-                  <span>Gold Tone Brass</span>
-                  {!isGoldAvailable && (
-                    <span className="ml-1.5 text-[10px] uppercase font-normal tracking-wide text-neutral-500">
-                      (N/A)
-                    </span>
+            ) : (
+              <div className="space-y-2 pt-1 w-full">
+                <div className="flex items-center justify-between text-xs">
+                  <span className="font-semibold text-[#413C23] uppercase tracking-wider">
+                    Finish: <span className="font-normal text-[#8F896D]">{selectedFinish}</span>
+                  </span>
+                  {!isSilverAvailable && selectedFinish === 'Gold Tone Brass' && (
+                    <span className="text-[11px] text-[#8F896D]/80 italic">Silver edition unavailable</span>
                   )}
-                </button>
+                  {!isGoldAvailable && selectedFinish === 'Silver Tone Brass' && (
+                    <span className="text-[11px] text-[#8F896D]/80 italic">Gold edition unavailable</span>
+                  )}
+                </div>
+                <div className="flex flex-wrap items-center gap-3">
+                  {/* Gold Tone Brass */}
+                  <button
+                    type="button"
+                    onClick={() => handleFinishChange('Gold Tone Brass')}
+                    disabled={!isGoldAvailable}
+                    title={isGoldAvailable ? 'Select Gold Tone Brass' : 'Unavailable in Silver/Gold Tone Brass'}
+                    className={`inline-flex items-center gap-2 pl-2 pr-4 py-2 rounded-full border text-xs font-semibold transition-all ${
+                      selectedFinish === 'Gold Tone Brass'
+                        ? 'border-[#413C23] bg-[#FAF8F5] text-[#413C23] ring-1 ring-[#413C23] cursor-default'
+                        : isGoldAvailable
+                        ? 'border-[#D8D2C2] text-[#6B6650] bg-[#FAF8F5] hover:border-[#8F896D] cursor-pointer'
+                        : 'border-dashed border-[#D8D2C2] text-neutral-400 bg-[#E7E4D5]/40 cursor-not-allowed opacity-50'
+                    }`}
+                  >
+                    <span
+                      aria-hidden="true"
+                      className="w-4 h-4 rounded-full shrink-0 border border-[#00000022] bg-[linear-gradient(135deg,#E8C87A_0%,#C9A227_55%,#9C7A1A_100%)]"
+                    />
+                    <span>Gold Tone Brass</span>
+                    {!isGoldAvailable && (
+                      <span className="ml-1.5 text-[10px] uppercase font-normal tracking-wide text-neutral-500">
+                        (N/A)
+                      </span>
+                    )}
+                  </button>
 
-                {/* Silver Tone Brass */}
-                <button
-                  type="button"
-                  onClick={() => handleFinishChange('Silver Tone Brass')}
-                  disabled={!isSilverAvailable}
-                  title={isSilverAvailable ? 'Select Silver Tone Brass' : 'Unavailable in Silver Tone Brass'}
-                  className={`inline-flex items-center gap-2 pl-2 pr-4 py-2 rounded-full border text-xs font-semibold transition-all ${
-                    selectedFinish === 'Silver Tone Brass'
-                      ? 'border-[#413C23] bg-[#FAF8F5] text-[#413C23] ring-1 ring-[#413C23] cursor-default'
-                      : isSilverAvailable
-                      ? 'border-[#D8D2C2] text-[#6B6650] bg-[#FAF8F5] hover:border-[#8F896D] cursor-pointer'
-                      : 'border-dashed border-[#D8D2C2] text-neutral-400 bg-[#E7E4D5]/40 cursor-not-allowed opacity-50'
-                  }`}
-                >
-                  <span
-                    aria-hidden="true"
-                    className="w-4 h-4 rounded-full shrink-0 border border-[#00000022] bg-[linear-gradient(135deg,#F2F2F0_0%,#C8C8CC_55%,#9A9AA0_100%)]"
-                  />
-                  <span>Silver Tone Brass</span>
-                  {!isSilverAvailable && (
-                    <span className="ml-1.5 text-[10px] uppercase font-normal tracking-wide text-neutral-500">
-                      (N/A)
-                    </span>
-                  )}
-                </button>
+                  {/* Silver Tone Brass */}
+                  <button
+                    type="button"
+                    onClick={() => handleFinishChange('Silver Tone Brass')}
+                    disabled={!isSilverAvailable}
+                    title={isSilverAvailable ? 'Select Silver Tone Brass' : 'Unavailable in Silver Tone Brass'}
+                    className={`inline-flex items-center gap-2 pl-2 pr-4 py-2 rounded-full border text-xs font-semibold transition-all ${
+                      selectedFinish === 'Silver Tone Brass'
+                        ? 'border-[#413C23] bg-[#FAF8F5] text-[#413C23] ring-1 ring-[#413C23] cursor-default'
+                        : isSilverAvailable
+                        ? 'border-[#D8D2C2] text-[#6B6650] bg-[#FAF8F5] hover:border-[#8F896D] cursor-pointer'
+                        : 'border-dashed border-[#D8D2C2] text-neutral-400 bg-[#E7E4D5]/40 cursor-not-allowed opacity-50'
+                    }`}
+                  >
+                    <span
+                      aria-hidden="true"
+                      className="w-4 h-4 rounded-full shrink-0 border border-[#00000022] bg-[linear-gradient(135deg,#F2F2F0_0%,#C8C8CC_55%,#9A9AA0_100%)]"
+                    />
+                    <span>Silver Tone Brass</span>
+                    {!isSilverAvailable && (
+                      <span className="ml-1.5 text-[10px] uppercase font-normal tracking-wide text-neutral-500">
+                        (N/A)
+                      </span>
+                    )}
+                  </button>
+                </div>
               </div>
-            </div>
+            )}
 
             {/* Primary CTA and Wishlist Action.
                 Buy Now is the filled primary and Add to Bag the outlined

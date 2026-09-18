@@ -243,65 +243,118 @@ export const Navbar: React.FC<NavbarProps> = ({
 
               {collectionsDropdownOpen && (
                 <div
-                  className="absolute left-0 top-full pt-2 w-64 z-50 animate-in fade-in slide-in-from-top-1 duration-150"
+                  className="absolute left-0 top-full pt-2 w-[520px] z-50 animate-in fade-in slide-in-from-top-1 duration-150"
                   onMouseEnter={handleCollectionsEnter}
                   onMouseLeave={handleCollectionsLeave}
                 >
-                  <div className="bg-[#FAF8F5] border border-[#D8D2C2] rounded-xs shadow-[0_12px_30px_rgba(0,0,0,0.12)] py-2 px-1 select-none text-left min-w-[200px]">
-                    {categoryItems.map((cat) => (
-                      <button
-                        key={cat.id}
-                        onClick={() => selectCategory(cat.id)}
-                        className={`w-full text-left px-4 py-2.5 text-[11px] uppercase tracking-[0.18em] hover:bg-[#F2EFDB] transition-all font-medium cursor-pointer flex items-center justify-between gap-2 ${
-                          cat.isEmpty
-                            ? 'text-neutral-400 hover:text-neutral-600'
-                            : 'text-black hover:text-neutral-700'
-                        }`}
-                      >
-                        <span>{cat.label}</span>
-                        {cat.isEmpty && (
-                          <span className="text-[9px] tracking-[0.12em] text-neutral-500 normal-case">
-                            Soon
+                  <div className="bg-[#FAF8F5] border border-[#D8D2C2] rounded-xs shadow-[0_20px_45px_rgba(65,60,35,0.12)] p-5 select-none text-left">
+                    <div className="grid grid-cols-2 gap-6">
+                      
+                      {/* Left Column: Categories */}
+                      <div className="space-y-2 border-r border-[#E8E2D6] pr-4">
+                        <div className="pb-1.5 border-b border-[#E8E2D6]">
+                          <span className="text-[9.5px] uppercase tracking-[0.24em] font-bold text-[#8F896D]">
+                            By Category
                           </span>
-                        )}
-                      </button>
-                    ))}
+                        </div>
+                        <div className="space-y-0.5 pt-1">
+                          {categoryItems.map((cat) => (
+                            <button
+                              key={cat.id}
+                              onClick={() => selectCategory(cat.id)}
+                              className={`w-full text-left px-3 py-2 text-xs uppercase tracking-[0.14em] hover:bg-[#F2EFDB] transition-all rounded-xs font-medium cursor-pointer flex items-center justify-between group ${
+                                cat.isEmpty
+                                  ? 'text-neutral-400 hover:text-neutral-600'
+                                  : 'text-[#413C23] hover:text-black font-semibold'
+                              }`}
+                            >
+                              <span>{cat.label}</span>
+                              {cat.isEmpty ? (
+                                <span className="text-[9px] tracking-[0.12em] text-[#8F896D]/70 normal-case italic font-normal">
+                                  Soon
+                                </span>
+                              ) : (
+                                <span className="text-[10px] text-[#8F896D] opacity-0 group-hover:opacity-100 transition-opacity">
+                                  →
+                                </span>
+                              )}
+                            </button>
+                          ))}
+                        </div>
+                        <div className="pt-2 border-t border-[#E8E2D6]/80">
+                          <button
+                            onClick={() => selectCategory('all')}
+                            className="w-full text-left px-3 py-2 text-[11px] uppercase tracking-[0.16em] text-[#8F896D] hover:text-[#413C23] hover:bg-[#F2EFDB] transition-all rounded-xs font-semibold cursor-pointer flex items-center justify-between"
+                          >
+                            <span>Browse All Pieces</span>
+                            <span className="text-[11px]">→</span>
+                          </button>
+                        </div>
+                      </div>
 
-                    <div className="border-t border-[#E8E2D6]/80 mt-1 pt-1.5 mx-2 space-y-1">
-                      <button
-                        onClick={() => selectCuratedEdit('duo-suites')}
-                        className="w-full text-left px-2 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#413C23] hover:text-black hover:bg-[#F2EFDB] transition-all cursor-pointer flex items-center justify-between rounded-xs"
-                      >
-                        <span>Duo Suites (Pair &amp; Save)</span>
-                        <span className="text-[8.5px] px-1.5 py-0.2 bg-[#7A0F1A] text-[#FAF8F5] rounded-xs font-bold tracking-normal">SAVE ₹100</span>
-                      </button>
-                      <button
-                        onClick={() => selectCuratedEdit('under-999')}
-                        className="w-full text-left px-2 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#413C23] hover:text-black hover:bg-[#F2EFDB] transition-all cursor-pointer flex items-center justify-between rounded-xs"
-                      >
-                        <span>Under ₹999 Edit</span>
-                        <span className="text-[8.5px] px-1.5 py-0.2 bg-[#413C23] text-[#FAF8F5] rounded-xs font-bold tracking-normal">HOT</span>
-                      </button>
-                      <button
-                        onClick={() => selectCuratedEdit('gifting-edit')}
-                        className="w-full text-left px-2 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#413C23] hover:text-black hover:bg-[#F2EFDB] transition-all cursor-pointer flex items-center justify-between rounded-xs"
-                      >
-                        <span>The Gifting Edit</span>
-                        <span className="text-[9px] text-[#8F896D]">✦</span>
-                      </button>
-                      <button
-                        onClick={() => navigateTo('collections')}
-                        className="w-full text-left px-2 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#8F896D] hover:text-black hover:bg-[#F2EFDB] transition-all cursor-pointer flex items-center justify-between rounded-xs border-t border-[#E8E2D6]/60 mt-1 pt-1"
-                      >
-                        <span>All Collections Hub</span>
-                        <span className="text-[10px]">→</span>
-                      </button>
-                      <button
-                        onClick={() => selectCategory('all')}
-                        className="w-full text-left px-2 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#8F896D] hover:text-black hover:bg-[#F2EFDB] transition-all cursor-pointer rounded-xs"
-                      >
-                        All Jewelry
-                      </button>
+                      {/* Right Column: Curated Edits */}
+                      <div className="space-y-2 pl-1">
+                        <div className="pb-1.5 border-b border-[#E8E2D6]">
+                          <span className="text-[9.5px] uppercase tracking-[0.24em] font-bold text-[#8F896D]">
+                            Curated Edits &amp; Suites
+                          </span>
+                        </div>
+                        <div className="space-y-1.5 pt-1">
+                          <button
+                            onClick={() => selectCuratedEdit('duo-suites')}
+                            className="w-full text-left p-2.5 rounded-xs bg-[#FAF8F5] hover:bg-[#F2EFDB] border border-[#D8D2C2]/60 hover:border-[#8F896D] transition-all cursor-pointer group"
+                          >
+                            <div className="flex items-center justify-between">
+                              <span className="font-serif-display text-sm font-normal text-[#413C23] group-hover:text-black">
+                                Signature Duo Suites
+                              </span>
+                              <span className="text-[10px] text-[#8F896D]">✦</span>
+                            </div>
+                            <p className="text-[10px] text-[#8F896D] leading-tight mt-0.5 font-normal">
+                              Two finishes. Better together. Harmonized pairs.
+                            </p>
+                          </button>
+
+                          <button
+                            onClick={() => selectCuratedEdit('under-999')}
+                            className="w-full text-left p-2.5 rounded-xs bg-[#FAF8F5] hover:bg-[#F2EFDB] border border-[#D8D2C2]/60 hover:border-[#8F896D] transition-all cursor-pointer group"
+                          >
+                            <div className="flex items-center justify-between">
+                              <span className="font-serif-display text-sm font-normal text-[#413C23] group-hover:text-black">
+                                Earrings Under &#8377;999
+                              </span>
+                              <span className="text-[10px] text-[#8F896D]">✦</span>
+                            </div>
+                            <p className="text-[10px] text-[#8F896D] leading-tight mt-0.5 font-normal">
+                              Accessible everyday anti-tarnish luxury.
+                            </p>
+                          </button>
+
+                          <button
+                            onClick={() => selectCuratedEdit('gifting-edit')}
+                            className="w-full text-left p-2.5 rounded-xs bg-[#FAF8F5] hover:bg-[#F2EFDB] border border-[#D8D2C2]/60 hover:border-[#8F896D] transition-all cursor-pointer group"
+                          >
+                            <div className="flex items-center justify-between">
+                              <span className="font-serif-display text-sm font-normal text-[#413C23] group-hover:text-black">
+                                The Gifting Edit
+                              </span>
+                              <span className="text-[10px] text-[#8F896D]">✦</span>
+                            </div>
+                            <p className="text-[10px] text-[#8F896D] leading-tight mt-0.5 font-normal">
+                              Thoughtful fine jewels in signature packaging.
+                            </p>
+                          </button>
+
+                          <button
+                            onClick={() => navigateTo('collections')}
+                            className="w-full text-left px-2.5 py-1.5 text-[11px] font-semibold uppercase tracking-[0.16em] text-[#8F896D] hover:text-[#413C23] hover:bg-[#F2EFDB] rounded-xs transition-colors cursor-pointer flex items-center justify-between"
+                          >
+                            <span>All Collections Hub</span>
+                            <span className="text-xs">→</span>
+                          </button>
+                        </div>
+                      </div>
+
                     </div>
                   </div>
                 </div>
@@ -600,40 +653,40 @@ export const Navbar: React.FC<NavbarProps> = ({
                           )}
                         </button>
                       ))}
-                      <div className="border-t border-[#D8D2C2]/60 pt-1.5 mt-1 space-y-1">
+                      <div className="border-t border-[#D8D2C2]/60 pt-2 mt-1.5 space-y-1">
                         <button
                           onClick={() => selectCuratedEdit('duo-suites')}
-                          className="flex w-full items-center justify-between py-1.5 px-2 font-semibold text-[#413C23] hover:text-black transition-colors rounded-xs"
+                          className="flex w-full items-center justify-between py-2 px-2.5 font-semibold text-[#413C23] hover:text-black hover:bg-[#FAF8F5] transition-colors rounded-xs"
                         >
-                          <span>Duo Suites (Pair &amp; Save)</span>
-                          <span className="text-[8.5px] px-1.5 py-0.2 bg-[#7A0F1A] text-[#FAF8F5] rounded-xs font-bold">SAVE ₹100</span>
+                          <span>Signature Duo Suites</span>
+                          <span className="text-[10px] text-[#8F896D]">✦</span>
                         </button>
                         <button
                           onClick={() => selectCuratedEdit('under-999')}
-                          className="flex w-full items-center justify-between py-1.5 px-2 font-semibold text-[#413C23] hover:text-black transition-colors rounded-xs"
+                          className="flex w-full items-center justify-between py-2 px-2.5 font-semibold text-[#413C23] hover:text-black hover:bg-[#FAF8F5] transition-colors rounded-xs"
                         >
-                          <span>The Under ₹999 Edit</span>
-                          <span className="text-[8.5px] px-1.5 py-0.2 bg-[#413C23] text-[#FAF8F5] rounded-xs font-bold">HOT</span>
+                          <span>The Under &#8377;999 Edit</span>
+                          <span className="text-[10px] text-[#8F896D]">✦</span>
                         </button>
                         <button
                           onClick={() => selectCuratedEdit('gifting-edit')}
-                          className="flex w-full items-center justify-between py-1.5 px-2 font-semibold text-[#413C23] hover:text-black transition-colors rounded-xs"
+                          className="flex w-full items-center justify-between py-2 px-2.5 font-semibold text-[#413C23] hover:text-black hover:bg-[#FAF8F5] transition-colors rounded-xs"
                         >
                           <span>The Gifting Edit</span>
-                          <span className="text-[9px] text-[#8F896D]">✦</span>
+                          <span className="text-[10px] text-[#8F896D]">✦</span>
                         </button>
                         <button
                           onClick={() => navigateTo('collections')}
-                          className="flex w-full items-center justify-between py-1.5 px-2 font-semibold text-[#8F896D] hover:text-[#413C23] transition-colors border-t border-[#D8D2C2]/50 mt-1 pt-1"
+                          className="flex w-full items-center justify-between py-2 px-2.5 font-semibold text-[#8F896D] hover:text-[#413C23] hover:bg-[#FAF8F5] transition-colors border-t border-[#D8D2C2]/50 mt-1 pt-1 rounded-xs"
                         >
                           <span>All Collections Hub</span>
-                          <span className="text-[10px]">→</span>
+                          <span className="text-[11px]">→</span>
                         </button>
                         <button
                           onClick={() => selectCategory('all')}
-                          className="block w-full text-left py-1.5 px-2 font-semibold text-[#8F896D] hover:text-[#413C23] transition-colors"
+                          className="block w-full text-left py-2 px-2.5 font-semibold text-[#8F896D] hover:text-[#413C23] hover:bg-[#FAF8F5] transition-colors rounded-xs"
                         >
-                          All Categories →
+                          Browse All Pieces →
                         </button>
                       </div>
                     </div>
