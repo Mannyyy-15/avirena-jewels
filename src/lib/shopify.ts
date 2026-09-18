@@ -554,7 +554,7 @@ export function transformShopifyProduct(node: any): Product {
     : undefined;
   
   let baseComparePriceEur: number | undefined = undefined;
-  if (rawCompareAmount && rawCompareAmount > rawAmount) {
+  if (rawCompareAmount && rawCompareAmount > rawAmount * 1.4) {
     if (currencyCode === 'INR') {
       baseComparePriceEur = rawCompareAmount / 90.0;
     } else if (currencyCode === 'USD') {
@@ -565,7 +565,7 @@ export function transformShopifyProduct(node: any): Product {
       baseComparePriceEur = rawCompareAmount;
     }
   } else {
-    // If not in Shopify, derive realistic compare-at MRP (~68%–70% off)
+    // If not in Shopify or compare-at is unrealistically low (<40% off), derive realistic compare-at MRP (~68%–72% off)
     baseComparePriceEur = getCompareAtPrice(basePriceEur);
   }
 

@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { Product, CartItem, ShopifyCart } from '../types';
+import { getCompareAtPrice } from '../data/products';
 import {
   isShopifyConfigured,
   shopifyFetch,
@@ -119,8 +120,21 @@ export const ShopifyProvider: React.FC<{ children: ReactNode }> = ({ children })
               (u) => u !== mainComposite
             );
             const allImages = [mainComposite, ...distinctThumbnails];
+            
+            // Derive bundle MRP as Product 1 MRP + Product 2 MRP
+            let bundleCompareAt = prod.originalPrice;
+            if (p1 && p2) {
+              const p1Mrp = getCompareAtPrice(p1.price, p1.originalPrice);
+              const p2Mrp = getCompareAtPrice(p2.price, p2.originalPrice);
+              bundleCompareAt = p1Mrp + p2Mrp;
+            } else if (!bundleCompareAt || bundleCompareAt <= prod.price * 1.5) {
+              bundleCompareAt = getCompareAtPrice(prod.price);
+            }
+
             return {
               ...prod,
+              originalPrice: bundleCompareAt,
+              compareAtPrice: bundleCompareAt,
               images: allImages,
               media: allImages.map((url) => ({ contentType: 'image' as const, url })),
             };

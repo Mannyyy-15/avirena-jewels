@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { Product, Currency, Metal, CartItem, ProductMedia } from '../types';
 import { formatPrice, formatInr, getPriceInINR, getCompareAtPrice, getDiscountPercentage } from '../data/products';
+import { findPairOffer } from '../data/offers';
 import { useShopify } from '../context/ShopifyContext';
 import { ProductImageLightbox } from '../components/ProductImageLightbox';
 import { ProductCard } from '../components/ProductCard';
@@ -83,6 +84,18 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
     isProductSilver(product) ? 'Silver Tone Brass' : 'Gold Tone Brass'
   );
   const [activeImageIndex, setActiveImageIndex] = useState(0);
+
+  // Bundle suite detection
+  const isBundle = Boolean(
+    (product.tags || []).includes('bundle') ||
+    (product.tags || []).includes('duo-suite') ||
+    (product.handle || '').includes('duo') ||
+    (product.name || '').toLowerCase().includes('duo')
+  );
+
+  const pairOffer = useMemo(() => {
+    return findPairOffer(product, catalogProducts || []);
+  }, [product, catalogProducts]);
 
   // Long Shopify descriptions are clamped to 4 lines so the price and Add to
   // Bag stay above the fold; this toggles the full text.
@@ -241,6 +254,15 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
 
   // Discover sibling variant pieces in the live catalog (e.g. Solene Crystal Hoops Gold & Silver)
   const { goldVariant, silverVariant, isGoldAvailable, isSilverAvailable } = useMemo(() => {
+    if (isBundle) {
+      return {
+        goldVariant: pairOffer?.products[0] || product,
+        silverVariant: pairOffer?.products[1] || product,
+        isGoldAvailable: true,
+        isSilverAvailable: true,
+      };
+    }
+
     const familyKey = getProductFamilyKey(product);
     const familyProducts = (catalogProducts || []).filter(
       (p) => getProductFamilyKey(p) === familyKey
@@ -255,7 +277,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
       isGoldAvailable: !!gold,
       isSilverAvailable: !!silver,
     };
-  }, [product, catalogProducts]);
+  }, [product, catalogProducts, isBundle, pairOffer]);
 
   useEffect(() => {
     if (isVariantSwitchRef.current) {
@@ -304,6 +326,20 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
   })();
 
   const handleFinishChange = (finish: 'Gold Tone Brass' | 'Silver Tone Brass') => {
+    if (isBundle) {
+      setSelectedFinish(finish);
+      // For bundle, navigate thumbnail gallery to that piece's image if available
+      if (pairOffer && pairOffer.products.length === 2) {
+        const targetProd = finish === 'Gold Tone Brass' ? pairOffer.products[0] : pairOffer.products[1];
+        if (targetProd?.images && targetProd.images.length > 0) {
+          const targetImg = targetProd.images[0];
+          const idx = mediaList.findIndex((m) => m.url === targetImg);
+          if (idx >= 0) setActiveImageIndex(idx);
+        }
+      }
+      return;
+    }
+
     if (finish === selectedFinish) return;
 
     if (finish === 'Gold Tone Brass' && goldVariant) {
@@ -331,7 +367,11 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
     onAddToCart({
       product,
       quantity: 1,
-      metal: selectedFinish === 'Gold Tone Brass' ? 'Gold-Tone Brass' : 'Silver-Tone Alloy',
+      metal: isBundle
+        ? '18K Gold + Rhodium Silver'
+        : selectedFinish === 'Gold Tone Brass'
+        ? 'Gold-Tone Brass'
+        : 'Silver-Tone Alloy',
     });
 
     setIsAddedToBag(true);
@@ -676,22 +716,45 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
 
             {/* Price with Strikethrough Compare-At Price and Discount Badge */}
             {(() => {
-              const comparePrice = getCompareAtPrice(product.price, product.originalPrice);
+              let comparePrice = getCompareAtPrice(product.price, product.originalPrice);
+
+              if (isBundle) {
+                if (pairOffer && pairOffer.products.length === 2) {
+                  const p1Mrp = getCompareAtPrice(pairOffer.products[0].price, pairOffer.products[0].originalPrice);
+                  const p2Mrp = getCompareAtPrice(pairOffer.products[1].price, pairOffer.products[1].originalPrice);
+                  comparePrice = p1Mrp + p2Mrp;
+                } else if (comparePrice <= product.price * 1.5) {
+                  comparePrice = getCompareAtPrice(product.price);
+                }
+              }
+
               const discount = getDiscountPercentage(product.price, comparePrice);
               return (
-                <div className="pt-1 flex items-baseline gap-3 flex-wrap">
-                  <span className="text-2xl sm:text-3xl font-bold text-[#413C23] tracking-tight">
-                    {formatPrice(product.price, currency)}
-                  </span>
-                  {comparePrice > product.price && (
-                    <>
-                      <span className="text-base sm:text-lg text-[#DC2626] line-through font-normal">
-                        {formatPrice(comparePrice, currency)}
+                <div className="pt-1 flex flex-col gap-1.5 w-full">
+                  <div className="flex items-baseline gap-3 flex-wrap">
+                    <span className="text-2xl sm:text-3xl font-bold text-[#413C23] tracking-tight">
+                      {formatPrice(product.price, currency)}
+                    </span>
+                    {comparePrice > product.price && (
+                      <>
+                        <span className="text-base sm:text-lg text-[#DC2626] line-through font-normal">
+                          {formatPrice(comparePrice, currency)}
+                        </span>
+                        <span className="text-xs font-bold text-[#15803D] bg-[#15803D]/10 border border-[#15803D]/20 px-2.5 py-0.5 rounded-2xs uppercase tracking-wider">
+                          {discount}% OFF
+                        </span>
+                      </>
+                    )}
+                  </div>
+
+                  {isBundle && (
+                    <div className="inline-flex items-center gap-2 text-xs text-[#6B6650] bg-[#FAF8F5] border border-[#D8D2C2] px-3 py-1.5 rounded-xs w-fit">
+                      <span className="text-[#8F896D]">
+                        Combined Individual MRP: <strong className="text-[#413C23] line-through">{formatPrice(comparePrice, currency)}</strong>
                       </span>
-                      <span className="text-xs font-bold text-[#15803D] bg-[#15803D]/10 border border-[#15803D]/20 px-2.5 py-0.5 rounded-2xs uppercase tracking-wider">
-                        {discount}% OFF
-                      </span>
-                    </>
+                      <span>•</span>
+                      <span className="font-semibold text-[#15803D]">Special Pair Pricing + Extra ₹100 Off Included</span>
+                    </div>
                   )}
                 </div>
               );
@@ -766,13 +829,29 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
             <div className="space-y-2 pt-1 w-full">
               <div className="flex items-center justify-between text-xs">
                 <span className="font-semibold text-[#413C23] uppercase tracking-wider">
-                  Finish: <span className="font-normal text-[#8F896D]">{selectedFinish}</span>
+                  {isBundle ? (
+                    <>
+                      Finishes: <span className="font-normal text-[#8F896D]">Both Gold & Silver Included in Suite</span>
+                    </>
+                  ) : (
+                    <>
+                      Finish: <span className="font-normal text-[#8F896D]">{selectedFinish}</span>
+                    </>
+                  )}
                 </span>
-                {!isSilverAvailable && selectedFinish === 'Gold Tone Brass' && (
-                  <span className="text-[11px] text-[#8F896D]/80 italic">Silver edition unavailable</span>
-                )}
-                {!isGoldAvailable && selectedFinish === 'Silver Tone Brass' && (
-                  <span className="text-[11px] text-[#8F896D]/80 italic">Gold edition unavailable</span>
+                {isBundle ? (
+                  <span className="text-[11px] font-semibold text-[#15803D] bg-[#15803D]/10 border border-[#15803D]/20 px-2.5 py-0.5 rounded-full">
+                    2 Pieces Included
+                  </span>
+                ) : (
+                  <>
+                    {!isSilverAvailable && selectedFinish === 'Gold Tone Brass' && (
+                      <span className="text-[11px] text-[#8F896D]/80 italic">Silver edition unavailable</span>
+                    )}
+                    {!isGoldAvailable && selectedFinish === 'Silver Tone Brass' && (
+                      <span className="text-[11px] text-[#8F896D]/80 italic">Gold edition unavailable</span>
+                    )}
+                  </>
                 )}
               </div>
               <div className="flex flex-wrap items-center gap-3">
@@ -780,11 +859,11 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                 <button
                   type="button"
                   onClick={() => handleFinishChange('Gold Tone Brass')}
-                  disabled={!isGoldAvailable}
-                  title={isGoldAvailable ? 'Select Gold Tone Brass' : 'Unavailable in Silver/Gold Tone Brass'}
+                  disabled={!isBundle && !isGoldAvailable}
+                  title={isBundle ? 'Gold Tone Brass piece is included in this suite' : (isGoldAvailable ? 'Select Gold Tone Brass' : 'Unavailable in Gold Tone Brass')}
                   className={`inline-flex items-center gap-2 pl-2 pr-4 py-2 rounded-full border text-xs font-semibold transition-all ${
-                    selectedFinish === 'Gold Tone Brass'
-                      ? 'border-[#413C23] bg-[#FAF8F5] text-[#413C23] ring-1 ring-[#413C23] cursor-default'
+                    isBundle || selectedFinish === 'Gold Tone Brass'
+                      ? 'border-[#413C23] bg-[#FAF8F5] text-[#413C23] ring-1 ring-[#413C23] shadow-xs cursor-pointer'
                       : isGoldAvailable
                       ? 'border-[#D8D2C2] text-[#6B6650] bg-[#FAF8F5] hover:border-[#8F896D] cursor-pointer'
                       : 'border-dashed border-[#D8D2C2] text-neutral-400 bg-[#E7E4D5]/40 cursor-not-allowed opacity-50'
@@ -792,13 +871,19 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                 >
                   <span
                     aria-hidden="true"
-                    className="w-4 h-4 rounded-full shrink-0 border border-[#00000022] bg-[linear-gradient(135deg,#E8C87A_0%,#C9A227_55%,#9C7A1A_100%)]"
+                    className="w-4 h-4 rounded-full shrink-0 border border-[#00000022] bg-[linear-gradient(135deg,#E8C87A_0%,#C9A227_55%,#9C7A1A_100%)] shadow-2xs"
                   />
                   <span>Gold Tone Brass</span>
-                  {!isGoldAvailable && (
-                    <span className="ml-1.5 text-[10px] uppercase font-normal tracking-wide text-neutral-500">
-                      (N/A)
+                  {isBundle ? (
+                    <span className="ml-1 text-[10px] font-bold text-[#15803D] bg-[#15803D]/10 px-1.5 py-0.5 rounded-full uppercase tracking-wider">
+                      ✓ Included
                     </span>
+                  ) : (
+                    !isGoldAvailable && (
+                      <span className="ml-1.5 text-[10px] uppercase font-normal tracking-wide text-neutral-500">
+                        (N/A)
+                      </span>
+                    )
                   )}
                 </button>
 
@@ -806,11 +891,11 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                 <button
                   type="button"
                   onClick={() => handleFinishChange('Silver Tone Brass')}
-                  disabled={!isSilverAvailable}
-                  title={isSilverAvailable ? 'Select Silver Tone Brass' : 'Unavailable in Silver Tone Brass'}
+                  disabled={!isBundle && !isSilverAvailable}
+                  title={isBundle ? 'Silver Tone Brass piece is included in this suite' : (isSilverAvailable ? 'Select Silver Tone Brass' : 'Unavailable in Silver Tone Brass')}
                   className={`inline-flex items-center gap-2 pl-2 pr-4 py-2 rounded-full border text-xs font-semibold transition-all ${
-                    selectedFinish === 'Silver Tone Brass'
-                      ? 'border-[#413C23] bg-[#FAF8F5] text-[#413C23] ring-1 ring-[#413C23] cursor-default'
+                    isBundle || selectedFinish === 'Silver Tone Brass'
+                      ? 'border-[#413C23] bg-[#FAF8F5] text-[#413C23] ring-1 ring-[#413C23] shadow-xs cursor-pointer'
                       : isSilverAvailable
                       ? 'border-[#D8D2C2] text-[#6B6650] bg-[#FAF8F5] hover:border-[#8F896D] cursor-pointer'
                       : 'border-dashed border-[#D8D2C2] text-neutral-400 bg-[#E7E4D5]/40 cursor-not-allowed opacity-50'
@@ -818,16 +903,27 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                 >
                   <span
                     aria-hidden="true"
-                    className="w-4 h-4 rounded-full shrink-0 border border-[#00000022] bg-[linear-gradient(135deg,#F2F2F0_0%,#C8C8CC_55%,#9A9AA0_100%)]"
+                    className="w-4 h-4 rounded-full shrink-0 border border-[#00000022] bg-[linear-gradient(135deg,#F2F2F0_0%,#C8C8CC_55%,#9A9AA0_100%)] shadow-2xs"
                   />
                   <span>Silver Tone Brass</span>
-                  {!isSilverAvailable && (
-                    <span className="ml-1.5 text-[10px] uppercase font-normal tracking-wide text-neutral-500">
-                      (N/A)
+                  {isBundle ? (
+                    <span className="ml-1 text-[10px] font-bold text-[#15803D] bg-[#15803D]/10 px-1.5 py-0.5 rounded-full uppercase tracking-wider">
+                      ✓ Included
                     </span>
+                  ) : (
+                    !isSilverAvailable && (
+                      <span className="ml-1.5 text-[10px] uppercase font-normal tracking-wide text-neutral-500">
+                        (N/A)
+                      </span>
+                    )
                   )}
                 </button>
               </div>
+              {isBundle && (
+                <p className="text-[11px] text-[#8F896D] italic pt-0.5">
+                  Both finishes are bundled together in your signature pair box.
+                </p>
+              )}
             </div>
 
             {/* Primary CTA and Wishlist Action.
