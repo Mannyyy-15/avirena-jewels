@@ -154,6 +154,8 @@ export const GET_PRODUCTS_QUERY = `
                 id
                 title
                 availableForSale
+            quantityAvailable
+                quantityAvailable
                 price {
                   amount
                   currencyCode
@@ -223,6 +225,7 @@ export const GET_PRODUCT_BY_HANDLE_QUERY = `
             id
             title
             availableForSale
+            quantityAvailable
             price {
               amount
               currencyCode
@@ -640,6 +643,7 @@ export function transformShopifyProduct(node: any): Product {
       title: vNode.title,
       price: vPriceEur,
       availableForSale: vNode.availableForSale,
+      quantityAvailable: typeof vNode.quantityAvailable === 'number' ? vNode.quantityAvailable : undefined,
       selectedOptions: vNode.selectedOptions,
       sku: vNode.sku,
     };

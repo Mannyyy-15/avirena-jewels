@@ -289,6 +289,19 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
 
   }, [product.id]);
 
+  /**
+   * Units left for the variant on sale, when Shopify reports it and the count
+   * is low enough to be worth saying. Undefined otherwise, which hides the
+   * message entirely rather than guessing a number.
+   */
+  const LOW_STOCK_THRESHOLD = 5;
+  const lowStockLeft = (() => {
+    const v = product.variants && product.variants.length > 0 ? product.variants[0] : undefined;
+    const qty = v?.quantityAvailable;
+    if (typeof qty !== 'number' || qty <= 0 || qty > LOW_STOCK_THRESHOLD) return undefined;
+    return qty;
+  })();
+
   const handleFinishChange = (finish: 'Gold Tone Brass' | 'Silver Tone Brass') => {
     if (finish === selectedFinish) return;
 
@@ -710,20 +723,36 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
               </div>
             </div>
 
-            {/* Limited-offer countdown.
-                Restrained on purpose: premium retail keeps urgency in the page's
-                own neutral palette rather than a red banner, and places it
-                between the price and the CTA so it reads as part of the buying
-                decision instead of an ad pasted over the product.
+            {/* Stock urgency - real, never invented.
+                Reads quantityAvailable straight from the Shopify Storefront
+                API and only renders at or below LOW_STOCK_THRESHOLD, so the
+                message is always true and disappears on its own when stock is
+                replenished. A hardcoded "only 2 left" would be the same class
+                of fabrication as the reviews and order toasts removed earlier. */}
+            {typeof lowStockLeft === 'number' && (
+              <div className="pt-1 w-full">
+                <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-[#7A0F1A]">
+                  <span aria-hidden="true" className="w-1.5 h-1.5 rounded-full bg-[#7A0F1A] animate-pulse" />
+                  {lowStockLeft === 1
+                    ? 'Only 1 left in stock'
+                    : `Only ${lowStockLeft} left in stock`}
+                </span>
+              </div>
+            )}
 
-                Digits sit in their own tiles so the eye can lock onto the
-                changing number, with the seconds tile carrying the single
-                accent — one moving focal point rather than three competing. */}
+            {/* Limited-offer countdown.
+                Urgency-first per the brief: the brand's error red (#7A0F1A)
+                carries the label and digits so it separates clearly from the
+                neutral buy box, while the surface stays a pale tint rather than
+                a saturated banner - loud enough to be noticed, not so loud it
+                reads as a third-party plugin. The seconds tile is inverted as
+                the single moving focal point, and tabular-nums stops the
+                digits twitching as they change. */}
             <div className="pt-1 w-full">
-              <div className="inline-flex flex-wrap items-center gap-x-3 gap-y-2 py-2.5 px-3.5 rounded-xs bg-[#F2EFDB] border border-[#D8D2C2]">
-                <span className="inline-flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#413C23]">
-                  <Clock className="w-3.5 h-3.5 text-[#8F896D] shrink-0" strokeWidth={1.75} />
-                  Offer ends in
+              <div className="inline-flex flex-wrap items-center gap-x-3 gap-y-2 py-2.5 px-3.5 rounded-xs bg-[#FBEDEE] border border-[#7A0F1A]/30">
+                <span className="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.14em] text-[#7A0F1A]">
+                  <Clock className="w-3.5 h-3.5 text-[#7A0F1A] shrink-0 animate-pulse" strokeWidth={2} />
+                  Hurry — offer ends in
                 </span>
 
                 <span className="inline-flex items-center gap-1" role="timer" aria-live="off">
@@ -735,20 +764,20 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                     <React.Fragment key={label}>
                       <span className="inline-flex flex-col items-center">
                         <span
-                          className={`inline-flex items-center justify-center min-w-[2.1rem] px-1.5 py-1 rounded-2xs font-mono text-[15px] leading-none tabular-nums font-semibold border ${
+                          className={`inline-flex items-center justify-center min-w-[2.1rem] px-1.5 py-1 rounded-2xs font-mono text-[15px] leading-none tabular-nums font-bold border ${
                             accent
-                              ? 'bg-[#413C23] text-[#FAF8F5] border-[#413C23]'
-                              : 'bg-[#FAF8F5] text-[#413C23] border-[#D8D2C2]'
+                              ? 'bg-[#7A0F1A] text-[#FFFFFF] border-[#7A0F1A]'
+                              : 'bg-[#FFFFFF] text-[#7A0F1A] border-[#7A0F1A]/35'
                           }`}
                         >
                           {String(Math.max(0, value)).padStart(2, '0')}
                         </span>
-                        <span className="mt-1 text-[8px] uppercase tracking-[0.14em] text-[#6B6650]">
+                        <span className="mt-1 text-[8px] font-semibold uppercase tracking-[0.14em] text-[#7A0F1A]/75">
                           {label}
                         </span>
                       </span>
                       {i < arr.length - 1 && (
-                        <span className="pb-3 text-[#8F896D] text-sm leading-none select-none" aria-hidden="true">
+                        <span className="pb-3 text-[#7A0F1A]/50 text-sm leading-none select-none" aria-hidden="true">
                           :
                         </span>
                       )}
@@ -778,14 +807,18 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                   onClick={() => handleFinishChange('Gold Tone Brass')}
                   disabled={!isGoldAvailable}
                   title={isGoldAvailable ? 'Select Gold Tone Brass' : 'Unavailable in Silver/Gold Tone Brass'}
-                  className={`px-5 py-2.5 rounded-xs border text-xs font-semibold transition-all ${
+                  className={`inline-flex items-center gap-2 pl-2 pr-4 py-2 rounded-full border text-xs font-semibold transition-all ${
                     selectedFinish === 'Gold Tone Brass'
-                      ? 'border-black bg-black text-white shadow-xs cursor-default'
+                      ? 'border-[#413C23] bg-[#FAF8F5] text-[#413C23] ring-1 ring-[#413C23] cursor-default'
                       : isGoldAvailable
-                      ? 'border-[#D8D2C2] text-black bg-[#F2EFDB] hover:border-black cursor-pointer'
+                      ? 'border-[#D8D2C2] text-[#6B6650] bg-[#FAF8F5] hover:border-[#8F896D] cursor-pointer'
                       : 'border-dashed border-[#D8D2C2] text-neutral-400 bg-[#E7E4D5]/40 cursor-not-allowed opacity-50'
                   }`}
                 >
+                  <span
+                    aria-hidden="true"
+                    className="w-4 h-4 rounded-full shrink-0 border border-[#00000022] bg-[linear-gradient(135deg,#E8C87A_0%,#C9A227_55%,#9C7A1A_100%)]"
+                  />
                   <span>Gold Tone Brass</span>
                   {!isGoldAvailable && (
                     <span className="ml-1.5 text-[10px] uppercase font-normal tracking-wide text-neutral-500">
@@ -800,14 +833,18 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                   onClick={() => handleFinishChange('Silver Tone Brass')}
                   disabled={!isSilverAvailable}
                   title={isSilverAvailable ? 'Select Silver Tone Brass' : 'Unavailable in Silver Tone Brass'}
-                  className={`px-5 py-2.5 rounded-xs border text-xs font-semibold transition-all ${
+                  className={`inline-flex items-center gap-2 pl-2 pr-4 py-2 rounded-full border text-xs font-semibold transition-all ${
                     selectedFinish === 'Silver Tone Brass'
-                      ? 'border-black bg-black text-white shadow-xs cursor-default'
+                      ? 'border-[#413C23] bg-[#FAF8F5] text-[#413C23] ring-1 ring-[#413C23] cursor-default'
                       : isSilverAvailable
-                      ? 'border-[#D8D2C2] text-black bg-[#F2EFDB] hover:border-black cursor-pointer'
+                      ? 'border-[#D8D2C2] text-[#6B6650] bg-[#FAF8F5] hover:border-[#8F896D] cursor-pointer'
                       : 'border-dashed border-[#D8D2C2] text-neutral-400 bg-[#E7E4D5]/40 cursor-not-allowed opacity-50'
                   }`}
                 >
+                  <span
+                    aria-hidden="true"
+                    className="w-4 h-4 rounded-full shrink-0 border border-[#00000022] bg-[linear-gradient(135deg,#F2F2F0_0%,#C8C8CC_55%,#9A9AA0_100%)]"
+                  />
                   <span>Silver Tone Brass</span>
                   {!isSilverAvailable && (
                     <span className="ml-1.5 text-[10px] uppercase font-normal tracking-wide text-neutral-500">

@@ -10,6 +10,8 @@ export interface ProductVariant {
   price: number;
   compareAtPrice?: number;
   availableForSale: boolean;
+  /** Units left, straight from Shopify. Undefined when the store does not track inventory. */
+  quantityAvailable?: number;
   selectedOptions?: { name: string; value: string }[];
   sku?: string;
 }
