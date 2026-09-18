@@ -343,33 +343,29 @@ export const HomePage: React.FC<HomePageProps> = ({
       </section>
 
       {pairOffers.length > 0 && (
-        <section className="w-full bg-[#F5F2EA] border-b border-[#D8D2C2] px-4 py-14 sm:px-8 sm:py-20 lg:px-12 xl:px-16 2xl:px-20">
-          <div className="max-w-7xl mx-auto">
-            {/* Header */}
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10 pb-6 border-b border-[#D8D2C2]/70">
-              <div className="max-w-2xl">
-                <div className="inline-flex items-center gap-2 px-2.5 py-1 bg-[#7A0F1A]/8 border border-[#7A0F1A]/20 rounded-xs mb-3">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#7A0F1A]" />
-                  <span className="text-[10px] font-bold uppercase tracking-[0.24em] text-[#7A0F1A]">The Duo Suites</span>
-                </div>
-                <h2 className="font-serif-display text-3xl sm:text-4xl md:text-5xl font-light text-[#2A271B] tracking-tight">
-                  Two Finishes. Better Together.
+        <section className="w-full bg-[#E7E4D5] py-16 sm:py-24 border-b border-[#D8D2C2] px-4 sm:px-8 lg:px-12 xl:px-16 2xl:px-20">
+          <div className="w-full space-y-8 sm:space-y-12">
+            
+            {/* Section Header (Identical to Curated Collection) */}
+            <div className="flex items-end justify-between border-b border-[#D8D2C2] pb-5">
+              <div>
+                <span className="text-xs sm:text-sm text-[#8F896D] uppercase tracking-[0.2em] font-semibold block mb-2">
+                  Curated Duo Suites • Automatic ₹100 Off
+                </span>
+                <h2 className="font-serif-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-[#413C23] font-bold tracking-tight leading-[1.05] max-w-2xl">
+                  Two Finishes.<br />Better Together.
                 </h2>
-                <p className="mt-2.5 text-xs sm:text-sm text-[#6B6650] font-normal leading-relaxed">
-                  Curated complementary pairs crafted to balance warm 18K gold and crisp rhodium silver. Save ₹100 instantly when bundled.
-                </p>
               </div>
-              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
-                <div className="inline-flex items-center gap-2 rounded-xs border border-[#D8D2C2] bg-[#FAF8F5] px-4 py-2.5 text-xs text-[#413C23] shadow-2xs">
-                  <span className="text-[#7A0F1A] font-medium">Extra ₹50 off:</span>
-                  <span className="text-[#6B6650]">Use code</span>
-                  <code className="bg-[#EFECE6] px-1.5 py-0.5 rounded-xs font-mono font-bold text-black text-[11px] tracking-wider">PREPAID50</code>
-                </div>
-              </div>
+              <button
+                onClick={() => onNavigateToCollection('all')}
+                className="text-xs sm:text-sm text-[#8F896D] hover:text-[#413C23] transition-colors cursor-pointer font-medium underline underline-offset-4 tracking-wide uppercase shrink-0 pb-1"
+              >
+                see all suites
+              </button>
             </div>
 
-            {/* Bundle Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6">
+            {/* 4-Column Uniform Duo Grid matching Curated Collection Cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
               {pairOffers.map((offer) => {
                 const p1 = offer.products[0];
                 const p2 = offer.products[1];
@@ -378,119 +374,133 @@ export const HomePage: React.FC<HomePageProps> = ({
                 const isAdding = addingPairId === offer.id;
 
                 return (
-                  <article
+                  <div
                     key={offer.id}
-                    className="group flex flex-col justify-between rounded-xs border border-[#D8D2C2] bg-[#FAF8F5] transition-all duration-300 hover:border-[#413C23]/40 hover:shadow-[0_8px_24px_rgba(65,60,35,0.06)]"
+                    className="collection-card group cursor-pointer flex flex-col space-y-2 text-left w-full"
                   >
-                    {/* Dual Piece Stage */}
-                    <div className="relative p-3 bg-gradient-to-b from-[#F2EFDB]/40 to-transparent border-b border-[#D8D2C2]/60">
-                      {/* Top floating badges */}
-                      <div className="flex items-center justify-between gap-1 mb-2 px-1">
-                        <span className="text-[9px] font-bold uppercase tracking-[0.18em] text-[#7A0F1A] bg-[#7A0F1A]/8 px-2 py-0.5 rounded-xs">
+                    {/* Fixed Uniform Square Box Container */}
+                    <div className="relative aspect-square w-full bg-[#FAF8F5] border border-[#D8D2C2] rounded-xs flex items-center justify-center p-4 sm:p-5 transition-all duration-300 group-hover:border-[#8F896D] group-hover:shadow-[0_8px_20px_rgba(65,60,35,0.08)] overflow-hidden">
+                      {/* Save Badge top-left */}
+                      <div className="absolute top-2.5 left-2.5 z-10">
+                        <span className="text-[10px] font-bold text-[#14532D] bg-[#14532D]/10 border border-[#14532D]/25 px-1.5 py-0.5 rounded-2xs uppercase tracking-wider">
                           Save ₹{offer.saving}
-                        </span>
-                        <span className="text-[9px] uppercase tracking-[0.14em] text-[#8F896D] font-medium">
-                          Curated Duo
                         </span>
                       </div>
 
-                      {/* Dual Product Images with + Connector */}
-                      <div className="relative grid grid-cols-2 gap-2 h-44 sm:h-48 items-center bg-[#FAF8F5] rounded-xs border border-[#D8D2C2]/40 overflow-hidden">
+                      {/* Both Pieces Side-by-Side in the Square Box */}
+                      <div className="w-full h-full flex items-center justify-center relative">
                         {/* Piece 1 */}
-                        <button
-                          type="button"
+                        <div
                           onClick={() => onSelectProduct(p1)}
-                          title={`View ${p1.name}`}
-                          className="h-full w-full p-2.5 flex flex-col items-center justify-center hover:bg-[#F2EFDB]/40 transition-colors cursor-pointer group/item relative"
+                          className="w-1/2 h-full flex flex-col items-center justify-center p-1.5 cursor-pointer relative group/p1"
+                          title={p1.name}
                         >
                           <img
                             src={getProductImage(p1)}
                             alt={p1.name}
-                            className="h-28 sm:h-32 w-full object-contain mix-blend-multiply transition-transform duration-500 group-hover/item:scale-105"
+                            referrerPolicy="no-referrer"
+                            width={800}
+                            height={800}
                             loading="lazy"
+                            decoding="async"
+                            className="max-w-full max-h-[82%] w-auto h-auto object-contain mix-blend-multiply group-hover/p1:scale-105 transition-transform duration-500 ease-out"
                           />
-                          <span className="text-[9px] text-[#8F896D] tracking-wider uppercase mt-1 truncate max-w-full px-1">
+                          <span className="text-[9px] text-[#8F896D] uppercase tracking-wider truncate max-w-full mt-1">
                             {p1.metal || 'Piece 1'}
                           </span>
-                        </button>
+                        </div>
 
-                        {/* Floating + badge */}
-                        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10 w-6 h-6 rounded-full bg-[#FAF8F5] border border-[#D8D2C2] text-[#413C23] shadow-xs flex items-center justify-center font-serif text-sm italic pointer-events-none select-none">
+                        {/* Minimal '+' connector */}
+                        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10 w-6 h-6 rounded-full bg-[#FAF8F5] border border-[#D8D2C2] text-[#413C23] shadow-2xs flex items-center justify-center font-serif text-xs italic pointer-events-none select-none">
                           +
                         </div>
 
                         {/* Piece 2 */}
-                        <button
-                          type="button"
+                        <div
                           onClick={() => onSelectProduct(p2)}
-                          title={`View ${p2.name}`}
-                          className="h-full w-full p-2.5 flex flex-col items-center justify-center hover:bg-[#F2EFDB]/40 transition-colors cursor-pointer group/item relative"
+                          className="w-1/2 h-full flex flex-col items-center justify-center p-1.5 cursor-pointer relative group/p2"
+                          title={p2.name}
                         >
                           <img
                             src={getProductImage(p2)}
                             alt={p2.name}
-                            className="h-28 sm:h-32 w-full object-contain mix-blend-multiply transition-transform duration-500 group-hover/item:scale-105"
+                            referrerPolicy="no-referrer"
+                            width={800}
+                            height={800}
                             loading="lazy"
+                            decoding="async"
+                            className="max-w-full max-h-[82%] w-auto h-auto object-contain mix-blend-multiply group-hover/p2:scale-105 transition-transform duration-500 ease-out"
                           />
-                          <span className="text-[9px] text-[#8F896D] tracking-wider uppercase mt-1 truncate max-w-full px-1">
+                          <span className="text-[9px] text-[#8F896D] uppercase tracking-wider truncate max-w-full mt-1">
                             {p2.metal || 'Piece 2'}
-                          </span>
-                        </button>
-                      </div>
-                    </div>
-
-                    {/* Card Content & Action */}
-                    <div className="p-4 sm:p-5 flex flex-col flex-1 justify-between">
-                      <div>
-                        <h3 className="font-serif-display text-lg sm:text-xl font-medium text-[#2A271B] leading-snug group-hover:text-black transition-colors">
-                          {offer.title}
-                        </h3>
-                        <p className="mt-1 text-[11px] text-[#7E7864] line-clamp-1">
-                          {p1.name.replace(/Avirena\s*/i, '')} &amp; {p2.name.replace(/Avirena\s*/i, '')}
-                        </p>
-
-                        {/* Pricing Row */}
-                        <div className="mt-3 flex items-baseline gap-2.5 flex-wrap">
-                          <span className="text-base sm:text-lg font-semibold text-[#1A1918] tracking-tight">
-                            {formatInr(bundleInr)}
-                          </span>
-                          <span className="text-xs text-[#8F896D] line-through decoration-[#8F896D]/60">
-                            {formatInr(regularInr)}
-                          </span>
-                          <span className="text-[10px] font-semibold text-[#15803D] bg-[#15803D]/10 px-1.5 py-0.5 rounded-xs tracking-wider uppercase">
-                            ₹{offer.saving} off
                           </span>
                         </div>
                       </div>
 
-                      {/* Add Both to Bag Button */}
+                      {/* Floating Quick Add Button */}
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleAddBundle(offer);
+                        }}
+                        disabled={isAdding}
+                        className="absolute bottom-2.5 right-2.5 p-2 bg-black hover:bg-neutral-800 text-white rounded-xs opacity-0 group-hover:opacity-100 transition-opacity shadow-sm cursor-pointer z-10"
+                        title="Add Duo to Bag"
+                      >
+                        {isAdding ? <Check className="w-3.5 h-3.5 text-white" /> : <ShoppingBag className="w-3.5 h-3.5" />}
+                      </button>
+                    </div>
+
+                    {/* Meta Box with Prominent Bold Price & Discount Badge (Identical to Curated Collection) */}
+                    <div className="flex flex-col justify-between pt-1">
+                      <h3
+                        onClick={() => onSelectProduct(p1)}
+                        className="font-serif-display text-base sm:text-lg md:text-xl text-black group-hover:text-neutral-700 transition-colors font-medium sm:font-semibold leading-snug truncate block"
+                      >
+                        {offer.title}
+                      </h3>
+
+                      <div className="flex items-baseline gap-2 mt-0.5 flex-wrap">
+                        <span className="text-base sm:text-lg md:text-xl font-bold text-black tracking-tight">
+                          {formatInr(bundleInr)}
+                        </span>
+                        <span className="text-xs text-[#991B1B] line-through font-normal">
+                          {formatInr(regularInr)}
+                        </span>
+                        <span className="text-[10px] font-bold text-[#14532D] bg-[#14532D]/10 border border-[#14532D]/25 px-1.5 py-0.2 rounded-2xs uppercase tracking-wider">
+                          Save ₹{offer.saving}
+                        </span>
+                      </div>
+
+                      {/* Dedicated Add Both Button */}
                       <button
                         type="button"
                         onClick={() => handleAddBundle(offer)}
                         disabled={isAdding}
-                        className={`mt-4 w-full py-3 px-3 text-[11px] font-semibold uppercase tracking-[0.18em] transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer rounded-xs shadow-xs active:scale-[0.99] ${
+                        className={`mt-2.5 w-full py-2.5 px-3 text-[11px] font-semibold uppercase tracking-[0.18em] transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer rounded-xs shadow-xs active:scale-[0.99] ${
                           isAdding
-                            ? 'bg-[#15803D] text-white'
-                            : 'bg-[#1A1918] text-[#FAF8F5] hover:bg-black hover:shadow-md'
+                            ? 'bg-[#14532D] text-white'
+                            : 'bg-black text-white hover:bg-neutral-800'
                         }`}
                       >
                         {isAdding ? (
                           <>
                             <Check className="w-3.5 h-3.5 text-white" />
-                            <span>Pair Added to Bag</span>
+                            <span>Duo Added to Bag</span>
                           </>
                         ) : (
                           <>
                             <ShoppingBag className="w-3.5 h-3.5 opacity-90" />
-                            <span>Add Pair to Bag</span>
+                            <span>Add Duo to Bag</span>
                           </>
                         )}
                       </button>
                     </div>
-                  </article>
+                  </div>
                 );
               })}
             </div>
+
           </div>
         </section>
       )}
