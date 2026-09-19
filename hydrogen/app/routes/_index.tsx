@@ -164,13 +164,61 @@ export default function Homepage() {
   const handleAddBundle = (offer: PairOffer & { products: Product[] }) => {
     if (offer.products.length < 2) return;
     setAddingPairId(offer.id);
+    aside.open('cart');
+
+    // If native Shopify bundle product exists in catalog, add its variant
+    if (offer.bundleProduct && offer.bundleProduct.variants?.[0]?.id) {
+      const bundleVariantId = offer.bundleProduct.variants[0].id;
+      const bundleSelectedVariant = {
+        id: bundleVariantId,
+        title: offer.title,
+        price: {
+          amount: String(getPriceInINR(offer.bundleProduct.price)),
+          currencyCode: 'INR',
+        },
+        product: {
+          id: offer.bundleProduct.shopifyId || offer.bundleProduct.id,
+          title: offer.title,
+          handle: offer.shopifyHandle || offer.id,
+        },
+        image: {
+          url: `/assets/bundles/${offer.shopifyHandle}.webp`,
+          altText: offer.title,
+        },
+        selectedOptions: [
+          { name: 'Title', value: 'Default Title' },
+        ],
+      };
+
+      fetcher.submit(
+        {
+          [CartForm.INPUT_NAME]: JSON.stringify({
+            action: CartForm.ACTIONS.LinesAdd,
+            inputs: {
+              lines: [
+                {
+                  merchandiseId: bundleVariantId,
+                  quantity: 1,
+                  selectedVariant: bundleSelectedVariant,
+                },
+              ],
+            },
+          }),
+        },
+        { method: 'POST', action: '/cart' }
+      );
+
+      setTimeout(() => {
+        setAddingPairId(null);
+      }, 1800);
+      return;
+    }
+
     const p1 = offer.products[0];
     const p2 = offer.products[1];
     const p1VariantId = p1.variants?.[0]?.id || `gid://shopify/ProductVariant/${p1.id}`;
     const p2VariantId = p2.variants?.[0]?.id || `gid://shopify/ProductVariant/${p2.id}`;
     const bundleGroupId = `bundle-${offer.id}-${Date.now()}`;
-
-    aside.open('cart');
 
     const p1SelectedVariant = {
       id: p1VariantId,
@@ -180,7 +228,7 @@ export default function Homepage() {
         currencyCode: 'INR',
       },
       product: {
-        id: p1.id,
+        id: p1.shopifyId || p1.id,
         title: p1.name,
         handle: p1.handle || p1.id,
       },
@@ -189,7 +237,7 @@ export default function Homepage() {
         altText: p1.name,
       },
       selectedOptions: [
-        { name: 'Finish', value: p1.metal || 'Gold Tone Brass' },
+        { name: 'Title', value: 'Default Title' },
       ],
     };
 
@@ -201,7 +249,7 @@ export default function Homepage() {
         currencyCode: 'INR',
       },
       product: {
-        id: p2.id,
+        id: p2.shopifyId || p2.id,
         title: p2.name,
         handle: p2.handle || p2.id,
       },
@@ -210,7 +258,7 @@ export default function Homepage() {
         altText: p2.name,
       },
       selectedOptions: [
-        { name: 'Finish', value: p2.metal || 'Silver Tone Brass' },
+        { name: 'Title', value: 'Default Title' },
       ],
     };
 

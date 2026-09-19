@@ -18,11 +18,26 @@ function formatPriceAmount(amount?: string, currencyCode = 'INR') {
   return `₹${Math.round(num).toLocaleString('en-IN')}`;
 }
 
+function getCleanCheckoutUrl(url?: string) {
+  if (!url) return undefined;
+  try {
+    const parsed = new URL(url);
+    if (parsed.hostname.includes('myshopify.com')) {
+      parsed.hostname = 'avirenajewels.com';
+    }
+    return parsed.toString();
+  } catch {
+    return url.replace('m5yhxq-gb.myshopify.com', 'avirenajewels.com');
+  }
+}
+
 export function CartSummary({cart, layout}: CartSummaryProps) {
   const isAside = layout === 'aside';
   const discountsHeadingId = useId();
   const discountCodeInputId = useId();
   const {close} = useAside();
+
+  const checkoutUrl = getCleanCheckoutUrl(cart?.checkoutUrl);
 
   const subtotalFormatted = formatPriceAmount(
     cart?.cost?.subtotalAmount?.amount,
@@ -69,10 +84,10 @@ export function CartSummary({cart, layout}: CartSummaryProps) {
       />
 
       {/* Checkout CTA Button */}
-      {cart?.checkoutUrl ? (
+      {checkoutUrl ? (
         <a
           id="cart-drawer-checkout-btn"
-          href={cart.checkoutUrl}
+          href={checkoutUrl}
           className="w-full py-4 bg-black hover:bg-neutral-800 text-white text-xs sm:text-sm uppercase tracking-[0.2em] font-semibold rounded-xs transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer active:scale-98 text-center"
         >
           <Lock className="w-3.5 h-3.5" />

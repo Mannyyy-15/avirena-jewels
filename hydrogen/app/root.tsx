@@ -12,7 +12,6 @@ import {
 } from 'react-router';
 import {useEffect} from 'react';
 import type {Route} from './+types/root';
-import favicon from '~/assets/favicon.svg';
 import {FOOTER_QUERY, HEADER_QUERY} from '~/lib/fragments';
 import resetStyles from '~/styles/reset.css?url';
 import appStyles from '~/styles/app.css?url';
@@ -84,7 +83,13 @@ export function links() {
       href: '/logo.webp',
       type: 'image/webp',
     },
-    {rel: 'icon', type: 'image/svg+xml', href: favicon},
+    {rel: 'icon', href: '/favicon.ico', sizes: '48x48'},
+    {rel: 'icon', type: 'image/png', sizes: '48x48', href: '/favicon-48x48.png'},
+    {rel: 'icon', type: 'image/png', sizes: '96x96', href: '/favicon-96x96.png'},
+    {rel: 'icon', type: 'image/png', sizes: '192x192', href: '/favicon-192x192.png'},
+    {rel: 'icon', type: 'image/png', sizes: '512x512', href: '/favicon-512x512.png'},
+    {rel: 'apple-touch-icon', href: '/apple-touch-icon.png'},
+    {rel: 'manifest', href: '/site.webmanifest'},
   ];
 }
 

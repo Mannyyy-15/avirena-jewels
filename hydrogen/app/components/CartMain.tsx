@@ -106,6 +106,7 @@ function resolveBundlePieces(lines: CartLine[], offer?: PairOffer): BundlePiece[
 function groupCartLinesForDisplay(lines: CartLine[]): DisplayCartGroup[] {
   const result: DisplayCartGroup[] = [];
   const processedBundleGroups = new Set<string>();
+  const singleMerchandiseMap = new Map<string, {line: CartLine; index: number}>();
 
   for (const line of lines) {
     if ('parentRelationship' in line && line.parentRelationship?.parent) {
@@ -117,22 +118,12 @@ function groupCartLinesForDisplay(lines: CartLine[]): DisplayCartGroup[] {
     const bundleSavingsStr = line.attributes?.find((a) => a.key === '_bundleSavings')?.value;
 
     const handle = line.merchandise?.product?.handle || '';
-    const title = line.merchandise?.product?.title || '';
-    const matchingOffer = PAIR_OFFERS.find(
-      (o) =>
-        o.shopifyHandle === handle ||
-        o.id === handle ||
-        o.handles.includes(handle) ||
-        (bundleTitleAttr && (o.title.toLowerCase() === bundleTitleAttr.toLowerCase() || bundleTitleAttr.toLowerCase().includes(o.title.toLowerCase()))) ||
-        (title && (o.title.toLowerCase().includes(title.toLowerCase()) || title.toLowerCase().includes(o.title.toLowerCase())))
+    const isExplicitBundleProduct = Boolean(
+      PAIR_OFFERS.some((o) => o.shopifyHandle === handle || o.id === handle) ||
+      (handle.endsWith('-duo') && !handle.includes('duo-curve'))
     );
 
-    const isBundleProduct = Boolean(
-      bundleAttr ||
-      matchingOffer ||
-      handle.includes('duo') ||
-      title.toLowerCase().includes('duo')
-    );
+    const isBundleProduct = Boolean(bundleAttr || isExplicitBundleProduct);
 
     if (isBundleProduct) {
       const groupId = bundleAttr || `bundle-${handle || line.id}`;
@@ -146,15 +137,25 @@ function groupCartLinesForDisplay(lines: CartLine[]): DisplayCartGroup[] {
         : [line];
 
       const qty = bundleMembers[0]?.quantity || 1;
-      const combinedAmount = bundleMembers.reduce(
-        (sum, m) => sum + parseFloat(m.cost?.totalAmount?.amount || '0'),
-        0
+      const combinedAmount = bundleMembers.reduce((sum, m) => {
+        const lineTotal = parseFloat(m.cost?.totalAmount?.amount || '0');
+        if (lineTotal > 0) return sum + lineTotal;
+        const unit = parseFloat(m.merchandise?.price?.amount || '0');
+        return sum + unit * (m.quantity || 1);
+      }, 0);
+
+      const matchingOffer = PAIR_OFFERS.find(
+        (o) =>
+          o.shopifyHandle === handle ||
+          o.id === handle ||
+          (bundleTitleAttr && o.title.toLowerCase() === bundleTitleAttr.toLowerCase())
       );
+
       const savings = bundleSavingsStr
         ? parseFloat(bundleSavingsStr)
         : (matchingOffer?.saving || 100);
       const combinedOriginalAmount = combinedAmount + savings * qty;
-      const bundleTitle = bundleTitleAttr || matchingOffer?.title || 'Duo Suite';
+      const bundleTitle = bundleTitleAttr || matchingOffer?.title || line.merchandise?.product?.title || 'Duo Suite';
       const pieces = resolveBundlePieces(bundleMembers, matchingOffer);
       const compositeImage = matchingOffer?.shopifyHandle
         ? `/assets/bundles/${matchingOffer.shopifyHandle}.webp`
@@ -173,10 +174,30 @@ function groupCartLinesForDisplay(lines: CartLine[]): DisplayCartGroup[] {
         savings,
       });
     } else {
-      result.push({
-        type: 'single',
-        line,
-      });
+      // Single line item: Deduplicate optimistic temporary duplicates with existing lines
+      const merchId = line.merchandise?.id;
+      if (merchId && singleMerchandiseMap.has(merchId)) {
+        const existingEntry = singleMerchandiseMap.get(merchId)!;
+        // Merge quantity onto the existing card
+        const mergedQty = (existingEntry.line.quantity || 1) + (line.quantity || 1);
+        const mergedLine = {
+          ...existingEntry.line,
+          quantity: mergedQty,
+        };
+        result[existingEntry.index] = {
+          type: 'single',
+          line: mergedLine,
+        };
+      } else {
+        const newIndex = result.length;
+        if (merchId) {
+          singleMerchandiseMap.set(merchId, {line, index: newIndex});
+        }
+        result.push({
+          type: 'single',
+          line,
+        });
+      }
     }
   }
 

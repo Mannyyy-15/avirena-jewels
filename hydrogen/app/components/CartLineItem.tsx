@@ -35,9 +35,14 @@ export function CartLineItem({
     .map((opt) => opt.value)
     .join(' • ');
 
+  const unitPrice = parseFloat(line?.merchandise?.price?.amount || '0');
+  const amountStr =
+    line?.cost?.totalAmount?.amount ||
+    (unitPrice > 0 ? String(unitPrice * (line.quantity || 1)) : undefined);
+
   const priceFormatted = formatPriceAmount(
-    line?.cost?.totalAmount?.amount,
-    line?.cost?.totalAmount?.currencyCode || 'INR',
+    amountStr,
+    line?.cost?.totalAmount?.currencyCode || line?.merchandise?.price?.currencyCode || 'INR',
   );
 
   return (
