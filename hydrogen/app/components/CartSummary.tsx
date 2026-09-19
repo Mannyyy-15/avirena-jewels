@@ -18,26 +18,13 @@ function formatPriceAmount(amount?: string, currencyCode = 'INR') {
   return `₹${Math.round(num).toLocaleString('en-IN')}`;
 }
 
-function getCleanCheckoutUrl(url?: string) {
-  if (!url) return undefined;
-  try {
-    const parsed = new URL(url);
-    if (parsed.hostname.includes('myshopify.com')) {
-      parsed.hostname = 'www.avirenajewels.com';
-    }
-    return parsed.toString();
-  } catch {
-    return url.replace('m5yhxq-gb.myshopify.com', 'www.avirenajewels.com');
-  }
-}
-
 export function CartSummary({cart, layout}: CartSummaryProps) {
   const isAside = layout === 'aside';
   const discountsHeadingId = useId();
   const discountCodeInputId = useId();
   const {close} = useAside();
 
-  const checkoutUrl = getCleanCheckoutUrl(cart?.checkoutUrl);
+  const checkoutUrl = cart?.checkoutUrl;
 
   const subtotalFormatted = formatPriceAmount(
     cart?.cost?.subtotalAmount?.amount,
