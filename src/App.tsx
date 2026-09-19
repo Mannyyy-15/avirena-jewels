@@ -8,6 +8,7 @@ import { CartDrawer } from './components/CartDrawer';
 import { WhatsAppConcierge } from './components/WhatsAppConcierge';
 import { OfferWelcomeModal } from './components/OfferWelcomeModal';
 import { RecentPurchaseToast } from './components/RecentPurchaseToast';
+import { Analytics } from '@vercel/analytics/react';
 
 import { ToastContainer, ToastMessage } from './components/Toast';
 
@@ -1283,6 +1284,7 @@ export default function App() {
   return (
     <ShopifyProvider>
       <AppContent />
+      <Analytics />
     </ShopifyProvider>
   );
 }
