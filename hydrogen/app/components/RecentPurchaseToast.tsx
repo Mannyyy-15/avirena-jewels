@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router';
-import { CheckCircle2, X } from 'lucide-react';
+import { Eye, X } from 'lucide-react';
 import type { Product } from '~/types/storefront';
 
 interface RecentPurchaseToastProps {
@@ -198,13 +198,15 @@ export const RecentPurchaseToast: React.FC<RecentPurchaseToastProps> = ({
           Purchased {currentItem.product.name}
         </p>
 
+        {/* No "Verified Order" badge. The name, city and timestamp are drawn
+            from hardcoded arrays, so asserting verification would be a specific
+            false claim - see docs/hydrogen-migration/05-INTEGRITY-RULES.md.
+            The product shown is real; the buyer is not. */}
         <div className="flex items-center gap-2 text-[11px] sm:text-xs text-neutral-500 mt-1">
-          <span className="inline-flex items-center gap-1 text-[#15803D] font-semibold">
-            <CheckCircle2 className="w-3.5 h-3.5 text-[#15803D]" strokeWidth={2.5} />
-            Verified Order
+          <span className="inline-flex items-center gap-1 text-[#8F896D] font-semibold">
+            <Eye className="w-3.5 h-3.5 text-[#8F896D]" strokeWidth={2.5} />
+            Recently viewed
           </span>
-          <span>•</span>
-          <span className="text-neutral-500">{currentItem.timeAgo}</span>
         </div>
       </div>
 

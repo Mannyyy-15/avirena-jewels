@@ -105,7 +105,7 @@ export const CareModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
               <div className="p-4 bg-[#F2EFDB] border border-[#D8D2C2] rounded-xs">
                 <h4 className="font-semibold text-sm text-[#413C23] mb-1">Our Materials &amp; Anti-Tarnish Finish</h4>
                 <p>
-                  Our jewels are crafted with premium brass alloy and finished with modern gold-tone and silver-tone protective coatings. Sealed with a protective anti-tarnish barrier, they are hypoallergenic and sweat-resistant for daily wear.
+                  Our jewels are crafted with premium brass alloy and finished with modern gold-tone and silver-tone protective coatings. Sealed with a protective anti-tarnish barrier, they are nickel-free, lead-free and cadmium-free, with surgical steel posts, and sweat-resistant for daily wear.
                 </p>
               </div>
 

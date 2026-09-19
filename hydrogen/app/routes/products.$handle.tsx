@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { useLoaderData, useNavigate, Link, useFetcher } from 'react-router';
+import { useLoaderData, useNavigate, Link, useFetcher, redirect } from 'react-router';
 import type { Route } from './+types/products.$handle';
-import { CartForm } from '@shopify/hydrogen';
+import { CartForm, Analytics } from '@shopify/hydrogen';
 import {
   Heart,
   Maximize2,
@@ -30,7 +30,8 @@ import {
 import { findPairOffer } from '~/data/offers';
 import { ProductImageLightbox } from '~/components/ProductImageLightbox';
 import { ProductCard } from '~/components/ProductCard';
-import { trackViewItem, trackBeginCheckout } from '~/lib/analytics';
+import { trackViewItem, trackAddToCart, trackBeginCheckout } from '~/lib/analytics';
+import { resolveLegacyHandle } from '~/lib/legacyRedirects';
 import { useAside } from '~/components/Aside';
 import type { Product, ProductMedia, Currency, Metal } from '~/types/storefront';
 
@@ -69,6 +70,14 @@ export async function loader({ params, context }: Route.LoaderArgs) {
   const { handle } = params;
   if (!handle) {
     throw new Response('Product handle is required', { status: 400 });
+  }
+
+  // Pre-rebrand URLs are still indexed. Send them on with a permanent redirect
+  // before querying, or they 404 - Shopify's own redirects never fire for a
+  // headless storefront.
+  const currentHandle = resolveLegacyHandle(handle);
+  if (currentHandle) {
+    throw redirect(`/product/${currentHandle}`, 301);
   }
 
   const { storefront } = context;
@@ -349,6 +358,11 @@ export default function ProductDetailPage() {
   const handleAddToCart = () => {
     const variantId = product.variants?.[0]?.id || `gid://shopify/ProductVariant/${product.id}`;
     aside.open('cart');
+
+    // Meta Pixel + GA4. Shopify's own add-to-cart is reported separately by
+    // Analytics.CartView; this is the third-party half, which ad measurement
+    // depends on.
+    trackAddToCart(product, 1);
 
     const selectedVariant = {
       id: variantId,
@@ -1317,6 +1331,26 @@ export default function ProductDetailPage() {
           </div>
         </section>
       )}
+
+      {/* Native Shopify product-view analytics.
+          Analytics.Provider in root.tsx only reports sessions; without this
+          per-route component Shopify records no product views, which is one of
+          the main reasons this site moved to Hydrogen. */}
+      <Analytics.ProductView
+        data={{
+          products: [
+            {
+              id: product.shopifyId || product.id,
+              title: product.name,
+              price: String(product.price),
+              vendor: 'Avirena Jewels',
+              variantId: product.variants?.[0]?.id || product.id,
+              variantTitle: product.metal || 'Default Title',
+              quantity: 1,
+            },
+          ],
+        }}
+      />
 
       {/* LIGHTBOX */}
       <ProductImageLightbox

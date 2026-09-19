@@ -42,7 +42,7 @@ export const AboutUsEditorialSection: React.FC<AboutUsEditorialSectionProps> = (
                 >
                   The PieCraft Marketing
                 </a>
-                , we have evolved into a beloved modern daily jewelry label. We intentionally craft our collections using premium brass alloy, durable water-resistant protective finishes, and hypoallergenic coatings—never overpriced solid gold or mined diamonds, but high-grade, tarnish-resistant pieces designed for effortless, everyday luxury.
+                , we have evolved into a beloved modern daily jewelry label. We intentionally craft our collections using premium brass alloy, durable water-resistant protective finishes, and nickel-free, lead-free and cadmium-free coatings with surgical steel posts—never overpriced solid gold or mined diamonds, but high-grade, tarnish-resistant pieces designed for effortless, everyday luxury.
               </p>
             </div>
 
