@@ -119,7 +119,12 @@ function groupCartLinesForDisplay(lines: CartLine[]): DisplayCartGroup[] {
     const handle = line.merchandise?.product?.handle || '';
     const title = line.merchandise?.product?.title || '';
     const matchingOffer = PAIR_OFFERS.find(
-      (o) => o.shopifyHandle === handle || o.id === handle || title.toLowerCase().includes(o.title.toLowerCase())
+      (o) =>
+        o.shopifyHandle === handle ||
+        o.id === handle ||
+        o.handles.includes(handle) ||
+        (bundleTitleAttr && (o.title.toLowerCase() === bundleTitleAttr.toLowerCase() || bundleTitleAttr.toLowerCase().includes(o.title.toLowerCase()))) ||
+        (title && (o.title.toLowerCase().includes(title.toLowerCase()) || title.toLowerCase().includes(o.title.toLowerCase())))
     );
 
     const isBundleProduct = Boolean(
@@ -151,6 +156,9 @@ function groupCartLinesForDisplay(lines: CartLine[]): DisplayCartGroup[] {
       const combinedOriginalAmount = combinedAmount + savings * qty;
       const bundleTitle = bundleTitleAttr || matchingOffer?.title || 'Duo Suite';
       const pieces = resolveBundlePieces(bundleMembers, matchingOffer);
+      const compositeImage = matchingOffer?.shopifyHandle
+        ? `/assets/bundles/${matchingOffer.shopifyHandle}.webp`
+        : pieces[0]?.imageUrl;
 
       result.push({
         type: 'bundle',
@@ -158,6 +166,7 @@ function groupCartLinesForDisplay(lines: CartLine[]): DisplayCartGroup[] {
         bundleTitle,
         lines: bundleMembers,
         pieces,
+        compositeImage,
         quantity: qty,
         combinedPrice: combinedAmount,
         combinedOriginalPrice: combinedOriginalAmount,
@@ -256,75 +265,56 @@ export function CartMain({layout, cart: originalCart}: CartMainProps) {
                 return (
                   <div
                     key={group.bundleGroupId}
-                    className="p-4 bg-[#FAF8F5] border border-[#8F896D]/80 rounded-xs transition-all hover:border-[#413C23] shadow-2xs space-y-3"
+                    className="flex gap-4 p-4 bg-[#FAF8F5] border border-[#D8D2C2] rounded-xs transition-all hover:border-[#8F896D] shadow-2xs text-[#413C23]"
                   >
-                    {/* Bundle Header */}
-                    <div className="flex items-center justify-between gap-2 border-b border-[#D8D2C2]/60 pb-2">
-                      <div className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.16em] text-[#7A0F1A]">
-                        <span className="w-1.5 h-1.5 rounded-full bg-[#7A0F1A]" />
-                        <span>Duo Suite · {group.bundleTitle}</span>
-                      </div>
-                      <BundleRemoveButton
-                        lineIds={group.lines.map((l) => l.id)}
-                        disabled={group.lines.some((l) => !!l.isOptimistic)}
+                    {/* Thumbnail: Duo Suite Composite Showcase */}
+                    <div className="w-24 h-24 bg-[#FAF8F5] border border-[#D8D2C2] rounded-xs flex items-center justify-center p-1.5 shrink-0 overflow-hidden">
+                      <img
+                        src={group.compositeImage || group.pieces[0]?.imageUrl || '/logo.png'}
+                        alt={group.bundleTitle}
+                        width={96}
+                        height={96}
+                        loading="lazy"
+                        decoding="async"
+                        className="max-w-full max-h-full w-auto h-auto object-contain mix-blend-multiply"
                       />
                     </div>
 
-                    {/* Dual Pieces Showcase */}
-                    <div className="grid grid-cols-2 gap-2">
-                      {group.pieces.map((piece) => (
-                        <div
-                          key={piece.id}
-                          className="flex items-center gap-2 bg-white/70 border border-[#D8D2C2]/60 rounded-xs p-1.5"
-                        >
-                          <div className="w-12 h-12 bg-[#FAF8F5] border border-[#D8D2C2] rounded-xs flex items-center justify-center p-1 shrink-0 overflow-hidden">
-                            {piece.imageData ? (
-                              <Image
-                                data={piece.imageData}
-                                alt={piece.title}
-                                width={48}
-                                height={48}
-                                className="max-w-full max-h-full object-contain mix-blend-multiply"
-                              />
-                            ) : (
-                              <img
-                                src={piece.imageUrl || '/logo.png'}
-                                alt={piece.title}
-                                className="max-w-full max-h-full object-contain mix-blend-multiply"
-                              />
-                            )}
-                          </div>
-                          <div className="min-w-0 flex-1">
-                            <p className="font-serif-display text-xs font-medium text-[#413C23] truncate leading-tight">
-                              {piece.title}
-                            </p>
-                            <span className="text-[10px] text-[#8F896D] uppercase block truncate">
-                              {piece.metal}
-                            </span>
-                          </div>
+                    {/* Details */}
+                    <div className="flex-1 flex flex-col justify-between min-w-0">
+                      <div>
+                        <div className="flex items-start justify-between gap-2">
+                          <h4 className="font-serif-display text-base font-medium text-[#413C23] leading-snug line-clamp-2">
+                            {group.bundleTitle}
+                          </h4>
+                          <BundleRemoveButton
+                            lineIds={group.lines.map((l) => l.id)}
+                            disabled={group.lines.some((l) => !!l.isOptimistic)}
+                          />
                         </div>
-                      ))}
-                    </div>
 
-                    {/* Quantity & Combined Price Row */}
-                    <div className="flex items-center justify-between pt-1">
-                      <BundleQuantityControls
-                        lines={group.lines}
-                        quantity={group.quantity}
-                      />
+                        <div className="text-[11px] text-[#8F896D] uppercase tracking-wider font-semibold mt-0.5">
+                          Duo Suite • 2-Piece Set
+                        </div>
+                      </div>
 
-                      <div className="text-right">
-                        <div className="flex items-baseline gap-1.5 justify-end">
-                          <span className="text-xs text-[#991B1B] line-through font-normal">
-                            ₹{Math.round(group.combinedOriginalPrice).toLocaleString('en-IN')}
-                          </span>
-                          <span className="font-bold text-base text-[#413C23] tracking-tight">
+                      {/* Quantity & Price Row */}
+                      <div className="flex items-center justify-between pt-2">
+                        <BundleQuantityControls
+                          lines={group.lines}
+                          quantity={group.quantity}
+                        />
+
+                        <div className="flex items-baseline gap-1.5 text-right">
+                          {group.combinedOriginalPrice > group.combinedPrice && (
+                            <span className="text-xs text-[#991B1B] line-through font-normal">
+                              ₹{Math.round(group.combinedOriginalPrice).toLocaleString('en-IN')}
+                            </span>
+                          )}
+                          <span className="text-base sm:text-lg font-bold text-[#413C23] tracking-tight">
                             ₹{Math.round(group.combinedPrice).toLocaleString('en-IN')}
                           </span>
                         </div>
-                        <span className="text-[9.5px] font-bold text-[#14532D] uppercase tracking-wider block">
-                          ₹{group.savings * group.quantity} Saved
-                        </span>
                       </div>
                     </div>
                   </div>

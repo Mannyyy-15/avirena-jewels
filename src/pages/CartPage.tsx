@@ -155,44 +155,39 @@ export const CartPage: React.FC<CartPageProps> = ({
             {groupCartItemsForDisplay(items).map((group) => {
               if (group.type === 'bundle') {
                 const leadItem = group.items[0];
+                const matchingOffer = PAIR_OFFERS.find(
+                  (o) =>
+                    o.title.toLowerCase() === group.bundleTitle.toLowerCase() ||
+                    o.shopifyHandle === leadItem.product.handle ||
+                    o.handles.includes(leadItem.product.handle || '')
+                );
+                const bundleImage = matchingOffer?.shopifyHandle
+                  ? `/assets/bundles/${matchingOffer.shopifyHandle}.webp`
+                  : leadItem.product.images[0] || '/logo.png';
+
                 return (
                   <div
                     key={group.bundleGroupId}
                     className="py-5 first:pt-0 last:pb-0 flex flex-col sm:grid sm:grid-cols-12 gap-4 items-center"
                   >
-                    {/* Duo Bundle Info Column */}
-                    <div className="w-full sm:col-span-6 space-y-2">
-                      <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#7A0F1A]/10 text-[#7A0F1A] text-[10px] font-bold tracking-[0.16em] uppercase">
-                        <span className="w-1.5 h-1.5 rounded-full bg-[#7A0F1A]" />
-                        <span>Duo Suite · {group.bundleTitle}</span>
-                        <span className="text-[#14532D] font-mono">· Save ₹{group.savings * group.quantity}</span>
+                    {/* Product Column */}
+                    <div className="w-full sm:col-span-6 flex items-center gap-4">
+                      <div className="w-20 h-20 bg-[#FAF8F5] border border-[#D8D2C2] rounded-xs flex items-center justify-center p-2 shrink-0 overflow-hidden">
+                        <img
+                          src={bundleImage}
+                          alt={group.bundleTitle}
+                          referrerPolicy="no-referrer"
+                          className="max-w-full max-h-full w-auto h-auto object-contain mix-blend-multiply"
+                        />
                       </div>
 
-                      {/* Dual Items Visual Row */}
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                        {group.items.map((piece) => (
-                          <div
-                            key={piece.id}
-                            className="flex items-center gap-2.5 bg-[#FAF8F5] border border-[#D8D2C2] rounded-xs p-2"
-                          >
-                            <div className="w-12 h-12 bg-white border border-[#D8D2C2]/70 rounded-xs flex items-center justify-center p-1 shrink-0 overflow-hidden">
-                              <img
-                                src={piece.product.images[0] || '/logo.png'}
-                                alt={piece.product.name}
-                                referrerPolicy="no-referrer"
-                                className="max-w-full max-h-full w-auto h-auto object-contain mix-blend-multiply"
-                              />
-                            </div>
-                            <div className="min-w-0 flex-1">
-                              <p className="font-serif-display text-xs font-medium text-[#413C23] truncate leading-tight">
-                                {piece.product.name}
-                              </p>
-                              <span className="text-[10px] text-[#8F896D] uppercase tracking-wider block mt-0.5">
-                                {piece.metal}
-                              </span>
-                            </div>
-                          </div>
-                        ))}
+                      <div className="min-w-0 flex-1">
+                        <h3 className="font-serif-display text-base sm:text-lg font-medium text-[#413C23] leading-snug">
+                          {group.bundleTitle}
+                        </h3>
+                        <p className="text-[11px] text-[#8F896D] uppercase tracking-wider font-semibold mt-0.5">
+                          Duo Suite • 2-Piece Set
+                        </p>
                       </div>
                     </div>
 
@@ -232,16 +227,15 @@ export const CartPage: React.FC<CartPageProps> = ({
                     <div className="w-full sm:col-span-3 flex items-center justify-between sm:justify-end gap-3">
                       <div className="text-right">
                         <div className="flex items-baseline gap-1.5 justify-end">
-                          <span className="text-xs text-[#991B1B] line-through font-normal">
-                            {formatPrice(group.combinedOriginalPrice * group.quantity, currency)}
-                          </span>
+                          {group.combinedOriginalPrice > group.combinedPrice && (
+                            <span className="text-xs text-[#991B1B] line-through font-normal">
+                              {formatPrice(group.combinedOriginalPrice * group.quantity, currency)}
+                            </span>
+                          )}
                           <span className="text-base sm:text-lg font-bold text-[#413C23] tracking-tight">
                             {formatPrice(group.combinedPrice * group.quantity, currency)}
                           </span>
                         </div>
-                        <span className="text-[10px] font-bold text-[#14532D] uppercase tracking-wider block">
-                          ₹{group.savings * group.quantity} Bundle Discount Applied
-                        </span>
                       </div>
                       <button
                         onClick={() => onRemoveItem(leadItem.id)}
