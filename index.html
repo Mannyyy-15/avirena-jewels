@@ -91,7 +91,14 @@
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-      gtag('config', 'G-9WWZWVFT8S');
+      // Cross-domain linking. The storefront (avirenajewels.com) and Shopify's
+      // hosted checkout (checkout.avirenajewels.com) are separate origins, so
+      // without this GA4 starts a NEW session at checkout and credits the sale
+      // to "checkout.avirenajewels.com / referral" instead of the ad that paid
+      // for it. Declaring both domains keeps it one session, one attribution.
+      gtag('config', 'G-9WWZWVFT8S', {
+        linker: { domains: ['avirenajewels.com', 'checkout.avirenajewels.com'], decorate_forms: true },
+      });
     </script>
             <!-- Meta Pixel & Universal Activity Tracker -->
     <script>
