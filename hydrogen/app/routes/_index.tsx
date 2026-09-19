@@ -24,6 +24,8 @@ import {
   getDiscountPercentage,
 } from '~/data/products';
 import type { Product } from '~/types/storefront';
+import { CartForm } from '@shopify/hydrogen';
+import { useAside } from '~/components/Aside';
 
 export const meta: Route.MetaFunction = () => {
   return [
@@ -71,6 +73,7 @@ export default function Homepage() {
   const { products: catalogProducts } = useLoaderData<typeof loader>();
   const navigate = useNavigate();
   const fetcher = useFetcher();
+  const aside = useAside();
 
   const [activeGiftTier, setActiveGiftTier] = useState<'all' | 'daily' | 'statement' | 'pearls'>('all');
   const [wishlist, setWishlist] = useState<string[]>([]);
@@ -111,14 +114,43 @@ export default function Homepage() {
   const pairOffers = useMemo(() => resolvePairOffers(safeProducts), [safeProducts]);
 
   const handleQuickAdd = (product: Product) => {
-    const variantId = product.variants?.[0]?.id || product.id;
+    const variantId = product.variants?.[0]?.id || `gid://shopify/ProductVariant/${product.id}`;
     setQuickAddedId(product.id);
+    aside.open('cart');
+
+    const selectedVariant = {
+      id: variantId,
+      title: product.metal || 'Default',
+      price: {
+        amount: String(getPriceInINR(product.price)),
+        currencyCode: 'INR',
+      },
+      product: {
+        id: product.id,
+        title: product.name,
+        handle: product.handle || product.id,
+      },
+      image: {
+        url: product.images?.[0] || '/logo.png',
+        altText: product.name,
+      },
+      selectedOptions: [
+        { name: 'Title', value: product.metal || 'Default Title' },
+      ],
+    };
+
     fetcher.submit(
       {
-        cartFormInput: JSON.stringify({
-          action: 'LinesAdd',
+        [CartForm.INPUT_NAME]: JSON.stringify({
+          action: CartForm.ACTIONS.LinesAdd,
           inputs: {
-            lines: [{ merchandiseId: variantId, quantity: 1 }],
+            lines: [
+              {
+                merchandiseId: variantId,
+                quantity: 1,
+                selectedVariant,
+              },
+            ],
           },
         }),
       },
@@ -132,17 +164,82 @@ export default function Homepage() {
   const handleAddBundle = (offer: PairOffer & { products: Product[] }) => {
     if (offer.products.length < 2) return;
     setAddingPairId(offer.id);
-    const p1VariantId = offer.products[0].variants?.[0]?.id || offer.products[0].id;
-    const p2VariantId = offer.products[1].variants?.[0]?.id || offer.products[1].id;
+    const p1 = offer.products[0];
+    const p2 = offer.products[1];
+    const p1VariantId = p1.variants?.[0]?.id || `gid://shopify/ProductVariant/${p1.id}`;
+    const p2VariantId = p2.variants?.[0]?.id || `gid://shopify/ProductVariant/${p2.id}`;
+    const bundleGroupId = `bundle-${offer.id}-${Date.now()}`;
+
+    aside.open('cart');
+
+    const p1SelectedVariant = {
+      id: p1VariantId,
+      title: p1.metal || 'Gold Tone Brass',
+      price: {
+        amount: String(getPriceInINR(p1.price)),
+        currencyCode: 'INR',
+      },
+      product: {
+        id: p1.id,
+        title: p1.name,
+        handle: p1.handle || p1.id,
+      },
+      image: {
+        url: p1.images?.[0] || '/logo.png',
+        altText: p1.name,
+      },
+      selectedOptions: [
+        { name: 'Finish', value: p1.metal || 'Gold Tone Brass' },
+      ],
+    };
+
+    const p2SelectedVariant = {
+      id: p2VariantId,
+      title: p2.metal || 'Silver Tone Brass',
+      price: {
+        amount: String(getPriceInINR(p2.price)),
+        currencyCode: 'INR',
+      },
+      product: {
+        id: p2.id,
+        title: p2.name,
+        handle: p2.handle || p2.id,
+      },
+      image: {
+        url: p2.images?.[0] || '/logo.png',
+        altText: p2.name,
+      },
+      selectedOptions: [
+        { name: 'Finish', value: p2.metal || 'Silver Tone Brass' },
+      ],
+    };
 
     fetcher.submit(
       {
-        cartFormInput: JSON.stringify({
-          action: 'LinesAdd',
+        [CartForm.INPUT_NAME]: JSON.stringify({
+          action: CartForm.ACTIONS.LinesAdd,
           inputs: {
             lines: [
-              { merchandiseId: p1VariantId, quantity: 1 },
-              { merchandiseId: p2VariantId, quantity: 1 },
+              {
+                merchandiseId: p1VariantId,
+                quantity: 1,
+                selectedVariant: p1SelectedVariant,
+                attributes: [
+                  { key: '_bundleGroupId', value: bundleGroupId },
+                  { key: '_bundleTitle', value: offer.title },
+                  { key: '_bundleSavings', value: String(offer.saving || 100) },
+                ],
+              },
+              {
+                merchandiseId: p2VariantId,
+                quantity: 1,
+                selectedVariant: p2SelectedVariant,
+                attributes: [
+                  { key: '_bundleGroupId', value: bundleGroupId },
+                  { key: '_bundleTitle', value: offer.title },
+                  { key: '_bundleSavings', value: String(offer.saving || 100) },
+                ],
+              },
             ],
           },
         }),
@@ -339,7 +436,6 @@ export default function Homepage() {
                 height={739}
                 className="w-full max-w-[1280px] 2xl:max-w-[1440px] px-3 sm:px-6 md:px-8 lg:px-10 h-auto object-contain mix-blend-multiply select-none"
                 loading="eager"
-                fetchPriority="high"
                 decoding="sync"
               />
             </picture>

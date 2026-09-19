@@ -8,8 +8,9 @@ import {
   Meta,
   Scripts,
   ScrollRestoration,
-  useRouteLoaderData,
+  useLoaderData,
 } from 'react-router';
+import {useEffect} from 'react';
 import type {Route} from './+types/root';
 import favicon from '~/assets/favicon.svg';
 import {FOOTER_QUERY, HEADER_QUERY} from '~/lib/fragments';
@@ -122,17 +123,31 @@ export async function loader(args: Route.LoaderArgs) {
 async function loadCriticalData({context}: Route.LoaderArgs) {
   const {storefront} = context;
 
+  const defaultHeader = {
+    shop: {
+      id: 'gid://shopify/Shop/1',
+      name: 'AVIRENA Jewels',
+      description: 'Anti-Tarnish Dailywear Jewellery',
+      primaryDomain: { url: 'https://avirenajewels.com' },
+    },
+    menu: null,
+  };
+
   const [header] = await Promise.all([
-    storefront.query(HEADER_QUERY, {
-      cache: storefront.CacheLong(),
-      variables: {
-        headerMenuHandle: 'main-menu', // Adjust to your header menu handle
-      },
-    }),
-    // Add other queries here, so that they are loaded in parallel
+    storefront
+      .query(HEADER_QUERY, {
+        cache: storefront.CacheLong(),
+        variables: {
+          headerMenuHandle: 'main-menu',
+        },
+      })
+      .catch((e: Error) => {
+        console.warn('Header query fallback:', e);
+        return defaultHeader;
+      }),
   ]);
 
-  return {header};
+  return {header: header || defaultHeader};
 }
 
 /**
@@ -176,45 +191,6 @@ export function Layout({children}: {children?: React.ReactNode}) {
         <link rel="stylesheet" href={appStyles}></link>
         <Meta />
         <Links />
-
-        {/* Google Analytics 4 (gtag.js) with cross-domain linking */}
-        <script
-          async
-          src="https://www.googletagmanager.com/gtag/js?id=G-9WWZWVFT8S"
-          nonce={nonce}
-        />
-        <script
-          nonce={nonce}
-          dangerouslySetInnerHTML={{
-            __html: `
-              window.dataLayer = window.dataLayer || [];
-              function gtag(){dataLayer.push(arguments);}
-              gtag('js', new Date());
-              gtag('config', 'G-9WWZWVFT8S', {
-                linker: { domains: ['avirenajewels.com', 'checkout.avirenajewels.com'], decorate_forms: true },
-              });
-            `,
-          }}
-        />
-
-        {/* Meta Pixel */}
-        <script
-          nonce={nonce}
-          dangerouslySetInnerHTML={{
-            __html: `
-              !function(f,b,e,v,n,t,s)
-              {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-              n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-              if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-              n.queue=[];t=b.createElement(e);t.async=!0;
-              t.src=v;s=b.getElementsByTagName(e)[0];
-              s.parentNode.insertBefore(t,s)}(window, document,'script',
-              'https://connect.facebook.net/en_US/fbevents.js');
-              fbq('init', '3584415405045765');
-              fbq('track', 'PageView');
-            `,
-          }}
-        />
       </head>
       <body>
         <noscript>
@@ -227,6 +203,7 @@ export function Layout({children}: {children?: React.ReactNode}) {
           />
         </noscript>
         {children}
+        <ThirdPartyAnalytics nonce={nonce} />
         <ScrollRestoration nonce={nonce} />
         <Scripts nonce={nonce} />
       </body>
@@ -234,8 +211,65 @@ export function Layout({children}: {children?: React.ReactNode}) {
   );
 }
 
-export default function App() {
-  const data = useRouteLoaderData<RootLoader>('root');
+function ThirdPartyAnalytics({nonce}: {nonce?: string}) {
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    // 1. Google Analytics 4
+    if (!(window as any).dataLayer) {
+      (window as any).dataLayer = (window as any).dataLayer || [];
+      function gtag(...args: any[]) {
+        ((window as any).dataLayer as any[]).push(args);
+      }
+      (window as any).gtag = gtag;
+      gtag('js', new Date());
+      gtag('config', 'G-9WWZWVFT8S', {
+        linker: {
+          domains: ['avirenajewels.com', 'checkout.avirenajewels.com'],
+          decorate_forms: true,
+        },
+      });
+
+      const gaScript = document.createElement('script');
+      gaScript.async = true;
+      gaScript.src = 'https://www.googletagmanager.com/gtag/js?id=G-9WWZWVFT8S';
+      if (nonce) gaScript.nonce = nonce;
+      document.head.appendChild(gaScript);
+    }
+
+    // 2. Meta Pixel
+    if (!(window as any).fbq) {
+      const fbq: any = function (...args: any[]) {
+        if (fbq.callMethod) {
+          fbq.callMethod.apply(fbq, args);
+        } else {
+          fbq.queue.push(arguments);
+        }
+      };
+      (window as any).fbq = fbq;
+      (window as any)._fbq = fbq;
+      fbq.push = fbq;
+      fbq.loaded = true;
+      fbq.version = '2.0';
+      fbq.queue = [];
+
+      const fbScript = document.createElement('script');
+      fbScript.async = true;
+      fbScript.src = 'https://connect.facebook.net/en_US/fbevents.js';
+      if (nonce) fbScript.nonce = nonce;
+      document.head.appendChild(fbScript);
+
+      fbq('init', '3584415405045765');
+      fbq('track', 'PageView');
+    }
+  }, [nonce]);
+
+  return null;
+}
+
+export default function App({loaderData}: Route.ComponentProps) {
+  const directData = useLoaderData<typeof loader>();
+  const data = loaderData || directData;
 
   if (!data) {
     return <Outlet />;

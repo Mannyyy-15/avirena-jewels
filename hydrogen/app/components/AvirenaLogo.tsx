@@ -41,7 +41,6 @@ export const AvirenaLogo: React.FC<AvirenaLogoProps> = ({
           alt="AVIRENA"
           className={`h-full w-auto max-w-full object-contain ${themeFilterClass}`}
           loading="eager"
-          fetchPriority="high"
           decoding="async"
         />
       </picture>

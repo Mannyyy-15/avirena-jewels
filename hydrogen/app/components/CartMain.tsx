@@ -1,10 +1,13 @@
-import {useOptimisticCart} from '@shopify/hydrogen';
-import {Link, useNavigate} from 'react-router';
-import {ShoppingBag, Truck, X} from 'lucide-react';
+import {useOptimisticCart, CartForm, Image} from '@shopify/hydrogen';
+import {useNavigate} from 'react-router';
+import {ShoppingBag, Truck, X, Trash2, Minus, Plus} from 'lucide-react';
 import type {CartApiQueryFragment} from 'storefrontapi.generated';
 import {useAside} from '~/components/Aside';
 import {CartLineItem, type CartLine} from '~/components/CartLineItem';
 import {CartSummary} from './CartSummary';
+import type {CartLineUpdateInput} from '@shopify/hydrogen/storefront-api-types';
+import {PAIR_OFFERS, type PairOffer} from '~/data/offers';
+import {PRODUCTS} from '~/data/products';
 
 export type CartLayout = 'page' | 'aside';
 
@@ -13,33 +16,171 @@ export type CartMainProps = {
   layout: CartLayout;
 };
 
-export type LineItemChildrenMap = {[parentId: string]: CartLine[]};
+export type BundlePiece = {
+  id: string;
+  title: string;
+  metal: string;
+  imageUrl?: string;
+  imageData?: any;
+};
 
-function getLineItemChildrenMap(lines: CartLine[]): LineItemChildrenMap {
-  const children: LineItemChildrenMap = {};
-  for (const line of lines) {
-    if ('parentRelationship' in line && line.parentRelationship?.parent) {
-      const parentId = line.parentRelationship.parent.id;
-      if (!children[parentId]) children[parentId] = [];
-      children[parentId].push(line);
+export type DisplayCartGroup =
+  | {
+      type: 'bundle';
+      bundleGroupId: string;
+      bundleTitle: string;
+      lines: CartLine[];
+      pieces: BundlePiece[];
+      quantity: number;
+      combinedPrice: number;
+      combinedOriginalPrice: number;
+      savings: number;
     }
-    if ('lineComponents' in line) {
-      const lineChildren = getLineItemChildrenMap(line.lineComponents);
-      for (const [parentId, childIds] of Object.entries(lineChildren)) {
-        if (!children[parentId]) children[parentId] = [];
-        children[parentId].push(...childIds);
-      }
+  | {
+      type: 'single';
+      line: CartLine;
+    };
+
+function resolveBundlePieces(lines: CartLine[], offer?: PairOffer): BundlePiece[] {
+  if (lines.length >= 2) {
+    return lines.map((m) => {
+      const metal =
+        m.merchandise.selectedOptions
+          ?.filter((o) => o.value !== 'Default Title')
+          ?.map((o) => o.value)
+          ?.join(' • ') || 'Brass';
+      return {
+        id: m.id,
+        title: m.merchandise.product.title,
+        metal,
+        imageUrl: m.merchandise.image?.url || '/logo.png',
+        imageData: m.merchandise.image,
+      };
+    });
+  }
+
+  const singleLine = lines[0];
+  const handle = singleLine?.merchandise?.product?.handle || '';
+  const matchingOffer =
+    offer ||
+    PAIR_OFFERS.find(
+      (o) =>
+        o.shopifyHandle === handle ||
+        o.id === handle ||
+        o.handles.includes(handle) ||
+        (singleLine?.merchandise?.product?.title || '').toLowerCase().includes(o.title.toLowerCase())
+    );
+
+  if (matchingOffer) {
+    const p1 = PRODUCTS.find((p) => p.handle === matchingOffer.handles[0] || p.id === matchingOffer.handles[0]);
+    const p2 = PRODUCTS.find((p) => p.handle === matchingOffer.handles[1] || p.id === matchingOffer.handles[1]);
+    if (p1 && p2) {
+      return [
+        {
+          id: `${singleLine.id}-p1`,
+          title: p1.name,
+          metal: p1.metal,
+          imageUrl: p1.images?.[0] || '/logo.png',
+        },
+        {
+          id: `${singleLine.id}-p2`,
+          title: p2.name,
+          metal: p2.metal,
+          imageUrl: p2.images?.[0] || '/logo.png',
+        },
+      ];
     }
   }
-  return children;
+
+  return [
+    {
+      id: singleLine.id,
+      title: singleLine.merchandise.product.title,
+      metal: 'Duo Set',
+      imageUrl: singleLine.merchandise.image?.url || '/logo.png',
+      imageData: singleLine.merchandise.image,
+    },
+  ];
+}
+
+function groupCartLinesForDisplay(lines: CartLine[]): DisplayCartGroup[] {
+  const result: DisplayCartGroup[] = [];
+  const processedBundleGroups = new Set<string>();
+
+  for (const line of lines) {
+    if ('parentRelationship' in line && line.parentRelationship?.parent) {
+      continue;
+    }
+
+    const bundleAttr = line.attributes?.find((a) => a.key === '_bundleGroupId')?.value;
+    const bundleTitleAttr = line.attributes?.find((a) => a.key === '_bundleTitle')?.value;
+    const bundleSavingsStr = line.attributes?.find((a) => a.key === '_bundleSavings')?.value;
+
+    const handle = line.merchandise?.product?.handle || '';
+    const title = line.merchandise?.product?.title || '';
+    const matchingOffer = PAIR_OFFERS.find(
+      (o) => o.shopifyHandle === handle || o.id === handle || title.toLowerCase().includes(o.title.toLowerCase())
+    );
+
+    const isBundleProduct = Boolean(
+      bundleAttr ||
+      matchingOffer ||
+      handle.includes('duo') ||
+      title.toLowerCase().includes('duo')
+    );
+
+    if (isBundleProduct) {
+      const groupId = bundleAttr || `bundle-${handle || line.id}`;
+      if (processedBundleGroups.has(groupId)) continue;
+      processedBundleGroups.add(groupId);
+
+      const bundleMembers = bundleAttr
+        ? lines.filter((l) =>
+            l.attributes?.some((a) => a.key === '_bundleGroupId' && a.value === bundleAttr)
+          )
+        : [line];
+
+      const qty = bundleMembers[0]?.quantity || 1;
+      const combinedAmount = bundleMembers.reduce(
+        (sum, m) => sum + parseFloat(m.cost?.totalAmount?.amount || '0'),
+        0
+      );
+      const savings = bundleSavingsStr
+        ? parseFloat(bundleSavingsStr)
+        : (matchingOffer?.saving || 100);
+      const combinedOriginalAmount = combinedAmount + savings * qty;
+      const bundleTitle = bundleTitleAttr || matchingOffer?.title || 'Duo Suite';
+      const pieces = resolveBundlePieces(bundleMembers, matchingOffer);
+
+      result.push({
+        type: 'bundle',
+        bundleGroupId: groupId,
+        bundleTitle,
+        lines: bundleMembers,
+        pieces,
+        quantity: qty,
+        combinedPrice: combinedAmount,
+        combinedOriginalPrice: combinedOriginalAmount,
+        savings,
+      });
+    } else {
+      result.push({
+        type: 'single',
+        line,
+      });
+    }
+  }
+
+  return result;
 }
 
 export function CartMain({layout, cart: originalCart}: CartMainProps) {
   const cart = useOptimisticCart(originalCart);
   const isAside = layout === 'aside';
-  const linesCount = Boolean(cart?.lines?.nodes?.length || 0);
+  const lines = cart?.lines?.nodes ?? [];
+  const linesCount = Boolean(lines.length || 0);
   const totalCount = cart?.totalQuantity || 0;
-  const childrenMap = getLineItemChildrenMap(cart?.lines?.nodes ?? []);
+  const groupedItems = groupCartLinesForDisplay(lines);
   const {close} = useAside();
   const navigate = useNavigate();
 
@@ -110,19 +251,91 @@ export function CartMain({layout, cart: originalCart}: CartMainProps) {
           </div>
         ) : (
           <div className="space-y-3">
-            {(cart?.lines?.nodes ?? []).map((line) => {
-              if (
-                'parentRelationship' in line &&
-                line.parentRelationship?.parent
-              ) {
-                return null;
+            {groupedItems.map((group) => {
+              if (group.type === 'bundle') {
+                return (
+                  <div
+                    key={group.bundleGroupId}
+                    className="p-4 bg-[#FAF8F5] border border-[#8F896D]/80 rounded-xs transition-all hover:border-[#413C23] shadow-2xs space-y-3"
+                  >
+                    {/* Bundle Header */}
+                    <div className="flex items-center justify-between gap-2 border-b border-[#D8D2C2]/60 pb-2">
+                      <div className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.16em] text-[#7A0F1A]">
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#7A0F1A]" />
+                        <span>Duo Suite · {group.bundleTitle}</span>
+                      </div>
+                      <BundleRemoveButton
+                        lineIds={group.lines.map((l) => l.id)}
+                        disabled={group.lines.some((l) => !!l.isOptimistic)}
+                      />
+                    </div>
+
+                    {/* Dual Pieces Showcase */}
+                    <div className="grid grid-cols-2 gap-2">
+                      {group.pieces.map((piece) => (
+                        <div
+                          key={piece.id}
+                          className="flex items-center gap-2 bg-white/70 border border-[#D8D2C2]/60 rounded-xs p-1.5"
+                        >
+                          <div className="w-12 h-12 bg-[#FAF8F5] border border-[#D8D2C2] rounded-xs flex items-center justify-center p-1 shrink-0 overflow-hidden">
+                            {piece.imageData ? (
+                              <Image
+                                data={piece.imageData}
+                                alt={piece.title}
+                                width={48}
+                                height={48}
+                                className="max-w-full max-h-full object-contain mix-blend-multiply"
+                              />
+                            ) : (
+                              <img
+                                src={piece.imageUrl || '/logo.png'}
+                                alt={piece.title}
+                                className="max-w-full max-h-full object-contain mix-blend-multiply"
+                              />
+                            )}
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <p className="font-serif-display text-xs font-medium text-[#413C23] truncate leading-tight">
+                              {piece.title}
+                            </p>
+                            <span className="text-[10px] text-[#8F896D] uppercase block truncate">
+                              {piece.metal}
+                            </span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Quantity & Combined Price Row */}
+                    <div className="flex items-center justify-between pt-1">
+                      <BundleQuantityControls
+                        lines={group.lines}
+                        quantity={group.quantity}
+                      />
+
+                      <div className="text-right">
+                        <div className="flex items-baseline gap-1.5 justify-end">
+                          <span className="text-xs text-[#991B1B] line-through font-normal">
+                            ₹{Math.round(group.combinedOriginalPrice).toLocaleString('en-IN')}
+                          </span>
+                          <span className="font-bold text-base text-[#413C23] tracking-tight">
+                            ₹{Math.round(group.combinedPrice).toLocaleString('en-IN')}
+                          </span>
+                        </div>
+                        <span className="text-[9.5px] font-bold text-[#14532D] uppercase tracking-wider block">
+                          ₹{group.savings * group.quantity} Saved
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                );
               }
+
               return (
                 <CartLineItem
-                  key={line.id}
-                  line={line}
+                  key={group.line.id}
+                  line={group.line}
                   layout={layout}
-                  childrenMap={childrenMap}
                 />
               );
             })}
@@ -132,6 +345,90 @@ export function CartMain({layout, cart: originalCart}: CartMainProps) {
 
       {/* 3. FOOTER CHECKOUT SUMMARY */}
       {linesCount && <CartSummary cart={cart} layout={layout} />}
+    </div>
+  );
+}
+
+function BundleRemoveButton({
+  lineIds,
+  disabled,
+}: {
+  lineIds: string[];
+  disabled: boolean;
+}) {
+  return (
+    <CartForm
+      route="/cart"
+      action={CartForm.ACTIONS.LinesRemove}
+      inputs={{lineIds}}
+    >
+      <button
+        disabled={disabled}
+        type="submit"
+        className="text-[#8F896D] hover:text-[#7A0F1A] transition-colors p-1 cursor-pointer disabled:opacity-30 shrink-0"
+        title="Remove entire duo suite"
+        aria-label="Remove entire duo suite"
+      >
+        <Trash2 className="w-4 h-4 stroke-[1.5]" />
+      </button>
+    </CartForm>
+  );
+}
+
+function BundleQuantityControls({
+  lines,
+  quantity,
+}: {
+  lines: CartLine[];
+  quantity: number;
+}) {
+  const isOptimistic = lines.some((l) => !!l.isOptimistic);
+  const prevQuantity = Math.max(1, quantity - 1);
+  const nextQuantity = quantity + 1;
+
+  const decreaseUpdates: CartLineUpdateInput[] = lines.map((l) => ({
+    id: l.id,
+    quantity: prevQuantity,
+  }));
+
+  const increaseUpdates: CartLineUpdateInput[] = lines.map((l) => ({
+    id: l.id,
+    quantity: nextQuantity,
+  }));
+
+  return (
+    <div className="flex items-center border border-[#D8D2C2] rounded-xs bg-[#FAF8F5]">
+      <CartForm
+        route="/cart"
+        action={CartForm.ACTIONS.LinesUpdate}
+        inputs={{lines: decreaseUpdates}}
+      >
+        <button
+          aria-label="Decrease bundle quantity"
+          disabled={quantity <= 1 || isOptimistic}
+          type="submit"
+          className="w-7 h-7 flex items-center justify-center text-[#413C23] hover:bg-[#E7E4D5] transition-colors cursor-pointer disabled:opacity-30"
+        >
+          <Minus className="w-3 h-3 stroke-[2]" />
+        </button>
+      </CartForm>
+      <span className="px-2.5 text-xs font-bold text-[#413C23] min-w-[22px] text-center font-mono">
+        {quantity}
+      </span>
+      <CartForm
+        route="/cart"
+        action={CartForm.ACTIONS.LinesUpdate}
+        inputs={{lines: increaseUpdates}}
+      >
+        <button
+          aria-label="Increase bundle quantity"
+          disabled={isOptimistic}
+          type="submit"
+          className="w-7 h-7 flex items-center justify-center text-[#413C23] hover:bg-[#E7E4D5] transition-colors cursor-pointer disabled:opacity-30"
+        >
+          <Plus className="w-3 h-3 stroke-[2]" />
+        </button>
+      </CartForm>
     </div>
   );
 }

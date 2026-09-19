@@ -78,7 +78,8 @@ export default async function handleRequest(
     },
   );
 
-  if (isbot(request.headers.get('user-agent'))) {
+  const userAgent = request.headers.get('user-agent') || '';
+  if (isbot(userAgent) || /bot|crawler|spider|google|bing|yandex|duckduck|lighthouse|curl|node|postman/i.test(userAgent)) {
     await body.allReady;
   }
 

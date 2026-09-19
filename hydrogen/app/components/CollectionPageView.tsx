@@ -2,8 +2,10 @@ import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { Link, useNavigate, useFetcher } from 'react-router';
 import { ChevronDown, Heart, Check, ShoppingBag, X } from 'lucide-react';
 import type { Product, Category } from '~/types/storefront';
-import { formatPrice, getCompareAtPrice, getDiscountPercentage } from '~/data/products';
+import { formatPrice, getCompareAtPrice, getDiscountPercentage, getPriceInINR } from '~/data/products';
 import { PAIR_OFFERS } from '~/data/offers';
+import { useAside } from '~/components/Aside';
+import { CartForm } from '@shopify/hydrogen';
 
 interface CollectionPageViewProps {
   products: Product[];
@@ -21,6 +23,7 @@ export const CollectionPageView: React.FC<CollectionPageViewProps> = ({
   const containerRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const fetcher = useFetcher();
+  const aside = useAside();
 
   const [selectedCategory, setSelectedCategory] = useState<Category>(initialCategory);
   const [selectedMetal, setSelectedMetal] = useState<string>(initialMetal);
@@ -59,14 +62,43 @@ export const CollectionPageView: React.FC<CollectionPageViewProps> = ({
   };
 
   const handleQuickAdd = (product: Product) => {
-    const variantId = product.variants?.[0]?.id || product.id;
+    const variantId = product.variants?.[0]?.id || `gid://shopify/ProductVariant/${product.id}`;
     setQuickAddedId(product.id);
+    aside.open('cart');
+
+    const selectedVariant = {
+      id: variantId,
+      title: product.metal || 'Default',
+      price: {
+        amount: String(getPriceInINR(product.price)),
+        currencyCode: 'INR',
+      },
+      product: {
+        id: product.id,
+        title: product.name,
+        handle: product.handle || product.id,
+      },
+      image: {
+        url: product.images?.[0] || '/logo.png',
+        altText: product.name,
+      },
+      selectedOptions: [
+        { name: 'Title', value: product.metal || 'Default Title' },
+      ],
+    };
+
     fetcher.submit(
       {
-        cartFormInput: JSON.stringify({
-          action: 'LinesAdd',
+        [CartForm.INPUT_NAME]: JSON.stringify({
+          action: CartForm.ACTIONS.LinesAdd,
           inputs: {
-            lines: [{ merchandiseId: variantId, quantity: 1 }],
+            lines: [
+              {
+                merchandiseId: variantId,
+                quantity: 1,
+                selectedVariant,
+              },
+            ],
           },
         }),
       },

@@ -31,6 +31,7 @@ import { findPairOffer } from '~/data/offers';
 import { ProductImageLightbox } from '~/components/ProductImageLightbox';
 import { ProductCard } from '~/components/ProductCard';
 import { trackViewItem, trackBeginCheckout } from '~/lib/analytics';
+import { useAside } from '~/components/Aside';
 import type { Product, ProductMedia, Currency, Metal } from '~/types/storefront';
 
 export const meta: Route.MetaFunction = ({ data }) => {
@@ -123,6 +124,7 @@ export default function ProductDetailPage() {
   const { product, allProducts } = useLoaderData<typeof loader>();
   const navigate = useNavigate();
   const fetcher = useFetcher();
+  const aside = useAside();
 
   const [isBuyingNow, setIsBuyingNow] = useState(false);
   const [isAddedToBag, setIsAddedToBag] = useState(false);
@@ -345,25 +347,56 @@ export default function ProductDetailPage() {
   };
 
   const handleAddToCart = () => {
-    const variantId = product.variants?.[0]?.id;
-    if (variantId) {
-      fetcher.submit(
-        {
-          [CartForm.INPUT_NAME]: JSON.stringify({
-            action: CartForm.ACTIONS.LinesAdd,
-            inputs: {
-              lines: [
-                {
-                  merchandiseId: variantId,
-                  quantity: 1,
-                },
-              ],
-            },
-          }),
-        },
-        { method: 'POST', action: '/cart' }
-      );
-    }
+    const variantId = product.variants?.[0]?.id || `gid://shopify/ProductVariant/${product.id}`;
+    aside.open('cart');
+
+    const selectedVariant = {
+      id: variantId,
+      title: selectedFinish || product.metal || 'Default',
+      price: {
+        amount: String(getPriceInINR(product.price)),
+        currencyCode: 'INR',
+      },
+      product: {
+        id: product.id,
+        title: product.name,
+        handle: product.handle || product.id,
+      },
+      image: {
+        url: product.images?.[0] || '/logo.png',
+        altText: product.name,
+      },
+      selectedOptions: [
+        { name: 'Finish', value: selectedFinish || product.metal || 'Default' },
+      ],
+    };
+
+    const bundleAttributes = isBundle
+      ? [
+          { key: '_bundleGroupId', value: `bundle-${product.handle || product.id}-${Date.now()}` },
+          { key: '_bundleTitle', value: product.name },
+          { key: '_bundleSavings', value: '100' },
+        ]
+      : undefined;
+
+    fetcher.submit(
+      {
+        [CartForm.INPUT_NAME]: JSON.stringify({
+          action: CartForm.ACTIONS.LinesAdd,
+          inputs: {
+            lines: [
+              {
+                merchandiseId: variantId,
+                quantity: 1,
+                selectedVariant,
+                attributes: bundleAttributes,
+              },
+            ],
+          },
+        }),
+      },
+      { method: 'POST', action: '/cart' }
+    );
 
     setIsAddedToBag(true);
     setTimeout(() => {
@@ -375,51 +408,90 @@ export default function ProductDetailPage() {
     setIsBuyingNow(true);
     trackBeginCheckout([{ product, quantity: 1 }]);
 
-    const variantId = product.variants?.[0]?.id;
-    if (variantId) {
-      fetcher.submit(
-        {
-          [CartForm.INPUT_NAME]: JSON.stringify({
-            action: CartForm.ACTIONS.LinesAdd,
-            inputs: {
-              lines: [
-                {
-                  merchandiseId: variantId,
-                  quantity: 1,
-                },
-              ],
-            },
-          }),
-          redirectTo: '/cart',
-        },
-        { method: 'POST', action: '/cart' }
-      );
-    } else {
-      handleAddToCart();
-      setIsBuyingNow(false);
-    }
+    const variantId = product.variants?.[0]?.id || `gid://shopify/ProductVariant/${product.id}`;
+    const selectedVariant = {
+      id: variantId,
+      title: selectedFinish || product.metal || 'Default',
+      price: {
+        amount: String(getPriceInINR(product.price)),
+        currencyCode: 'INR',
+      },
+      product: {
+        id: product.id,
+        title: product.name,
+        handle: product.handle || product.id,
+      },
+      image: {
+        url: product.images?.[0] || '/logo.png',
+        altText: product.name,
+      },
+      selectedOptions: [
+        { name: 'Finish', value: selectedFinish || product.metal || 'Default' },
+      ],
+    };
+
+    fetcher.submit(
+      {
+        [CartForm.INPUT_NAME]: JSON.stringify({
+          action: CartForm.ACTIONS.LinesAdd,
+          inputs: {
+            lines: [
+              {
+                merchandiseId: variantId,
+                quantity: 1,
+                selectedVariant,
+              },
+            ],
+          },
+        }),
+        redirectTo: '/cart',
+      },
+      { method: 'POST', action: '/cart' }
+    );
   };
 
   const handleQuickAddRecommendation = (recommendedItem: Product) => {
-    const variantId = recommendedItem.variants?.[0]?.id;
-    if (variantId) {
-      fetcher.submit(
-        {
-          [CartForm.INPUT_NAME]: JSON.stringify({
-            action: CartForm.ACTIONS.LinesAdd,
-            inputs: {
-              lines: [
-                {
-                  merchandiseId: variantId,
-                  quantity: 1,
-                },
-              ],
-            },
-          }),
-        },
-        { method: 'POST', action: '/cart' }
-      );
-    }
+    const variantId = recommendedItem.variants?.[0]?.id || `gid://shopify/ProductVariant/${recommendedItem.id}`;
+    aside.open('cart');
+
+    const selectedVariant = {
+      id: variantId,
+      title: recommendedItem.metal || 'Default',
+      price: {
+        amount: String(getPriceInINR(recommendedItem.price)),
+        currencyCode: 'INR',
+      },
+      product: {
+        id: recommendedItem.id,
+        title: recommendedItem.name,
+        handle: recommendedItem.handle || recommendedItem.id,
+      },
+      image: {
+        url: recommendedItem.images?.[0] || '/logo.png',
+        altText: recommendedItem.name,
+      },
+      selectedOptions: [
+        { name: 'Finish', value: recommendedItem.metal || 'Default' },
+      ],
+    };
+
+    fetcher.submit(
+      {
+        [CartForm.INPUT_NAME]: JSON.stringify({
+          action: CartForm.ACTIONS.LinesAdd,
+          inputs: {
+            lines: [
+              {
+                merchandiseId: variantId,
+                quantity: 1,
+                selectedVariant,
+              },
+            ],
+          },
+        }),
+      },
+      { method: 'POST', action: '/cart' }
+    );
 
     setAddedRecId(recommendedItem.id);
     setTimeout(() => {
@@ -526,7 +598,6 @@ export default function ProductDetailPage() {
                         width={1254}
                         height={1254}
                         loading="eager"
-                        fetchPriority="high"
                         decoding="sync"
                         className="w-full h-full object-contain object-center select-none pointer-events-none"
                       />

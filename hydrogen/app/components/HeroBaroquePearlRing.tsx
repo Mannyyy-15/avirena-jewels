@@ -24,7 +24,6 @@ export const HeroBaroquePearlRing: React.FC<HeroBaroquePearlRingProps> = ({
             width={1024}
             height={1024}
             loading="eager"
-            fetchPriority="high"
             decoding="sync"
             className="w-full h-auto object-contain max-h-[36vh] sm:max-h-[42vh] md:max-h-[46vh] pointer-events-none drop-shadow-md select-none"
           />

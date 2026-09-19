@@ -32,12 +32,7 @@ export const BUNDLE_COMPOSITES: Record<string, string> = {
   'orb-curve-duo': '/assets/bundles/orb-curve-duo.webp',
 };
 
-export const PRODUCT_IMAGE_OVERRIDES: Record<string, string[]> = {
-  'avirena-cascade-statement-drops-silver': [
-    '/cascade-silver-1.webp',
-    '/cascade-silver-2.webp',
-  ],
-};
+export const PRODUCT_IMAGE_OVERRIDES: Record<string, string[]> = {};
 
 export const STOREFRONT_PRODUCTS_QUERY = `#graphql
   query StorefrontProducts($first: Int = 50) {
@@ -92,7 +87,6 @@ export const STOREFRONT_PRODUCTS_QUERY = `#graphql
                 id
                 title
                 availableForSale
-                quantityAvailable
                 price {
                   amount
                   currencyCode
@@ -162,7 +156,6 @@ export const STOREFRONT_PRODUCT_BY_HANDLE_QUERY = `#graphql
             id
             title
             availableForSale
-            quantityAvailable
             price {
               amount
               currencyCode
