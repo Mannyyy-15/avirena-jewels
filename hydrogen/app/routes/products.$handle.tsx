@@ -141,6 +141,32 @@ export default function ProductDetailPage() {
   const [addedRecId, setAddedRecId] = useState<string | null>(null);
   const [isWishlisted, setIsWishlisted] = useState(false);
 
+  // Reset buying now / added states when product changes
+  useEffect(() => {
+    setIsBuyingNow(false);
+    setIsAddedToBag(false);
+    setActiveImageIndex(0);
+  }, [product.id, product.handle]);
+
+  // Reset button state if user returns via browser back button (bfcache) or tab switch
+  useEffect(() => {
+    const handlePageShow = () => {
+      setIsBuyingNow(false);
+      setIsAddedToBag(false);
+    };
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        setIsBuyingNow(false);
+      }
+    };
+    window.addEventListener('pageshow', handlePageShow);
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => {
+      window.removeEventListener('pageshow', handlePageShow);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, []);
+
   // Finish selector: "Gold Tone Brass" and "Silver Tone Brass"
   const [selectedFinish, setSelectedFinish] = useState<'Gold Tone Brass' | 'Silver Tone Brass'>(() =>
     isProductSilver(product) ? 'Silver Tone Brass' : 'Gold Tone Brass'
@@ -420,8 +446,12 @@ export default function ProductDetailPage() {
     const variantIdNumeric = variantId.replace(/\D/g, '');
     if (variantIdNumeric) {
       window.location.href = `https://m5yhxq-gb.myshopify.com/cart/${variantIdNumeric}:1`;
+      setTimeout(() => {
+        setIsBuyingNow(false);
+      }, 2500);
       return;
     }
+    setIsBuyingNow(false);
   };
 
   const handleQuickAddRecommendation = (recommendedItem: Product) => {
