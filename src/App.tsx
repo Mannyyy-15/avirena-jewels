@@ -18,6 +18,7 @@ import { HomePage } from './pages/HomePage';
 import { SeoMeta } from './components/SeoMeta';
 import { ShopifyProvider, useShopify } from './context/ShopifyContext';
 import { initSmoothScroll, scrollToTop, killDetachedScrollTriggers } from './lib/smoothScroll';
+import { trackAddToCart, trackAddToWishlist, trackBeginCheckout } from './lib/analytics';
 
 import { ErrorBoundary } from './components/ErrorBoundary';
 
@@ -808,6 +809,8 @@ function AppContent() {
       });
     }
 
+    trackBeginCheckout(cart.map((c) => ({ product: c.product, quantity: c.quantity })));
+
     if (isConfigured && cart.length > 0) {
       try {
         const checkoutUrl = await syncLocalCartToShopify(cart);
@@ -894,6 +897,8 @@ function AppContent() {
         });
       });
     }
+
+    itemsToAdd.forEach((item) => trackAddToCart(item.product, item.quantity));
 
     setCart((prevCart) => {
       let updatedCart = [...prevCart];
@@ -983,6 +988,7 @@ function AppContent() {
           currency: 'INR'
         });
       }
+      trackAddToWishlist(product);
     }
 
     if (isProductWishlisted(product.id)) {

@@ -14,6 +14,7 @@ import { CartItem, Currency, Product } from '../types';
 import { formatPrice, formatInr, sanitizeMetalName } from '../data/products';
 import { useShopify } from '../context/ShopifyContext';
 import { buildDirectCheckoutUrl } from '../lib/shopify';
+import { trackBeginCheckout } from '../lib/analytics';
 import { getAutomaticPairSavings, groupCartItemsForDisplay } from '../data/offers';
 
 interface CartPageProps {
@@ -54,6 +55,8 @@ export const CartPage: React.FC<CartPageProps> = ({
         content_ids: items.map((i) => i.product.handle || i.product.id)
       });
     }
+
+    trackBeginCheckout(items.map((i) => ({ product: i.product, quantity: i.quantity })));
 
     // High-speed Direct Permalink Checkout: redirect immediately to Shopify edge CDN
     const directCheckoutUrl = buildDirectCheckoutUrl(items);

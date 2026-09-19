@@ -15,6 +15,7 @@ import {
   ShoppingBag,
 } from 'lucide-react';
 import { Product, Currency, Metal, CartItem, ProductMedia } from '../types';
+import { trackViewItem, trackBeginCheckout } from '../lib/analytics';
 import { formatPrice, formatInr, getPriceInINR, getCompareAtPrice, getDiscountPercentage } from '../data/products';
 import { findPairOffer } from '../data/offers';
 import { useShopify } from '../context/ShopifyContext';
@@ -311,6 +312,8 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
       });
     }
 
+    trackViewItem(product);
+
   }, [product.id]);
 
 
@@ -405,6 +408,8 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
         num_items: 1
       });
     }
+
+    trackBeginCheckout([{ product, quantity: 1 }]);
 
     const bundleMetal = pairOffer && pairOffer.products.length === 2
       ? (pairOffer.products[0].metal === pairOffer.products[1].metal

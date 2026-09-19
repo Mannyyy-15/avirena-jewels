@@ -14,6 +14,7 @@ import { CartItem, Currency } from '../types';
 import { formatPrice, formatInr, sanitizeMetalName } from '../data/products';
 import { useShopify } from '../context/ShopifyContext';
 import { buildDirectCheckoutUrl } from '../lib/shopify';
+import { trackBeginCheckout } from '../lib/analytics';
 import { getAutomaticPairSavings, groupCartItemsForDisplay } from '../data/offers';
 
 interface CartDrawerProps {
@@ -60,6 +61,8 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
         content_ids: items.map((i) => i.product.handle || i.product.id),
       });
     }
+
+    trackBeginCheckout(items.map((i) => ({ product: i.product, quantity: i.quantity })));
 
     // Instant direct checkout redirect on custom checkout domain (0ms GraphQL wait)
     const directUrl = buildDirectCheckoutUrl(items);
