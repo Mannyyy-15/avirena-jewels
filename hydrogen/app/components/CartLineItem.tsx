@@ -120,10 +120,9 @@ function CartLineQuantity({line}: {line: CartLine}) {
     <div className="flex items-center border border-[#D8D2C2] rounded-xs bg-[#FAF8F5]">
       <CartLineUpdateButton lines={[{id: lineId, quantity: prevQuantity}]}>
         <button
+          type="submit"
           aria-label="Decrease quantity"
           disabled={quantity <= 1 || !!isOptimistic}
-          name="decrease-quantity"
-          value={prevQuantity}
           className="w-7 h-7 flex items-center justify-center text-[#413C23] hover:bg-[#E7E4D5] transition-colors cursor-pointer disabled:opacity-30"
         >
           <Minus className="w-3 h-3 stroke-[2]" />
@@ -134,9 +133,8 @@ function CartLineQuantity({line}: {line: CartLine}) {
       </span>
       <CartLineUpdateButton lines={[{id: lineId, quantity: nextQuantity}]}>
         <button
+          type="submit"
           aria-label="Increase quantity"
-          name="increase-quantity"
-          value={nextQuantity}
           disabled={!!isOptimistic}
           className="w-7 h-7 flex items-center justify-center text-[#413C23] hover:bg-[#E7E4D5] transition-colors cursor-pointer disabled:opacity-30"
         >
@@ -156,7 +154,6 @@ function CartLineRemoveButton({
 }) {
   return (
     <CartForm
-      fetcherKey={getUpdateKey(lineIds)}
       route="/cart"
       action={CartForm.ACTIONS.LinesRemove}
       inputs={{lineIds}}
@@ -181,11 +178,8 @@ function CartLineUpdateButton({
   children: React.ReactNode;
   lines: CartLineUpdateInput[];
 }) {
-  const lineIds = lines.map((line) => line.id);
-
   return (
     <CartForm
-      fetcherKey={getUpdateKey(lineIds)}
       route="/cart"
       action={CartForm.ACTIONS.LinesUpdate}
       inputs={{lines}}
@@ -193,8 +187,4 @@ function CartLineUpdateButton({
       {children}
     </CartForm>
   );
-}
-
-function getUpdateKey(lineIds: string[]) {
-  return [CartForm.ACTIONS.LinesUpdate, ...lineIds].join('-');
 }
