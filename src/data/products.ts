@@ -169,7 +169,7 @@ export const PRODUCTS: Product[] = [
     name: 'Avirena Heart Drops',
     subtitle: 'Puffed Double Heart Silver-Tone Earrings',
     category: 'earrings',
-    metal: 'Silver-Tone Alloy',
+    metal: 'Silver-Tone Brass',
     price: 8.66,
     originalPrice: 27.77,
     images: [
@@ -179,7 +179,7 @@ export const PRODUCTS: Product[] = [
       'https://cdn.shopify.com/s/files/1/1031/9364/1282/files/square_clean_amara-heart-drops-silver-tone-earrings_4.png?v=1788782434',
       'https://cdn.shopify.com/s/files/1/1031/9364/1282/files/77cf164e-ff07-4bb4-b201-f6351b5af304.png?v=1788590709'
     ],
-    description: 'Two hearts, one clean line. A puffed heart stud carries a larger heart below it, both finished in a high-polish silver tone that catches light as you move. The volume gives it presence; the smooth unbroken surface keeps it from tipping into sweet. Romantic without being girlish. Product highlights Double heart drop silhouette Puffed, high-polish silver-tone finish Articulated link so the lower heart moves with you Hollow-formed to stay light on the lobe Materials Durable alloy with an anti-tarnish silver-tone protective coating Nickel-free, lead-free and cadmium-free Surgical steel posts, suitable for sensitive skin This is fashion jewellery. It is not solid gold, gold vermeil or sterling silver, and is not hallmarked to any precious-metal standard. Perfect for Date nights and dinners Birthdays and anniversaries Dresses and western outfits Gifting Care Remove before swimming, bathing or exercise. Apply perfume and lotion before putting them on. Wipe gently with a soft dry cloth after wear and store dry. Tracked express delivery. Free delivery across India. 7-day easy returns on unworn pieces in original packaging.',
+    description: 'Two hearts, one clean line. A puffed heart stud carries a larger heart below it, both finished in a high-polish silver tone that catches light as you move. The volume gives it presence; the smooth unbroken surface keeps it from tipping into sweet. Romantic without being girlish. Product highlights Double heart drop silhouette Puffed, high-polish silver-tone finish Articulated link so the lower heart moves with you Hollow-formed to stay light on the lobe Materials High-grade brass with an anti-tarnish silver-tone protective coating Nickel-free, lead-free and cadmium-free Surgical steel posts, suitable for sensitive skin This is fashion jewellery. It is not solid gold, gold vermeil or sterling silver, and is not hallmarked to any precious-metal standard. Perfect for Date nights and dinners Birthdays and anniversaries Dresses and western outfits Gifting Care Remove before swimming, bathing or exercise. Apply perfume and lotion before putting them on. Wipe gently with a soft dry cloth after wear and store dry. Tracked express delivery. Free delivery across India. 7-day easy returns on unworn pieces in original packaging.',
     details: [
       'Articulated double puffed heart drop silhouette',
       'Mirror-polished cool silver-tone protective finish',
@@ -187,7 +187,7 @@ export const PRODUCTS: Product[] = [
       'Surgical steel hypoallergenic posts for sensitive ears',
       'Free delivery across India & 7-day easy returns'
     ],
-    materials: 'Durable alloy with anti-tarnish silver-tone protective coating (nickel-free, lead-free) and surgical steel posts',
+    materials: 'High-grade brass with anti-tarnish silver-tone protective coating (nickel-free, lead-free) and surgical steel posts',
     inStock: true,
     isBestseller: true,
     isSculptural: true,
@@ -200,7 +200,7 @@ export const PRODUCTS: Product[] = [
     name: 'Avirena Spiral Earrings',
     subtitle: 'Sculptural Continuous Curve Silver-Tone Studs',
     category: 'earrings',
-    metal: 'Silver-Tone Alloy',
+    metal: 'Silver-Tone Brass',
     price: 6.66,
     originalPrice: 21.10,
     images: [
@@ -210,7 +210,7 @@ export const PRODUCTS: Product[] = [
       'https://cdn.shopify.com/s/files/1/1031/9364/1282/files/25d04dc2-dbb0-41c7-8052-5591c7e89e7b.png?v=1788590747',
       'https://cdn.shopify.com/s/files/1/1031/9364/1282/files/ef9688d8-8f05-4daa-841a-4fdcb08baaca.png?v=1788590748'
     ],
-    description: 'One continuous curve. A single tapered form spirals around itself and comes to a fine point, hugging the lobe rather than hanging from it. The high-polish silver-tone surface reads as one unbroken line from every angle — architectural, and quietly unusual. Product highlights Sculptural spiral silhouette that curves around the lobe Tapered form finishing in a fine point High-polish silver-tone finish Sits close to the ear, so it stays comfortable through the day Materials Durable alloy with an anti-tarnish silver-tone protective coating Nickel-free, lead-free and cadmium-free Surgical steel posts, suitable for sensitive skin This is fashion jewellery. It is not solid gold, gold vermeil or sterling silver, and is not hallmarked to any precious-metal standard. Perfect for Everyday and office wear Minimalist and contemporary outfits Dresses and western wear Gifting Care Remove before swimming, bathing or exercise. Apply perfume and lotion before putting them on. Wipe gently with a soft dry cloth after wear and store dry. Tracked express delivery. Free delivery across India. 7-day easy returns on unworn pieces in original packaging.',
+    description: 'One continuous curve. A single tapered form spirals around itself and comes to a fine point, hugging the lobe rather than hanging from it. The high-polish silver-tone surface reads as one unbroken line from every angle — architectural, and quietly unusual. Product highlights Sculptural spiral silhouette that curves around the lobe Tapered form finishing in a fine point High-polish silver-tone finish Sits close to the ear, so it stays comfortable through the day Materials High-grade brass with an anti-tarnish silver-tone protective coating Nickel-free, lead-free and cadmium-free Surgical steel posts, suitable for sensitive skin This is fashion jewellery. It is not solid gold, gold vermeil or sterling silver, and is not hallmarked to any precious-metal standard. Perfect for Everyday and office wear Minimalist and contemporary outfits Dresses and western wear Gifting Care Remove before swimming, bathing or exercise. Apply perfume and lotion before putting them on. Wipe gently with a soft dry cloth after wear and store dry. Tracked express delivery. Free delivery across India. 7-day easy returns on unworn pieces in original packaging.',
     details: [
       'Continuous tapered spiral curving around the lobe',
       'Architectural unbroken line from every angle',
@@ -218,7 +218,7 @@ export const PRODUCTS: Product[] = [
       'Surgical steel hypoallergenic posts for sensitive ears',
       'Free delivery across India & 7-day easy returns'
     ],
-    materials: 'Durable alloy with anti-tarnish silver-tone protective coating (nickel-free, lead-free) and surgical steel posts',
+    materials: 'High-grade brass with anti-tarnish silver-tone protective coating (nickel-free, lead-free) and surgical steel posts',
     inStock: true,
     isBestseller: true,
     isSculptural: true,
@@ -262,7 +262,7 @@ export const PRODUCTS: Product[] = [
     name: 'Avirena Crystal Hoops — Silver',
     subtitle: 'Chunky Domed Hoop with Prong-Set Oval Crystal',
     category: 'earrings',
-    metal: 'Silver-Tone Alloy',
+    metal: 'Silver-Tone Brass',
     price: 6.66,
     originalPrice: 24.43,
     images: [
@@ -272,7 +272,7 @@ export const PRODUCTS: Product[] = [
       'https://cdn.shopify.com/s/files/1/1031/9364/1282/files/42f9b9e3-ac6d-4bc9-9545-99ce1268621b.png?v=1788590785',
       'https://cdn.shopify.com/s/files/1/1031/9364/1282/files/6343dbee-940f-45a1-9bd8-16a4960909bc.png?v=1788590785'
     ],
-    description: 'Weight below, light above. A chunky domed hoop anchors a prong-set oval crystal, finished in a cool silver tone that plays the sparkle down rather than up. The proportion is what makes it work — substantial enough to read as a statement, contained enough to wear with a saree or a shirt. Product highlights Chunky domed hoop with a prong-set oval crystal Polished silver-tone finish Hollow-formed hoop, so the scale does not weigh on the lobe Secure post and back fitting Materials Durable alloy with an anti-tarnish silver-tone protective coating Faceted glass crystal stone Nickel-free, lead-free and cadmium-free Surgical steel posts, suitable for sensitive skin This is fashion jewellery. The stone is a faceted crystal, not a diamond or precious gemstone. The metal is not solid gold, gold vermeil or sterling silver, and is not hallmarked to any precious-metal standard. Perfect for Festive and occasion wear Sarees and ethnic outfits Weddings and celebrations Evening looks Gifting Care Remove before swimming, bathing or exercise. Apply perfume and lotion before putting them on. Wipe gently with a soft dry cloth after wear and store dry. Tracked express delivery. Free delivery across India. 7-day easy returns on unworn pieces in original packaging.',
+    description: 'Weight below, light above. A chunky domed hoop anchors a prong-set oval crystal, finished in a cool silver tone that plays the sparkle down rather than up. The proportion is what makes it work — substantial enough to read as a statement, contained enough to wear with a saree or a shirt. Product highlights Chunky domed hoop with a prong-set oval crystal Polished silver-tone finish Hollow-formed hoop, so the scale does not weigh on the lobe Secure post and back fitting Materials High-grade brass with an anti-tarnish silver-tone protective coating Faceted glass crystal stone Nickel-free, lead-free and cadmium-free Surgical steel posts, suitable for sensitive skin This is fashion jewellery. The stone is a faceted crystal, not a diamond or precious gemstone. The metal is not solid gold, gold vermeil or sterling silver, and is not hallmarked to any precious-metal standard. Perfect for Festive and occasion wear Sarees and ethnic outfits Weddings and celebrations Evening looks Gifting Care Remove before swimming, bathing or exercise. Apply perfume and lotion before putting them on. Wipe gently with a soft dry cloth after wear and store dry. Tracked express delivery. Free delivery across India. 7-day easy returns on unworn pieces in original packaging.',
     details: [
       'Chunky domed hoop anchoring a brilliant prong-set oval crystal',
       'Polished cool silver-tone finish with crisp sparkle',
@@ -280,7 +280,7 @@ export const PRODUCTS: Product[] = [
       'Surgical steel hypoallergenic posts for sensitive ears',
       'Free delivery across India & 7-day easy returns'
     ],
-    materials: 'Durable alloy with anti-tarnish silver-tone coating & faceted glass crystal stone',
+    materials: 'High-grade brass with anti-tarnish silver-tone coating & faceted glass crystal stone',
     inStock: true,
     isBestseller: true,
     isSculptural: true,
@@ -517,12 +517,12 @@ export const PRODUCTS: Product[] = [
     name: 'Avirena Cascade Statement Drops — Silver',
     subtitle: 'Tiered Perforated Liquid Silver Drop Earrings',
     category: 'earrings',
-    metal: 'Silver-Tone Alloy',
+    metal: 'Silver-Tone Brass',
     price: 13.32,
     originalPrice: 44.43,
     images: [
-      '/cascade-silver-clean.webp',
-      'https://cdn.shopify.com/s/files/1/1031/9364/1282/files/na-019-avirena-jewels-original-imahryvquyfrjhz7.jpg?v=1789713484',
+      '/cascade-silver-1.webp',
+      '/cascade-silver-2.webp',
       'https://cdn.shopify.com/s/files/1/1031/9364/1282/files/na-019-avirena-jewels-original-imahryvqmz377zth.jpg?v=1789713483',
       'https://cdn.shopify.com/s/files/1/1031/9364/1282/files/na-019-avirena-jewels-original-imahryvqprwzznt5.jpg?v=1789713484'
     ],
@@ -542,3 +542,10 @@ export const PRODUCTS: Product[] = [
     tags: ["anti-tarnish","bestseller","brass","dangle","drop-earrings","earrings","ethnic-wear","featured","festive","gifting","new","nickel-free","occasion-wear","organic","sculptural","silver-tone","statement"],
   }
 ];
+
+export const sanitizeMetalName = (m?: string): string => {
+  if (!m) return 'Anti-Tarnish Brass';
+  if (/18k|rhodium/i.test(m)) return 'Gold & Silver Tone Brass';
+  if (/silver-tone alloy/i.test(m)) return 'Silver-Tone Brass';
+  return m;
+};

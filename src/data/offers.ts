@@ -39,6 +39,20 @@ export const PAIR_OFFERS: PairOffer[] = [
     saving: 100,
     shopifyHandle: 'cascade-statement-duo',
   },
+  {
+    id: 'leaf-pebble-duo',
+    title: 'Leaf + Pebble Duo',
+    handles: ['avirena-leaf-studs-gold-tone-earrings', 'avirena-pebble-studs-gold-tone-earrings'],
+    saving: 100,
+    shopifyHandle: 'leaf-pebble-duo',
+  },
+  {
+    id: 'orb-curve-duo',
+    title: 'Brushed Orb + Duo Curve Duo',
+    handles: ['avirena-brushed-orb-drops-gold-tone-earrings', 'avirena-duo-curve-hoops-gold-tone-brass'],
+    saving: 100,
+    shopifyHandle: 'orb-curve-duo',
+  },
 ];
 
 export function resolvePairOffers(products: Product[]) {
@@ -92,10 +106,17 @@ export function createPairBundleItems(offer: PairOffer, products: [Product, Prod
         ? offer.bundleProduct.images
         : [products[0].images?.[0] || '/logo.png', products[1].images?.[0] || '/logo.png'];
 
+    const bundleMetal =
+      offer.bundleProduct.metal && !/18k|rhodium/i.test(offer.bundleProduct.metal)
+        ? offer.bundleProduct.metal
+        : products[0].metal === products[1].metal
+        ? products[0].metal
+        : 'Gold & Silver Tone Brass';
+
     const hydratedProduct: Product = {
       ...offer.bundleProduct,
       images,
-      metal: offer.bundleProduct.metal || '18K Gold + Rhodium Silver',
+      metal: bundleMetal,
     };
 
     return [

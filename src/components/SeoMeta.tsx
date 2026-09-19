@@ -52,7 +52,7 @@ export const SeoMeta: React.FC<SeoMetaProps> = ({
       } else if (curatedEdit === 'gifting-edit') {
         title = 'Jewellery Gifts Under ₹1000 for Women | Avirena';
         description =
-          'Find the perfect jewellery gift under ₹1000 with Avirena. Sculptural earrings, pearl drops, and timeless staples with zero sizing risk. Includes luxury gift box.';
+          'Find the perfect jewellery gift under ₹1000 with Avirena. Sculptural earrings, pearl drops, and timeless staples with zero sizing risk. Securely packaged with free delivery.';
         canonical = 'https://avirenajewels.com/collections/gifting-edit';
       } else if (curatedEdit === 'duo-suites') {
         title = 'Signature Duo Suites | Pair & Save ₹100 | Avirena';

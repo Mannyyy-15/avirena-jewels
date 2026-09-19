@@ -8,13 +8,17 @@ import { getCompareAtPrice } from '../data/products';
  * the site's own sensitive-skin guide warns against relying on it, so the copy
  * states the verifiable facts (nickel/lead/cadmium-free, surgical steel posts).
  */
-const METAL_MATERIALS: Record<Metal, string> = {
+const METAL_MATERIALS: Record<string, string> = {
   'Gold-Tone Brass':
     'High-grade brass with anti-tarnish gold-tone e-coating. Nickel-free, lead-free and cadmium-free, with surgical steel posts.',
+  'Silver-Tone Brass':
+    'High-grade brass with protective anti-tarnish silver-tone e-coating. Nickel-free, lead-free and cadmium-free, with surgical steel posts.',
   'Anti-Tarnish Brass':
     'High-grade brass with a protective anti-tarnish e-coating. Nickel-free, lead-free and cadmium-free, with surgical steel posts.',
   'Silver-Tone Alloy':
-    'Durable silver-tone alloy with a protective anti-tarnish coating. Nickel-free, lead-free and cadmium-free, with surgical steel posts.',
+    'High-grade brass with protective anti-tarnish silver-tone coating. Nickel-free, lead-free and cadmium-free, with surgical steel posts.',
+  'Gold & Silver Tone Brass':
+    'High-grade brass with protective anti-tarnish gold and silver tone coatings. Nickel-free, lead-free and cadmium-free, with surgical steel posts.',
   'Rose Gold-Tone':
     'High-grade brass with anti-tarnish rose gold-tone e-coating. Nickel-free, lead-free and cadmium-free, with surgical steel posts.',
 };
@@ -508,6 +512,15 @@ const BUNDLE_COMPOSITES: Record<string, string> = {
   'studs-hearts-duo': '/assets/bundles/studs-hearts-duo.webp',
   'drops-spirals-duo': '/assets/bundles/drops-spirals-duo.webp',
   'cascade-statement-duo': '/assets/bundles/cascade-statement-duo.webp',
+  'leaf-pebble-duo': '/assets/bundles/leaf-pebble-duo.webp',
+  'orb-curve-duo': '/assets/bundles/orb-curve-duo.webp',
+};
+
+const PRODUCT_IMAGE_OVERRIDES: Record<string, string[]> = {
+  'avirena-cascade-statement-drops-silver': [
+    '/cascade-silver-1.webp',
+    '/cascade-silver-2.webp',
+  ],
 };
 
 export function transformShopifyProduct(node: any): Product {
@@ -515,6 +528,12 @@ export function transformShopifyProduct(node: any): Product {
   const compositeUrl = node.handle ? BUNDLE_COMPOSITES[node.handle] : undefined;
   if (compositeUrl) {
     images = [compositeUrl, ...images.filter((u: string) => u !== compositeUrl)];
+  }
+
+  const customImages = node.handle ? PRODUCT_IMAGE_OVERRIDES[node.handle] : undefined;
+  if (customImages && customImages.length > 0) {
+    const remaining = images.slice(customImages.length);
+    images = [...customImages, ...remaining];
   }
 
   // Ordered Shopify gallery (images + videos) in the same order the shop admin
@@ -535,6 +554,8 @@ export function transformShopifyProduct(node: any): Product {
 
   if (compositeUrl) {
     media = [{ contentType: 'image' as const, url: compositeUrl }, ...media.filter((m) => m.url !== compositeUrl)];
+  } else if (customImages && customImages.length > 0) {
+    media = images.map((url) => ({ contentType: 'image' as const, url }));
   }
   const rawAmount = parseFloat(node.priceRange?.minVariantPrice?.amount || '0');
   const currencyCode = (node.priceRange?.minVariantPrice?.currencyCode || 'INR').toUpperCase();
@@ -618,7 +639,7 @@ export function transformShopifyProduct(node: any): Product {
   if (finishText.includes('rose gold')) {
     metal = 'Rose Gold-Tone';
   } else if (finishText.includes('silver-tone') || /\bsilver\b/.test(finishText)) {
-    metal = 'Silver-Tone Alloy';
+    metal = 'Silver-Tone Brass';
   } else if (finishText.includes('gold-tone') || /\bgold\b/.test(finishText)) {
     metal = 'Gold-Tone Brass';
   } else if (finishText.includes('anti-tarnish') || finishText.includes('brass')) {

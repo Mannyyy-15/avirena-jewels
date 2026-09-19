@@ -106,6 +106,8 @@ export const ShopifyProvider: React.FC<{ children: ReactNode }> = ({ children })
           'studs-hearts-duo': ['avirena-square-studs-gold-tone-brass-earrings', 'avirena-heart-drops-silver-tone-earrings'],
           'drops-spirals-duo': ['avirena-drop-earrings-gold-tone-brass', 'avirena-spiral-earrings-silver-tone'],
           'cascade-statement-duo': ['avirena-cascade-statement-drops-gold-tone', 'avirena-cascade-statement-drops-silver'],
+          'leaf-pebble-duo': ['avirena-leaf-studs-gold-tone-earrings', 'avirena-pebble-studs-gold-tone-earrings'],
+          'orb-curve-duo': ['avirena-brushed-orb-drops-gold-tone-earrings', 'avirena-duo-curve-hoops-gold-tone-brass'],
         };
 
         const enriched = transformed.map((prod: Product) => {

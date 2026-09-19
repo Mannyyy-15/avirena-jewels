@@ -458,7 +458,28 @@ function AppContent() {
   const [cart, setCart] = useState<CartItem[]>(() => {
     try {
       const saved = localStorage.getItem('avirena_cart');
-      return saved ? JSON.parse(saved) : [];
+      if (!saved) return [];
+      const parsed: CartItem[] = JSON.parse(saved);
+      return parsed.map((item) => {
+        let metal = item.metal;
+        if (/18k|rhodium/i.test(metal || '')) {
+          metal = 'Gold & Silver Tone Brass';
+        } else if (/silver-tone alloy/i.test(metal || '')) {
+          metal = 'Silver-Tone Brass';
+        }
+        return {
+          ...item,
+          metal,
+          product: {
+            ...item.product,
+            metal: /18k|rhodium/i.test(item.product?.metal || '')
+              ? 'Gold & Silver Tone Brass'
+              : item.product?.metal === 'Silver-Tone Alloy'
+              ? 'Silver-Tone Brass'
+              : item.product?.metal || metal,
+          },
+        };
+      });
     } catch {
       return [];
     }
@@ -1028,6 +1049,7 @@ function AppContent() {
           <HomePage
             onSelectProduct={handleSelectProduct}
             onNavigateToCollection={handleNavigateToCollection}
+            onSelectCuratedEdit={handleSelectCuratedEdit}
             onQuickAdd={handleQuickAdd}
             onAddToCart={handleAddToCart}
             currency={currency}

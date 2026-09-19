@@ -25,6 +25,7 @@ if (typeof window !== 'undefined') {
 interface HomePageProps {
   onSelectProduct: (product: Product) => void;
   onNavigateToCollection: (category?: Category, metal?: string) => void;
+  onSelectCuratedEdit?: (edit: 'under-999' | 'gifting-edit' | 'duo-suites') => void;
   onQuickAdd: (product: Product) => void;
   onAddToCart?: (item: Omit<CartItem, 'id'> | Omit<CartItem, 'id'>[]) => void;
   currency: Currency;
@@ -37,6 +38,7 @@ interface HomePageProps {
 export const HomePage: React.FC<HomePageProps> = ({
   onSelectProduct,
   onNavigateToCollection,
+  onSelectCuratedEdit,
   onQuickAdd,
   onAddToCart,
   currency,
@@ -403,7 +405,13 @@ export const HomePage: React.FC<HomePageProps> = ({
                 </h2>
               </div>
               <button
-                onClick={() => onNavigateToCollection('all')}
+                onClick={() => {
+                  if (onSelectCuratedEdit) {
+                    onSelectCuratedEdit('duo-suites');
+                  } else {
+                    window.location.href = '/collections/duo-suites';
+                  }
+                }}
                 className="text-xs sm:text-sm text-[#8F896D] hover:text-[#413C23] transition-colors cursor-pointer font-medium underline underline-offset-4 tracking-wide uppercase shrink-0 pb-1"
               >
                 see all suites
@@ -412,7 +420,7 @@ export const HomePage: React.FC<HomePageProps> = ({
 
             {/* 4-Column Uniform Duo Grid matching Curated Collection Cards */}
             <div className="duo-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-              {pairOffers.map((offer) => {
+              {pairOffers.slice(0, 4).map((offer) => {
                 const p1 = offer.products[0];
                 const p2 = offer.products[1];
 
@@ -443,8 +451,11 @@ export const HomePage: React.FC<HomePageProps> = ({
                   >
                     {/* Fixed Uniform Square Box Container */}
                     <div className="relative aspect-square w-full bg-[#FAF8F5] border border-[#D8D2C2] rounded-xs flex items-center justify-center p-4 sm:p-5 transition-all duration-300 group-hover:border-[#8F896D] group-hover:shadow-[0_8px_20px_rgba(65,60,35,0.08)] overflow-hidden">
-                      {/* Discount % Badge top-left */}
-                      <div className="absolute top-2.5 left-2.5 z-10">
+                      {/* Badges top-left */}
+                      <div className="absolute top-2.5 left-2.5 z-10 flex flex-col gap-1 items-start">
+                        <span className="bg-[#413C23] text-[#FAF8F5] text-[9px] tracking-[0.16em] uppercase font-bold px-2 py-0.5 rounded-2xs shadow-xs border border-[#413C23]">
+                          DUO SET • 2 PIECES
+                        </span>
                         <span className="text-[10px] font-bold text-[#14532D] bg-[#14532D]/10 border border-[#14532D]/25 px-1.5 py-0.5 rounded-2xs uppercase tracking-wider">
                           {discountPercentage}% OFF
                         </span>
@@ -480,6 +491,10 @@ export const HomePage: React.FC<HomePageProps> = ({
 
                     {/* Meta Box with Prominent Bold Price & Discount Badge (Identical to Curated Collection) */}
                     <div className="flex flex-col justify-between pt-1">
+                      <span className="text-black uppercase tracking-[0.18em] font-semibold text-[10px]">
+                        DUO SUITE • 2-PIECE SET
+                      </span>
+
                       <h3
                         onClick={(e) => {
                           e.stopPropagation();
@@ -769,7 +784,7 @@ export const HomePage: React.FC<HomePageProps> = ({
         </div>
       </section>
 
-      {/* 5. SECTION 5: THE GOLD TONE EDIT (Curated 18K Gold-Tone Brass Showcase) */}
+      {/* 5. SECTION 5: THE GOLD TONE EDIT (Curated Gold-Tone Brass Showcase) */}
       <section className="w-full bg-[#E7E4D5] py-16 sm:py-24 border-b border-[#D8D2C2] px-4 sm:px-8 lg:px-12 xl:px-16 2xl:px-20 select-none">
         <div className="w-full space-y-8 sm:space-y-12">
           
@@ -941,7 +956,7 @@ export const HomePage: React.FC<HomePageProps> = ({
         </div>
       </section>
 
-      {/* 6. SECTION 6: THE SILVER TONE EDIT (Curated Silver-Tone Alloy & Rhodium Showcase) */}
+      {/* 6. SECTION 6: THE SILVER TONE EDIT (Curated Silver-Tone Brass Showcase) */}
       <section className="silver-section w-full bg-[#E7E4D5] py-16 sm:py-24 border-b border-[#D8D2C2] px-4 sm:px-8 lg:px-12 xl:px-16 2xl:px-20 select-none">
         <div className="w-full space-y-8 sm:space-y-12">
           
@@ -960,7 +975,7 @@ export const HomePage: React.FC<HomePageProps> = ({
             </div>
             <div className="flex flex-col sm:items-end gap-2 shrink-0">
               <p className="text-xs sm:text-[13px] text-[#413C23]/80 font-normal max-w-xs sm:text-right leading-relaxed">
-                Mirror rhodium finish in precision silver alloy. Crisp, architectural, and anti-tarnish.
+                High-polish silver-tone finish on anti-tarnish brass. Crisp, architectural, and durable.
               </p>
               <button
                 onClick={() => onNavigateToCollection('all', 'alloy')}
@@ -1102,7 +1117,7 @@ export const HomePage: React.FC<HomePageProps> = ({
             </div>
             <div className="py-2.5 px-4 bg-[#F2EFDB]/70 border border-[#D8D2C2] rounded-xs flex items-center justify-center sm:justify-start gap-2.5">
               <Gem className="w-4 h-4 text-[#8F896D] shrink-0" />
-              <span className="font-medium">Mirror-Polished Rhodium &amp; Silver Luster</span>
+              <span className="font-medium">High-Polish Silver Tone on Brass</span>
             </div>
             <div className="py-2.5 px-4 bg-[#F2EFDB]/70 border border-[#D8D2C2] rounded-xs flex items-center justify-center sm:justify-start gap-2.5">
               <Check className="w-4 h-4 text-[#8F896D] shrink-0" />

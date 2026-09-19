@@ -181,15 +181,15 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
                   </button>
                   <button
                     type="button"
-                    onClick={() => setSelectedMetal('Silver-Tone Alloy')}
+                    onClick={() => setSelectedMetal('Silver-Tone Brass')}
                     className={`py-2 px-3 text-xs rounded-xs border flex items-center justify-center gap-2 cursor-pointer transition-all ${
-                      selectedMetal === 'Silver-Tone Alloy'
+                      selectedMetal === 'Silver-Tone Brass'
                         ? 'border-[#C5A059] bg-[#F3EFE6] font-medium text-[#2C2C2A]'
                         : 'border-[#E6DFD3] text-[#5C5850] hover:border-[#9A9886]'
                     }`}
                   >
                     <span className="w-3 h-3 rounded-full bg-[#E0E0E0] border border-[#BDBDBD]" />
-                    <span>Silver-Tone Alloy</span>
+                    <span>Silver-Tone Brass</span>
                   </button>
                 </div>
               </div>

@@ -39,6 +39,13 @@ export const ProductCard: React.FC<ProductCardProps> = ({
 
   const displayImage = isHovered && product.images.length > 1 ? product.images[1] : product.images[0];
 
+  const isBundle = Boolean(
+    (product.tags || []).includes('bundle') ||
+    (product.tags || []).includes('duo-suite') ||
+    (product.handle || '').includes('duo') ||
+    (product.name || '').toLowerCase().includes('duo')
+  );
+
   return (
     <div
       id={`product-card-${product.id}`}
@@ -50,16 +57,24 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       {/* Product Image Canvas Container */}
       <div className="relative aspect-square w-full bg-[#FAF8F5] border border-[#D8D2C2] rounded-xs overflow-hidden flex items-center justify-center transition-all duration-300 group-hover:border-[#8F896D] group-hover:shadow-[0_8px_20px_rgba(65,60,35,0.08)]">
         {/* Badges */}
-        <div className="absolute top-2.5 left-2.5 flex flex-col gap-1 z-10">
-          {product.isBestseller && (
-            <span className="bg-[#413C23] text-[#FAF8F5] text-[9px] tracking-[0.16em] uppercase font-bold px-2 py-0.5 rounded-xs shadow-xs">
-              Bestseller
+        <div className="absolute top-2.5 left-2.5 flex flex-col gap-1 z-10 items-start">
+          {isBundle ? (
+            <span className="bg-[#413C23] text-[#FAF8F5] text-[9px] tracking-[0.16em] uppercase font-bold px-2 py-0.5 rounded-xs shadow-xs border border-[#413C23]">
+              DUO SET • 2 PIECES
             </span>
-          )}
-          {product.isSculptural && !product.isBestseller && (
-            <span className="bg-[#FAF8F5]/95 text-[#413C23] text-[9px] tracking-[0.16em] uppercase font-semibold px-2 py-0.5 border border-[#D8D2C2] rounded-xs shadow-xs">
-              Sculptural
-            </span>
+          ) : (
+            <>
+              {product.isBestseller && (
+                <span className="bg-[#413C23] text-[#FAF8F5] text-[9px] tracking-[0.16em] uppercase font-bold px-2 py-0.5 rounded-xs shadow-xs">
+                  Bestseller
+                </span>
+              )}
+              {product.isSculptural && !product.isBestseller && (
+                <span className="bg-[#FAF8F5]/95 text-[#413C23] text-[9px] tracking-[0.16em] uppercase font-semibold px-2 py-0.5 border border-[#D8D2C2] rounded-xs shadow-xs">
+                  Sculptural
+                </span>
+              )}
+            </>
           )}
         </div>
 
@@ -123,7 +138,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       <div className="mt-3 flex flex-col space-y-1">
         <div className="flex items-center justify-between text-[11px]">
           <span className="text-black uppercase tracking-[0.18em] font-semibold text-[10px]">
-            {product.metal}
+            {isBundle ? 'DUO SUITE • 2-PIECE SET' : product.metal}
           </span>
         </div>
 

@@ -11,7 +11,7 @@ import {
   Lock,
 } from 'lucide-react';
 import { CartItem, Currency } from '../types';
-import { formatPrice, formatInr } from '../data/products';
+import { formatPrice, formatInr, sanitizeMetalName } from '../data/products';
 import { useShopify } from '../context/ShopifyContext';
 import { buildDirectCheckoutUrl } from '../lib/shopify';
 import { getAutomaticPairSavings, groupCartItemsForDisplay } from '../data/offers';
@@ -276,7 +276,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                             </button>
                           </div>
                           <div className="text-[11px] text-[#8F896D] uppercase tracking-wider font-semibold mt-0.5">
-                            {item.metal}
+                            {sanitizeMetalName(item.metal)}
                             {item.size && <span> • {item.size}</span>}
                           </div>
                         </div>

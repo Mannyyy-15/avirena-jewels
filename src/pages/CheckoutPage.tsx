@@ -10,7 +10,7 @@ import {
   ArrowLeft
 } from 'lucide-react';
 import { CartItem, Currency } from '../types';
-import { formatPrice } from '../data/products';
+import { formatPrice, sanitizeMetalName } from '../data/products';
 
 interface CheckoutPageProps {
   items: CartItem[];
@@ -115,7 +115,7 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
             <p><strong className="text-[#2C2C2A]">Shipping to:</strong> {formData.streetAddress}, {formData.city}, {formData.zipCode}, {formData.country}</p>
             <p><strong className="text-[#2C2C2A]">Payment Method:</strong> {formData.paymentMethod.toUpperCase()} (Total paid: {formatPrice(total, currency)})</p>
             <p className="text-[#9A9886] pt-2">
-              ✓ Each piece is individually inspected and packaged in our luxury presentation box with an anti-tarnish polishing cloth.
+              ✓ Each piece is individually inspected and securely packaged for safe transit.
             </p>
           </div>
         </div>
@@ -542,7 +542,7 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
                         </span>
                       </div>
                       <p className="text-[11px] text-[#7D7973]">
-                        {item.metal} {item.size ? `• ${item.size}` : ''}
+                        {sanitizeMetalName(item.metal)} {item.size ? `• ${item.size}` : ''}
                       </p>
                     </div>
 

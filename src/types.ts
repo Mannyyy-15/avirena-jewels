@@ -1,6 +1,13 @@
 export type Category = 'all' | 'rings' | 'necklaces' | 'earrings' | 'bracelets' | 'sets' | 'brooches';
 
-export type Metal = 'Gold-Tone Brass' | 'Silver-Tone Alloy' | 'Anti-Tarnish Brass' | 'Rose Gold-Tone';
+export type Metal =
+  | 'Gold-Tone Brass'
+  | 'Silver-Tone Brass'
+  | 'Silver-Tone Alloy'
+  | 'Anti-Tarnish Brass'
+  | 'Rose Gold-Tone'
+  | 'Gold & Silver Tone Brass'
+  | string;
 
 export type Currency = 'EUR' | 'INR' | 'USD' | 'GBP';
 

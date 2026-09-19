@@ -11,7 +11,7 @@ import {
   Check,
 } from 'lucide-react';
 import { CartItem, Currency, Product } from '../types';
-import { formatPrice, formatInr } from '../data/products';
+import { formatPrice, formatInr, sanitizeMetalName } from '../data/products';
 import { useShopify } from '../context/ShopifyContext';
 import { buildDirectCheckoutUrl } from '../lib/shopify';
 import { getAutomaticPairSavings, groupCartItemsForDisplay } from '../data/offers';
@@ -275,7 +275,7 @@ export const CartPage: React.FC<CartPageProps> = ({
                         {item.product.name}
                       </h3>
                       <p className="text-[11px] text-[#8F896D] uppercase tracking-wider font-semibold mt-0.5">
-                        {item.metal}
+                        {sanitizeMetalName(item.metal)}
                         {item.size && <span> • {item.size}</span>}
                       </p>
                       <p className="text-xs text-[#8F896D] mt-1 sm:hidden">

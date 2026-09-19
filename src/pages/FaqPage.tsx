@@ -288,7 +288,7 @@ export const FaqPage: React.FC<FaqPageProps> = ({ onNavigateToContact, onNavigat
                 <ShieldCheck className="w-5 h-5 text-[#8F896D]" />
                 <h4 className="text-xs uppercase tracking-wider font-semibold text-[#413C23]">Safe Delivery</h4>
                 <p className="text-xs text-[#413C23]/80 font-light leading-relaxed">
-                  Every order is securely packaged in our signature crush-proof presentation box.
+                  Every order is securely packaged for safe and damage-free transit.
                 </p>
               </div>
               <div className="p-4 bg-[#E7E4D5] border border-[#D8D2C2] rounded-xs space-y-2">

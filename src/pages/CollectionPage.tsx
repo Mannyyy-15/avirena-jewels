@@ -148,6 +148,12 @@ export const CollectionPage: React.FC<CollectionPageProps> = ({
 
   const renderProductCard = (product: Product) => {
     const wishlisted = isWishlisted(product.id);
+    const isBundle = Boolean(
+      (product.tags || []).includes('bundle') ||
+      (product.tags || []).includes('duo-suite') ||
+      (product.handle || '').includes('duo') ||
+      (product.name || '').toLowerCase().includes('duo')
+    );
 
     return (
       <div
@@ -171,12 +177,18 @@ export const CollectionPage: React.FC<CollectionPageProps> = ({
           <Heart className={`w-3.5 h-3.5 ${wishlisted ? 'fill-[#7A0F1A] text-[#7A0F1A]' : ''}`} />
         </button>
 
-
-        {product.isBestseller && (
-          <span className="absolute top-3.5 left-3.5 z-10 bg-[#413C23] text-[#FAF8F5] text-[9px] uppercase tracking-wider font-semibold px-2 py-0.5 rounded-2xs">
-            Bestseller
-          </span>
-        )}
+        {/* Badges */}
+        <div className="absolute top-3.5 left-3.5 z-10 flex flex-col gap-1 items-start">
+          {isBundle ? (
+            <span className="bg-[#413C23] text-[#FAF8F5] text-[9px] uppercase tracking-[0.16em] font-bold px-2 py-0.5 rounded-2xs shadow-xs border border-[#413C23]">
+              DUO SET • 2 PIECES
+            </span>
+          ) : product.isBestseller ? (
+            <span className="bg-[#413C23] text-[#FAF8F5] text-[9px] uppercase tracking-wider font-semibold px-2 py-0.5 rounded-2xs">
+              Bestseller
+            </span>
+          ) : null}
+        </div>
 
         {/* Fills the remaining cell height rather than forcing a square, so the
             card always fits its grid row and the text block below stays visible. */}
@@ -207,7 +219,7 @@ export const CollectionPage: React.FC<CollectionPageProps> = ({
 
         <div className="flex flex-col text-left space-y-1">
           <span className="text-[10px] uppercase tracking-[0.18em] font-semibold text-[#8F896D]">
-            {product.metal}
+            {isBundle ? 'DUO SUITE • 2-PIECE SET' : product.metal}
           </span>
           <h3 className="font-serif-display text-base sm:text-lg font-normal text-[#413C23] group-hover:text-[#8F896D] transition-colors leading-snug truncate">
             {product.name}
@@ -466,7 +478,7 @@ export const CollectionPage: React.FC<CollectionPageProps> = ({
                 {[
                   { id: 'all', label: 'All Metals' },
                   { id: 'brass', label: 'Gold-Tone Brass' },
-                  { id: 'alloy', label: 'Silver-Tone Alloy' },
+                  { id: 'alloy', label: 'Silver-Tone Brass' },
                   { id: 'anti-tarnish', label: 'Anti-Tarnish' },
                 ].map((metal) => (
                   <button

@@ -151,7 +151,7 @@ Welcome to the Avirena Jewels online boutique (avirenajewels.com). By visiting o
       subtitle: 'Insured Global Delivery Timelines & Transit Terms',
       text: `AVIRENA JEWELS — SHIPPING & TRANSIT POLICY
 
-Every order is carefully packaged in a presentation box for safe transit.
+Every order is carefully packaged for safe and secure transit.
 
 1. Order Processing Timelines:
 • In-stock pieces are dispatched within 1-2 business days (Monday to Saturday, excluding public holidays).
