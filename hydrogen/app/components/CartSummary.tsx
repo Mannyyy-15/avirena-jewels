@@ -1,55 +1,64 @@
 import type {CartApiQueryFragment} from 'storefrontapi.generated';
 import type {CartLayout} from '~/components/CartMain';
-import {CartForm, Money, type OptimisticCart} from '@shopify/hydrogen';
-import {useId, useRef} from 'react';
-import {useFetcher} from 'react-router';
+import {CartForm, type OptimisticCart} from '@shopify/hydrogen';
+import {useId} from 'react';
+import {Link} from 'react-router';
+import {Lock, ShieldCheck, Tag} from 'lucide-react';
+import {useAside} from './Aside';
 
 type CartSummaryProps = {
   cart: OptimisticCart<CartApiQueryFragment | null>;
   layout: CartLayout;
 };
 
+function formatPriceAmount(amount?: string, currencyCode = 'INR') {
+  if (!amount) return '₹0';
+  const num = parseFloat(amount);
+  if (isNaN(num)) return `₹${amount}`;
+  return `₹${Math.round(num).toLocaleString('en-IN')}`;
+}
+
 export function CartSummary({cart, layout}: CartSummaryProps) {
   const isAside = layout === 'aside';
   const discountsHeadingId = useId();
   const discountCodeInputId = useId();
+  const {close} = useAside();
+
+  const subtotalFormatted = formatPriceAmount(
+    cart?.cost?.subtotalAmount?.amount,
+    cart?.cost?.subtotalAmount?.currencyCode || 'INR',
+  );
+
+  const totalFormatted = formatPriceAmount(
+    cart?.cost?.totalAmount?.amount || cart?.cost?.subtotalAmount?.amount,
+    cart?.cost?.totalAmount?.currencyCode || 'INR',
+  );
 
   return (
-    <div className={`border-t border-[#D8D2C2] bg-[#F2EFDB] p-5 sm:p-6 space-y-4 text-[#413C23] ${isAside ? 'mt-auto' : 'rounded-xs max-w-lg mx-auto shadow-xs'}`}>
-      {/* Free Delivery Reassurance */}
-      <div className="flex items-center justify-between text-xs text-[#413C23] pb-2 border-b border-[#D8D2C2]/60 font-medium">
-        <span className="flex items-center gap-1.5">
-          <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <rect width="16" height="13" x="1" y="6" rx="2" />
-            <polygon points="16 8 20 8 23 11 23 16 16 16 16 8" />
-            <circle cx="5.5" cy="18.5" r="2.5" />
-            <circle cx="18.5" cy="18.5" r="2.5" />
-          </svg>
-          Express Delivery
-        </span>
-        <span className="text-[#14532D] uppercase font-bold tracking-wider text-[11px]">
-          FREE
-        </span>
-      </div>
+    <div
+      className={`border-t border-[#D8D2C2] bg-[#F2EFDB] p-5 sm:p-6 space-y-4 text-[#413C23] shrink-0 ${
+        isAside ? 'mt-auto' : 'rounded-xs max-w-lg mx-auto shadow-xs'
+      }`}
+    >
+      {/* Pricing Lines */}
+      <div className="space-y-1.5">
+        <div className="flex justify-between items-baseline text-[#413C23]">
+          <span className="text-xs uppercase tracking-widest font-semibold text-[#8F896D]">
+            Subtotal
+          </span>
+          <span className="text-xl sm:text-2xl font-bold text-[#413C23] tracking-tight">
+            {subtotalFormatted}
+          </span>
+        </div>
 
-      {/* Prepaid Offer Alert */}
-      <div className="p-2.5 bg-[#FAF8F5] border border-[#8F896D]/40 rounded-xs flex items-center justify-between text-xs">
-        <span className="text-[#413C23]">Prepaid extra discount:</span>
-        <span className="font-mono font-bold text-[#7A0F1A] bg-[#FAF8F5] px-2 py-0.5 border border-[#7A0F1A]/30 rounded-xs">
-          PREPAID50
-        </span>
-      </div>
+        <div className="flex justify-between text-xs text-[#8F896D]">
+          <span>Shipping</span>
+          <span className="font-medium text-[#413C23]">Free Delivery</span>
+        </div>
 
-      {/* Subtotal */}
-      <div className="flex justify-between items-baseline pt-1">
-        <span className="font-serif text-lg text-[#413C23]">Subtotal</span>
-        <span className="font-sans font-bold text-xl sm:text-2xl text-[#413C23] tracking-tight">
-          {cart?.cost?.subtotalAmount?.amount ? (
-            <Money data={cart.cost.subtotalAmount} />
-          ) : (
-            '₹0'
-          )}
-        </span>
+        <p className="text-[11px] text-[#6B6650] pt-0.5">
+          Use <strong className="font-mono text-[#413C23]">PREPAID50</strong> at checkout for another ₹50 off.
+        </p>
       </div>
 
       {/* Discount Codes Section */}
@@ -59,31 +68,42 @@ export function CartSummary({cart, layout}: CartSummaryProps) {
         discountCodeInputId={discountCodeInputId}
       />
 
-      {/* Direct Shopify Checkout Handoff */}
-      <CartCheckoutActions checkoutUrl={cart?.checkoutUrl} />
+      {/* Checkout CTA Button */}
+      {cart?.checkoutUrl ? (
+        <a
+          id="cart-drawer-checkout-btn"
+          href={cart.checkoutUrl}
+          className="w-full py-4 bg-black hover:bg-neutral-800 text-white text-xs sm:text-sm uppercase tracking-[0.2em] font-semibold rounded-xs transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer active:scale-98 text-center"
+        >
+          <Lock className="w-3.5 h-3.5" />
+          <span>Proceed to Checkout • {totalFormatted}</span>
+        </a>
+      ) : (
+        <button
+          disabled
+          className="w-full py-4 bg-black/50 text-white text-xs sm:text-sm uppercase tracking-[0.2em] font-semibold rounded-xs flex items-center justify-center gap-2 cursor-not-allowed"
+        >
+          <Lock className="w-3.5 h-3.5" />
+          <span>Checkout unavailable</span>
+        </button>
+      )}
 
-      {/* Security Reassurance */}
-      <div className="pt-2 text-center text-[10px] uppercase tracking-wider text-[#8F896D] space-y-1">
-        <p>🔒 256-Bit SSL Encrypted • PCI-DSS Compliant Checkout</p>
-        <p>UPI • Cards • NetBanking • Cash on Delivery</p>
+      {/* View Full Bag Details Link */}
+      {isAside && (
+        <Link
+          to="/cart"
+          onClick={close}
+          className="w-full text-center text-xs uppercase tracking-widest font-semibold text-[#413C23] hover:text-[#8F896D] transition-colors py-1 cursor-pointer underline underline-offset-4 block"
+        >
+          View Full Bag Details →
+        </Link>
+      )}
+
+      {/* Secure SSL Encrypted Checkout Reassurance */}
+      <div className="flex items-center justify-center gap-2 text-[10px] text-[#8F896D] uppercase tracking-wider font-semibold pt-1">
+        <ShieldCheck className="w-3.5 h-3.5 text-[#413C23]" />
+        <span>Secure SSL Encrypted Checkout</span>
       </div>
-    </div>
-  );
-}
-
-function CartCheckoutActions({checkoutUrl}: {checkoutUrl?: string}) {
-  if (!checkoutUrl) return null;
-
-  return (
-    <div>
-      <a
-        href={checkoutUrl}
-        target="_self"
-        className="w-full py-3.5 px-6 bg-[#413C23] hover:bg-[#8F896D] text-[#FAF8F5] text-xs uppercase tracking-[0.2em] font-semibold rounded-xs transition-colors flex items-center justify-center gap-2 shadow-sm cursor-pointer block text-center"
-      >
-        <span>Proceed to Checkout</span>
-        <span>→</span>
-      </a>
     </div>
   );
 }
@@ -103,13 +123,14 @@ function CartDiscounts({
       ?.map(({code}) => code) || [];
 
   return (
-    <div className="space-y-2 pt-1">
+    <div className="space-y-2 pt-0.5">
       {codes.length > 0 && (
         <div className="flex items-center justify-between p-2 bg-[#FAF8F5] border border-[#D8D2C2] rounded-xs text-xs">
-          <span className="font-mono text-[#14532D] font-bold uppercase">
+          <span className="font-mono text-[#14532D] font-bold uppercase flex items-center gap-1">
+            <Tag className="w-3 h-3" />
             {codes.join(', ')} Applied
           </span>
-          <UpdateDiscountForm>
+          <UpdateDiscountForm discountCodes={[]}>
             <button
               type="submit"
               className="text-[#DC2626] text-[11px] underline uppercase cursor-pointer"
@@ -127,11 +148,11 @@ function CartDiscounts({
             type="text"
             name="discountCode"
             placeholder="Discount code (e.g. PREPAID50)"
-            className="flex-1 px-3 py-1.5 bg-[#FAF8F5] border border-[#D8D2C2] rounded-xs text-xs text-[#413C23] focus:outline-none focus:border-[#413C23]"
+            className="flex-1 px-3 py-2 bg-[#FAF8F5] border border-[#D8D2C2] rounded-xs text-xs text-[#413C23] placeholder-[#8F896D] focus:outline-none focus:border-[#413C23]"
           />
           <button
             type="submit"
-            className="px-3 py-1.5 bg-[#413C23] text-[#FAF8F5] text-[11px] uppercase tracking-wider rounded-xs hover:bg-[#8F896D] transition-colors cursor-pointer"
+            className="px-3.5 py-2 bg-[#413C23] text-[#FAF8F5] text-[11px] uppercase tracking-wider font-medium rounded-xs hover:bg-[#8F896D] transition-colors cursor-pointer"
           >
             Apply
           </button>
@@ -148,9 +169,6 @@ function UpdateDiscountForm({
   discountCodes?: string[];
   children: React.ReactNode;
 }) {
-  const fetcher = useFetcher();
-  const inputRef = useRef<HTMLInputElement>(null);
-
   return (
     <CartForm
       route="/cart"

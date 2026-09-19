@@ -28,10 +28,12 @@ export function Aside({
   children,
   heading,
   type,
+  noHeader = false,
 }: {
   children?: React.ReactNode;
   type: AsideType;
-  heading: React.ReactNode;
+  heading?: React.ReactNode;
+  noHeader?: boolean;
 }) {
   const {type: activeType, close} = useAside();
   const expanded = type === activeType;
@@ -56,19 +58,27 @@ export function Aside({
   return (
     <div
       aria-modal
-      className={`overlay ${expanded ? 'expanded' : ''}`}
+      className={`overlay z-[100] ${expanded ? 'expanded' : ''}`}
       role="dialog"
       aria-labelledby={id}
     >
-      <button className="close-outside" onClick={close} />
-      <aside>
-        <header>
-          <h3 id={id}>{heading}</h3>
-          <button className="close reset" onClick={close} aria-label="Close">
-            &times;
-          </button>
-        </header>
-        <main>{children}</main>
+      <button className="close-outside" onClick={close} aria-label="Close drawer" />
+      <aside className="bg-[#FAF8F5] border-l border-[#D8D2C2] text-[#413C23] shadow-2xl flex flex-col font-sans-body">
+        {!noHeader && heading ? (
+          <header className="p-5 border-b border-[#D8D2C2] bg-[#F2EFDB] flex items-center justify-between shrink-0">
+            <h3 id={id} className="font-serif-display text-2xl font-medium text-[#413C23]">
+              {heading}
+            </h3>
+            <button
+              className="w-8 h-8 rounded-full flex items-center justify-center bg-[#FAF8F5] border border-[#D8D2C2] text-[#413C23] hover:bg-[#E7E4D5] transition-colors cursor-pointer"
+              onClick={close}
+              aria-label="Close"
+            >
+              &times;
+            </button>
+          </header>
+        ) : null}
+        <main className="flex-1 flex flex-col min-h-0 overflow-hidden m-0 p-0">{children}</main>
       </aside>
     </div>
   );

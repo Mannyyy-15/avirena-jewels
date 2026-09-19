@@ -265,39 +265,42 @@ export const Navbar: React.FC<NavbarProps> = ({
           </nav>
         </div>
 
-        {/* Center: Brand Wordmark */}
-        <div className="absolute left-1/2 -translate-x-1/2 flex items-center justify-center z-10">
+        {/* Center: Brand Monogram / Official Logo (Mathematically Dead-Centered on Mobile and Desktop) */}
+        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 lg:static lg:translate-x-0 lg:translate-y-0 lg:col-span-2 flex items-center justify-center text-center px-2 z-10 pointer-events-auto">
           <Link
             to="/"
-            className="flex items-center justify-center cursor-pointer transition-transform duration-300 hover:scale-[1.02] active:scale-[0.98]"
+            className="group py-1 flex items-center justify-center transition-transform hover:scale-[1.02] cursor-pointer"
             title="AVIRENA Jewels"
             aria-label="Return to AVIRENA Home"
           >
-            <AvirenaLogo size="md" className="h-9 sm:h-12 w-auto" />
+            <AvirenaLogo size="custom" className="h-7 sm:h-8 md:h-10 transition-opacity group-hover:opacity-90" />
           </Link>
         </div>
 
         {/* Right: Actions (Search, Wishlist, Cart Bag) */}
-        <div className="flex items-center justify-end space-x-2 sm:space-x-4 text-black lg:col-span-5 z-20">
+        <div className="flex items-center justify-end space-x-2 sm:space-x-4 lg:space-x-5 lg:col-span-5 text-black z-20">
           <button
+            id="nav-search-btn"
             onClick={handleOpenSearch}
-            className="p-2 text-black hover:text-neutral-600 transition-colors cursor-pointer"
+            className="p-1.5 text-black hover:text-neutral-600 transition-colors focus:outline-none cursor-pointer flex items-center gap-1"
             title="Search collection"
             aria-label="Search collection"
           >
-            <Search className="w-4 h-4 sm:w-5 sm:h-5 stroke-[1.5]" />
+            <Search className="w-4.5 h-4.5 stroke-[1.5]" />
+            <span className="hidden xl:inline text-[11px] uppercase tracking-widest font-medium">Search</span>
           </button>
 
           {openWishlistModal && (
             <button
+              id="nav-wishlist-btn"
               onClick={openWishlistModal}
-              className="p-2 text-black hover:text-neutral-600 transition-colors cursor-pointer relative"
+              className="p-1.5 text-black hover:text-neutral-600 transition-colors cursor-pointer relative"
               title="Saved pieces"
               aria-label="Saved pieces"
             >
-              <Heart className="w-4 h-4 sm:w-5 sm:h-5 stroke-[1.5]" />
+              <Heart className="w-4.5 h-4.5 stroke-[1.5]" />
               {wishlistCount > 0 && (
-                <span className="absolute top-1 right-1 w-3.5 h-3.5 bg-black text-white text-[9px] rounded-full flex items-center justify-center font-bold">
+                <span className="absolute top-0.5 right-0.5 w-3.5 h-3.5 bg-black text-white text-[9px] rounded-full flex items-center justify-center font-bold">
                   {wishlistCount}
                 </span>
               )}
@@ -305,20 +308,21 @@ export const Navbar: React.FC<NavbarProps> = ({
           )}
 
           <button
+            id="nav-cart-btn"
             onClick={handleOpenCart}
-            className="p-2 text-black hover:text-neutral-600 transition-colors cursor-pointer relative"
-            title="Bag"
-            aria-label="Bag"
+            className="p-1.5 text-black hover:text-neutral-600 transition-colors cursor-pointer relative"
+            title="Shopping Bag"
+            aria-label="Shopping Bag"
           >
-            <ShoppingBag className="w-4 h-4 sm:w-5 sm:h-5 stroke-[1.5]" />
+            <ShoppingBag className="w-4.5 h-4.5 sm:w-5 sm:h-5 stroke-[1.5]" />
             {typeof cart === 'number' ? (
               cart > 0 && (
-                <span className="absolute top-1 right-1 w-3.5 h-3.5 bg-black text-white text-[9px] rounded-full flex items-center justify-center font-bold">
+                <span className="absolute top-0.5 right-0.5 w-3.5 h-3.5 bg-black text-white text-[9px] rounded-full flex items-center justify-center font-bold">
                   {cart}
                 </span>
               )
             ) : cartCount > 0 ? (
-              <span className="absolute top-1 right-1 w-3.5 h-3.5 bg-black text-white text-[9px] rounded-full flex items-center justify-center font-bold">
+              <span className="absolute top-0.5 right-0.5 w-3.5 h-3.5 bg-black text-white text-[9px] rounded-full flex items-center justify-center font-bold">
                 {cartCount}
               </span>
             ) : cart ? (
@@ -326,7 +330,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 <Await resolve={cart}>
                   {(c) =>
                     c?.totalQuantity ? (
-                      <span className="absolute top-1 right-1 w-3.5 h-3.5 bg-black text-white text-[9px] rounded-full flex items-center justify-center font-bold">
+                      <span className="absolute top-0.5 right-0.5 w-3.5 h-3.5 bg-black text-white text-[9px] rounded-full flex items-center justify-center font-bold">
                         {c.totalQuantity}
                       </span>
                     ) : null

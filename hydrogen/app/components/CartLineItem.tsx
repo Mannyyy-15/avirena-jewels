@@ -1,12 +1,20 @@
 import type {CartLineUpdateInput} from '@shopify/hydrogen/storefront-api-types';
 import type {CartLayout, LineItemChildrenMap} from '~/components/CartMain';
-import {CartForm, Image, Money, type OptimisticCartLine} from '@shopify/hydrogen';
+import {CartForm, Image, type OptimisticCartLine} from '@shopify/hydrogen';
 import {useVariantUrl} from '~/lib/variants';
 import {Link} from 'react-router';
+import {Trash2, Minus, Plus} from 'lucide-react';
 import {useAside} from './Aside';
 import type {CartApiQueryFragment} from 'storefrontapi.generated';
 
 export type CartLine = OptimisticCartLine<CartApiQueryFragment>;
+
+function formatPriceAmount(amount?: string, currencyCode = 'INR') {
+  if (!amount) return '₹0';
+  const num = parseFloat(amount);
+  if (isNaN(num)) return `₹${amount}`;
+  return `₹${Math.round(num).toLocaleString('en-IN')}`;
+}
 
 export function CartLineItem({
   layout,
@@ -15,33 +23,52 @@ export function CartLineItem({
 }: {
   layout: CartLayout;
   line: CartLine;
-  childrenMap: LineItemChildrenMap;
+  childrenMap?: LineItemChildrenMap;
 }) {
   const {id, merchandise, quantity} = line;
   const {product, title, image, selectedOptions} = merchandise;
   const lineItemUrl = useVariantUrl(product.handle, selectedOptions);
   const {close} = useAside();
-  const lineItemChildren = childrenMap[id];
-  const childrenLabelId = `cart-line-children-${id}`;
+
+  const optionsDisplay = selectedOptions
+    .filter((opt) => opt.value !== 'Default Title')
+    .map((opt) => opt.value)
+    .join(' • ');
+
+  const priceFormatted = formatPriceAmount(
+    line?.cost?.totalAmount?.amount,
+    line?.cost?.totalAmount?.currencyCode || 'INR',
+  );
 
   return (
-    <li key={id} className="p-3.5 sm:p-4 bg-[#FAF8F5] border border-[#D8D2C2] rounded-xs mb-3 shadow-2xs list-none">
-      <div className="flex gap-3.5 items-start">
-        {image && (
-          <div className="w-16 h-16 sm:w-20 sm:h-20 bg-[#FAF8F5] border border-[#D8D2C2] rounded-xs overflow-hidden shrink-0">
-            <Image
-              alt={title}
-              aspectRatio="1/1"
-              data={image}
-              height={120}
-              loading="lazy"
-              width={120}
-              className="w-full h-full object-cover mix-blend-multiply"
-            />
-          </div>
+    <div
+      key={id}
+      className="flex gap-4 p-4 bg-[#FAF8F5] border border-[#D8D2C2] rounded-xs transition-all hover:border-[#8F896D] shadow-2xs text-[#413C23]"
+    >
+      {/* Thumbnail */}
+      <div className="w-24 h-24 bg-[#FAF8F5] border border-[#D8D2C2] rounded-xs flex items-center justify-center p-1.5 shrink-0 overflow-hidden">
+        {image ? (
+          <Image
+            alt={title || product.title}
+            aspectRatio="1/1"
+            data={image}
+            height={96}
+            loading="lazy"
+            width={96}
+            className="max-w-full max-h-full w-auto h-auto object-contain mix-blend-multiply"
+          />
+        ) : (
+          <img
+            src="/logo.png"
+            alt={product.title}
+            className="max-w-full max-h-full w-auto h-auto object-contain mix-blend-multiply"
+          />
         )}
+      </div>
 
-        <div className="flex-1 min-w-0 space-y-1">
+      {/* Details */}
+      <div className="flex-1 flex flex-col justify-between min-w-0">
+        <div>
           <div className="flex items-start justify-between gap-2">
             <Link
               prefetch="intent"
@@ -51,52 +78,30 @@ export function CartLineItem({
                   close();
                 }
               }}
-              className="font-serif text-sm sm:text-base text-[#413C23] hover:text-[#8F896D] transition-colors leading-snug truncate block font-normal"
+              className="font-serif-display text-base font-medium text-[#413C23] hover:text-[#8F896D] transition-colors leading-snug line-clamp-2"
             >
               {product.title}
             </Link>
             <CartLineRemoveButton lineIds={[id]} disabled={!!line.isOptimistic} />
           </div>
 
-          <div className="flex flex-wrap gap-1 text-[10px] text-[#8F896D] uppercase tracking-wider">
-            {selectedOptions
-              .filter((opt) => opt.value !== 'Default Title')
-              .map((option) => (
-                <span key={option.name} className="px-1.5 py-0.5 bg-[#E7E4D5] rounded-xs">
-                  {option.value}
-                </span>
-              ))}
-          </div>
-
-          <div className="flex items-center justify-between pt-2">
-            <CartLineQuantity line={line} />
-            <div className="font-sans font-semibold text-sm sm:text-base text-[#413C23]">
-              {line?.cost?.totalAmount ? (
-                <Money data={line.cost.totalAmount} />
-              ) : null}
+          {optionsDisplay && (
+            <div className="text-[11px] text-[#8F896D] uppercase tracking-wider font-semibold mt-0.5">
+              {optionsDisplay}
             </div>
-          </div>
+          )}
+        </div>
+
+        {/* Quantity and Price row */}
+        <div className="flex items-center justify-between pt-2">
+          <CartLineQuantity line={line} />
+
+          <span className="text-base sm:text-lg font-bold text-[#413C23] tracking-tight">
+            {priceFormatted}
+          </span>
         </div>
       </div>
-
-      {lineItemChildren ? (
-        <div className="pt-2 pl-4 border-l-2 border-[#D8D2C2] mt-2">
-          <p id={childrenLabelId} className="sr-only">
-            Line items with {product.title}
-          </p>
-          <ul aria-labelledby={childrenLabelId} className="space-y-2">
-            {lineItemChildren.map((childLine) => (
-              <CartLineItem
-                childrenMap={childrenMap}
-                key={childLine.id}
-                line={childLine}
-                layout={layout}
-              />
-            ))}
-          </ul>
-        </div>
-      ) : null}
-    </li>
+    </div>
   );
 }
 
@@ -116,10 +121,10 @@ function CartLineQuantity({line}: {line: CartLine}) {
           value={prevQuantity}
           className="w-7 h-7 flex items-center justify-center text-[#413C23] hover:bg-[#E7E4D5] transition-colors cursor-pointer disabled:opacity-30"
         >
-          <span className="text-sm">−</span>
+          <Minus className="w-3 h-3 stroke-[2]" />
         </button>
       </CartLineUpdateButton>
-      <span className="px-2.5 text-xs font-semibold text-[#413C23] min-w-[20px] text-center font-mono">
+      <span className="px-2.5 text-xs font-bold text-[#413C23] min-w-[22px] text-center font-mono">
         {quantity}
       </span>
       <CartLineUpdateButton lines={[{id: lineId, quantity: nextQuantity}]}>
@@ -130,7 +135,7 @@ function CartLineQuantity({line}: {line: CartLine}) {
           disabled={!!isOptimistic}
           className="w-7 h-7 flex items-center justify-center text-[#413C23] hover:bg-[#E7E4D5] transition-colors cursor-pointer disabled:opacity-30"
         >
-          <span className="text-sm">+</span>
+          <Plus className="w-3 h-3 stroke-[2]" />
         </button>
       </CartLineUpdateButton>
     </div>
@@ -154,23 +159,11 @@ function CartLineRemoveButton({
       <button
         disabled={disabled}
         type="submit"
-        className="text-[#8F896D] hover:text-[#DC2626] transition-colors p-1 cursor-pointer disabled:opacity-30"
+        className="text-[#8F896D] hover:text-[#7A0F1A] transition-colors p-1 cursor-pointer disabled:opacity-30 shrink-0"
         aria-label="Remove item"
         title="Remove item"
       >
-        <svg
-          className="w-4 h-4"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <path d="M3 6h18" />
-          <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
-          <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
-        </svg>
+        <Trash2 className="w-4 h-4 stroke-[1.5]" />
       </button>
     </CartForm>
   );
