@@ -1,0 +1,593 @@
+import React, { useState, useMemo, useRef, useEffect } from 'react';
+import { Link, useNavigate, useFetcher } from 'react-router';
+import { ChevronDown, Heart, Check, ShoppingBag, X } from 'lucide-react';
+import type { Product, Category } from '~/types/storefront';
+import { formatPrice, getCompareAtPrice, getDiscountPercentage } from '~/data/products';
+import { PAIR_OFFERS } from '~/data/offers';
+
+interface CollectionPageViewProps {
+  products: Product[];
+  selectedCategory?: Category;
+  initialMetal?: string;
+  curatedEdit?: 'under-999' | 'gifting-edit' | 'duo-suites' | null;
+}
+
+export const CollectionPageView: React.FC<CollectionPageViewProps> = ({
+  products,
+  selectedCategory: initialCategory = 'all',
+  initialMetal = 'all',
+  curatedEdit: initialCuratedEdit = null,
+}) => {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
+  const fetcher = useFetcher();
+
+  const [selectedCategory, setSelectedCategory] = useState<Category>(initialCategory);
+  const [selectedMetal, setSelectedMetal] = useState<string>(initialMetal);
+  const [curatedEdit, setCuratedEdit] = useState<'under-999' | 'gifting-edit' | 'duo-suites' | null>(initialCuratedEdit);
+  const [sortBy, setSortBy] = useState<'featured' | 'price-asc' | 'price-desc'>('featured');
+
+  const [categoryDropdownOpen, setCategoryDropdownOpen] = useState(false);
+  const [metalDropdownOpen, setMetalDropdownOpen] = useState(false);
+  const [sortDropdownOpen, setSortDropdownOpen] = useState(false);
+  const [wishlist, setWishlist] = useState<string[]>([]);
+  const [quickAddedId, setQuickAddedId] = useState<string | null>(null);
+
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem('avirena_wishlist');
+      if (saved) setWishlist(JSON.parse(saved));
+    } catch {
+      // ignore
+    }
+  }, []);
+
+  const isWishlisted = (id: string) => wishlist.includes(id);
+
+  const toggleWishlist = (product: Product) => {
+    setWishlist((prev) => {
+      const next = prev.includes(product.id)
+        ? prev.filter((id) => id !== product.id)
+        : [...prev, product.id];
+      try {
+        localStorage.setItem('avirena_wishlist', JSON.stringify(next));
+      } catch {
+        // ignore
+      }
+      return next;
+    });
+  };
+
+  const handleQuickAdd = (product: Product) => {
+    const variantId = product.variants?.[0]?.id || product.id;
+    setQuickAddedId(product.id);
+    fetcher.submit(
+      {
+        cartFormInput: JSON.stringify({
+          action: 'LinesAdd',
+          inputs: {
+            lines: [{ merchandiseId: variantId, quantity: 1 }],
+          },
+        }),
+      },
+      { method: 'POST', action: '/cart' }
+    );
+    setTimeout(() => {
+      setQuickAddedId(null);
+    }, 1800);
+  };
+
+  useEffect(() => {
+    setSelectedCategory(initialCategory);
+  }, [initialCategory]);
+
+  useEffect(() => {
+    setCuratedEdit(initialCuratedEdit);
+  }, [initialCuratedEdit]);
+
+  const filteredProducts = useMemo(() => {
+    let list = [...products];
+
+    // 1. Curated Edit Filter
+    if (curatedEdit === 'under-999') {
+      list = list.filter((p) => {
+        const inr = p.price < 500 ? Math.round(p.price * 90) : Math.round(p.price);
+        return inr <= 999;
+      });
+    } else if (curatedEdit === 'gifting-edit') {
+      list = list.filter((p) => {
+        const inr = p.price < 500 ? Math.round(p.price * 90) : Math.round(p.price);
+        return inr <= 1200 || p.category === 'earrings' || p.isBestseller;
+      });
+    } else if (curatedEdit === 'duo-suites') {
+      const pairHandles = new Set([
+        ...PAIR_OFFERS.flatMap((o) => o.handles),
+        ...PAIR_OFFERS.map((o) => o.shopifyHandle).filter(Boolean),
+      ]);
+      list = list.filter((p) => pairHandles.has(p.handle || p.id));
+    }
+
+    // 2. Category Filter
+    if (selectedCategory && selectedCategory !== 'all') {
+      list = list.filter((p) => {
+        if (selectedCategory === 'earrings') {
+          return p.category === 'earrings' || p.tags?.includes('duo-suite') || p.tags?.includes('bundle') || (p.handle || '').includes('duo');
+        }
+        return p.category === selectedCategory;
+      });
+    }
+
+    // 3. Metal Filter
+    if (selectedMetal && selectedMetal !== 'all') {
+      list = list.filter((p) => {
+        const isBundle = p.tags?.includes('duo-suite') || p.tags?.includes('bundle') || (p.handle || '').includes('duo');
+        if (isBundle) return true;
+
+        const m = (p.metal || '').toLowerCase();
+        if (selectedMetal === 'brass') return m.includes('brass') || m.includes('gold');
+        if (selectedMetal === 'alloy') return m.includes('alloy') || m.includes('silver');
+        if (selectedMetal === 'anti-tarnish') return m.includes('anti-tarnish');
+        return true;
+      });
+    }
+
+    // 4. Sort Order
+    if (sortBy === 'price-asc') {
+      list.sort((a, b) => a.price - b.price);
+    } else if (sortBy === 'price-desc') {
+      list.sort((a, b) => b.price - a.price);
+    }
+
+    return list;
+  }, [products, selectedCategory, selectedMetal, sortBy, curatedEdit]);
+
+  const getMastheadTitle = () => {
+    if (curatedEdit === 'duo-suites') return 'SIGNATURE DUO SUITES';
+    if (curatedEdit === 'under-999') return 'EARRINGS UNDER ₹999';
+    if (curatedEdit === 'gifting-edit') return 'JEWELLERY GIFTS';
+    if (selectedCategory === 'all') return 'ANTI-TARNISH JEWELLERY';
+    if (selectedCategory === 'earrings') return 'ANTI-TARNISH EARRINGS';
+    return selectedCategory.toUpperCase();
+  };
+
+  const sortLabels = {
+    featured: 'Featured',
+    'price-asc': 'Price: Low to High',
+    'price-desc': 'Price: High to Low',
+  };
+
+  const renderProductCard = (product: Product) => {
+    const wishlisted = isWishlisted(product.id);
+    const isBundle = Boolean(
+      (product.tags || []).includes('bundle') ||
+      (product.tags || []).includes('duo-suite') ||
+      (product.handle || '').includes('duo') ||
+      (product.name || '').toLowerCase().includes('duo')
+    );
+    const isQuickAdding = quickAddedId === product.id;
+
+    return (
+      <div
+        key={product.id}
+        onClick={() => navigate(`/products/${product.handle || product.id}`)}
+        className="collection-page-card group relative flex h-full flex-col justify-between bg-[#FAF8F5] border border-[#D8D2C2] rounded-xs hover:border-[#8F896D] hover:shadow-[0_8px_20px_rgba(65,60,35,0.08)] transition-all duration-300 cursor-pointer p-4 sm:p-5 select-none text-left overflow-hidden"
+      >
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            toggleWishlist(product);
+          }}
+          className={`absolute top-3.5 right-3.5 z-10 w-7 h-7 rounded-full flex items-center justify-center transition-all duration-200 ${
+            wishlisted
+              ? 'bg-[#413C23] text-white opacity-100 shadow-xs'
+              : 'bg-[#FAF8F5]/90 text-[#413C23] opacity-0 group-hover:opacity-100 hover:bg-white border border-[#D8D2C2] shadow-xs'
+          }`}
+          aria-label="Wishlist"
+        >
+          <Heart className={`w-3.5 h-3.5 ${wishlisted ? 'fill-[#7A0F1A] text-[#7A0F1A]' : ''}`} />
+        </button>
+
+        {/* Badges */}
+        <div className="absolute top-3.5 left-3.5 z-10 flex flex-col gap-1 items-start">
+          {isBundle ? (
+            <span className="bg-[#413C23] text-[#FAF8F5] text-[9px] uppercase tracking-[0.16em] font-bold px-2 py-0.5 rounded-2xs shadow-xs border border-[#413C23]">
+              DUO SET • 2 PIECES
+            </span>
+          ) : product.isBestseller ? (
+            <span className="bg-[#413C23] text-[#FAF8F5] text-[9px] uppercase tracking-wider font-semibold px-2 py-0.5 rounded-2xs">
+              Bestseller
+            </span>
+          ) : null}
+        </div>
+
+        <div className="relative flex-1 min-h-0 w-full flex items-center justify-center overflow-hidden mb-3 p-3 sm:p-5">
+          <img
+            src={product.images[0] || '/logo.png'}
+            alt={product.name}
+            referrerPolicy="no-referrer"
+            width={600}
+            height={600}
+            loading="lazy"
+            decoding="async"
+            className="max-w-full max-h-full w-auto h-auto object-contain mix-blend-multiply group-hover:scale-106 transition-transform duration-500 ease-out"
+          />
+
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              handleQuickAdd(product);
+            }}
+            className="absolute bottom-2.5 right-2.5 z-10 p-2 bg-[#413C23] hover:bg-[#8F896D] text-[#FAF8F5] rounded-xs opacity-0 group-hover:opacity-100 transition-all duration-200 shadow-sm cursor-pointer"
+            title="Quick Add to Bag"
+          >
+            {isQuickAdding ? <Check className="w-3.5 h-3.5 text-white" /> : <ShoppingBag className="w-3.5 h-3.5" />}
+          </button>
+        </div>
+
+        <div className="flex flex-col text-left space-y-1">
+          <span className="text-[10px] uppercase tracking-[0.18em] font-semibold text-[#8F896D]">
+            {isBundle ? 'DUO SUITE • 2-PIECE SET' : product.metal}
+          </span>
+          <h3 className="font-serif-display text-base sm:text-lg font-normal text-[#413C23] group-hover:text-[#8F896D] transition-colors leading-snug truncate">
+            {product.name}
+          </h3>
+          {(() => {
+            const comparePrice = getCompareAtPrice(product.price, product.originalPrice);
+            const discount = getDiscountPercentage(product.price, comparePrice);
+            return (
+              <div className="flex items-baseline gap-2 mt-0.5 flex-wrap">
+                <span className="text-base sm:text-lg font-bold text-[#413C23] tracking-tight">
+                  {formatPrice(product.price)}
+                </span>
+                {comparePrice > product.price && (
+                  <>
+                    <span className="text-xs sm:text-sm text-[#DC2626] line-through font-normal">
+                      {formatPrice(comparePrice)}
+                    </span>
+                    <span className="text-[10px] font-bold text-[#15803D] bg-[#15803D]/10 border border-[#15803D]/20 px-1.5 py-0.5 rounded-2xs uppercase tracking-wider">
+                      {discount}% OFF
+                    </span>
+                  </>
+                )}
+              </div>
+            );
+          })()}
+        </div>
+      </div>
+    );
+  };
+
+  const renderFeaturedBentoCard = (product: Product) => {
+    const wishlisted = isWishlisted(product.id);
+    const isQuickAdding = quickAddedId === product.id;
+
+    return (
+      <div
+        key={`bento-${product.id}`}
+        onClick={() => navigate(`/products/${product.handle || product.id}`)}
+        className="collection-page-card group relative flex flex-col justify-between bg-[#FAF8F5] border border-[#D8D2C2] rounded-xs hover:border-[#8F896D] hover:shadow-[0_8px_20px_rgba(65,60,35,0.08)] transition-all duration-300 cursor-pointer col-span-2 row-span-2 h-full p-4 sm:p-6 select-none text-left overflow-hidden"
+      >
+        <div className="flex items-center justify-between w-full z-10 mb-2">
+          <span className="inline-flex items-center px-2.5 py-1 rounded-2xs bg-[#413C23] text-[#FAF8F5] text-[10px] uppercase tracking-widest font-medium">
+            Featured Piece
+          </span>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                toggleWishlist(product);
+              }}
+              className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-200 ${
+                wishlisted
+                  ? 'bg-[#413C23] text-white opacity-100 shadow-xs'
+                  : 'bg-[#FAF8F5]/90 text-[#413C23] hover:bg-white border border-[#D8D2C2] shadow-xs'
+              }`}
+              aria-label="Wishlist"
+            >
+              <Heart className={`w-4 h-4 ${wishlisted ? 'fill-[#7A0F1A] text-[#7A0F1A]' : ''}`} />
+            </button>
+          </div>
+        </div>
+
+        <div className="relative flex-1 w-full min-h-0 flex items-center justify-center overflow-hidden my-2 sm:my-3 p-2 sm:p-6">
+          <img
+            src={product.images[0] || '/logo.png'}
+            alt={product.name}
+            referrerPolicy="no-referrer"
+            width={1000}
+            height={1000}
+            loading="lazy"
+            decoding="async"
+            className="max-w-full max-h-full w-auto h-auto object-contain mix-blend-multiply group-hover:scale-106 transition-transform duration-700 ease-out"
+          />
+        </div>
+
+        <div className="flex items-end justify-between w-full pt-3 border-t border-[#D8D2C2]/60 z-10">
+          <div className="flex flex-col text-left space-y-1 max-w-[70%]">
+            <span className="text-[11px] uppercase tracking-[0.2em] font-semibold text-[#8F896D]">
+              {product.metal}
+            </span>
+            <h3 className="font-serif-display text-xl sm:text-2xl font-normal text-[#413C23] group-hover:text-[#8F896D] transition-colors leading-snug truncate">
+              {product.name}
+            </h3>
+            {(() => {
+              const comparePrice = getCompareAtPrice(product.price, product.originalPrice);
+              const discount = getDiscountPercentage(product.price, comparePrice);
+              return (
+                <div className="flex items-baseline gap-2 mt-0.5 flex-wrap">
+                  <span className="text-lg sm:text-xl font-bold text-[#413C23] tracking-tight">
+                    {formatPrice(product.price)}
+                  </span>
+                  {comparePrice > product.price && (
+                    <>
+                      <span className="text-sm sm:text-base text-[#DC2626] line-through font-normal">
+                        {formatPrice(comparePrice)}
+                      </span>
+                      <span className="text-[10px] font-bold text-[#15803D] bg-[#15803D]/10 border border-[#15803D]/20 px-1.5 py-0.5 rounded-2xs uppercase tracking-wider">
+                        {discount}% OFF
+                      </span>
+                    </>
+                  )}
+                </div>
+              );
+            })()}
+          </div>
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              handleQuickAdd(product);
+            }}
+            className="inline-flex items-center gap-1.5 px-4 py-2.5 bg-[#413C23] hover:bg-[#8F896D] text-[#FAF8F5] text-xs uppercase tracking-wider font-medium rounded-xs transition-colors shadow-sm cursor-pointer shrink-0"
+          >
+            {isQuickAdding ? <Check className="w-3.5 h-3.5 text-white" /> : <ShoppingBag className="w-3.5 h-3.5" />}
+            <span>Add to Bag</span>
+          </button>
+        </div>
+      </div>
+    );
+  };
+
+  return (
+    <div ref={containerRef} className="pb-10 font-sans-body w-full text-[#413C23] bg-[#E7E4D5] select-none">
+      <section className="relative w-full bg-[#413C23] text-[#FAF8F5] min-h-[380px] sm:min-h-[440px] md:min-h-[500px] flex flex-col justify-between pt-8 sm:pt-10 px-4 sm:px-8 lg:px-12 select-none overflow-hidden border-b border-[#35311B]">
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+          <img
+            src="/assets/shop-hero-editorial.webp"
+            alt="Avirena Dailywear Jewelry Editorial Model in Golden Hour"
+            className="w-full h-full object-cover object-center filter contrast-[1.04] opacity-85 scale-102"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#413C23]/90 via-[#413C23]/40 to-[#413C23]/60 pointer-events-none" />
+        </div>
+        <div className="relative z-10 w-full flex items-center justify-between text-[11px] sm:text-xs font-serif text-[#FAF8F5]/90 pt-1">
+          <span className="italic tracking-wider font-light">Homegrown dailywear jewels</span>
+          <span className="uppercase tracking-[0.2em] font-sans-body text-[10px] sm:text-[11px] font-medium text-[#FAF8F5]/85">
+            HOME / {curatedEdit ? 'COLLECTIONS' : 'SHOP'} / {getMastheadTitle()} ({filteredProducts.length})
+          </span>
+        </div>
+        <div className="relative z-10 w-full text-center pb-2 sm:pb-3 max-w-3xl mx-auto">
+          <h1 className="font-serif-display text-5xl sm:text-7xl md:text-8xl lg:text-9xl tracking-tight text-[#FAF8F5] font-light italic leading-none drop-shadow-[0_4px_12px_rgba(0,0,0,0.15)]">
+            {getMastheadTitle()}
+          </h1>
+          {curatedEdit === 'under-999' && (
+            <p className="mt-2.5 sm:mt-3 text-xs sm:text-sm text-[#FAF8F5]/90 font-light tracking-wide">
+              Gold-tone and silver-tone earrings with anti-tarnish finishes and nickel-free posts. Every piece under ₹999.
+            </p>
+          )}
+          {curatedEdit === 'gifting-edit' && (
+            <p className="mt-2.5 sm:mt-3 text-xs sm:text-sm text-[#FAF8F5]/90 font-light tracking-wide">
+              Zero-sizing-risk earrings, luminous pearl drops &amp; sculpted staples. Thoughtful gifting under ₹1,000 in signature Avirena packaging.
+            </p>
+          )}
+          {curatedEdit === 'duo-suites' && (
+            <p className="mt-2.5 sm:mt-3 text-xs sm:text-sm text-[#FAF8F5]/90 font-light tracking-wide">
+              Matching gold and silver pairing sets. Pair both finishes together and receive an automatic ₹100 pair discount applied at checkout.
+            </p>
+          )}
+        </div>
+        <div className="relative z-10 w-full flex items-center justify-between text-[10px] sm:text-[11px] font-mono tracking-widest text-[#FAF8F5]/70 pb-3 border-t border-[#FAF8F5]/20 pt-2">
+          <span>{curatedEdit ? 'CURATED EDIT' : 'CURATED DAILYWEAR BRASS'}</span>
+          <span>AVIRENA JEWELS</span>
+        </div>
+      </section>
+
+      {/* Filter and Category Tabs Bar */}
+      <div className="sticky top-16 sm:top-20 z-30 w-full bg-[#E7E4D5]/98 backdrop-blur-md border-b border-[#D8D2C2] px-4 sm:px-8 lg:px-12 xl:px-16 2xl:px-20 py-3 flex items-center justify-between select-none">
+        <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
+          <div className="relative">
+            <button
+              onClick={() => {
+                setCategoryDropdownOpen(!categoryDropdownOpen);
+                setMetalDropdownOpen(false);
+                setSortDropdownOpen(false);
+              }}
+              className={`inline-flex items-center gap-2 px-3.5 sm:px-4 py-2 rounded-xs border text-[11px] font-semibold tracking-[0.14em] uppercase transition-all duration-200 cursor-pointer shadow-xs ${
+                selectedCategory !== 'all'
+                  ? 'bg-[#413C23] text-[#FAF8F5] border-[#413C23]'
+                  : 'bg-[#FAF8F5] text-[#413C23] border-[#D8D2C2] hover:border-[#8F896D]'
+              }`}
+            >
+              <span className={`text-[10px] uppercase tracking-widest font-normal ${selectedCategory !== 'all' ? 'text-[#FAF8F5]/70' : 'text-[#8F896D]'}`}>Category:</span>
+              <span>{selectedCategory === 'all' ? 'All Pieces' : selectedCategory}</span>
+              <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${categoryDropdownOpen ? 'rotate-180' : ''}`} />
+            </button>
+            {categoryDropdownOpen && (
+              <div className="absolute left-0 mt-2 w-56 bg-[#FAF8F5] border border-[#D8D2C2] rounded-xs shadow-[0_16px_36px_rgba(65,60,35,0.12)] p-1.5 z-30 animate-in fade-in duration-150">
+                <div className="px-3 py-1.5 border-b border-[#E8E2D6] mb-1">
+                  <span className="text-[9.5px] uppercase tracking-[0.2em] font-semibold text-[#8F896D]">Filter Category</span>
+                </div>
+                {(['all', 'earrings', 'necklaces', 'rings', 'bracelets', 'brooches'] as Category[]).map((cat) => (
+                  <button
+                    key={cat}
+                    onClick={() => {
+                      setSelectedCategory(cat);
+                      setCategoryDropdownOpen(false);
+                    }}
+                    className={`w-full text-left px-3.5 py-2 text-[11px] uppercase tracking-[0.14em] transition-colors cursor-pointer flex items-center justify-between rounded-xs ${
+                      selectedCategory === cat ? 'bg-[#EDE8DC] text-[#413C23] font-bold' : 'text-[#413C23]/85 hover:bg-[#F4EFE6]'
+                    }`}
+                  >
+                    <span>{cat === 'all' ? 'All Jewellery' : cat}</span>
+                    {selectedCategory === cat && <Check className="w-3.5 h-3.5 text-[#413C23]" />}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <div className="relative">
+            <button
+              onClick={() => {
+                setMetalDropdownOpen(!metalDropdownOpen);
+                setCategoryDropdownOpen(false);
+                setSortDropdownOpen(false);
+              }}
+              className={`inline-flex items-center gap-2 px-3.5 sm:px-4 py-2 rounded-xs border text-[11px] font-semibold tracking-[0.14em] uppercase transition-all duration-200 cursor-pointer shadow-xs ${
+                selectedMetal !== 'all'
+                  ? 'bg-[#413C23] text-[#FAF8F5] border-[#413C23]'
+                  : 'bg-[#FAF8F5] text-[#413C23] border-[#D8D2C2] hover:border-[#8F896D]'
+              }`}
+            >
+              <span className={`text-[10px] uppercase tracking-widest font-normal ${selectedMetal !== 'all' ? 'text-[#FAF8F5]/70' : 'text-[#8F896D]'}`}>Finish:</span>
+              <span>{selectedMetal === 'all' ? 'All Metals' : selectedMetal}</span>
+              <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${metalDropdownOpen ? 'rotate-180' : ''}`} />
+            </button>
+            {metalDropdownOpen && (
+              <div className="absolute left-0 mt-2 w-56 bg-[#FAF8F5] border border-[#D8D2C2] rounded-xs shadow-[0_16px_36px_rgba(65,60,35,0.12)] p-1.5 z-30 animate-in fade-in duration-150">
+                <div className="px-3 py-1.5 border-b border-[#E8E2D6] mb-1">
+                  <span className="text-[9.5px] uppercase tracking-[0.2em] font-semibold text-[#8F896D]">Filter Finish</span>
+                </div>
+                {[
+                  { id: 'all', label: 'All Metals' },
+                  { id: 'brass', label: 'Gold-Tone Brass' },
+                  { id: 'alloy', label: 'Silver-Tone Brass' },
+                  { id: 'anti-tarnish', label: 'Anti-Tarnish' },
+                ].map((metal) => (
+                  <button
+                    key={metal.id}
+                    onClick={() => {
+                      setSelectedMetal(metal.id);
+                      setMetalDropdownOpen(false);
+                    }}
+                    className={`w-full text-left px-3.5 py-2 text-[11px] uppercase tracking-[0.14em] transition-colors cursor-pointer flex items-center justify-between rounded-xs ${
+                      selectedMetal === metal.id ? 'bg-[#EDE8DC] text-[#413C23] font-bold' : 'text-[#413C23]/85 hover:bg-[#F4EFE6]'
+                    }`}
+                  >
+                    <span>{metal.label}</span>
+                    {selectedMetal === metal.id && <Check className="w-3.5 h-3.5 text-[#413C23]" />}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {curatedEdit && (
+            <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xs bg-[#413C23] text-[#FAF8F5] text-[10px] sm:text-[11px] font-semibold tracking-wider uppercase shadow-xs">
+              <span>✦ {curatedEdit === 'under-999' ? 'Under ₹999' : curatedEdit === 'duo-suites' ? 'Duo Suites' : 'Gifting Edit'}</span>
+              <button
+                onClick={() => setCuratedEdit(null)}
+                className="hover:text-white cursor-pointer ml-1 p-0.5 rounded-full hover:bg-white/20 transition-colors"
+                aria-label="Remove curated edit filter"
+              >
+                <X className="w-3 h-3" />
+              </button>
+            </div>
+          )}
+
+          {(selectedCategory !== 'all' || selectedMetal !== 'all' || curatedEdit) && (
+            <button
+              onClick={() => {
+                setSelectedCategory('all');
+                setSelectedMetal('all');
+                setCuratedEdit(null);
+              }}
+              className="text-[11px] text-[#8F896D] hover:text-[#413C23] uppercase tracking-wider font-semibold underline underline-offset-4 cursor-pointer ml-1 transition-colors"
+            >
+              Reset Filters
+            </button>
+          )}
+        </div>
+
+        <div className="relative">
+          <button
+            onClick={() => {
+              setSortDropdownOpen(!sortDropdownOpen);
+              setCategoryDropdownOpen(false);
+              setMetalDropdownOpen(false);
+            }}
+            className="inline-flex items-center gap-2 px-3.5 sm:px-4 py-2 rounded-xs border border-[#D8D2C2] hover:border-[#8F896D] bg-[#FAF8F5] text-[#413C23] text-[11px] font-semibold tracking-[0.14em] uppercase transition-all duration-200 cursor-pointer shadow-xs"
+          >
+            <span className="text-[#8F896D] text-[10px] uppercase tracking-widest font-normal">Sort:</span>
+            <span>{sortLabels[sortBy]}</span>
+            <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${sortDropdownOpen ? 'rotate-180' : ''}`} />
+          </button>
+          {sortDropdownOpen && (
+            <div className="absolute right-0 mt-2 w-52 bg-[#FAF8F5] border border-[#D8D2C2] rounded-xs shadow-[0_16px_36px_rgba(65,60,35,0.12)] p-1.5 z-30 animate-in fade-in duration-150">
+              <div className="px-3 py-1.5 border-b border-[#E8E2D6] mb-1">
+                <span className="text-[9.5px] uppercase tracking-[0.2em] font-semibold text-[#8F896D]">Order By</span>
+              </div>
+              {(Object.keys(sortLabels) as Array<keyof typeof sortLabels>).map((key) => (
+                <button
+                  key={key}
+                  onClick={() => {
+                    setSortBy(key);
+                    setSortDropdownOpen(false);
+                  }}
+                  className={`w-full text-left px-3.5 py-2 text-[11px] uppercase tracking-[0.14em] transition-colors cursor-pointer flex items-center justify-between rounded-xs ${
+                    sortBy === key ? 'bg-[#EDE8DC] text-[#413C23] font-bold' : 'text-[#413C23]/85 hover:bg-[#F4EFE6]'
+                  }`}
+                >
+                  <span>{sortLabels[key]}</span>
+                  {sortBy === key && <Check className="w-3.5 h-3.5 text-[#413C23]" />}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+
+      <main className="w-full px-4 sm:px-8 lg:px-12 xl:px-16 2xl:px-20 py-6 sm:py-8">
+        {filteredProducts.length === 0 ? (
+          <div className="py-20 text-center flex flex-col items-center justify-center max-w-md mx-auto">
+            <span className="text-[10px] uppercase tracking-[0.25em] font-semibold text-[#8F896D] mb-3">
+              {selectedCategory === 'all' ? 'Collection' : selectedCategory}
+            </span>
+            <p className="font-serif-display text-2xl sm:text-3xl font-light italic text-[#413C23] mb-2">
+              No pieces in this category yet
+            </p>
+            <p className="text-xs sm:text-sm text-[#413C23]/70 leading-relaxed mb-6">
+              New designs are added as each piece is released. Explore what is available now.
+            </p>
+            <button
+              onClick={() => {
+                setSelectedCategory('all');
+                setSelectedMetal('all');
+                setCuratedEdit(null);
+              }}
+              className="px-6 py-2.5 bg-[#413C23] text-white text-xs uppercase tracking-widest hover:bg-[#8F896D] transition-colors cursor-pointer"
+            >
+              Explore All Jewelry
+            </button>
+          </div>
+        ) : filteredProducts.length === 3 ? (
+          <div className="grid grid-cols-2 md:grid-cols-3 [grid-auto-rows:minmax(0,22rem)] gap-3 sm:gap-4">
+            {renderFeaturedBentoCard(filteredProducts[0])}
+            {filteredProducts.slice(1).map((prod) => renderProductCard(prod))}
+          </div>
+        ) : filteredProducts.length >= 4 ? (
+          <div className="grid grid-cols-2 lg:grid-cols-4 [grid-auto-rows:minmax(0,22rem)] gap-3 sm:gap-4">
+            {renderFeaturedBentoCard(filteredProducts[0])}
+            {filteredProducts.slice(1).map((prod) => renderProductCard(prod))}
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+            {filteredProducts.map((prod) => renderProductCard(prod))}
+          </div>
+        )}
+      </main>
+    </div>
+  );
+};

@@ -1,0 +1,298 @@
+@import "tailwindcss";
+
+@theme {
+  --font-serif: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
+  --font-display: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
+  --font-sans: 'Plus Jakarta Sans', 'Montserrat', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-body: 'Plus Jakarta Sans', 'Montserrat', -apple-system, BlinkMacSystemFont, sans-serif;
+
+  /* Official Brand Palette */
+  --color-ivory-sand: #E7E4D5;
+  --color-olive-moss: #000000;
+  --color-stone-taupe: #8F896D;
+  --color-warm-linen: #F2EFDB;
+  --color-soft-silver: #FAF8F5;
+  --color-brand-ink: #413C23;
+  --color-brand-accent: #8F896D;
+  --color-brand-muted: #6B6650;
+
+  /* Accent Tones */
+  --color-luxe-gold: #D4AF37;
+  --color-luxe-gold-hover: #BF9B2D;
+  --color-garnet-red: #7A0F1A;
+  --color-brand-urgency: #DC2626;
+  --color-border-subtle: #D8D2C2;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    text-rendering: optimizeLegibility;
+    overflow-x: hidden;
+  }
+  
+  body {
+    font-family: 'Plus Jakarta Sans', 'Montserrat', -apple-system, BlinkMacSystemFont, sans-serif;
+    background-color: #E7E4D5;
+    color: #000000;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-weight: 400;
+    /* clip (not hidden) so body never becomes a scroll container which would break sticky PDP */
+    overflow-x: clip;
+    overflow-y: visible;
+    width: 100%;
+  }
+
+  ::selection {
+    background-color: rgba(0, 0, 0, 0.15);
+    color: #000000;
+  }
+}
+
+.font-serif-display {
+  font-family: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
+  letter-spacing: -0.01em;
+}
+
+.font-sans-body {
+  font-family: 'Plus Jakarta Sans', 'Montserrat', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* Full Width Fluid Padding Utilities */
+.site-container-full {
+  width: 100%;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+@media (min-width: 640px) {
+  .site-container-full {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .site-container-full {
+    padding-left: 3.5rem;
+    padding-right: 3.5rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .site-container-full {
+    padding-left: 4.5rem;
+    padding-right: 4.5rem;
+  }
+}
+
+@media (min-width: 1536px) {
+  .site-container-full {
+    padding-left: 5.5rem;
+    padding-right: 5.5rem;
+  }
+}
+
+/* Clean micro scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #E7E4D5;
+}
+::-webkit-scrollbar-thumb {
+  background: #8F896D;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #413C23;
+}
+
+/* Luxury Card Transitions */
+.luxury-card {
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.25s ease;
+}
+.luxury-card:hover {
+  transform: translateY(-3px);
+}
+
+/* Shimmer animation for luxury accents */
+@keyframes goldShimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.shimmer-gold {
+  background: linear-gradient(90deg, #8F896D 0%, #E7E4D5 50%, #8F896D 100%);
+  background-size: 200% 100%;
+  animation: goldShimmer 4s infinite linear;
+}
+
+/* Hide scrollbar utility */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+@keyframes heroFloat {
+  0%, 100% {
+    transform: translateY(-6px) rotate(-0.5deg);
+  }
+  50% {
+    transform: translateY(6px) rotate(0.5deg);
+  }
+}
+
+.animate-hero-float {
+  animation: heroFloat 6s ease-in-out infinite;
+  will-change: transform;
+}
+
+/* Infinite Luxury Marquee Animation */
+@keyframes infinite-marquee {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-infinite-marquee {
+  display: flex;
+  width: max-content;
+  will-change: transform;
+  animation: infinite-marquee 40s linear infinite;
+}
+
+.marquee-pause:hover .animate-infinite-marquee {
+  animation-play-state: paused;
+}
+
+/* Horizontal Scroller & Fade Utilities */
+@keyframes scroll-horizontal {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes scroll-horizontal-reverse {
+  0% {
+    transform: translateX(-50%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+.animate-scroll-horizontal {
+  animation: scroll-horizontal var(--scroll-duration, 40s) linear infinite;
+  will-change: transform;
+}
+
+.animate-scroll-horizontal-reverse {
+  animation: scroll-horizontal-reverse var(--scroll-duration, 40s) linear infinite;
+  will-change: transform;
+}
+
+.animate-scroll-horizontal:hover,
+.animate-scroll-horizontal-reverse:hover,
+.group:hover .animate-scroll-horizontal,
+.group:hover .animate-scroll-horizontal-reverse {
+  animation-play-state: paused;
+}
+
+.mask-fade {
+  mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+}
+
+/* =========================================================================
+   HIGH-CONTRAST ACCESSIBILITY OVERRIDES (USER SPECIFICATION)
+   - "the text which has the light green or the other green color, use proper black"
+   - "and text which has white or cream etc, do proper white"
+   ========================================================================= */
+
+/* 1. All dark olive (#413C23) and sage/light-green (#8F896D) text -> Proper Black */
+.text-\[\#413C23\],
+[class*="text-[#413C23]"] {
+  color: #000000 !important;
+}
+.text-\[\#413C23\]\/95, [class*="text-[#413C23]/95"] { color: #000000 !important; }
+.text-\[\#413C23\]\/90, [class*="text-[#413C23]/90"] { color: #000000 !important; }
+.text-\[\#413C23\]\/85, [class*="text-[#413C23]/85"] { color: #000000 !important; }
+.text-\[\#413C23\]\/80, [class*="text-[#413C23]/80"] { color: #000000 !important; }
+.text-\[\#413C23\]\/75, [class*="text-[#413C23]/75"] { color: #000000 !important; }
+.text-\[\#413C23\]\/70, [class*="text-[#413C23]/70"] { color: #000000 !important; }
+.text-\[\#413C23\]\/60, [class*="text-[#413C23]/60"] { color: #000000 !important; }
+.text-\[\#413C23\]\/50, [class*="text-[#413C23]/50"] { color: #000000 !important; }
+.text-\[\#413C23\]\/45, [class*="text-[#413C23]/45"] { color: #000000 !important; }
+.text-\[\#413C23\]\/40, [class*="text-[#413C23]/40"] { color: #000000 !important; }
+
+.text-\[\#8F896D\],
+[class*="text-[#8F896D]"] {
+  color: #000000 !important;
+}
+.text-\[\#8F896D\]\/90, [class*="text-[#8F896D]/90"] { color: #000000 !important; }
+.text-\[\#8F896D\]\/80, [class*="text-[#8F896D]/80"] { color: #000000 !important; }
+.text-\[\#8F896D\]\/70, [class*="text-[#8F896D]/70"] { color: #000000 !important; }
+
+.text-\[\#878266\],
+[class*="text-[#878266]"] {
+  color: #000000 !important;
+}
+.text-\[\#5C5638\],
+[class*="text-[#5C5638]"] {
+  color: #000000 !important;
+}
+
+/* 2. All cream/ivory text (#E7E4D5, #F2EFDB, #FAF8F5) on dark surfaces -> Proper Pure White */
+.text-\[\#E7E4D5\],
+[class*="text-[#E7E4D5]"],
+.text-\[\#F2EFDB\],
+[class*="text-[#F2EFDB]"],
+.text-\[\#FAF8F5\],
+[class*="text-[#FAF8F5]"] {
+  color: #FFFFFF !important;
+}
+.text-\[\#E7E4D5\]\/95, [class*="text-[#E7E4D5]/95"] { color: #FFFFFF !important; }
+.text-\[\#E7E4D5\]\/90, [class*="text-[#E7E4D5]/90"] { color: #FFFFFF !important; }
+.text-\[\#E7E4D5\]\/85, [class*="text-[#E7E4D5]/85"] { color: #FFFFFF !important; }
+.text-\[\#E7E4D5\]\/80, [class*="text-[#E7E4D5]/80"] { color: #FFFFFF !important; }
+.text-\[\#E7E4D5\]\/75, [class*="text-[#E7E4D5]/75"] { color: #FFFFFF !important; }
+.text-\[\#E7E4D5\]\/60, [class*="text-[#E7E4D5]/60"] { color: #FFFFFF !important; }
+.text-\[\#F2EFDB\]\/95, [class*="text-[#F2EFDB]/95"] { color: #FFFFFF !important; }
+.text-\[\#F2EFDB\]\/90, [class*="text-[#F2EFDB]/90"] { color: #FFFFFF !important; }
+
+/* 3. Pure White Footer Text Protection */
+footer,
+footer p,
+footer a,
+footer span,
+footer h3,
+footer h4,
+footer h5,
+footer li,
+#root footer p,
+#root footer a,
+#root footer span,
+#root footer h3,
+#root footer h4,
+#root footer h5,
+#root footer li {
+  color: #FFFFFF !important;
+}
+
+/* Ensure newsletter button stays black text on white background */
+footer button[type="submit"],
+#root footer button[type="submit"] {
+  color: #000000 !important;
+}

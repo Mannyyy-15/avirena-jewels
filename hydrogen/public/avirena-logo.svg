@@ -1,0 +1,78 @@
+<svg viewBox="0 0 1120 370" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="goldThreadGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#D4AF37" />
+      <stop offset="35%" stop-color="#E6C875" />
+      <stop offset="70%" stop-color="#C5A059" />
+      <stop offset="100%" stop-color="#B38A38" />
+    </linearGradient>
+    <radialGradient id="rubyGarnetBead" cx="35%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#C92A3E" />
+      <stop offset="45%" stop-color="#8B1524" />
+      <stop offset="85%" stop-color="#550A14" />
+      <stop offset="100%" stop-color="#30030A" />
+    </radialGradient>
+    <radialGradient id="goldBeadShine" cx="35%" cy="30%" r="65%">
+      <stop offset="0%" stop-color="#FFF2B2" />
+      <stop offset="35%" stop-color="#D4AF37" />
+      <stop offset="80%" stop-color="#9C7722" />
+      <stop offset="100%" stop-color="#6E5110" />
+    </radialGradient>
+  </defs>
+
+  <!-- Letters AVIRENA in pure luxury black -->
+  <g fill="#1E1E1C">
+    <!-- Letter A1 -->
+    <path d="M 125 72 L 54 240 L 40 240 L 40 245 L 85 245 L 85 240 L 73 240 L 98 178 L 160 178 L 180 240 L 168 240 L 168 245 L 216 245 L 216 240 L 202 240 L 137 72 Z M 128 92 L 157 170 L 102 170 Z"/>
+    <path d="M 124 72 L 138 72 L 205 240 L 182 240 L 131 92 Z"/>
+    <path d="M 112 72 L 148 72 L 148 76 L 112 76 Z"/>
+    <rect x="99" y="172" width="60" height="5" />
+    
+    <!-- Letter V -->
+    <path d="M 235 72 L 285 72 L 285 77 L 270 77 C 265 85, 260 105, 252 135 L 222 245 L 208 245 L 235 72 Z"/>
+    <path d="M 218 245 L 232 245 L 320 77 L 305 77 L 305 72 L 350 72 L 350 77 L 334 77 L 230 245 Z"/>
+    <path d="M 235 72 L 275 72 L 275 76 L 235 76 Z"/>
+    <path d="M 310 72 L 350 72 L 350 76 L 310 76 Z"/>
+
+    <!-- Letter I -->
+    <path d="M 378 72 L 438 72 L 438 77 L 418 77 C 413 77, 412 80, 412 90 L 412 222 C 412 232, 413 235, 418 235 L 438 235 L 438 240 L 378 240 L 378 235 L 398 235 C 403 235, 404 232, 404 222 L 404 90 C 404 80, 403 77, 398 77 L 378 77 Z"/>
+    <rect x="403" y="76" width="10" height="160" />
+
+    <!-- Letter R -->
+    <path d="M 465 72 L 525 72 L 525 77 L 505 77 C 500 77, 499 80, 499 90 L 499 222 C 499 232, 500 235, 505 235 L 525 235 L 525 240 L 465 240 L 465 235 L 485 235 C 490 235, 491 232, 491 222 L 491 90 C 491 80, 490 77, 485 77 L 465 77 Z"/>
+    <path d="M 491 76 L 545 76 C 582 76, 598 94, 598 120 C 598 146, 580 162, 545 162 L 491 162 Z M 501 88 L 501 150 L 542 150 C 568 150, 582 138, 582 120 C 582 101, 568 88, 542 88 Z"/>
+    <path d="M 534 158 C 555 160, 570 178, 582 205 C 594 232, 615 258, 665 264 C 635 264, 600 250, 586 230 C 572 208, 562 188, 542 170 C 532 161, 520 159, 510 158 Z"/>
+
+    <!-- Letter E -->
+    <path d="M 615 72 L 675 72 L 675 77 L 655 77 C 650 77, 649 80, 649 90 L 649 222 C 649 232, 650 235, 655 235 L 675 235 L 675 240 L 615 240 L 615 235 L 635 235 C 640 235, 641 232, 641 222 L 641 90 C 641 80, 640 77, 635 77 L 615 77 Z"/>
+    <path d="M 649 72 L 725 72 L 725 105 L 717 105 L 714 84 L 649 84 Z"/>
+    <rect x="649" y="146" width="55" height="7" />
+    <path d="M 649 228 L 735 228 L 735 240 L 649 240 Z M 735 208 L 735 240 L 727 240 L 727 215 Z"/>
+
+    <!-- Letter N -->
+    <path d="M 750 72 L 810 72 L 810 77 L 790 77 C 785 77, 784 80, 784 90 L 784 222 C 784 232, 785 235, 790 235 L 810 235 L 810 240 L 750 240 L 750 235 L 770 235 C 775 235, 776 232, 776 222 L 776 90 C 776 80, 775 77, 770 77 L 750 77 Z"/>
+    <path d="M 780 72 L 878 236 L 878 90 C 878 80, 877 77, 872 77 L 852 77 L 852 72 L 912 72 L 912 77 L 892 77 C 887 77, 886 80, 886 90 L 886 240 L 870 240 L 772 76 Z"/>
+    <path d="M 865 240 L 912 240 L 912 235 L 892 235 L 892 240 Z"/>
+
+    <!-- Letter A2 -->
+    <path d="M 995 72 L 924 240 L 910 240 L 910 245 L 955 245 L 955 240 L 943 240 L 968 178 L 1030 178 L 1050 240 L 1038 240 L 1038 245 L 1086 245 L 1086 240 L 1072 240 L 1007 72 Z M 998 92 L 1027 170 L 972 170 Z"/>
+    <path d="M 994 72 L 1008 72 L 1075 240 L 1052 240 L 1001 92 Z"/>
+    <path d="M 982 72 L 1018 72 L 1018 76 L 982 76 Z"/>
+    <rect x="969" y="172" width="60" height="5" />
+  </g>
+
+  <!-- Golden thread loop & ruby drop -->
+  <g>
+    <path d="M 334 77 C 334 30, 375 20, 360 48 C 345 76, 310 115, 305 135 C 290 190, 385 170, 480 185 C 535 195, 570 245, 580 300 L 580 310" stroke="url(#goldThreadGrad)" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    <path d="M 334 77 C 334 30, 375 20, 360 48 C 345 76, 310 115, 305 135 C 290 190, 385 170, 480 185 C 535 195, 570 245, 580 300" stroke="#FFF5D6" stroke-width="0.8" stroke-linecap="round" fill="none" opacity="0.65"/>
+    <circle cx="317" cy="80" r="8" fill="url(#goldBeadShine)"/>
+    <circle cx="315" cy="78" r="2.5" fill="#FFFFFF" opacity="0.85"/>
+    
+    <line x1="580" y1="300" x2="580" y2="315" stroke="url(#goldThreadGrad)" stroke-width="2.5"/>
+    <circle cx="580" cy="325" r="12" fill="url(#rubyGarnetBead)"/>
+    <ellipse cx="576" cy="321" rx="4" ry="2.5" transform="rotate(-25 576 321)" fill="#FFFFFF" opacity="0.75"/>
+    <circle cx="584" cy="329" r="2" fill="#FFA5B5" opacity="0.4"/>
+    <circle cx="580" cy="342" r="4.5" fill="url(#goldBeadShine)"/>
+    <circle cx="579" cy="341" r="1.2" fill="#FFFFFF" opacity="0.9"/>
+  </g>
+</svg>
