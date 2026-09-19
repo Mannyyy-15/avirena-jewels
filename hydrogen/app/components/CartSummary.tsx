@@ -23,11 +23,11 @@ function getCleanCheckoutUrl(url?: string) {
   try {
     const parsed = new URL(url);
     if (parsed.hostname.includes('myshopify.com')) {
-      parsed.hostname = 'avirenajewels.com';
+      parsed.hostname = 'www.avirenajewels.com';
     }
     return parsed.toString();
   } catch {
-    return url.replace('m5yhxq-gb.myshopify.com', 'avirenajewels.com');
+    return url.replace('m5yhxq-gb.myshopify.com', 'www.avirenajewels.com');
   }
 }
 
