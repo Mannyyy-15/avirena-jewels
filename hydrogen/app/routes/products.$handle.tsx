@@ -26,6 +26,7 @@ import {
   formatPrice,
   getCompareAtPrice,
   getDiscountPercentage,
+  getPriceInINR,
 } from '~/lib/currency';
 import { findPairOffer } from '~/data/offers';
 import { ProductImageLightbox } from '~/components/ProductImageLightbox';
@@ -423,45 +424,11 @@ export default function ProductDetailPage() {
     trackBeginCheckout([{ product, quantity: 1 }]);
 
     const variantId = product.variants?.[0]?.id || `gid://shopify/ProductVariant/${product.id}`;
-    const selectedVariant = {
-      id: variantId,
-      title: selectedFinish || product.metal || 'Default',
-      price: {
-        amount: String(getPriceInINR(product.price)),
-        currencyCode: 'INR',
-      },
-      product: {
-        id: product.id,
-        title: product.name,
-        handle: product.handle || product.id,
-      },
-      image: {
-        url: product.images?.[0] || '/logo.png',
-        altText: product.name,
-      },
-      selectedOptions: [
-        { name: 'Finish', value: selectedFinish || product.metal || 'Default' },
-      ],
-    };
-
-    fetcher.submit(
-      {
-        [CartForm.INPUT_NAME]: JSON.stringify({
-          action: CartForm.ACTIONS.LinesAdd,
-          inputs: {
-            lines: [
-              {
-                merchandiseId: variantId,
-                quantity: 1,
-                selectedVariant,
-              },
-            ],
-          },
-        }),
-        redirectTo: '/cart',
-      },
-      { method: 'POST', action: '/cart' }
-    );
+    const variantIdNumeric = variantId.replace(/\D/g, '');
+    if (variantIdNumeric) {
+      window.location.href = `https://avirenajewels.com/cart/${variantIdNumeric}:1`;
+      return;
+    }
   };
 
   const handleQuickAddRecommendation = (recommendedItem: Product) => {

@@ -58,6 +58,7 @@ export default async function handleRequest(
     ],
     fontSrc: ["'self'", 'https://fonts.gstatic.com', 'https://cdn.shopify.com'],
     styleSrc: ["'self'", "'unsafe-inline'", 'https://cdn.shopify.com', 'https://fonts.googleapis.com'],
+    frameSrc: ["'self'", 'https://www.facebook.com', 'https://*.facebook.com', 'https://connect.facebook.net'],
   });
 
   const body = await renderToReadableStream(
