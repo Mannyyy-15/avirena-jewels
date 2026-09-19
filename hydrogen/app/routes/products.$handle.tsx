@@ -357,7 +357,8 @@ export default function ProductDetailPage() {
   };
 
   const handleAddToCart = () => {
-    const variantId = product.variants?.[0]?.id || `gid://shopify/ProductVariant/${product.id}`;
+    const variant = product.variants?.[0];
+    const variantId = variant?.id || product.shopifyId || `gid://shopify/ProductVariant/${product.id}`;
     aside.open('cart');
 
     // Meta Pixel + GA4. Shopify's own add-to-cart is reported separately by
@@ -367,13 +368,13 @@ export default function ProductDetailPage() {
 
     const selectedVariant = {
       id: variantId,
-      title: selectedFinish || product.metal || 'Default',
+      title: variant?.title || selectedFinish || product.metal || 'Default Title',
       price: {
         amount: String(getPriceInINR(product.price)),
         currencyCode: 'INR',
       },
       product: {
-        id: product.id,
+        id: product.shopifyId || product.id,
         title: product.name,
         handle: product.handle || product.id,
       },
@@ -381,18 +382,10 @@ export default function ProductDetailPage() {
         url: product.images?.[0] || '/logo.png',
         altText: product.name,
       },
-      selectedOptions: [
-        { name: 'Finish', value: selectedFinish || product.metal || 'Default' },
+      selectedOptions: variant?.selectedOptions || [
+        { name: 'Title', value: 'Default Title' },
       ],
     };
-
-    const bundleAttributes = isBundle
-      ? [
-          { key: '_bundleGroupId', value: `bundle-${product.handle || product.id}-${Date.now()}` },
-          { key: '_bundleTitle', value: product.name },
-          { key: '_bundleSavings', value: '100' },
-        ]
-      : undefined;
 
     fetcher.submit(
       {
@@ -404,7 +397,6 @@ export default function ProductDetailPage() {
                 merchandiseId: variantId,
                 quantity: 1,
                 selectedVariant,
-                attributes: bundleAttributes,
               },
             ],
           },
@@ -423,27 +415,29 @@ export default function ProductDetailPage() {
     setIsBuyingNow(true);
     trackBeginCheckout([{ product, quantity: 1 }]);
 
-    const variantId = product.variants?.[0]?.id || `gid://shopify/ProductVariant/${product.id}`;
+    const variant = product.variants?.[0];
+    const variantId = variant?.id || product.shopifyId || `gid://shopify/ProductVariant/${product.id}`;
     const variantIdNumeric = variantId.replace(/\D/g, '');
     if (variantIdNumeric) {
-      window.location.href = `https://avirenajewels.com/cart/${variantIdNumeric}:1`;
+      window.location.href = `https://m5yhxq-gb.myshopify.com/cart/${variantIdNumeric}:1`;
       return;
     }
   };
 
   const handleQuickAddRecommendation = (recommendedItem: Product) => {
-    const variantId = recommendedItem.variants?.[0]?.id || `gid://shopify/ProductVariant/${recommendedItem.id}`;
+    const variant = recommendedItem.variants?.[0];
+    const variantId = variant?.id || recommendedItem.shopifyId || `gid://shopify/ProductVariant/${recommendedItem.id}`;
     aside.open('cart');
 
     const selectedVariant = {
       id: variantId,
-      title: recommendedItem.metal || 'Default',
+      title: variant?.title || recommendedItem.metal || 'Default Title',
       price: {
         amount: String(getPriceInINR(recommendedItem.price)),
         currencyCode: 'INR',
       },
       product: {
-        id: recommendedItem.id,
+        id: recommendedItem.shopifyId || recommendedItem.id,
         title: recommendedItem.name,
         handle: recommendedItem.handle || recommendedItem.id,
       },
@@ -451,8 +445,8 @@ export default function ProductDetailPage() {
         url: recommendedItem.images?.[0] || '/logo.png',
         altText: recommendedItem.name,
       },
-      selectedOptions: [
-        { name: 'Finish', value: recommendedItem.metal || 'Default' },
+      selectedOptions: variant?.selectedOptions || [
+        { name: 'Title', value: 'Default Title' },
       ],
     };
 

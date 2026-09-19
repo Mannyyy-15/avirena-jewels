@@ -62,19 +62,20 @@ export const CollectionPageView: React.FC<CollectionPageViewProps> = ({
   };
 
   const handleQuickAdd = (product: Product) => {
-    const variantId = product.variants?.[0]?.id || `gid://shopify/ProductVariant/${product.id}`;
+    const variant = product.variants?.[0];
+    const variantId = variant?.id || product.shopifyId || `gid://shopify/ProductVariant/${product.id}`;
     setQuickAddedId(product.id);
     aside.open('cart');
 
     const selectedVariant = {
       id: variantId,
-      title: product.metal || 'Default',
+      title: variant?.title || product.metal || 'Default Title',
       price: {
         amount: String(getPriceInINR(product.price)),
         currencyCode: 'INR',
       },
       product: {
-        id: product.id,
+        id: product.shopifyId || product.id,
         title: product.name,
         handle: product.handle || product.id,
       },
@@ -82,8 +83,8 @@ export const CollectionPageView: React.FC<CollectionPageViewProps> = ({
         url: product.images?.[0] || '/logo.png',
         altText: product.name,
       },
-      selectedOptions: [
-        { name: 'Title', value: product.metal || 'Default Title' },
+      selectedOptions: variant?.selectedOptions || [
+        { name: 'Title', value: 'Default Title' },
       ],
     };
 
