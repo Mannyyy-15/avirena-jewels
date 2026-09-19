@@ -18,12 +18,41 @@ import offerImage from '../assets/about/about-vignette-2.webp';
  * Layout is image-left / content-right on desktop and stacks on mobile, where
  * the image is capped in height so the CTA stays above the fold on small
  * screens.
+ *
+ * NOT shown to paid traffic. Measured on a 390x844 phone through Instagram's
+ * in-app browser: the modal covered the full screen at 2.9s - after the visitor
+ * had already started scrolling - and blocked every product tap behind it. A
+ * visitor who arrives from an ad has already expressed intent and is paying for
+ * the click, so an interstitial is pure friction there; organic visitors still
+ * see it, later.
  */
 
 const STORAGE_KEY = 'avirena_welcome_offer_seen';
 
-/** Delay before showing, so the modal never competes with the LCP paint. */
-const SHOW_DELAY_MS = 1600;
+/**
+ * Delay before showing. Long enough that a visitor has finished arriving and
+ * begun to browse on their own terms; the old 1.6s landed mid-scroll.
+ */
+const SHOW_DELAY_MS = 15000;
+
+/**
+ * Query/campaign markers that mean "this visit was paid for".
+ * fbclid and gclid are appended by Meta and Google on every ad click; the utm_*
+ * pair covers manually tagged links.
+ */
+const isPaidVisit = (): boolean => {
+  if (typeof window === 'undefined') return false;
+  try {
+    const params = new URLSearchParams(window.location.search);
+    if (params.has('fbclid') || params.has('gclid') || params.has('ttclid')) return true;
+    const medium = (params.get('utm_medium') || '').toLowerCase();
+    if (['cpc', 'ppc', 'paid', 'paidsocial', 'paid_social'].includes(medium)) return true;
+    const source = (params.get('utm_source') || '').toLowerCase();
+    return ['facebook', 'instagram', 'meta', 'fb', 'ig'].includes(source);
+  } catch {
+    return false;
+  }
+};
 
 interface OfferWelcomeModalProps {
   /** Navigates to the shop listing and closes the modal. */
@@ -38,6 +67,9 @@ export const OfferWelcomeModal: React.FC<OfferWelcomeModalProps> = ({ onShopNow 
   // Show once per visitor. localStorage can throw in private mode, so a failed
   // read is treated as "already seen" rather than showing the modal every load.
   useEffect(() => {
+    // Never interrupt a click we paid for.
+    if (isPaidVisit()) return;
+
     let seen = true;
     try {
       seen = localStorage.getItem(STORAGE_KEY) === '1';
@@ -105,9 +137,9 @@ export const OfferWelcomeModal: React.FC<OfferWelcomeModalProps> = ({ onShopNow 
             ref={closeButtonRef}
             onClick={handleClose}
             aria-label="Close offer"
-            className="absolute top-3 right-3 z-10 p-1.5 rounded-full bg-[#FAF8F5]/90 text-[#6B6650] hover:text-[#413C23] hover:bg-[#FAF8F5] transition-colors cursor-pointer"
+            className="absolute top-2 right-2 z-10 w-11 h-11 inline-flex items-center justify-center rounded-full bg-[#FAF8F5]/95 text-[#413C23] hover:bg-[#FAF8F5] transition-colors cursor-pointer shadow-xs"
           >
-            <X className="w-4 h-4 stroke-[1.5]" />
+            <X className="w-5 h-5 stroke-[2]" />
           </button>
 
           <div className="grid sm:grid-cols-2">

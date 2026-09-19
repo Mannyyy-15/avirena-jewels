@@ -94,7 +94,7 @@ async function main() {
   console.log('Connecting to Shopify Admin API...');
   const token = await getAccessToken();
   const products = await fetchProductData(token);
-  const byHandle = new Map(products.map((p: any) => [p.handle, p]));
+  const byHandle = new Map<string, any>(products.map((p: any) => [p.handle, p]));
 
   const outputDir = path.resolve('public/assets/bundles');
   if (!fs.existsSync(outputDir)) {
